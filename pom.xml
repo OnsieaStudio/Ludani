@@ -1,0 +1,47 @@
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+ 
+  <groupId>fr.onsiea</groupId>
+  <artifactId>engine</artifactId>
+  <version>1.0</version>
+  <name>Onsiea Engine</name>
+  <description>Onsiea Engine is a libre and OpenSource 2D-3D game engine in Java with LWJGL library (OpenGL, Vulkan, GLFW, STB, OpenAL, NanoVG ...)</description>
+  <url>https://github.com/Onsiea/OnsieaEngine/</url>
+
+ <licenses>
+        <license>
+            <name>GPL-3</name>
+            <url>https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>seynax</id>
+            <name>Seynax</name>
+            <email>seyronax@gmail.com</email>
+            <url>https://github.com/Seynax</url>
+        </developer>
+    </developers>
+	
+    <scm>
+        <connection>scm:git:https://github.com/Onsiea/OnsieaEngine.git</connection>
+        <developerConnection>scm:git:https://github.com/Onsiea/OnsieaEngine.git</developerConnection>
+        <url>https://github.com/Onsiea/OnsieaEngine.git</url>
+    </scm>
+	
+    <dependencies>
+		<!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl -->
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+	</dependencies>
+
+</project>
