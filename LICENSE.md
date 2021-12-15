@@ -12,7 +12,7 @@ https://github.com/Onsiea/OnsieaEngine
 
 ## Consent:
 
-+ All contributions to Onsiea Engine must consent to the release of any
+- All contributions to Onsiea Engine must consent to the release of any
 patch content to the Onsiea Engine project.
 
 ## Note about names:
