@@ -38,12 +38,15 @@ out
 .idea
 
 # gradle
-	# project-specific cache directory
+# project-specific cache directory
 .gradle
-	# build output directory
+# build output directory
 build
 
 # other
 eclipse
 run
+
+# Maven
 /target/
+target
