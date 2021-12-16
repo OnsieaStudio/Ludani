@@ -2,20 +2,20 @@
 
 ## Onsiea Engine
 
-The source code of the [Onsiea engine](https://github.com/Onsiea/OnsieaEngine) is [licensed](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md) under [LGPL-2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html).
-This one is mainly developed by [Seynax](https://github.com/seynax) (the original author) and the [Onsiea organization](https://github.com/Onsiea) as well as the [contributors](https://github.com/Onsiea/OnsieaEngine/blob/main/docs/CONTRIBUTORS.md). [more details](https://github.com/Onsiea/OnsieaEngine/wiki/License)
+- Unless noted below (**Other licenses** section), [Onsiea engine](https://github.com/Onsiea/OnsieaEngine) and all parts herein is [licensed](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md) under the terms of the [LGPL-2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html) found here http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt and [copied below the file](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md).
+- This one is mainly developed by [Seynax](https://github.com/seynax) (the original author) and the [Onsiea organization](https://github.com/Onsiea) as well as the [contributors](https://github.com/Onsiea/OnsieaEngine/blob/main/docs/CONTRIBUTORS.md). [more details](https://github.com/Onsiea/OnsieaEngine/wiki/License)
 
 
-# Licenses
+## Other licenses
 
-## Library dependencies
+### Library dependencies
 
 | name                                  | license                                                                   | description                                                     | developped by                                                                                                               |
 |---------------------------------------|---------------------------------------------------------------------------|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
 | [LWJGL](https://www.lwjgl.org/)       | [BSD 3-Clause New "or" Revised "License"](https://www.lwjgl.org/license)  | bindings with (OpenGL, Vulkan, GLFW, OpenAL, STB, NanoVG ...)   | [Lightweight Java Game Library](https://www.lwjgl.org/) and [contributors](https://www.lwjgl.org/sponsors) of this project  |
 | [Lombok](https://projectlombok.org/)  | [MIT license](https://opensource.org/licenses/mit-license.php)            | various support tools for java developers, code simplification  | https://projectlombok.org/credits                                                                                           |
 
-## tools
+### tools
 
 | name                                  | license                                                                 | description                                                 | developped by                                                                                             |
 |---------------------------------------|-------------------------------------------------------------------------|-------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
