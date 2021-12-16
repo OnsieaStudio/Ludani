@@ -13,6 +13,7 @@
 | TODO.md                               | :white_check_mark:    |
 | SECURITY.md                           | :x:                   |
 | Base sources, resources and folders   | :white_check_mark:    |
+| CodeQL setup                          | :white_check_mark:    |
 | Maven setup                           | :x:                   |
 | Maven repository                      | :x:                   |
 | Gradle setup                          | :x:                   |
