@@ -1,5 +1,5 @@
 /**
-* © 2021 Onsiea All rights reserved.<br><br>
+* Copyright 2021 Onsiea All rights reserved.<br><br>
 *
 * This file is part of Onsiea Engine project. (https://github.com/Onsiea/OnsieaEngine)<br><br>
 *
