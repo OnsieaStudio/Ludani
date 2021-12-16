@@ -50,6 +50,14 @@
 	    <maven.compiler.source>17</maven.compiler.source>
 	</properties>
 
+	<distributionManagement>
+	   <repository>
+		 <id>onsieaengine</id>
+		 <name>GitHub Onsiea Apache Maven Packages</name>
+		 <url>https://maven.pkg.github.com/onsiea/onsieaengine</url>
+	   </repository>
+	</distributionManagement>
+
 	<build>
 		<plugins>
       		<plugin>
