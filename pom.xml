@@ -1,24 +1,24 @@
 <project
         xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
->
-  <modelVersion>4.0.0</modelVersion>
- 
-  <groupId>fr.onsiea</groupId>
-  <artifactId>engine</artifactId>
-  <version>1.0</version>
-  <name>Onsiea Engine</name>
-  <description>Onsiea Engine is a libre and OpenSource 2D-3D game engine in Java with LWJGL library (OpenGL, Vulkan, GLFW, STB, OpenAL, NanoVG ...)</description>
-  <url>https://github.com/Onsiea/OnsieaEngine/</url>
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
- <licenses>
-        <license>
+	<modelVersion>4.0.0</modelVersion>
+ 
+	<groupId>fr.onsiea</groupId>
+	<artifactId>engine</artifactId>
+	<version>1.0</version>
+	<name>Onsiea Engine</name>
+	<description>Onsiea Engine is a libre and OpenSource 2D-3D game engine in Java with LWJGL library (OpenGL, Vulkan, GLFW, STB, OpenAL, NanoVG ...)</description>
+	<url>https://github.com/Onsiea/OnsieaEngine/</url>
+
+	<licenses>
+		<license>
             <name>GPL-3</name>
             <url>https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE</url>
             <distribution>repo</distribution>
         </license>
-    </licenses>
+	</licenses>
 
     <developers>
         <developer>
@@ -44,4 +44,31 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+      		<plugin>
+        		<groupId>org.codehaus.mojo</groupId>
+       		 	<artifactId>build-helper-maven-plugin</artifactId>
+        		<version>3.2.0</version>
+       			<executions>
+          			<execution>
+            			<id>add-source</id>
+            			<phase>generate-sources</phase>
+            			<goals>
+              				<goal>add-source</goal>
+            			</goals>
+            			<configuration>
+              				<sources>
+                				<source>core</source>
+                				<source>client</source>
+                				<source>server</source>
+                				<source>game</source>
+                				<source>utils</source>
+              				</sources>
+            			</configuration>
+          			</execution>
+        		</executions>
+      		</plugin>
+    	</plugins>
+  	</build>
 </project>
