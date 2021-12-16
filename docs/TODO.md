@@ -9,6 +9,7 @@
 | LICENSE_NOTICE.md                     | :white_check_mark:    |
 | README.md                             | :white_check_mark:    |
 | CONTRIBUTING.md                       | :white_check_mark:    |
+| CONTRIBUTORS.md                       | :white_check_mark:    |
 | CODE_OF_CONDUCT.md                    | :white_check_mark:    |
 | CONVENTIONS.md                        | :white_check_mark:    |
 | TODO.md                               | :white_check_mark:    |
