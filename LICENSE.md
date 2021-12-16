@@ -1,4 +1,5 @@
  # License informations
+© 2021 Onsiea All rights reserved.
 
 ## licensing of the project
 
