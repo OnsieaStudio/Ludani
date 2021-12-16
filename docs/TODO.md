@@ -17,9 +17,9 @@
 | Base sources, resources and folders   | :white_check_mark:    |
 | CodeQL setup                          | :white_check_mark:    |
 | pom.xml                               | :white_check_mark:    |
-| Maven setup                           | :x:                   |
+| Maven setup                           | :white_check_mark:    |
 | Maven repository                      | :x:                   |
-| Gradle setup                          | :x:                   |
+| Gradle setup                          | :white_check_mark:    |
 | Library jar files available in branch | :x:                   |
 | Getting Started example               | :x:                   |
 
