@@ -1,5 +1,5 @@
 /**
-* Copyright 2021 Onsiea All rights reserved.<br><br>
+* © 2021 Onsiea All rights reserved.<br><br>
 *
 * This file is part of Onsiea Engine project. (https://github.com/Onsiea/OnsieaEngine)<br><br>
 *
@@ -24,19 +24,7 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine;
-
-/**
- * @author Seynax
- *
- */
-
-public class OnsieaEngine
+module fr.seynax.onsiea
 {
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
-	}
+
 }
