@@ -4,7 +4,7 @@
 
 ## For all types of contributions
 
-- **No duplicate** - Check if whatever contribution you plan to offer is not already present, You can check the page ["issues" of this repository](https://github.com/Onsiea/Onsiea/issues) or ["Pull resquests" of this repository](https://github.com/Onsiea/Onsiea/pulls) to avoid any duplication
+- **No duplicate** - Check if whatever contribution you plan to offer is not already present, You can check the page ["issues" of this repository](https://github.com/Onsiea/Onsiea/issues) to avoid any duplication
 
 - **Courtesy and joy** - Be sure to remain courteous, polite, and non-arrogant.*
 
