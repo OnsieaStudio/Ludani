@@ -10,7 +10,7 @@ https://github.com/Onsiea/OnsieaEngine
 
 ## A note on authorship:
 
-- All sources artifacts are property of their original author (Seynax (https://github.com/seynax)).
+- All sources artifacts are property of their original author
 
 ## Consent:
 
