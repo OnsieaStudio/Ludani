@@ -5,10 +5,7 @@
 
 This file is part of Onsiea Engine (https://github.com/Onsiea/OnsieaEngine)
 
-- Unless noted below, Onsiea Engine and all 
-parts herein are licensed under the terms of the LGPL 3.0 found
-here https://www.gnu.org/licenses/lgpl-3.0.html and 
-copied below.
+- Unless noted in [license notice file](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE_NOTICE.md#other-licenses), [Onsiea engine](https://github.com/Onsiea/OnsieaEngine) and all parts herein is [licensed](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md) under the terms of the [LGPL-3.0](https://www.gnu.org/licenses/lgpl-3.0.html) found here https://www.gnu.org/licenses/lgpl-3.0.html and [copied below the license file](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md).
 
 
 ### License Notice
