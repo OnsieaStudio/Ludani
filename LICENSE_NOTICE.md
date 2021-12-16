@@ -1,8 +1,9 @@
 # LICENSE NOTICE
 
 ## Onsiea Engine
+© 2021 Onsiea All rights reserved.
 
-- Unless noted below (**Other licenses** section), [Onsiea engine](https://github.com/Onsiea/OnsieaEngine) and all parts herein is [licensed](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md) under the terms of the [LGPL-2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html) found here http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt and [copied below the file](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md).
+- Unless noted below (**Other licenses** section), [Onsiea engine](https://github.com/Onsiea/OnsieaEngine) and all parts herein is [licensed](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md) under the terms of the [LGPL-2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html) found here http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt and [copied below the license file](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md).
 - This one is mainly developed by [Seynax](https://github.com/seynax) (the original author) and the [Onsiea organization](https://github.com/Onsiea) as well as the [contributors](https://github.com/Onsiea/OnsieaEngine/blob/main/docs/CONTRIBUTORS.md). [more details](https://github.com/Onsiea/OnsieaEngine/wiki/License)
 
 
