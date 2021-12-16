@@ -65,11 +65,11 @@
             			</goals>
             			<configuration>
               				<sources>
-                				<source>core</source>
-                				<source>client</source>
-                				<source>server</source>
-                				<source>game</source>
-                				<source>utils</source>
+                				<source>sources/core</source>
+                				<source>sources/client</source>
+                				<source>sources/server</source>
+                				<source>sources/game</source>
+                				<source>sources/utils</source>
               				</sources>
             			</configuration>
           			</execution>
