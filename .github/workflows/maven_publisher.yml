@@ -3,7 +3,6 @@ name: "Publish package to GitHub Packages"
 on:
   release:
     types: [created]
-    branches: [ main ]
 jobs:
   publish:
     name: Publish
