@@ -1,4 +1,4 @@
- # License notice
+ # License informations
 
 ## licensing of the project
 
@@ -23,6 +23,8 @@ patch content to the Onsiea Engine project.
 ## A note on authorship:
 
 - All sources artifacts are property of their original author
+
+# License
 
 ============================================================================================
 
