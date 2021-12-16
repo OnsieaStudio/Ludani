@@ -3,7 +3,7 @@
 ## Onsiea Engine
 
 The source code of the [Onsiea engine](https://github.com/Onsiea/OnsieaEngine) is [licensed](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md) under [LGPL-2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html).
-This one is mainly developed by [Seynax](https://github.com/seynax) (the original author) and the [Onsiea organization](https://github.com/Onsiea) as well as the [contributors](https://github.com/Onsiea/OnsieaEngine/blob/main/docs/CONTRIBUTORS.md).
+This one is mainly developed by [Seynax](https://github.com/seynax) (the original author) and the [Onsiea organization](https://github.com/Onsiea) as well as the [contributors](https://github.com/Onsiea/OnsieaEngine/blob/main/docs/CONTRIBUTORS.md). [more details](https://github.com/Onsiea/OnsieaEngine/wiki/License)
 
 
 # Licenses
