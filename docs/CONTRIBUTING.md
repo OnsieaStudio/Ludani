@@ -10,9 +10,9 @@
 
 - **Clear and efficient** - Make sure that the titles chosen reflect the subject and that this and description are clear
 
-## To demonstrate any problem whatsoever
+## To report any problem whatsoever
 
-- **Security vulnerability** - In order to avoid incidents as much as possible, for this type of problem it should be transmitted directly and secretly to a member of the Onsiea team, who will send a press release once it has been resolved. ([contact Onsiea](https://github.com/Onsiea/Onsiea/wiki/Contact) author: seyronax@gmail.com)
+- **Security vulnerability** - In order to avoid incidents as much as possible, for this type of problem it should be transmitted directly and secretly to a member of the Onsiea team, who will send a press release once it has been resolved. ([contact Onsiea](https://github.com/Onsiea/Onsiea/wiki/Contact) author: seyronax@gmail.com), for more details you can read the [security policy informations](https://github.com/Onsiea/OnsieaEngine/blob/main/SECURITY.md#security-policy)
 
 - **Model** - To help you a [model](https://github.com/Onsiea/Onsiea/blob/main/.github/ISSUE_TEMPLATE/bug_report.md) to state the problem is at your disposal
 
