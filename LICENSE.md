@@ -1,13 +1,19 @@
- # License informations
+# License informations
 © 2021 Onsiea All rights reserved.
 
 ## licensing of the project
 
+This file is part of Onsiea Engine (https://github.com/Onsiea/OnsieaEngine)
+
 - Unless noted below, Onsiea Engine and all 
-parts herein are licensed under the terms of the LGPL 2.1 found
-here http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt and 
+parts herein are licensed under the terms of the LGPL 3.0 found
+here https://www.gnu.org/licenses/lgpl-3.0.html and 
 copied below.
-https://github.com/Onsiea/OnsieaEngine
+
+
+### License Notice
+
+https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE_NOTICE.md
 
 
 ## Consent:
@@ -25,11 +31,12 @@ patch content to the Onsiea Engine project.
 
 - All sources artifacts are property of their original author
 
+
+
+
 # License
 
 ============================================================================================
-
-
 
 
 ### GNU LESSER GENERAL PUBLIC LICENSE
