@@ -3,15 +3,15 @@ name: "Publish package to GitHub Packages"
 on:
   release:
     types: [created]
-    branches: [ main ]
 jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest 
     permissions: 
-      actions: read
-      contents: read
-      packages: write 
+      actions: write
+      contents: write
+      packages: write
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
