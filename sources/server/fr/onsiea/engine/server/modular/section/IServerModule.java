@@ -1,6 +1,6 @@
-package fr.onsiea.engine.server.modular.part;
+package fr.onsiea.engine.server.modular.section;
 
-import fr.onsiea.engine.core.modular.part.ICoreModule;
+import fr.onsiea.engine.core.modular.section.ICoreModule;
 
 /**
  * @author Seynax

@@ -24,7 +24,7 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.modular.part;
+package fr.onsiea.engine.client.modular.section;
 
 /**
  * @author Seynax

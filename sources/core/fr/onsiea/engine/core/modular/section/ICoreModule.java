@@ -24,7 +24,7 @@
 *
 *	@author Seynax
 */
-package fr.onsiea.engine.core.modular.part;
+package fr.onsiea.engine.core.modular.section;
 
 /**
  * @author Seynax

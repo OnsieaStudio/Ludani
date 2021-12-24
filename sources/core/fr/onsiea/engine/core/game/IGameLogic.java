@@ -26,7 +26,7 @@
 */
 package fr.onsiea.engine.core.game;
 
-import fr.onsiea.engine.client.modular.part.IClientModule;
+import fr.onsiea.engine.client.modular.section.IClientModule;
 
 /**
  * @author Seynax
