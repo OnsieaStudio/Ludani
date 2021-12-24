@@ -1,9 +1,26 @@
+```
+    This file is part of Onsiea Engine.
+
+    Onsiea Engine is libre software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3.0 of the License, or
+    (at your option) any later version.
+
+    Onsiea Engine is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with Onsiea Engine.  If not, see <https://www.gnu.org/licenses/> <https://www.gnu.org/licenses/lgpl-3.0.html>.
+```
+
 # LICENSE NOTICE
 
 ## Onsiea Engine
 © 2021 Onsiea All rights reserved.
 
-- Unless noted below (**Other licenses** section), [Onsiea engine](https://github.com/Onsiea/OnsieaEngine) and all parts herein is [licensed](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md) under the terms of the [LGPL-2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html) found here http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt and [copied below the license file](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md).
+- Unless noted below (**Other licenses** section), [Onsiea engine](https://github.com/Onsiea/OnsieaEngine) and all parts herein is [licensed](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md) under the terms of the [LGPL-3.0](https://www.gnu.org/licenses/lgpl-3.0.html) found here https://www.gnu.org/licenses/lgpl-3.0.html and [copied below the license file](https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE.md).
 - This one is mainly developed by [Seynax](https://github.com/seynax) (the original author) and the [Onsiea organization](https://github.com/Onsiea) as well as the [contributors](https://github.com/Onsiea/OnsieaEngine/blob/main/docs/CONTRIBUTORS.md). [more details](https://github.com/Onsiea/OnsieaEngine/wiki/License)
 
 
