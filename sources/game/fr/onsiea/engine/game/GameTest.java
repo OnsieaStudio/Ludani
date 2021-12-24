@@ -26,7 +26,7 @@
 */
 package fr.onsiea.engine.game;
 
-import fr.onsiea.engine.core.game.IGameLogic;
+import fr.onsiea.engine.common.game.IGameLogic;
 
 /**
  * @author Seynax
@@ -36,15 +36,15 @@ import fr.onsiea.engine.core.game.IGameLogic;
 public class GameTest implements IGameLogic
 {
 	@Override
-	public void preInitialization()
+	public boolean preInitialization()
 	{
-
+		return true;
 	}
 
 	@Override
 	public boolean initialization()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

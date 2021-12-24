@@ -36,9 +36,9 @@ package fr.onsiea.engine.utils.function;
  * @author Seynax
  *
  * @param <O> output
- * @param <P> parameter
+ * @param <I> parameter
  */
-public interface IFunction<O, P>
+public interface IFunction<O, I>
 {
-	O execute(P parametersIn);
+	O execute(I parametersIn);
 }

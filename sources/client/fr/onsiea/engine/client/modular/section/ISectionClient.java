@@ -24,16 +24,25 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.core.game;
-
-import fr.onsiea.engine.client.modular.section.IClientModule;
+package fr.onsiea.engine.client.modular.section;
 
 /**
  * @author Seynax
  *
  */
 
-public interface IGameLogic extends IClientModule
+/**these methods (especially their parameters) are bound to change very strongly in the future**/
+public interface ISectionClient
 {
-	void preInitialization();
+	boolean initialization();
+
+	void highRateInput();
+
+	void input();
+
+	void update();
+
+	void draw();
+
+	void cleanup();
 }

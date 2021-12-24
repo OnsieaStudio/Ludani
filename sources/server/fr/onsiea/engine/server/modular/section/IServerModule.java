@@ -1,6 +1,6 @@
 package fr.onsiea.engine.server.modular.section;
 
-import fr.onsiea.engine.core.modular.section.ICoreModule;
+import fr.onsiea.engine.common.modular.section.ISectionCore;
 
 /**
  * @author Seynax
@@ -8,6 +8,6 @@ import fr.onsiea.engine.core.modular.section.ICoreModule;
  */
 
 /**these methods (especially their parameters) are bound to change very strongly in the future**/
-public interface IServerModule extends ICoreModule
+public interface IServerModule extends ISectionCore
 {
 }
