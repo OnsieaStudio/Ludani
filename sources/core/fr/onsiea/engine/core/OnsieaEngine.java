@@ -66,7 +66,7 @@ public class OnsieaEngine
 
 		this.loop();
 
-		this.cleanup();
+		this.cleanup();s
 	}
 
 	private void loop()
