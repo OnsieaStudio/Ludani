@@ -24,7 +24,7 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.server;
+package fr.onsiea.engine.client.modular.part;
 
 /**
  * @author Seynax
@@ -32,11 +32,17 @@ package fr.onsiea.engine.server;
  */
 
 /**these methods (especially their parameters) are bound to change very strongly in the future**/
-public interface IServerModule
+public interface IClientModule
 {
 	boolean initialization();
 
+	void highRateInput();
+
+	void input();
+
 	void update();
+
+	void draw();
 
 	void cleanup();
 }

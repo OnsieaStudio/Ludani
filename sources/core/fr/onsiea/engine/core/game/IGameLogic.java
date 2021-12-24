@@ -24,19 +24,16 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine;
+package fr.onsiea.engine.core.game;
+
+import fr.onsiea.engine.client.modular.part.IClientModule;
 
 /**
  * @author Seynax
  *
  */
 
-public class OnsieaEngine
+public interface IGameLogic extends IClientModule
 {
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
-	}
+	void preInitialization();
 }

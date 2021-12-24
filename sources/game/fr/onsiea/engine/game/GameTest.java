@@ -26,13 +26,49 @@
 */
 package fr.onsiea.engine.game;
 
-import fr.onsiea.engine.client.ClientModule;
+import fr.onsiea.engine.core.game.IGameLogic;
 
 /**
  * @author Seynax
  *
  */
 
-public interface IGameLogic extends ClientModule
+public class GameTest implements IGameLogic
 {
+	@Override
+	public void preInitialization()
+	{
+
+	}
+
+	@Override
+	public boolean initialization()
+	{
+		return false;
+	}
+
+	@Override
+	public void highRateInput()
+	{
+	}
+
+	@Override
+	public void input()
+	{
+	}
+
+	@Override
+	public void update()
+	{
+	}
+
+	@Override
+	public void draw()
+	{
+	}
+
+	@Override
+	public void cleanup()
+	{
+	}
 }

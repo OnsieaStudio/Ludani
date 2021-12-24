@@ -24,7 +24,70 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-module fr.seynax.onsiea
-{
+package fr.onsiea.engine.core;
 
+import fr.onsiea.engine.core.game.GameOptions;
+import fr.onsiea.engine.core.game.IGameLogic;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * @author Seynax
+ *
+ */
+
+@Getter
+@Setter
+public class OnsieaEngine
+{
+	private IGameLogic	gameLogic;
+	private GameOptions	options;
+	private String[]	args;
+
+	private boolean		running;
+
+	public final static OnsieaEngine start(IGameLogic gameLogicIn, GameOptions optionsIn, String[] argsIn)
+	{
+		final var onsieaEngine = new OnsieaEngine().gameLogic(gameLogicIn).options(optionsIn).args(argsIn);
+
+		onsieaEngine.start();
+
+		return onsieaEngine;
+	}
+
+	private OnsieaEngine()
+	{
+	}
+
+	private void start()
+	{
+		this.gameLogic().preInitialization();
+		this.gameLogic().initialization();
+
+		this.loop();
+
+		this.cleanup();
+	}
+
+	private void loop()
+	{
+		while (this.running() /**&& this.window().shouldClose()**/
+		)
+		{
+			this.runtime();
+		}
+	}
+
+	private void runtime()
+	{
+		this.gameLogic().highRateInput();
+		this.gameLogic().input();
+		this.gameLogic().update();
+		this.gameLogic().draw();
+	}
+
+	private void cleanup()
+	{
+		this.gameLogic().cleanup();
+	}
 }
