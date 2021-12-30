@@ -9,7 +9,7 @@
 
 	<licenses>
 		<license>
-            <name>LGPL-2.1</name>
+            <name>LGPL-3.0</name>
             <url>https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE</url>
             <distribution>repo</distribution>
         </license>
