@@ -26,8 +26,12 @@
 */
 package fr.onsiea.engine.client.graphics.opengl;
 
+import java.nio.ByteBuffer;
+import java.util.Collection;
+
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -36,9 +40,12 @@ import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLDebugMessageCallback;
 import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.Callback;
+import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
+import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.texture.ITexture;
 
 /**
  * @author Seynax
@@ -57,15 +64,17 @@ public class OpenGLAPI implements IRenderAPIContext
 	private static boolean	additiveBlending	= false;
 	private static boolean	antialiasing		= false;
 	private static boolean	depthTesting		= false;
+	private static float	anisotropyTextureFilteringAmount;
+	private static boolean	mustAnisotropyTextureFiltering;
 
-	public static void antialias(boolean enable)
+	public static void antialias(boolean enableIn)
 	{
-		if (enable && !OpenGLAPI.antialiasing())
+		if (enableIn && !OpenGLAPI.antialiasing())
 		{
 			GL11.glEnable(GL13.GL_MULTISAMPLE);
 			OpenGLAPI.antialiasing(true);
 		}
-		else if (!enable && OpenGLAPI.antialiasing())
+		else if (!enableIn && OpenGLAPI.antialiasing())
 		{
 			GL11.glDisable(GL13.GL_MULTISAMPLE);
 			OpenGLAPI.antialiasing(false);
@@ -207,6 +216,16 @@ public class OpenGLAPI implements IRenderAPIContext
 		OpenGLAPI.depthTesting = depthTestingIn;
 	}
 
+	public static final float anisotropyTextureFilteringAmount()
+	{
+		return OpenGLAPI.anisotropyTextureFilteringAmount;
+	}
+
+	public static final boolean mustAnisotropyTextureFiltering()
+	{
+		return OpenGLAPI.mustAnisotropyTextureFiltering;
+	}
+
 	private GLCapabilities	capabilities;
 	private Callback		debugProc;
 	private OpenGLDebug		openGLDebug;
@@ -234,6 +253,8 @@ public class OpenGLAPI implements IRenderAPIContext
 			this.disableDebugging();
 		}
 
+		this.anisotropicTextureFiltering(true);
+
 		/**this.meshManager(new GLMeshManager());
 		this.shaderManager(new GLShaderManager());
 		this.objLoader(new OBJLoader(this.meshManager()));
@@ -241,11 +262,74 @@ public class OpenGLAPI implements IRenderAPIContext
 		this.texturesManager(new TexturesManager(capabilitiesIn));**/
 	}
 
+	public void anisotropicTextureFiltering(boolean enableIn)
+	{
+		if (this.capabilities.GL_EXT_texture_filter_anisotropic)
+		{
+			if (enableIn)
+			{
+				OpenGLAPI.anisotropyTextureFilteringAmount	= Math.min(4.0f,
+						GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+				OpenGLAPI.mustAnisotropyTextureFiltering	= true;
+			}
+			else
+			{
+				OpenGLAPI.mustAnisotropyTextureFiltering = false;
+			}
+		}
+		else
+		{
+			OpenGLAPI.mustAnisotropyTextureFiltering = false;
+
+			if (GraphicsConstants.isDebug())
+			{
+				System.err.println("GL_EXT texture filter anisotropic not supported !");
+			}
+		}
+	}
+
+	public void anisotropicTextureFiltering(boolean enableIn, int numberIn)
+	{
+		if (this.capabilities.GL_EXT_texture_filter_anisotropic)
+		{
+			if (enableIn && numberIn < GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT))
+			{
+				OpenGLAPI.anisotropyTextureFilteringAmount	= numberIn;
+				OpenGLAPI.mustAnisotropyTextureFiltering	= true;
+			}
+			else
+			{
+				OpenGLAPI.mustAnisotropyTextureFiltering = false;
+
+				if (GraphicsConstants.isDebug())
+				{
+					System.err
+							.println("GL_EXT texture filter anisotropic with \"" + numberIn + "\" is not supported !");
+				}
+			}
+		}
+		else
+		{
+			OpenGLAPI.mustAnisotropyTextureFiltering = false;
+
+			if (GraphicsConstants.isDebug())
+			{
+				System.err.println("GL_EXT texture filter anisotropic is not supported !");
+			}
+		}
+	}
+
 	public void initialization(Matrix4f projectionMatrixIn) throws Exception
 	{
 		OpenGLAPI.initialize3D();
 
 		// this.shaderManager().initialization(projectionMatrixIn);
+	}
+
+	@Override
+	public ITexture createTexture(int widthIn, int heightIn, ByteBuffer bufferIn)
+	{
+		return new GLTexture(widthIn, heightIn, bufferIn);
 	}
 
 	public final static void clearColor(float rIn, float gIn, float bIn, float aIn)
@@ -421,6 +505,26 @@ public class OpenGLAPI implements IRenderAPIContext
 	private final void openGLDebug(OpenGLDebug openGLDebugIn)
 	{
 		this.openGLDebug = openGLDebugIn;
+	}
+
+	@Override
+	public void deleteTextures(Collection<ITexture> valuesIn)
+	{
+		final var texturesBuffer = MemoryUtil.memAllocInt(valuesIn.size());
+
+		for (final ITexture texture : valuesIn)
+		{
+			texture.detach();
+
+			texturesBuffer.put(texture.id());
+
+		}
+
+		texturesBuffer.flip();
+
+		GLTexture.deletes(texturesBuffer);
+
+		MemoryUtil.memFree(texturesBuffer);
 	}
 
 	/**public final GLMeshManager meshManager()

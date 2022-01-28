@@ -8,11 +8,11 @@ import javax.swing.Renderer;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGUtils;
-import fr.seynax.onsiea.game.entity.camera.Camera;
+import fr.onsiea.engine.client.graphics.texture.TexturesManager;
+import fr.onsiea.engine.core.entity.Camera;
 import fr.seynax.onsiea.graphics.opengl.mesh.GLMesh;
 import fr.seynax.onsiea.graphics.opengl.shader.hud.HudShader;
 import fr.seynax.onsiea.graphics.opengl.shaders.SimpleShader;
-import fr.seynax.onsiea.graphics.texture.TexturesManager;
 import fr.seynax.onsiea.input.InputManager;
 
 public class Hud

@@ -19,14 +19,14 @@ import fr.seynax.onsiea.input.InputManager;
 
 public class HudHoldButton implements IHudComponent
 {
-	private Texture[]	textures;
-	private Texture		activeTexture;
+	private TextureLoader[]	textures;
+	private TextureLoader		activeTexture;
 	private int			activeTextureIndex;
 	private Vector4f	transformations;
 	private boolean		hold;
 
-	public HudHoldButton(float xIn, float yIn, float sizeXIn, float sizeYIn, Texture baseTextureIn,
-			Texture... texturesIn)
+	public HudHoldButton(float xIn, float yIn, float sizeXIn, float sizeYIn, TextureLoader baseTextureIn,
+			TextureLoader... texturesIn)
 	{
 		this.transformations(new Vector4f(xIn, yIn, sizeXIn, sizeYIn));
 
@@ -38,11 +38,11 @@ public class HudHoldButton implements IHudComponent
 		{
 			baseLength += texturesIn.length;
 		}
-		this.textures(new Texture[baseLength]);
+		this.textures(new TextureLoader[baseLength]);
 		this.textures()[0] = baseTextureIn;
 
 		var i = 1;
-		for (final Texture texture : texturesIn)
+		for (final TextureLoader texture : texturesIn)
 		{
 			this.textures()[i] = texture;
 			i++;
@@ -107,7 +107,7 @@ public class HudHoldButton implements IHudComponent
 		hudShaderIn.uniformTransformations().load(this.transformations());
 		rectangleIn.draw(rendererIn);
 		VaoUtils.disablesAndUnbind(1);
-		Texture.unbind();
+		TextureLoader.unbind();
 	}
 
 	@Override
@@ -157,22 +157,22 @@ public class HudHoldButton implements IHudComponent
 		this.transformations = transformationsIn;
 	}
 
-	private Texture[] textures()
+	private TextureLoader[] textures()
 	{
 		return this.textures;
 	}
 
-	private void textures(Texture[] texturesIn)
+	private void textures(TextureLoader[] texturesIn)
 	{
 		this.textures = texturesIn;
 	}
 
-	private Texture activeTexture()
+	private TextureLoader activeTexture()
 	{
 		return this.activeTexture;
 	}
 
-	private void activeTexture(Texture activeTextureIn)
+	private void activeTexture(TextureLoader activeTextureIn)
 	{
 		this.activeTexture = activeTextureIn;
 	}

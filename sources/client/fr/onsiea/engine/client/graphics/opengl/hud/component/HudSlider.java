@@ -17,7 +17,7 @@ public class HudSlider extends HudHoldButton
 	private boolean		mustAffine;
 	private float		offset;
 
-	public HudSlider(float xIn, float yIn, float sizeXIn, float sizeYIn, Texture baseTextureIn, Texture... texturesIn)
+	public HudSlider(float xIn, float yIn, float sizeXIn, float sizeYIn, TextureLoader baseTextureIn, TextureLoader... texturesIn)
 	{
 		super(xIn, yIn, sizeXIn, sizeYIn, baseTextureIn, texturesIn);
 
