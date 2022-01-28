@@ -26,15 +26,28 @@
 */
 package fr.onsiea.engine.game;
 
+import fr.onsiea.engine.common.OnsieaGearings;
+import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
 
 /**
  * @author Seynax
  *
  */
-
 public class GameTest implements IGameLogic
 {
+	public final static void main(String[] argsIn)
+	{
+		try
+		{
+			OnsieaGearings.start(new GameTest(), GameOptions.of(), argsIn);
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public boolean preInitialization()
 	{

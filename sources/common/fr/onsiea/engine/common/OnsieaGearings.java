@@ -26,6 +26,16 @@
 */
 package fr.onsiea.engine.common;
 
+import fr.onsiea.engine.client.graphics.GraphicsConstants;
+import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
+import fr.onsiea.engine.client.graphics.glfw.window.WindowSettings;
+import fr.onsiea.engine.client.graphics.glfw.window.WindowShowType;
+import fr.onsiea.engine.client.graphics.glfw.window.context.GLWindowContext;
+import fr.onsiea.engine.client.graphics.lwjgl.LWJGLContext;
+import fr.onsiea.engine.client.graphics.render.GLRenderContext;
+import fr.onsiea.engine.client.graphics.render.IRenderContext;
+import fr.onsiea.engine.client.graphics.window.IWindow;
+import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
 import lombok.AccessLevel;
@@ -39,7 +49,7 @@ import lombok.Setter;
 
 @Getter(value = AccessLevel.PACKAGE)
 @Setter(value = AccessLevel.PRIVATE)
-public class OnsieaEngine
+public class OnsieaGearings
 {
 	private IGameLogic	gameLogic;
 	private GameOptions	options;
@@ -47,22 +57,39 @@ public class OnsieaEngine
 
 	private boolean		running;
 
-	public final static OnsieaEngine start(IGameLogic gameLogicIn, GameOptions optionsIn, String[] argsIn)
+	private GLFWManager	glfwManager;
+	private IWindow		window;
+
+	public final static OnsieaGearings start(IGameLogic gameLogicIn, GameOptions optionsIn, String[] argsIn)
+			throws Exception
 	{
-		final var onsieaEngine = new OnsieaEngine().gameLogic(gameLogicIn).options(optionsIn).args(argsIn);
+		final var onsieaEngine = new OnsieaGearings().gameLogic(gameLogicIn).options(optionsIn).args(argsIn);
 
 		onsieaEngine.start();
 
 		return onsieaEngine;
 	}
 
-	private OnsieaEngine()
+	private OnsieaGearings()
 	{
 	}
 
-	private void start()
+	private void start() throws Exception
 	{
+		if (GraphicsConstants.debug())
+		{
+			LWJGLContext.enableDebugging();
+		}
+
 		this.gameLogic().preInitialization();
+		final IRenderContext	renderContext	= new GLRenderContext();
+		final IWindowContext	windowContext	= new GLWindowContext();
+		this.glfwManager(new GLFWManager().initialization(
+				WindowSettings.Builder.of("Onsiea !", 1920, 1080, 60, WindowShowType.WINDOWED), renderContext,
+				windowContext));
+		this.window(this.glfwManager().window());
+		renderContext.initialization();
+
 		this.gameLogic().initialization();
 
 		this.loop();
@@ -72,6 +99,16 @@ public class OnsieaEngine
 
 	private void loop()
 	{
+		/**final long		start		= 0L, stop = 0L, last = System.nanoTime(), actual = 0L;
+		var				lastShow	= System.nanoTime();
+		var				actualShow	= 0L;
+		final double	time;
+		double			showTime;
+		final var		FPS			= 6000;
+		var				executions	= 0;**/
+
+		this.running(true);
+
 		while (this.running() /**&& this.window().shouldClose()**/
 		)
 		{
@@ -85,10 +122,12 @@ public class OnsieaEngine
 		this.gameLogic().input();
 		this.gameLogic().update();
 		this.gameLogic().draw();
+		this.window().swapBuffers();
 	}
 
 	private void cleanup()
 	{
 		this.gameLogic().cleanup();
+		this.glfwManager().cleanup();
 	}
 }
