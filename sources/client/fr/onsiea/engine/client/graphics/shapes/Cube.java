@@ -29,7 +29,7 @@ package fr.onsiea.engine.client.graphics.shapes;
 import org.joml.Vector3f;
 
 import fr.onsiea.engine.maths.transformations.Transformations3f;
-import fr.onsiea.engine.maths.triangles.Triangle3f;
+import fr.onsiea.engine.maths.triangle.Triangle3f;
 
 /**
  * @author Seynax
@@ -80,8 +80,9 @@ public class Cube
 		corners[i]	= new Vector3f(vec);
 		i++;
 		i++;
-		corners[i]		= m.transformPosition(1, 0, 1, vec);
-		corners[i++]	= new Vector3f(vec);
+		corners[i]	= m.transformPosition(1, 0, 1, vec);
+		corners[i]	= new Vector3f(vec);
+		i++;
 		i++;
 		m.transformPosition(1, 0, 0, vec);
 		corners[i++] = new Vector3f(vec);
