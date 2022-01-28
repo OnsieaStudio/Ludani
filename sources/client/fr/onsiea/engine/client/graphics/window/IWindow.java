@@ -35,7 +35,15 @@ public interface IWindow
 {
 	boolean shouldClose();
 
+	IWindow pollEvents();
+
 	IWindow swapBuffers();
+
+	/**
+	 * @param glfwKeyIn
+	 * @return
+	 */
+	int key(int glfwKeyIn);
 
 	void cleanup();
 }

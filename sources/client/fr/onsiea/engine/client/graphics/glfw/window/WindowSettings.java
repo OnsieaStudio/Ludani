@@ -163,6 +163,7 @@ public class WindowSettings
 
 		private Builder()
 		{
+			super.mustBeDecorated = true;
 		}
 
 		public Builder set(String titleIn, int widthIn, int heightIn)

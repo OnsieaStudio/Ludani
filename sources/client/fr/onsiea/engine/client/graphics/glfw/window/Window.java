@@ -231,11 +231,29 @@ public class Window implements IWindow
 	}
 
 	@Override
+	public final Window pollEvents()
+	{
+		GLFW.glfwPollEvents();
+
+		return this;
+	}
+
+	@Override
 	public final Window swapBuffers()
 	{
 		GLFW.glfwSwapBuffers(this.handle());
 
 		return this;
+	}
+
+	/**
+	 * @param glfwKeyLeftControlIn
+	 * @return
+	 */
+	@Override
+	public int key(int glfwKeyIn)
+	{
+		return GLFW.glfwGetKey(this.handle(), glfwKeyIn);
 	}
 
 	@Override
