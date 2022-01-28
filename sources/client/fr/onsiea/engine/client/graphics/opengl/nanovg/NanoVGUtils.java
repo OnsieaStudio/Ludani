@@ -11,10 +11,9 @@ import org.lwjgl.nanovg.NanoVGGL3;
 import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
+import fr.onsiea.engine.client.graphics.opengl.OpenGLAPI;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.utils.IOUtils;
-import fr.seynax.onsiea.graphics.opengl.OpenGLAPI;
-import fr.seynax.onsiea.input.InputManager;
 
 public class NanoVGUtils
 {
@@ -68,20 +67,20 @@ public class NanoVGUtils
 
 	public void startRender(Window windowIn)
 	{
-		NanoVG.nvgBeginFrame(this.handle(), windowIn.width(), windowIn.height(), 1);
+		NanoVG.nvgBeginFrame(this.handle(), windowIn.settings().width(), windowIn.settings().height(), 1);
 	}
 
-	public void render(Camera cameraIn, int framerateIn, Window windowIn, InputManager inputManagerIn)
+	public void render(Camera cameraIn, int framerateIn, Window windowIn)
 	{
 		// Upper ribbon
 		NanoVG.nvgBeginPath(this.handle());
-		NanoVG.nvgRect(this.handle(), 0, windowIn.height() - 100, windowIn.width(), 50);
+		NanoVG.nvgRect(this.handle(), 0, windowIn.settings().height() - 100, windowIn.settings().width(), 50);
 		NanoVG.nvgFillColor(this.handle(), this.rgba(0x23, 0xa1, 0xf1, 200, this.colour));
 		NanoVG.nvgFill(this.handle());
 
 		// Lower ribbon
 		NanoVG.nvgBeginPath(this.handle());
-		NanoVG.nvgRect(this.handle(), 0, windowIn.height() - 50, windowIn.width(), 10);
+		NanoVG.nvgRect(this.handle(), 0, windowIn.settings().height() - 50, windowIn.settings().width(), 10);
 		NanoVG.nvgFillColor(this.handle(), this.rgba(0xc1, 0xe3, 0xf9, 200, this.colour));
 		NanoVG.nvgFill(this.handle());
 
@@ -109,6 +108,7 @@ public class NanoVGUtils
 		NanoVG.nvgEndFrame(this.handle());
 
 		// Restore state
+
 		OpenGLAPI.restoreState();
 	}
 
