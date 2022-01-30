@@ -37,7 +37,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
-import fr.onsiea.engine.client.graphics.opengl.OpenGLAPI;
+import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.texture.TextureComponents;
 
@@ -121,10 +121,10 @@ public class GLTexture implements ITexture
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MIN_LOD, -1000);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LOD, 1000);
 
-		if (OpenGLAPI.mustAnisotropyTextureFiltering())
+		if (OpenGLRenderAPIContext.mustAnisotropyTextureFiltering())
 		{
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
-					OpenGLAPI.anisotropyTextureFilteringAmount());
+					OpenGLRenderAPIContext.anisotropyTextureFilteringAmount());
 		}
 	}
 

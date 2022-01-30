@@ -51,11 +51,11 @@ import fr.onsiea.engine.client.graphics.texture.ITexture;
  * @author Seynax
  *
  */
-public class OpenGLAPI implements IRenderAPIContext
+public class OpenGLRenderAPIContext implements IRenderAPIContext
 {
-	public final static OpenGLAPI create()
+	public final static OpenGLRenderAPIContext create()
 	{
-		return new OpenGLAPI(OpenGLInitializer.initialisationOrGet());
+		return new OpenGLRenderAPIContext(OpenGLInitializer.initialisationOrGet());
 	}
 
 	private static boolean	cullingBackFace		= false;
@@ -69,161 +69,161 @@ public class OpenGLAPI implements IRenderAPIContext
 
 	public static void antialias(boolean enableIn)
 	{
-		if (enableIn && !OpenGLAPI.antialiasing())
+		if (enableIn && !OpenGLRenderAPIContext.antialiasing())
 		{
 			GL11.glEnable(GL13.GL_MULTISAMPLE);
-			OpenGLAPI.antialiasing(true);
+			OpenGLRenderAPIContext.antialiasing(true);
 		}
-		else if (!enableIn && OpenGLAPI.antialiasing())
+		else if (!enableIn && OpenGLRenderAPIContext.antialiasing())
 		{
 			GL11.glDisable(GL13.GL_MULTISAMPLE);
-			OpenGLAPI.antialiasing(false);
+			OpenGLRenderAPIContext.antialiasing(false);
 		}
 	}
 
 	public static void enableAlphaBlending()
 	{
-		if (!OpenGLAPI.isAlphaBlending())
+		if (!OpenGLRenderAPIContext.isAlphaBlending())
 		{
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			OpenGLAPI.isAlphaBlending(true);
-			OpenGLAPI.additiveBlending(false);
+			OpenGLRenderAPIContext.isAlphaBlending(true);
+			OpenGLRenderAPIContext.additiveBlending(false);
 		}
 	}
 
 	public static void enableAdditiveBlending()
 	{
-		if (!OpenGLAPI.additiveBlending())
+		if (!OpenGLRenderAPIContext.additiveBlending())
 		{
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-			OpenGLAPI.additiveBlending(true);
-			OpenGLAPI.isAlphaBlending(false);
+			OpenGLRenderAPIContext.additiveBlending(true);
+			OpenGLRenderAPIContext.isAlphaBlending(false);
 		}
 	}
 
 	public static void disableBlending()
 	{
-		if (OpenGLAPI.isAlphaBlending() || OpenGLAPI.additiveBlending())
+		if (OpenGLRenderAPIContext.isAlphaBlending() || OpenGLRenderAPIContext.additiveBlending())
 		{
 			GL11.glDisable(GL11.GL_BLEND);
-			OpenGLAPI.isAlphaBlending(false);
-			OpenGLAPI.additiveBlending(false);
+			OpenGLRenderAPIContext.isAlphaBlending(false);
+			OpenGLRenderAPIContext.additiveBlending(false);
 		}
 	}
 
 	public static void enableDepthTesting(boolean enable)
 	{
-		if (enable && !OpenGLAPI.depthTesting())
+		if (enable && !OpenGLRenderAPIContext.depthTesting())
 		{
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			OpenGLAPI.depthTesting(true);
+			OpenGLRenderAPIContext.depthTesting(true);
 		}
-		else if (!enable && OpenGLAPI.depthTesting())
+		else if (!enable && OpenGLRenderAPIContext.depthTesting())
 		{
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
-			OpenGLAPI.depthTesting(false);
+			OpenGLRenderAPIContext.depthTesting(false);
 		}
 	}
 
 	public static void cullBackFaces(boolean cull)
 	{
-		if (cull && !OpenGLAPI.cullingBackFace())
+		if (cull && !OpenGLRenderAPIContext.cullingBackFace())
 		{
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glCullFace(GL11.GL_BACK);
-			OpenGLAPI.cullingBackFace(true);
+			OpenGLRenderAPIContext.cullingBackFace(true);
 		}
-		else if (!cull && OpenGLAPI.cullingBackFace())
+		else if (!cull && OpenGLRenderAPIContext.cullingBackFace())
 		{
 			GL11.glDisable(GL11.GL_CULL_FACE);
-			OpenGLAPI.cullingBackFace(false);
+			OpenGLRenderAPIContext.cullingBackFace(false);
 		}
 	}
 
 	public static void goWireframe(boolean goWireframe)
 	{
-		if (goWireframe && !OpenGLAPI.inWireframe())
+		if (goWireframe && !OpenGLRenderAPIContext.inWireframe())
 		{
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-			OpenGLAPI.inWireframe(true);
+			OpenGLRenderAPIContext.inWireframe(true);
 		}
-		else if (!goWireframe && OpenGLAPI.inWireframe())
+		else if (!goWireframe && OpenGLRenderAPIContext.inWireframe())
 		{
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-			OpenGLAPI.inWireframe(false);
+			OpenGLRenderAPIContext.inWireframe(false);
 		}
 	}
 
 	public static final boolean cullingBackFace()
 	{
-		return OpenGLAPI.cullingBackFace;
+		return OpenGLRenderAPIContext.cullingBackFace;
 	}
 
 	private static final void cullingBackFace(boolean cullingBackFaceIn)
 	{
-		OpenGLAPI.cullingBackFace = cullingBackFaceIn;
+		OpenGLRenderAPIContext.cullingBackFace = cullingBackFaceIn;
 	}
 
 	public static final boolean inWireframe()
 	{
-		return OpenGLAPI.inWireframe;
+		return OpenGLRenderAPIContext.inWireframe;
 	}
 
 	private static final void inWireframe(boolean inWireframeIn)
 	{
-		OpenGLAPI.inWireframe = inWireframeIn;
+		OpenGLRenderAPIContext.inWireframe = inWireframeIn;
 	}
 
 	public static final boolean isAlphaBlending()
 	{
-		return OpenGLAPI.isAlphaBlending;
+		return OpenGLRenderAPIContext.isAlphaBlending;
 	}
 
 	private static final void isAlphaBlending(boolean isAlphaBlendingIn)
 	{
-		OpenGLAPI.isAlphaBlending = isAlphaBlendingIn;
+		OpenGLRenderAPIContext.isAlphaBlending = isAlphaBlendingIn;
 	}
 
 	public static final boolean additiveBlending()
 	{
-		return OpenGLAPI.additiveBlending;
+		return OpenGLRenderAPIContext.additiveBlending;
 	}
 
 	private static final void additiveBlending(boolean additiveBlendingIn)
 	{
-		OpenGLAPI.additiveBlending = additiveBlendingIn;
+		OpenGLRenderAPIContext.additiveBlending = additiveBlendingIn;
 	}
 
 	public static final boolean antialiasing()
 	{
-		return OpenGLAPI.antialiasing;
+		return OpenGLRenderAPIContext.antialiasing;
 	}
 
 	private static final void antialiasing(boolean antialiasingIn)
 	{
-		OpenGLAPI.antialiasing = antialiasingIn;
+		OpenGLRenderAPIContext.antialiasing = antialiasingIn;
 	}
 
 	public static final boolean depthTesting()
 	{
-		return OpenGLAPI.depthTesting;
+		return OpenGLRenderAPIContext.depthTesting;
 	}
 
 	private static final void depthTesting(boolean depthTestingIn)
 	{
-		OpenGLAPI.depthTesting = depthTestingIn;
+		OpenGLRenderAPIContext.depthTesting = depthTestingIn;
 	}
 
 	public static final float anisotropyTextureFilteringAmount()
 	{
-		return OpenGLAPI.anisotropyTextureFilteringAmount;
+		return OpenGLRenderAPIContext.anisotropyTextureFilteringAmount;
 	}
 
 	public static final boolean mustAnisotropyTextureFiltering()
 	{
-		return OpenGLAPI.mustAnisotropyTextureFiltering;
+		return OpenGLRenderAPIContext.mustAnisotropyTextureFiltering;
 	}
 
 	private GLCapabilities	capabilities;
@@ -235,7 +235,7 @@ public class OpenGLAPI implements IRenderAPIContext
 	private TexturesManager	texturesManager;
 	private OBJLoader		objLoader;**/
 
-	private OpenGLAPI(GLCapabilities capabilitiesIn)
+	private OpenGLRenderAPIContext(GLCapabilities capabilitiesIn)
 	{
 		this.capabilities(capabilitiesIn);
 		this.initialization();
@@ -268,18 +268,18 @@ public class OpenGLAPI implements IRenderAPIContext
 		{
 			if (enableIn)
 			{
-				OpenGLAPI.anisotropyTextureFilteringAmount	= Math.min(4.0f,
+				OpenGLRenderAPIContext.anisotropyTextureFilteringAmount	= Math.min(4.0f,
 						GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-				OpenGLAPI.mustAnisotropyTextureFiltering	= true;
+				OpenGLRenderAPIContext.mustAnisotropyTextureFiltering	= true;
 			}
 			else
 			{
-				OpenGLAPI.mustAnisotropyTextureFiltering = false;
+				OpenGLRenderAPIContext.mustAnisotropyTextureFiltering = false;
 			}
 		}
 		else
 		{
-			OpenGLAPI.mustAnisotropyTextureFiltering = false;
+			OpenGLRenderAPIContext.mustAnisotropyTextureFiltering = false;
 
 			if (GraphicsConstants.isDebug())
 			{
@@ -294,12 +294,12 @@ public class OpenGLAPI implements IRenderAPIContext
 		{
 			if (enableIn && numberIn < GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT))
 			{
-				OpenGLAPI.anisotropyTextureFilteringAmount	= numberIn;
-				OpenGLAPI.mustAnisotropyTextureFiltering	= true;
+				OpenGLRenderAPIContext.anisotropyTextureFilteringAmount	= numberIn;
+				OpenGLRenderAPIContext.mustAnisotropyTextureFiltering	= true;
 			}
 			else
 			{
-				OpenGLAPI.mustAnisotropyTextureFiltering = false;
+				OpenGLRenderAPIContext.mustAnisotropyTextureFiltering = false;
 
 				if (GraphicsConstants.isDebug())
 				{
@@ -310,7 +310,7 @@ public class OpenGLAPI implements IRenderAPIContext
 		}
 		else
 		{
-			OpenGLAPI.mustAnisotropyTextureFiltering = false;
+			OpenGLRenderAPIContext.mustAnisotropyTextureFiltering = false;
 
 			if (GraphicsConstants.isDebug())
 			{
@@ -321,7 +321,7 @@ public class OpenGLAPI implements IRenderAPIContext
 
 	public void initialization(Matrix4f projectionMatrixIn) throws Exception
 	{
-		OpenGLAPI.initialize3D();
+		OpenGLRenderAPIContext.initialize3D();
 
 		// this.shaderManager().initialization(projectionMatrixIn);
 	}
@@ -344,7 +344,7 @@ public class OpenGLAPI implements IRenderAPIContext
 
 	public final static void restoreState()
 	{
-		OpenGLAPI.initialize3D();
+		OpenGLRenderAPIContext.initialize3D();
 
 		// Accept fragment if it closer to the camera than the former on
 
@@ -465,7 +465,7 @@ public class OpenGLAPI implements IRenderAPIContext
 	@Override
 	public void cleanup()
 	{
-		OpenGLAPI.restoreState();
+		OpenGLRenderAPIContext.restoreState();
 
 		/**this.meshManager().cleanup();
 		OpenGLScreenshot.cleanup();

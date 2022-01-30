@@ -26,40 +26,38 @@
 */
 package fr.onsiea.engine.client.graphics.render;
 
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GLCapabilities;
+import java.nio.ByteBuffer;
+import java.util.Collection;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import fr.onsiea.engine.client.graphics.texture.ITexture;
 
 /**
  * @author Seynax
  *
  */
 
-@AllArgsConstructor(staticName = "of")
-@EqualsAndHashCode
-@ToString
-@Getter
-@Setter
-public class GLRenderContext implements IRenderContext
+public interface IRenderAPIContext
 {
-	private GLCapabilities capabilities;
-
-	public GLRenderContext()
-	{
-
-	}
-
-	@Override
 	/**
 	 * @implNote Must be executed at all costs, after initializing the window and its context!
 	 */
-	public void initialization()
-	{
-		this.capabilities(GL.createCapabilities());
-	}
+	void initialization();
+
+	/**
+	 * @param widthIn
+	 * @param heightIn
+	 * @param bufferIn
+	 * @return
+	 */
+	ITexture createTexture(int widthIn, int heightIn, ByteBuffer bufferIn);
+
+	/**
+	 *
+	 */
+	void cleanup();
+
+	/**
+	 * @param valuesIn
+	 */
+	void deleteTextures(Collection<ITexture> valuesIn);
 }

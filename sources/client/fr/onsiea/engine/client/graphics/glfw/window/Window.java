@@ -35,7 +35,7 @@ import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
 import fr.onsiea.engine.client.graphics.glfw.GLFWUtils;
 import fr.onsiea.engine.client.graphics.glfw.monitor.Monitors;
-import fr.onsiea.engine.client.graphics.render.IRenderContext;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import lombok.AccessLevel;
@@ -56,13 +56,13 @@ import lombok.ToString;
 public class Window implements IWindow
 {
 	public final static Window of(long[] pointerIn, GLFWManager.GLFWState stateIn, WindowSettings settingsIn,
-			IRenderContext contextIn, IWindowContext windowContextIn) throws IllegalStateException, Exception
+			IRenderAPIContext contextIn, IWindowContext windowContextIn) throws IllegalStateException, Exception
 	{
 		return Window.of(pointerIn, stateIn, Monitors.of(stateIn), settingsIn, contextIn, windowContextIn);
 	}
 
 	public final static Window of(long[] pointerIn, GLFWManager.GLFWState stateIn, Monitors monitorsIn,
-			WindowSettings settingsIn, IRenderContext renderContextIn, IWindowContext windowContextIn)
+			WindowSettings settingsIn, IRenderAPIContext renderContextIn, IWindowContext windowContextIn)
 			throws IllegalStateException, Exception
 	{
 		if (!stateIn.initialized())
@@ -108,7 +108,7 @@ public class Window implements IWindow
 		this.windowContext(windowContextIn);
 	}
 
-	private final Window initialization(long[] pointerIn, IRenderContext contextIn)
+	private final Window initialization(long[] pointerIn, IRenderAPIContext contextIn)
 	{
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 

@@ -31,7 +31,7 @@ import org.lwjgl.glfw.GLFW;
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWUtils;
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
-import fr.onsiea.engine.client.graphics.render.IRenderContext;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -51,7 +51,7 @@ import lombok.ToString;
 @Setter
 public class GLWindowContext implements IWindowContext
 {
-	private IRenderContext context;
+	private IRenderAPIContext context;
 
 	public GLWindowContext()
 	{

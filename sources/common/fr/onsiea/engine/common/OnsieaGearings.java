@@ -32,8 +32,8 @@ import fr.onsiea.engine.client.graphics.glfw.window.WindowSettings;
 import fr.onsiea.engine.client.graphics.glfw.window.WindowShowType;
 import fr.onsiea.engine.client.graphics.glfw.window.context.GLWindowContext;
 import fr.onsiea.engine.client.graphics.lwjgl.LWJGLContext;
-import fr.onsiea.engine.client.graphics.render.GLRenderContext;
-import fr.onsiea.engine.client.graphics.render.IRenderContext;
+import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import fr.onsiea.engine.common.game.GameOptions;
@@ -82,10 +82,10 @@ public class OnsieaGearings
 		}
 
 		this.gameLogic().preInitialization();
-		final IRenderContext	renderContext	= new GLRenderContext();
+		final IRenderAPIContext	renderContext	= OpenGLRenderAPIContext.create();
 		final IWindowContext	windowContext	= new GLWindowContext();
 		this.glfwManager(new GLFWManager().initialization(
-				WindowSettings.Builder.of("Onsiea !", 1920, 1080, 60, WindowShowType.WINDOWED), renderContext,
+				WindowSettings.Builder.of("Onsiea !", 400, 400, 60, WindowShowType.FULLSCREEN), renderContext,
 				windowContext));
 		this.window(this.glfwManager().window());
 		renderContext.initialization();
@@ -109,8 +109,7 @@ public class OnsieaGearings
 
 		this.running(true);
 
-		while (this.running() /**&& this.window().shouldClose()**/
-		)
+		while (this.running() && !this.window().shouldClose())
 		{
 			this.runtime();
 		}
@@ -118,6 +117,7 @@ public class OnsieaGearings
 
 	private void runtime()
 	{
+		this.window().pollEvents();
 		this.gameLogic().highRateInput();
 		this.gameLogic().input();
 		this.gameLogic().update();

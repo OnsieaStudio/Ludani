@@ -24,10 +24,15 @@ module OnsieaEngine
 	exports fr.onsiea.engine.client.graphics.glfw.window.context;
 	exports fr.onsiea.engine.client.graphics.lwjgl;
 	exports fr.onsiea.engine.utils.time;
+	exports fr.onsiea.engine.client.graphics.texture;
+	exports fr.onsiea.engine.client.graphics.texture.data;
+	exports fr.onsiea.engine.client.graphics.opengl.texture;
 
 	requires lombok;
 	requires org.joml;
 	requires org.lwjgl;
 	requires org.lwjgl.glfw;
 	requires org.lwjgl.opengl;
+	requires org.lwjgl.nanovg;
+	requires org.lwjgl.stb;
 }

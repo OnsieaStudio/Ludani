@@ -11,7 +11,7 @@ import org.lwjgl.nanovg.NanoVGGL3;
 import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
-import fr.onsiea.engine.client.graphics.opengl.OpenGLAPI;
+import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.utils.IOUtils;
 
@@ -109,7 +109,7 @@ public class NanoVGUtils
 
 		// Restore state
 
-		OpenGLAPI.restoreState();
+		OpenGLRenderAPIContext.restoreState();
 	}
 
 	public void letterSpacing(float letterSpacingIn)

@@ -27,7 +27,7 @@
 package fr.onsiea.engine.client.graphics.window.context;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
-import fr.onsiea.engine.client.graphics.render.IRenderContext;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 
 /**
  * @author Seynax
@@ -46,5 +46,5 @@ public interface IWindowContext
 	 *
 	 * @return render context
 	 */
-	IRenderContext context();
+	IRenderAPIContext context();
 }
