@@ -12,6 +12,12 @@ import org.lwjgl.opengl.KHRDebug;
 public class OpenGLDebug extends GLDebugMessageCallback
 {
 	@Override
+	public void free()
+	{
+		super.free();
+	}
+
+	@Override
 	public void invoke(int sourceIn, int typeIn, int idIn, int severityIn, int lengthIn, long messageIn,
 			long userParamIn)
 	{

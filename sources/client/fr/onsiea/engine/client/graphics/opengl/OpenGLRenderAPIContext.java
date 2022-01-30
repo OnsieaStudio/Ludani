@@ -39,7 +39,6 @@ import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLDebugMessageCallback;
 import org.lwjgl.opengl.KHRDebug;
-import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
@@ -226,9 +225,9 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		return OpenGLRenderAPIContext.mustAnisotropyTextureFiltering;
 	}
 
-	private GLCapabilities	capabilities;
-	private Callback		debugProc;
-	private OpenGLDebug		openGLDebug;
+	private GLCapabilities			capabilities;
+	private GLDebugMessageCallback	debugProc;
+	private GLDebugMessageCallback	openGLDebug;
 
 	/**private GLMeshManager	meshManager;
 	private GLShaderManager	shaderManager;
@@ -425,6 +424,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		// Callback
 
 		this.openGLDebug(new OpenGLDebug());
+
 		// this.debugProc(GLUtil.setupDebugMessageCallback());
 		this.debugProc(GLDebugMessageCallback.create(this.openGLDebug()));
 		KHRDebug.glDebugMessageCallback(this.openGLDebug(), 0);
@@ -433,6 +433,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 
 		GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
 		GL11.glEnable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		GL11.glEnable(KHRDebug.GL_DEBUG_OUTPUT);
 	}
 
 	public void disableDebugging()
@@ -441,20 +442,20 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 
 		GL11.glDisable(GL43.GL_DEBUG_OUTPUT);
 		GL11.glDisable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
-
-		// Callback
-
-		if (this.debugProc() != null)
-		{
-			this.debugProc().free();
-			this.debugProc(null);
-		}
-		this.openGLDebug(null);
-		KHRDebug.glDebugMessageCallback(null, 0);
+		GL11.glDisable(KHRDebug.GL_DEBUG_OUTPUT);
 
 		// GLFW
 
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GLFW.GLFW_FALSE);
+
+		// Callback
+
+		this.openGLDebug().free();
+		this.openGLDebug(null);
+		// this.debugProc().free();
+		this.debugProc(null);
+
+		KHRDebug.glDebugMessageCallback(null, 0);
 	}
 
 	/**public GLMesh loadMesh(String fileNameIn) throws Exception
@@ -487,24 +488,24 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		this.capabilities = capabilitiesIn;
 	}
 
-	private final Callback debugProc()
+	private final GLDebugMessageCallback debugProc()
 	{
 		return this.debugProc;
 	}
 
-	private final void debugProc(Callback debugProcIn)
+	private final void debugProc(GLDebugMessageCallback debugProcIn)
 	{
 		this.debugProc = debugProcIn;
 	}
 
-	private final OpenGLDebug openGLDebug()
+	private final GLDebugMessageCallback openGLDebug()
 	{
 		return this.openGLDebug;
 	}
 
-	private final void openGLDebug(OpenGLDebug openGLDebugIn)
+	private final void openGLDebug(GLDebugMessageCallback glDebugMessageCallbackIn)
 	{
-		this.openGLDebug = openGLDebugIn;
+		this.openGLDebug = glDebugMessageCallbackIn;
 	}
 
 	@Override

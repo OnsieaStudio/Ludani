@@ -26,8 +26,11 @@
 */
 package fr.onsiea.engine.client.graphics.glfw.window;
 
+import java.io.IOException;
+
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
@@ -35,6 +38,7 @@ import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
 import fr.onsiea.engine.client.graphics.glfw.GLFWUtils;
 import fr.onsiea.engine.client.graphics.glfw.monitor.Monitors;
+import fr.onsiea.engine.client.graphics.texture.data.TextureBuffer;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import lombok.AccessLevel;
@@ -98,6 +102,7 @@ public class Window implements IWindow
 	private WindowSettings										settings;
 	private Monitors											monitors;
 	private @Getter(value = AccessLevel.PRIVATE) IWindowContext	windowContext;
+	private static GLFWImage.Buffer								icons;
 
 	protected Window(Monitors monitorsIn, WindowSettings settingsIn, IWindowContext windowContextIn)
 	{
@@ -217,6 +222,28 @@ public class Window implements IWindow
 		return this.handle();
 	}
 
+	public void icon(String filepathIn) throws IOException
+	{
+		final var		image			= GLFWImage.malloc();
+		TextureBuffer	textureBuffer	= null;
+		try
+		{
+			textureBuffer = new TextureBuffer().load(filepathIn);
+
+			image.set(textureBuffer.components().width(), textureBuffer.components().height(), textureBuffer.buffer());
+			Window.icons = GLFWImage.malloc(1);
+			Window.icons.put(0, image);
+			image.free();
+			MemoryUtil.memFree(textureBuffer.buffer());
+
+			GLFW.glfwSetWindowIcon(this.handle(), Window.icons);
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	public void centeredCursor(boolean mustBeCenteredIn)
 	{
 		GLFWUtils.boolHint(GLFW.GLFW_CENTER_CURSOR, mustBeCenteredIn);
@@ -257,9 +284,12 @@ public class Window implements IWindow
 	@Override
 	public void cleanup()
 	{
+		Window.icons.free();
 		// Free the window callbacks and destroy the window
 		Callbacks.glfwFreeCallbacks(this.handle());
 
+		GLFW.glfwMakeContextCurrent(MemoryUtil.NULL);
 		GLFW.glfwDestroyWindow(this.handle());
+		this.pollEvents();
 	}
 }

@@ -28,6 +28,7 @@ package fr.onsiea.engine.common;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
+import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.glfw.window.WindowSettings;
 import fr.onsiea.engine.client.graphics.glfw.window.WindowShowType;
 import fr.onsiea.engine.client.graphics.glfw.window.context.GLWindowContext;
@@ -84,16 +85,17 @@ public class OnsieaGearings
 		this.gameLogic().preInitialization();
 		final IWindowContext windowContext = new GLWindowContext();
 		this.glfwManager(new GLFWManager().initialization(
-				WindowSettings.Builder.of("Onsiea !", 400, 400, 60, WindowShowType.WINDOWED_FULLSCREEN),
-				windowContext));
+				WindowSettings.Builder.of("Onsiea !", 400, 400, 60, WindowShowType.WINDOWED), windowContext));
 		final IRenderAPIContext renderContext = OpenGLRenderAPIContext.create();
 		renderContext.initialization();
 		this.window(this.glfwManager().window());
+		((Window) this.window()).icon("resources/textures/aeison.png");
 
 		this.gameLogic().initialization();
 
 		this.loop();
 
+		renderContext.cleanup();
 		this.cleanup();
 	}
 
