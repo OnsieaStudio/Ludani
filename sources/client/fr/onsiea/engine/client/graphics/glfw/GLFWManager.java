@@ -26,7 +26,6 @@
 */
 package fr.onsiea.engine.client.graphics.glfw;
 
-import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
@@ -35,7 +34,7 @@ import fr.onsiea.engine.client.graphics.glfw.callback.ErrorCallback;
 import fr.onsiea.engine.client.graphics.glfw.monitor.Monitors;
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.glfw.window.WindowSettings;
-import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -64,7 +63,7 @@ public class GLFWManager
 		this.state(new GLFWState());
 	}
 
-	public GLFWManager initialization(WindowSettings windowSettingsIn, IRenderAPIContext renderContextIn, IWindowContext windowContextIn) throws Exception
+	public GLFWManager initialization(WindowSettings windowSettingsIn, IWindowContext windowContextIn) throws Exception
 	{
 		if (GraphicsConstants.debug())
 		{
@@ -83,7 +82,7 @@ public class GLFWManager
 
 		this.monitors(Monitors.of(this.state()));
 		final var pointer = new long[1];
-		this.window(Window.of(pointer, this.state(), this.monitors(), windowSettingsIn, renderContextIn, windowContextIn));
+		this.window(Window.of(pointer, this.state(), this.monitors(), windowSettingsIn, windowContextIn));
 		// this.inputManager(new InputManager.Builder(pointer[0]).build());
 
 		return this;

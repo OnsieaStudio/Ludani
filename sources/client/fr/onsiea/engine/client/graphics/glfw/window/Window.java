@@ -35,7 +35,6 @@ import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
 import fr.onsiea.engine.client.graphics.glfw.GLFWUtils;
 import fr.onsiea.engine.client.graphics.glfw.monitor.Monitors;
-import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import lombok.AccessLevel;
@@ -56,14 +55,13 @@ import lombok.ToString;
 public class Window implements IWindow
 {
 	public final static Window of(long[] pointerIn, GLFWManager.GLFWState stateIn, WindowSettings settingsIn,
-			IRenderAPIContext contextIn, IWindowContext windowContextIn) throws IllegalStateException, Exception
+			IWindowContext windowContextIn) throws IllegalStateException, Exception
 	{
-		return Window.of(pointerIn, stateIn, Monitors.of(stateIn), settingsIn, contextIn, windowContextIn);
+		return Window.of(pointerIn, stateIn, Monitors.of(stateIn), settingsIn, windowContextIn);
 	}
 
 	public final static Window of(long[] pointerIn, GLFWManager.GLFWState stateIn, Monitors monitorsIn,
-			WindowSettings settingsIn, IRenderAPIContext renderContextIn, IWindowContext windowContextIn)
-			throws IllegalStateException, Exception
+			WindowSettings settingsIn, IWindowContext windowContextIn) throws IllegalStateException, Exception
 	{
 		if (!stateIn.initialized())
 		{
@@ -81,11 +79,11 @@ public class Window implements IWindow
 			throw new Exception("[ERROR] Failed to create window instance, instance pointing to settings is null !");
 		}
 
-		if (renderContextIn == null)
+		/**if (renderContextIn == null)
 		{
 			throw new Exception(
 					"[ERROR] Failed to create window instance, instance pointing to render context is null !");
-		}
+		}**/
 
 		if (windowContextIn == null)
 		{
@@ -93,7 +91,7 @@ public class Window implements IWindow
 					"[ERROR] Failed to create window instance, instance pointing to window context is null !");
 		}
 
-		return new Window(monitorsIn, settingsIn, windowContextIn).initialization(pointerIn, renderContextIn);
+		return new Window(monitorsIn, settingsIn, windowContextIn).initialization(pointerIn);
 	}
 
 	private @Getter(value = AccessLevel.PROTECTED) long			handle;
@@ -108,7 +106,7 @@ public class Window implements IWindow
 		this.windowContext(windowContextIn);
 	}
 
-	private final Window initialization(long[] pointerIn, IRenderAPIContext contextIn)
+	private final Window initialization(long[] pointerIn)
 	{
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 

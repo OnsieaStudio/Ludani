@@ -16,7 +16,7 @@ public final class OpenGLInitializer
 
 			if (OpenGLInitializer.capabilities == null)
 			{
-				throw new IllegalStateException("[ERREUR] Echec du chargement d'OpeGL.");
+				throw new IllegalStateException("[ERROR] OpenGL loading failed.");
 			}
 
 			OpenGLInitializer.initialised(true);

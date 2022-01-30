@@ -82,13 +82,13 @@ public class OnsieaGearings
 		}
 
 		this.gameLogic().preInitialization();
-		final IRenderAPIContext	renderContext	= OpenGLRenderAPIContext.create();
-		final IWindowContext	windowContext	= new GLWindowContext();
+		final IWindowContext windowContext = new GLWindowContext();
 		this.glfwManager(new GLFWManager().initialization(
-				WindowSettings.Builder.of("Onsiea !", 400, 400, 60, WindowShowType.FULLSCREEN), renderContext,
+				WindowSettings.Builder.of("Onsiea !", 400, 400, 60, WindowShowType.WINDOWED_FULLSCREEN),
 				windowContext));
-		this.window(this.glfwManager().window());
+		final IRenderAPIContext renderContext = OpenGLRenderAPIContext.create();
 		renderContext.initialization();
+		this.window(this.glfwManager().window());
 
 		this.gameLogic().initialization();
 
