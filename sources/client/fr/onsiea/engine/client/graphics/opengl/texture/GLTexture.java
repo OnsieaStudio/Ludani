@@ -232,7 +232,6 @@ public class GLTexture implements ITexture
 		return this.id;
 	}
 
-	@SuppressWarnings("unused")
 	private final void id(int idIn)
 	{
 		this.id = idIn;
@@ -244,7 +243,6 @@ public class GLTexture implements ITexture
 		return this.components;
 	}
 
-	@SuppressWarnings("unused")
 	private final void components(TextureComponents componentsIn)
 	{
 		this.components = componentsIn;
