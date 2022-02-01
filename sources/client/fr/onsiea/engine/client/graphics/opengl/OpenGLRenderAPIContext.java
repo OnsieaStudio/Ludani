@@ -42,9 +42,11 @@ import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.texture.TexturesManager;
 
 /**
  * @author Seynax
@@ -229,9 +231,10 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 	private GLDebugMessageCallback	debugProc;
 	private GLDebugMessageCallback	openGLDebug;
 
+	private GLShaderManager			shaderManager;
+	private TexturesManager			texturesManager;
+
 	/**private GLMeshManager	meshManager;
-	private GLShaderManager	shaderManager;
-	private TexturesManager	texturesManager;
 	private OBJLoader		objLoader;**/
 
 	private OpenGLRenderAPIContext(GLCapabilities capabilitiesIn)
@@ -254,11 +257,13 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 
 		this.anisotropicTextureFiltering(true);
 
-		/**this.meshManager(new GLMeshManager());
 		this.shaderManager(new GLShaderManager());
+		this.texturesManager(new TexturesManager(this));
+
+		/**this.meshManager(new GLMeshManager());
 		this.objLoader(new OBJLoader(this.meshManager()));
 		Texture.initialization(capabilitiesIn);
-		this.texturesManager(new TexturesManager(capabilitiesIn));**/
+		**/
 	}
 
 	public void anisotropicTextureFiltering(boolean enableIn)
@@ -469,8 +474,8 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		OpenGLRenderAPIContext.restoreState();
 
 		/**this.meshManager().cleanup();
-		OpenGLScreenshot.cleanup();
-		this.shaderManager().cleanup();**/
+		OpenGLScreenshot.cleanup();**/
+		this.shaderManager().cleanup();
 		this.disableDebugging();
 
 		GL.destroy();
@@ -488,6 +493,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		this.capabilities = capabilitiesIn;
 	}
 
+	@SuppressWarnings("unused")
 	private final GLDebugMessageCallback debugProc()
 	{
 		return this.debugProc;
@@ -528,6 +534,26 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		MemoryUtil.memFree(texturesBuffer);
 	}
 
+	public final GLShaderManager shaderManager()
+	{
+		return this.shaderManager;
+	}
+
+	private final void shaderManager(GLShaderManager shaderManagerIn)
+	{
+		this.shaderManager = shaderManagerIn;
+	}
+
+	public final TexturesManager texturesManager()
+	{
+		return this.texturesManager;
+	}
+
+	private final void texturesManager(TexturesManager texturesManagerIn)
+	{
+		this.texturesManager = texturesManagerIn;
+	}
+
 	/**public final GLMeshManager meshManager()
 	{
 		return this.meshManager;
@@ -536,26 +562,6 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 	private final void meshManager(GLMeshManager meshManagerIn)
 	{
 		this.meshManager = meshManagerIn;
-	}
-	
-	public final GLShaderManager shaderManager()
-	{
-		return this.shaderManager;
-	}
-	
-	private final void shaderManager(GLShaderManager shaderManagerIn)
-	{
-		this.shaderManager = shaderManagerIn;
-	}
-	
-	public final TexturesManager texturesManager()
-	{
-		return this.texturesManager;
-	}
-	
-	private final void texturesManager(TexturesManager texturesManagerIn)
-	{
-		this.texturesManager = texturesManagerIn;
 	}
 	
 	private final OBJLoader objLoader()
