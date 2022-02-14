@@ -24,13 +24,13 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.utils.function;
+package fr.onsiea.engine.utils;
 
 /**
  * @author Seynax
  *
  */
-public interface IFunction
+public interface INameable
 {
-	void execute();
+	String name();
 }

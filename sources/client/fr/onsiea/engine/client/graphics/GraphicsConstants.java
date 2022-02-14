@@ -39,8 +39,10 @@ public class GraphicsConstants
 
 	private final static int		DEFAULT_REFRESH_RATE	= 60;
 	private final static String		DEFAULT_WINDOW_TITLE	= "Onsiea";
-	// private final static EnumRenderAPI	renderAPI				= EnumRenderAPI.OpenGL;
-	private final static boolean	CULL_FACE				= false;
+
+	/**
+	 * Render
+	 */
 
 	private final static float		FOV						= 70.0f;
 	private final static float		ZNEAR					= 0.1f;
@@ -65,11 +67,6 @@ public class GraphicsConstants
 	{
 		return GraphicsConstants.renderAPI;
 	}**/
-
-	public final static boolean isCullFace()
-	{
-		return GraphicsConstants.CULL_FACE;
-	}
 
 	public final static float fov()
 	{

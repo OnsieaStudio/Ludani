@@ -26,29 +26,19 @@
 */
 package fr.onsiea.engine.utils.function;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  * @author Seynax
  *
  */
 
-@AllArgsConstructor(staticName = "of")
-@EqualsAndHashCode
-@ToString
-@Getter
-@Setter
-public class Function<O, P> implements IOIFunction<O, P>
+/**
+ *
+ * @author Seynax
+ *
+ * @param <O> output
+ * @param <I> parameter
+ */
+public interface IOIFunction<O, I>
 {
-	private IOIFunction<O, P> function;
-
-	@Override
-	public O execute(P parametersIn)
-	{
-		return this.function.execute(parametersIn);
-	}
+	O execute(I parameterIn);
 }

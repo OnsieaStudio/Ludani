@@ -24,13 +24,72 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.utils.function;
+package fr.onsiea.engine.client.graphics.settings;
+
+import java.util.Collection;
 
 /**
  * @author Seynax
  *
  */
-public interface IFunction
+public interface IRenderAPISettings
 {
-	void execute();
+	Collection<String> names();
+
+	/**
+	 *
+	 * @param nameIn
+	 * @param parameterIn
+	 * @return
+	 */
+	IRenderAPISettings put(String nameIn, IRenderAPIParameter<?> parameterIn);
+
+	/***
+	 *
+	 * @param nameIn
+	 * @return
+	 */
+	IRenderAPIParameter<?> get(String nameIn);
+
+	/**
+	 *
+	 * @param nameIn
+	 * @return
+	 */
+	boolean contains(String nameIn);
+
+	/**
+	 *
+	 * @param nameIn
+	 * @return
+	 */
+	IRenderAPISettings remove(String nameIn);
+
+	/**
+	 * Set "nameIn" parameter on "valueIn" value
+	 * @param nameIn, valueIn
+	 * @return
+	 */
+	<T> IRenderAPISettings set(String nameIn, T valueIn);
+
+	/**
+	 * Only works if the parameter is of boolean type, raises an exception otherwise.
+	 * @param nameIn
+	 * @return
+	 */
+	IRenderAPISettings enable(String nameIn);
+
+	/**
+	 * Only works if the parameter is of boolean type, throw an exception otherwise.
+	 * @param nameIn
+	 * @return
+	 */
+	IRenderAPISettings disable(String nameIn);
+
+	/**
+	 * Only works if the parameter is of boolean type, throw an exception otherwise.
+	 * @param nameIn
+	 * @return
+	 */
+	IRenderAPISettings toggle(String nameIn);
 }

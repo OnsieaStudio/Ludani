@@ -34,7 +34,6 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLDebugMessageCallback;
@@ -59,28 +58,13 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		return new OpenGLRenderAPIContext(OpenGLInitializer.initialisationOrGet());
 	}
 
-	private static boolean	cullingBackFace		= false;
 	private static boolean	inWireframe			= false;
 	private static boolean	isAlphaBlending		= false;
 	private static boolean	additiveBlending	= false;
-	private static boolean	antialiasing		= false;
 	private static boolean	depthTesting		= false;
+
 	private static float	anisotropyTextureFilteringAmount;
 	private static boolean	mustAnisotropyTextureFiltering;
-
-	public static void antialias(boolean enableIn)
-	{
-		if (enableIn && !OpenGLRenderAPIContext.antialiasing())
-		{
-			GL11.glEnable(GL13.GL_MULTISAMPLE);
-			OpenGLRenderAPIContext.antialiasing(true);
-		}
-		else if (!enableIn && OpenGLRenderAPIContext.antialiasing())
-		{
-			GL11.glDisable(GL13.GL_MULTISAMPLE);
-			OpenGLRenderAPIContext.antialiasing(false);
-		}
-	}
 
 	public static void enableAlphaBlending()
 	{
@@ -128,21 +112,6 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		}
 	}
 
-	public static void cullBackFaces(boolean cull)
-	{
-		if (cull && !OpenGLRenderAPIContext.cullingBackFace())
-		{
-			GL11.glEnable(GL11.GL_CULL_FACE);
-			GL11.glCullFace(GL11.GL_BACK);
-			OpenGLRenderAPIContext.cullingBackFace(true);
-		}
-		else if (!cull && OpenGLRenderAPIContext.cullingBackFace())
-		{
-			GL11.glDisable(GL11.GL_CULL_FACE);
-			OpenGLRenderAPIContext.cullingBackFace(false);
-		}
-	}
-
 	public static void goWireframe(boolean goWireframe)
 	{
 		if (goWireframe && !OpenGLRenderAPIContext.inWireframe())
@@ -155,16 +124,6 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			OpenGLRenderAPIContext.inWireframe(false);
 		}
-	}
-
-	public static final boolean cullingBackFace()
-	{
-		return OpenGLRenderAPIContext.cullingBackFace;
-	}
-
-	private static final void cullingBackFace(boolean cullingBackFaceIn)
-	{
-		OpenGLRenderAPIContext.cullingBackFace = cullingBackFaceIn;
 	}
 
 	public static final boolean inWireframe()
@@ -195,16 +154,6 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 	private static final void additiveBlending(boolean additiveBlendingIn)
 	{
 		OpenGLRenderAPIContext.additiveBlending = additiveBlendingIn;
-	}
-
-	public static final boolean antialiasing()
-	{
-		return OpenGLRenderAPIContext.antialiasing;
-	}
-
-	private static final void antialiasing(boolean antialiasingIn)
-	{
-		OpenGLRenderAPIContext.antialiasing = antialiasingIn;
 	}
 
 	public static final boolean depthTesting()
@@ -366,12 +315,12 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		// GL11.glDepthFunc(GL11.GL_LESS);
-		if (GraphicsConstants.isCullFace())
+		/**if (GraphicsConstants.isCullFace())
 		{
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glCullFace(GL11.GL_BACK);
 			// GL11.glFrontFace(GL11.GL_CCW);
-		}
+		}**/
 		GL11.glEnable(GL11.GL_STENCIL_TEST);
 		GL11.glDepthMask(true);
 	}

@@ -24,13 +24,13 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.utils.function;
+package fr.onsiea.engine.client.graphics.settings;
 
 /**
  * @author Seynax
  *
  */
-public interface IFunction
+public interface IRenderAPIParameter<T>
 {
-	void execute();
+	IRenderAPISettings set(T valueIn);
 }

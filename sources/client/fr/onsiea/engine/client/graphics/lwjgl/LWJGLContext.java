@@ -20,7 +20,7 @@ public final class LWJGLContext
 
 	// Shared library loader debug
 	// Paramètre
-	// -Dorg.lwjgl.util.DebugLoader=tru
+	// -Dorg.lwjgl.util.DebugLoader=true
 	// Fonction
 	// Configuration.DEBUG_LOADER.set(true)
 

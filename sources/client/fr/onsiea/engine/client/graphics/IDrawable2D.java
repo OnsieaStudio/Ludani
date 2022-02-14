@@ -24,13 +24,21 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.utils.function;
+package fr.onsiea.engine.client.graphics;
+
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 
 /**
  * @author Seynax
  *
  */
-public interface IFunction
+public interface IDrawable2D
 {
-	void execute();
+	IDrawable2D start(IRenderAPIContext renderAPIContextIn);
+
+	IDrawable2D drawCall(IRenderAPIContext renderAPIContextIn);
+
+	IDrawable2D stop(IRenderAPIContext renderAPIContextIn);
+
+	IDrawable2D draw(IRenderAPIContext renderAPIContextIn);
 }

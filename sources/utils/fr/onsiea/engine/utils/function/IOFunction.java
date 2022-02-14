@@ -30,7 +30,7 @@ package fr.onsiea.engine.utils.function;
  * @author Seynax
  *
  */
-public interface IFunction
+public interface IOFunction<O>
 {
-	void execute();
+	O execute();
 }

@@ -24,38 +24,101 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.hud.components;
+package fr.onsiea.engine.client.graphics.settings;
 
-import fr.onsiea.engine.client.graphics.IDrawable2D;
-import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.utils.INameable;
+import lombok.NonNull;
 
 /**
  * @author Seynax
  *
  */
-public class HudButton implements IDrawable2D
+public class RenderAPIBooleanParameter implements IRenderAPIBooleanParameter, INameable
 {
-	@Override
-	public IDrawable2D start(IRenderAPIContext renderAPIContextIn)
+	private final IRenderAPISettings	parent;
+	private final String				name;
+	public boolean						status;
+
+	protected RenderAPIBooleanParameter(IRenderAPISettings parentIn, String nameIn)
 	{
-		return this;
+		this.parent	= parentIn;
+		this.name	= nameIn;
 	}
 
 	@Override
-	public IDrawable2D drawCall(IRenderAPIContext renderAPIContextIn)
+	@NonNull
+	public IRenderAPISettings set(Boolean statusIn)
 	{
-		return this;
+		this.status = statusIn;
+
+		return this.parent;
 	}
 
 	@Override
-	public IDrawable2D stop(IRenderAPIContext renderAPIContextIn)
+	public IRenderAPISettings enable()
 	{
-		return this;
+		this.status = true;
+
+		return this.parent;
 	}
 
 	@Override
-	public IDrawable2D draw(IRenderAPIContext renderAPIContextIn)
+	public IRenderAPISettings disable()
 	{
-		return this;
+		this.status = false;
+
+		return this.parent;
+	}
+
+	@Override
+	public IRenderAPISettings toggle()
+	{
+		this.status = !this.status;
+
+		return this.parent;
+	}
+
+	public final IRenderAPISettings parent()
+	{
+		return this.parent;
+	}
+
+	@Override
+	public final String name()
+	{
+		return this.name;
+	}
+
+	@Override
+	public final boolean status()
+	{
+		return this.status;
+	}
+
+	public static class Builder
+	{
+		private final IRenderAPISettings	parent;
+		private final String				name;
+
+		public Builder(IRenderAPISettings parentIn, String nameIn)
+		{
+			this.parent	= parentIn;
+			this.name	= nameIn;
+		}
+
+		public IRenderAPIBooleanParameter build() throws Exception
+		{
+			if (this.parent == null)
+			{
+				throw new Exception("[ERROR] Parent is null ! (GraphicsParameter)");
+			}
+
+			if (this.name == null)
+			{
+				throw new Exception("[ERROR] Name is null ! (GraphicsParameter)");
+			}
+
+			return new RenderAPIBooleanParameter(this.parent, this.name);
+		}
 	}
 }
