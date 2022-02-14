@@ -24,7 +24,7 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.settings;
+package fr.onsiea.engine.client.settings;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,17 +34,17 @@ import java.util.Map;
  * @author Seynax
  *
  */
-public class RenderAPISettings implements IRenderAPISettings
+public class ClientSettings implements IClientSettings
 {
-	private final Map<String, IRenderAPIParameter<?>> parameters;
+	private final Map<String, IClientParameter<?>> parameters;
 
-	public RenderAPISettings()
+	public ClientSettings()
 	{
 		this.parameters = new HashMap<>();
 	}
 
 	@Override
-	public IRenderAPISettings put(String nameIn, IRenderAPIParameter<?> parameterIn)
+	public IClientSettings put(String nameIn, IClientParameter<?> parameterIn)
 	{
 		this.parameters.put(nameIn, parameterIn);
 
@@ -58,7 +58,7 @@ public class RenderAPISettings implements IRenderAPISettings
 	}
 
 	@Override
-	public IRenderAPIParameter<?> get(String nameIn)
+	public IClientParameter<?> get(String nameIn)
 	{
 		return this.parameters.get(nameIn);
 	}
@@ -71,59 +71,59 @@ public class RenderAPISettings implements IRenderAPISettings
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> IRenderAPISettings set(String nameIn, T valueIn)
+	public <T> IClientSettings set(String nameIn, T valueIn)
 	{
 		final var parameter = this.get(nameIn);
 
-		if (parameter instanceof IRenderAPIParameter)
+		if (parameter instanceof IClientParameter)
 		{
-			((IRenderAPIParameter<T>) parameter).set(valueIn);
+			((IClientParameter<T>) parameter).set(valueIn);
 		}
 
 		return this;
 	}
 
 	@Override
-	public IRenderAPISettings enable(String nameIn)
+	public IClientSettings enable(String nameIn)
 	{
 		final var parameter = this.get(nameIn);
 
-		if (parameter instanceof IRenderAPIBooleanParameter)
+		if (parameter instanceof IClientBooleanParameter)
 		{
-			((IRenderAPIBooleanParameter) parameter).enable();
+			((IClientBooleanParameter) parameter).enable();
 		}
 
 		return this;
 	}
 
 	@Override
-	public IRenderAPISettings disable(String nameIn)
+	public IClientSettings disable(String nameIn)
 	{
 		final var parameter = this.get(nameIn);
 
-		if (parameter instanceof IRenderAPIBooleanParameter)
+		if (parameter instanceof IClientBooleanParameter)
 		{
-			((IRenderAPIBooleanParameter) parameter).disable();
+			((IClientBooleanParameter) parameter).disable();
 		}
 
 		return this;
 	}
 
 	@Override
-	public IRenderAPISettings toggle(String nameIn)
+	public IClientSettings toggle(String nameIn)
 	{
 		final var parameter = this.get(nameIn);
 
-		if (parameter instanceof IRenderAPIBooleanParameter)
+		if (parameter instanceof IClientBooleanParameter)
 		{
-			((IRenderAPIBooleanParameter) parameter).toggle();
+			((IClientBooleanParameter) parameter).toggle();
 		}
 
 		return this;
 	}
 
 	@Override
-	public IRenderAPISettings remove(String nameIn)
+	public IClientSettings remove(String nameIn)
 	{
 		this.parameters.remove(nameIn);
 

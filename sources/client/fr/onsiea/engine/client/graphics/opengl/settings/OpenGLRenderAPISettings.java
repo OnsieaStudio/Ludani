@@ -29,10 +29,10 @@ package fr.onsiea.engine.client.graphics.opengl.settings;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
-import fr.onsiea.engine.client.graphics.settings.IRenderAPIBooleanParameter;
-import fr.onsiea.engine.client.graphics.settings.RenderAPIBooleanParameter;
-import fr.onsiea.engine.client.graphics.settings.RenderAPIModulableBooleanParameter;
-import fr.onsiea.engine.client.graphics.settings.RenderAPISettings;
+import fr.onsiea.engine.client.settings.IClientBooleanParameter;
+import fr.onsiea.engine.client.settings.ClientBooleanParameter;
+import fr.onsiea.engine.client.settings.ClientModulableBooleanParameter;
+import fr.onsiea.engine.client.settings.ClientSettings;
 import fr.onsiea.engine.utils.function.IIFunction;
 
 /**
@@ -40,7 +40,7 @@ import fr.onsiea.engine.utils.function.IIFunction;
 import fr.onsiea.engine.utils.function.IIFunction; Seynax
  *
  */
-public class OpenGLRenderAPISettings extends RenderAPISettings
+public class OpenGLRenderAPISettings extends ClientSettings
 {
 	public OpenGLRenderAPISettings() throws Exception
 	{
@@ -53,24 +53,24 @@ public class OpenGLRenderAPISettings extends RenderAPISettings
 
 	private OpenGLRenderAPISettings add(String nameIn) throws Exception
 	{
-		this.put(nameIn, new RenderAPIBooleanParameter.Builder(this, nameIn).build());
+		this.put(nameIn, new ClientBooleanParameter.Builder(this, nameIn).build());
 
 		return this;
 	}
 
 	private OpenGLRenderAPISettings add(String nameIn, int idIn) throws Exception
 	{
-		this.put(nameIn, new RenderAPIModulableBooleanParameter.Builder(this, nameIn, parameterIn -> GL11.glEnable(idIn),
+		this.put(nameIn, new ClientModulableBooleanParameter.Builder(this, nameIn, parameterIn -> GL11.glEnable(idIn),
 				parameterIn -> GL11.glDisable(idIn)).build());
 
 		return this;
 	}
 
-	private OpenGLRenderAPISettings add(String nameIn, IIFunction<IRenderAPIBooleanParameter> enableMethodIn,
-			IIFunction<IRenderAPIBooleanParameter> disableMethodIn) throws Exception
+	private OpenGLRenderAPISettings add(String nameIn, IIFunction<IClientBooleanParameter> enableMethodIn,
+			IIFunction<IClientBooleanParameter> disableMethodIn) throws Exception
 	{
 		this.put(nameIn,
-				new RenderAPIModulableBooleanParameter.Builder(this, nameIn, enableMethodIn, disableMethodIn).build());
+				new ClientModulableBooleanParameter.Builder(this, nameIn, enableMethodIn, disableMethodIn).build());
 
 		return this;
 	}

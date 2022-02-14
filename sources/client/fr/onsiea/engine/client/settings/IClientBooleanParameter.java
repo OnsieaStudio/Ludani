@@ -24,72 +24,19 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.settings;
-
-import java.util.Collection;
+package fr.onsiea.engine.client.settings;
 
 /**
  * @author Seynax
  *
  */
-public interface IRenderAPISettings
+public interface IClientBooleanParameter extends IClientParameter<Boolean>
 {
-	Collection<String> names();
+	IClientSettings enable();
 
-	/**
-	 *
-	 * @param nameIn
-	 * @param parameterIn
-	 * @return
-	 */
-	IRenderAPISettings put(String nameIn, IRenderAPIParameter<?> parameterIn);
+	IClientSettings disable();
 
-	/***
-	 *
-	 * @param nameIn
-	 * @return
-	 */
-	IRenderAPIParameter<?> get(String nameIn);
+	IClientSettings toggle();
 
-	/**
-	 *
-	 * @param nameIn
-	 * @return
-	 */
-	boolean contains(String nameIn);
-
-	/**
-	 *
-	 * @param nameIn
-	 * @return
-	 */
-	IRenderAPISettings remove(String nameIn);
-
-	/**
-	 * Set "nameIn" parameter on "valueIn" value
-	 * @param nameIn, valueIn
-	 * @return
-	 */
-	<T> IRenderAPISettings set(String nameIn, T valueIn);
-
-	/**
-	 * Only works if the parameter is of boolean type, raises an exception otherwise.
-	 * @param nameIn
-	 * @return
-	 */
-	IRenderAPISettings enable(String nameIn);
-
-	/**
-	 * Only works if the parameter is of boolean type, throw an exception otherwise.
-	 * @param nameIn
-	 * @return
-	 */
-	IRenderAPISettings disable(String nameIn);
-
-	/**
-	 * Only works if the parameter is of boolean type, throw an exception otherwise.
-	 * @param nameIn
-	 * @return
-	 */
-	IRenderAPISettings toggle(String nameIn);
+	boolean status();
 }

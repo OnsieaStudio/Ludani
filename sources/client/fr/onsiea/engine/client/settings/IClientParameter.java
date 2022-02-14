@@ -24,19 +24,13 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.settings;
+package fr.onsiea.engine.client.settings;
 
 /**
  * @author Seynax
  *
  */
-public interface IRenderAPIBooleanParameter extends IRenderAPIParameter<Boolean>
+public interface IClientParameter<T>
 {
-	IRenderAPISettings enable();
-
-	IRenderAPISettings disable();
-
-	IRenderAPISettings toggle();
-
-	boolean status();
+	IClientSettings set(T valueIn);
 }

@@ -24,7 +24,7 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.settings;
+package fr.onsiea.engine.client.settings;
 
 import fr.onsiea.engine.utils.INameable;
 import fr.onsiea.engine.utils.function.IIFunction;
@@ -34,18 +34,18 @@ import lombok.NonNull;
  * @author Seynax
  *
  */
-public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanParameter, INameable
+public class ClientModulableBooleanParameter implements IClientBooleanParameter, INameable
 {
-	private final IRenderAPISettings						parent;
+	private final IClientSettings						parent;
 	private final String									name;
 	public boolean											status;
 
-	private final IIFunction<IRenderAPIBooleanParameter>	enableMethod;
-	private final IIFunction<IRenderAPIBooleanParameter>	disableMethod;
+	private final IIFunction<IClientBooleanParameter>	enableMethod;
+	private final IIFunction<IClientBooleanParameter>	disableMethod;
 
-	protected RenderAPIModulableBooleanParameter(IRenderAPISettings parentIn, String nameIn,
-			IIFunction<IRenderAPIBooleanParameter> enableMethodIn,
-			IIFunction<IRenderAPIBooleanParameter> disableMethodIn)
+	protected ClientModulableBooleanParameter(IClientSettings parentIn, String nameIn,
+			IIFunction<IClientBooleanParameter> enableMethodIn,
+			IIFunction<IClientBooleanParameter> disableMethodIn)
 	{
 		this.parent			= parentIn;
 		this.name			= nameIn;
@@ -55,7 +55,7 @@ public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanPara
 
 	@Override
 	@NonNull
-	public IRenderAPISettings set(Boolean statusIn)
+	public IClientSettings set(Boolean statusIn)
 	{
 		this.status = statusIn;
 
@@ -65,7 +65,7 @@ public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanPara
 	}
 
 	@Override
-	public IRenderAPISettings enable()
+	public IClientSettings enable()
 	{
 		this.status = true;
 
@@ -75,7 +75,7 @@ public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanPara
 	}
 
 	@Override
-	public IRenderAPISettings disable()
+	public IClientSettings disable()
 	{
 		this.status = false;
 
@@ -85,7 +85,7 @@ public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanPara
 	}
 
 	@Override
-	public IRenderAPISettings toggle()
+	public IClientSettings toggle()
 	{
 		this.status = !this.status;
 
@@ -94,7 +94,7 @@ public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanPara
 		return this.parent;
 	}
 
-	public IRenderAPISettings refresh()
+	public IClientSettings refresh()
 	{
 		if (this.status)
 		{
@@ -108,7 +108,7 @@ public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanPara
 		return this.parent;
 	}
 
-	public final IRenderAPISettings parent()
+	public final IClientSettings parent()
 	{
 		return this.parent;
 	}
@@ -127,21 +127,21 @@ public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanPara
 
 	public static class Builder
 	{
-		private final IRenderAPISettings				parent;
+		private final IClientSettings				parent;
 		private final String							name;
 
-		private IIFunction<IRenderAPIBooleanParameter>	enableMethod;
-		private IIFunction<IRenderAPIBooleanParameter>	disableMethod;
+		private IIFunction<IClientBooleanParameter>	enableMethod;
+		private IIFunction<IClientBooleanParameter>	disableMethod;
 
-		public Builder(IRenderAPISettings parentIn, String nameIn)
+		public Builder(IClientSettings parentIn, String nameIn)
 		{
 			this.parent	= parentIn;
 			this.name	= nameIn;
 		}
 
-		public Builder(IRenderAPISettings parentIn, String nameIn,
-				IIFunction<IRenderAPIBooleanParameter> enableMethodIn,
-				IIFunction<IRenderAPIBooleanParameter> disableMethodIn)
+		public Builder(IClientSettings parentIn, String nameIn,
+				IIFunction<IClientBooleanParameter> enableMethodIn,
+				IIFunction<IClientBooleanParameter> disableMethodIn)
 		{
 			this.parent			= parentIn;
 			this.name			= nameIn;
@@ -149,7 +149,7 @@ public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanPara
 			this.disableMethod	= disableMethodIn;
 		}
 
-		public IRenderAPIBooleanParameter build() throws Exception
+		public IClientBooleanParameter build() throws Exception
 		{
 			if (this.parent == null)
 			{
@@ -171,15 +171,15 @@ public class RenderAPIModulableBooleanParameter implements IRenderAPIBooleanPara
 				throw new Exception("[ERROR] Enable method is null ! (GraphicsParameter)");
 			}
 
-			return new RenderAPIModulableBooleanParameter(this.parent, this.name, this.enableMethod, this.disableMethod);
+			return new ClientModulableBooleanParameter(this.parent, this.name, this.enableMethod, this.disableMethod);
 		}
 
-		public final void enableMethod(IIFunction<IRenderAPIBooleanParameter> enableMethodIn)
+		public final void enableMethod(IIFunction<IClientBooleanParameter> enableMethodIn)
 		{
 			this.enableMethod = enableMethodIn;
 		}
 
-		public final void disableMethod(IIFunction<IRenderAPIBooleanParameter> disableMethodIn)
+		public final void disableMethod(IIFunction<IClientBooleanParameter> disableMethodIn)
 		{
 			this.disableMethod = disableMethodIn;
 		}

@@ -24,61 +24,42 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.settings;
+package fr.onsiea.engine.client.settings;
 
 import fr.onsiea.engine.utils.INameable;
-import lombok.NonNull;
+import fr.onsiea.engine.utils.function.IIFunction;
 
 /**
  * @author Seynax
  *
  */
-public class RenderAPIBooleanParameter implements IRenderAPIBooleanParameter, INameable
+public class ClientParameter<T> implements IClientParameter<T>, INameable
 {
-	private final IRenderAPISettings	parent;
-	private final String				name;
-	public boolean						status;
+	private final IClientSettings					parent;
+	private final String								name;
+	public T											value;
 
-	protected RenderAPIBooleanParameter(IRenderAPISettings parentIn, String nameIn)
+	private final IIFunction<IClientParameter<T>>	setMethod;
+
+	protected ClientParameter(IClientSettings parentIn, String nameIn,
+			IIFunction<IClientParameter<T>> setMethodIn)
 	{
-		this.parent	= parentIn;
-		this.name	= nameIn;
+		this.parent		= parentIn;
+		this.name		= nameIn;
+		this.setMethod	= setMethodIn;
 	}
 
 	@Override
-	@NonNull
-	public IRenderAPISettings set(Boolean statusIn)
+	public IClientSettings set(T valueIn)
 	{
-		this.status = statusIn;
+		this.value = valueIn;
+
+		this.setMethod.execute(this);
 
 		return this.parent;
 	}
 
-	@Override
-	public IRenderAPISettings enable()
-	{
-		this.status = true;
-
-		return this.parent;
-	}
-
-	@Override
-	public IRenderAPISettings disable()
-	{
-		this.status = false;
-
-		return this.parent;
-	}
-
-	@Override
-	public IRenderAPISettings toggle()
-	{
-		this.status = !this.status;
-
-		return this.parent;
-	}
-
-	public final IRenderAPISettings parent()
+	public final IClientSettings parent()
 	{
 		return this.parent;
 	}
@@ -89,24 +70,32 @@ public class RenderAPIBooleanParameter implements IRenderAPIBooleanParameter, IN
 		return this.name;
 	}
 
-	@Override
-	public final boolean status()
+	public final T value()
 	{
-		return this.status;
+		return this.value;
 	}
 
-	public static class Builder
+	public static class Builder<T>
 	{
-		private final IRenderAPISettings	parent;
-		private final String				name;
+		private final IClientSettings			parent;
+		private final String						name;
 
-		public Builder(IRenderAPISettings parentIn, String nameIn)
+		private IIFunction<IClientParameter<T>>	setMethod;
+
+		public Builder(IClientSettings parentIn, String nameIn)
 		{
 			this.parent	= parentIn;
 			this.name	= nameIn;
 		}
 
-		public IRenderAPIBooleanParameter build() throws Exception
+		public Builder(IClientSettings parentIn, String nameIn, IIFunction<IClientParameter<T>> setMethodIn)
+		{
+			this.parent		= parentIn;
+			this.name		= nameIn;
+			this.setMethod	= setMethodIn;
+		}
+
+		public IClientParameter<T> build() throws Exception
 		{
 			if (this.parent == null)
 			{
@@ -118,7 +107,17 @@ public class RenderAPIBooleanParameter implements IRenderAPIBooleanParameter, IN
 				throw new Exception("[ERROR] Name is null ! (GraphicsParameter)");
 			}
 
-			return new RenderAPIBooleanParameter(this.parent, this.name);
+			if (this.setMethod == null)
+			{
+				throw new Exception("[ERROR] Set method is null ! (GraphicsParameter)");
+			}
+
+			return new ClientParameter<>(this.parent, this.name, this.setMethod);
+		}
+
+		public void setMethod(IIFunction<IClientParameter<T>> setMethodIn)
+		{
+			this.setMethod = setMethodIn;
 		}
 	}
 }
