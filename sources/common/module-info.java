@@ -27,6 +27,7 @@ module OnsieaEngine
 	exports fr.onsiea.engine.client.graphics.texture;
 	exports fr.onsiea.engine.client.graphics.texture.data;
 	exports fr.onsiea.engine.client.graphics.opengl.texture;
+	exports fr.onsiea.engine.client.settings;
 
 	requires lombok;
 	requires org.joml;

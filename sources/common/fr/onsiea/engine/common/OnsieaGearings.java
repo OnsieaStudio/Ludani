@@ -26,15 +26,14 @@
 */
 package fr.onsiea.engine.common;
 
+import org.lwjgl.opengl.GL11;
+
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
-import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.glfw.window.WindowSettings;
 import fr.onsiea.engine.client.graphics.glfw.window.WindowShowType;
 import fr.onsiea.engine.client.graphics.glfw.window.context.GLWindowContext;
 import fr.onsiea.engine.client.graphics.lwjgl.LWJGLContext;
-import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
-import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import fr.onsiea.engine.common.game.GameOptions;
@@ -85,17 +84,13 @@ public class OnsieaGearings
 		this.gameLogic().preInitialization();
 		final IWindowContext windowContext = new GLWindowContext();
 		this.glfwManager(new GLFWManager().initialization(
-				WindowSettings.Builder.of("Onsiea !", 400, 400, 60, WindowShowType.WINDOWED), windowContext));
-		final IRenderAPIContext renderContext = OpenGLRenderAPIContext.create();
-		renderContext.initialization();
+				WindowSettings.Builder.of("Onsiea Engine !", 400, 400, 60, WindowShowType.WINDOWED), windowContext));
 		this.window(this.glfwManager().window());
-		((Window) this.window()).icon("resources/textures/aeison.png");
 
-		this.gameLogic().initialization();
+		this.gameLogic().initialization(this.window);
 
 		this.loop();
 
-		renderContext.cleanup();
 		this.cleanup();
 	}
 
@@ -119,11 +114,12 @@ public class OnsieaGearings
 
 	private void runtime()
 	{
+		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		this.window().pollEvents();
 		this.gameLogic().highRateInput();
 		this.gameLogic().input();
 		this.gameLogic().update();
-		this.gameLogic().draw();
+		this.gameLogic().draw(this.window());
 		this.window().swapBuffers();
 	}
 

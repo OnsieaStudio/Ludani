@@ -26,6 +26,8 @@
 */
 package fr.onsiea.engine.common.game;
 
+import fr.onsiea.engine.client.graphics.window.IWindow;
+
 /**
  * @author Seynax
  *
@@ -35,7 +37,11 @@ public interface IGameLogic
 {
 	boolean preInitialization();
 
-	boolean initialization();
+	/**
+	 * @param windowIn
+	 * @return
+	 */
+	boolean initialization(IWindow windowIn);
 
 	void highRateInput();
 
@@ -43,7 +49,10 @@ public interface IGameLogic
 
 	void update();
 
-	void draw();
+	/**
+	 * @param windowIn
+	 */
+	void draw(IWindow windowIn);
 
 	void cleanup();
 }
