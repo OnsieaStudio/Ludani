@@ -30,8 +30,9 @@ import org.lwjgl.glfw.GLFW;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWUtils;
-import fr.onsiea.engine.client.graphics.glfw.window.Window;
+import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -59,7 +60,7 @@ public class GLWindowContext implements IWindowContext
 	}
 
 	@Override
-	public void associate(long handleIn, Window windowIn)
+	public IRenderAPIContext associate(long handleIn, IWindow windowIn)
 	{
 		GLFW.glfwMakeContextCurrent(handleIn);
 
@@ -76,5 +77,7 @@ public class GLWindowContext implements IWindowContext
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 		GLFWUtils.boolHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GraphicsConstants.debug());
 		GLFWUtils.boolHint(GLFW.GLFW_CONTEXT_NO_ERROR, !GraphicsConstants.debug());
+
+		return this.context = OpenGLRenderAPIContext.create();
 	}
 }

@@ -26,8 +26,8 @@
 */
 package fr.onsiea.engine.client.graphics.window.context;
 
-import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.window.IWindow;
 
 /**
  * @author Seynax
@@ -36,11 +36,13 @@ import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 
 public interface IWindowContext
 {
+
 	/**
 	 * @param handleIn
 	 * @param windowIn
+	 * @return
 	 */
-	void associate(long handleIn, Window windowIn);
+	IRenderAPIContext associate(long handleIn, IWindow windowIn);
 
 	/**
 	 *

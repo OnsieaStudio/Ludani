@@ -12,7 +12,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.utils.IOUtils;
 
 public class NanoVGUtils
@@ -37,9 +37,9 @@ public class NanoVGUtils
 
 	}
 
-	public NanoVGUtils initialization(Window windowIn) throws Exception
+	public NanoVGUtils initialization(IWindow windowIn) throws Exception
 	{
-		this.handle(windowIn.settings().mustAntialiasing()
+		this.handle(((Window) windowIn).settings().mustAntialiasing()
 				? NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS | NanoVGGL3.NVG_STENCIL_STROKES)
 				: NanoVGGL3.nvgCreate(NanoVGGL3.NVG_STENCIL_STROKES));
 
@@ -65,22 +65,25 @@ public class NanoVGUtils
 		return this;
 	}
 
-	public void startRender(Window windowIn)
+	public void startRender(IWindow windowIn)
 	{
-		NanoVG.nvgBeginFrame(this.handle(), windowIn.settings().width(), windowIn.settings().height(), 1);
+		NanoVG.nvgBeginFrame(this.handle(), ((Window) windowIn).settings().width(),
+				((Window) windowIn).settings().height(), 1);
 	}
 
-	public void render(Camera cameraIn, int framerateIn, Window windowIn)
+	public void render(IWindow windowIn)
 	{
 		// Upper ribbon
 		NanoVG.nvgBeginPath(this.handle());
-		NanoVG.nvgRect(this.handle(), 0, windowIn.settings().height() - 100, windowIn.settings().width(), 50);
+		NanoVG.nvgRect(this.handle(), 0, ((Window) windowIn).settings().height() - 100,
+				((Window) windowIn).settings().width(), 50);
 		NanoVG.nvgFillColor(this.handle(), this.rgba(0x23, 0xa1, 0xf1, 200, this.colour));
 		NanoVG.nvgFill(this.handle());
 
 		// Lower ribbon
 		NanoVG.nvgBeginPath(this.handle());
-		NanoVG.nvgRect(this.handle(), 0, windowIn.settings().height() - 50, windowIn.settings().width(), 10);
+		NanoVG.nvgRect(this.handle(), 0, ((Window) windowIn).settings().height() - 50,
+				((Window) windowIn).settings().width(), 10);
 		NanoVG.nvgFillColor(this.handle(), this.rgba(0xc1, 0xe3, 0xf9, 200, this.colour));
 		NanoVG.nvgFill(this.handle());
 
@@ -204,10 +207,10 @@ public class NanoVGUtils
 
 	public void cleanup()
 	{
-		if (this.fontBuffer != null)
-		{
-			MemoryUtil.memFree(this.fontBuffer);
-		}
+		//if (this.fontBuffer != null)
+		//{
+		//	MemoryUtil.memFree(this.fontBuffer);
+		//}
 		NanoVGGL3.nvgDelete(this.handle);
 		if (this.posx != null)
 		{

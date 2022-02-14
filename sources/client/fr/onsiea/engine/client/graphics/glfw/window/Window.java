@@ -149,7 +149,7 @@ public class Window implements IWindow
 					(vidmode.height() - pHeight.get(0)) / 2);
 		}
 
-		this.windowContext().associate(this.handle(), this);
+		this.windowContext.associate(this.handle, this);
 
 		if (this.settings().mustBeSynchronized())
 		{
@@ -291,5 +291,7 @@ public class Window implements IWindow
 		GLFW.glfwMakeContextCurrent(MemoryUtil.NULL);
 		GLFW.glfwDestroyWindow(this.handle());
 		this.pollEvents();
+
+		this.windowContext.context().cleanup();
 	}
 }

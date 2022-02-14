@@ -33,6 +33,8 @@ package fr.onsiea.engine.client.graphics.window;
 
 public interface IWindow
 {
+	// IClientSettings settings();
+
 	boolean shouldClose();
 
 	IWindow pollEvents();
