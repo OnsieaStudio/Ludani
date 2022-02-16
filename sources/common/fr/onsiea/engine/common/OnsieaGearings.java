@@ -26,8 +26,6 @@
 */
 package fr.onsiea.engine.common;
 
-import org.lwjgl.opengl.GL11;
-
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
 import fr.onsiea.engine.client.graphics.glfw.window.WindowSettings;
@@ -35,7 +33,6 @@ import fr.onsiea.engine.client.graphics.glfw.window.WindowShowType;
 import fr.onsiea.engine.client.graphics.glfw.window.context.GLWindowContext;
 import fr.onsiea.engine.client.graphics.lwjgl.LWJGLContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
-import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
 import lombok.AccessLevel;
@@ -82,9 +79,9 @@ public class OnsieaGearings
 		}
 
 		this.gameLogic().preInitialization();
-		final IWindowContext windowContext = new GLWindowContext();
 		this.glfwManager(new GLFWManager().initialization(
-				WindowSettings.Builder.of("Onsiea Engine !", 400, 400, 60, WindowShowType.WINDOWED), windowContext));
+				WindowSettings.Builder.of("Onsiea Engine !", 400, 400, 60, WindowShowType.WINDOWED),
+				new GLWindowContext()));
 		this.window(this.glfwManager().window());
 
 		this.gameLogic().initialization(this.window);
@@ -114,7 +111,6 @@ public class OnsieaGearings
 
 	private void runtime()
 	{
-		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		this.window().pollEvents();
 		this.gameLogic().highRateInput();
 		this.gameLogic().input();

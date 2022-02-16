@@ -104,7 +104,7 @@ public class Window implements IWindow
 	private @Getter(value = AccessLevel.PRIVATE) IWindowContext	windowContext;
 	private static GLFWImage.Buffer								icons;
 
-	protected Window(Monitors monitorsIn, WindowSettings settingsIn, IWindowContext windowContextIn)
+	public Window(Monitors monitorsIn, WindowSettings settingsIn, IWindowContext windowContextIn)
 	{
 		this.monitors(monitorsIn);
 		this.settings(settingsIn);

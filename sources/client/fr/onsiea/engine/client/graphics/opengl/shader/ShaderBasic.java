@@ -26,80 +26,17 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Seynax
  *
  */
-public class GLShaderManager
+public class ShaderBasic extends Shader
 {
-	private final Map<String, Shader>	shaders;
-
-	private ShaderBasic					shaderBasic;
-
-	public GLShaderManager()
-	{
-		this.shaders = new HashMap<>();
-
-		try
-		{
-			this.add("basic", this.shaderBasic = new ShaderBasic());
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	public GLShaderManager add(String nameIn, Shader shaderIn)
-	{
-		this.shaders.put(nameIn, shaderIn);
-
-		return this;
-	}
-
-	public Shader get(String nameIn)
-	{
-		return this.shaders.get(nameIn);
-	}
-
-	public boolean contains(String nameIn)
-	{
-		return this.shaders.containsKey(nameIn);
-	}
-
-	public GLShaderManager remove(String nameIn)
-	{
-		this.shaders.remove(nameIn);
-
-		return this;
-	}
-
 	/**
-	 *
+	 * @throws Exception
 	 */
-	public void cleanup()
+	public ShaderBasic() throws Exception
 	{
-		for (final Shader shader : this.shaders.values())
-		{
-			shader.cleanup();
-		}
-	}
-
-	public final Map<String, Shader> shaders()
-	{
-		return this.shaders;
-	}
-
-	public final Map<String, Shader> getShaders()
-	{
-		return this.shaders;
-	}
-
-	public final ShaderBasic shaderBasic()
-	{
-		return this.shaderBasic;
+		super("resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position");
 	}
 }

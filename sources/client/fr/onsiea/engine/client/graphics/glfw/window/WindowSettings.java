@@ -92,7 +92,7 @@ public class WindowSettings
 		GLFWUtils.boolHint(GLFW.GLFW_AUX_BUFFERS, this.mustAuxBuffers());
 		GLFWUtils.boolHint(GLFW.GLFW_STEREO, this.mustStereo());
 		GLFWUtils.boolHint(GLFW.GLFW_SRGB_CAPABLE, this.mustSRGBCapable());
-		GLFWUtils.boolHint(GLFW.GLFW_DOUBLEBUFFER, this.mustDoubleBuffering());
+		//GLFWUtils.boolHint(GLFW.GLFW_DOUBLEBUFFER, this.mustDoubleBuffering());
 
 		if (this.mustAntialiasing())
 		{

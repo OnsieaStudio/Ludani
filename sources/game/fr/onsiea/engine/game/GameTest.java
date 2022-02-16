@@ -26,6 +26,17 @@
 */
 package fr.onsiea.engine.game;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
+
+import fr.onsiea.engine.client.graphics.glfw.window.Window;
+import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
+import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGUtils;
+import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
+import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.common.OnsieaGearings;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
@@ -48,15 +59,56 @@ public class GameTest implements IGameLogic
 		}
 	}
 
+	private NanoVGUtils nanoVG;
+
 	@Override
 	public boolean preInitialization()
 	{
 		return true;
 	}
 
+	private int			vao;
+	private int			vbo;
+	private ShaderBasic	shaderBasic;
+
 	@Override
-	public boolean initialization()
+	public boolean initialization(IWindow windowIn)
 	{
+		try
+		{
+			((Window) windowIn).icon("resources/textures/aeison.png");
+			this.nanoVG = new NanoVGUtils().initialization(windowIn);
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		this.vao = GL30.glGenVertexArrays();
+
+		GL30.glBindVertexArray(this.vao);
+
+		GL20.glEnableVertexAttribArray(0);
+		this.vbo = GL15.glGenBuffers();
+
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.vbo);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, new float[]
+		{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f }, GL15.GL_STATIC_DRAW);
+		GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0L);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL20.glDisableVertexAttribArray(0);
+
+		GL30.glBindVertexArray(0);
+
+		try
+		{
+			this.shaderBasic = new ShaderBasic();
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+
 		return true;
 	}
 
@@ -76,12 +128,34 @@ public class GameTest implements IGameLogic
 	}
 
 	@Override
-	public void draw()
+	public void draw(IWindow windowIn)
 	{
+		OpenGLRenderAPIContext.initialize2DWithStencil();
+
+		//GL11.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
+		this.shaderBasic.start();
+		GL30.glBindVertexArray(this.vao);
+		GL20.glEnableVertexAttribArray(0);
+		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
+		GL20.glDisableVertexAttribArray(0);
+		GL30.glBindVertexArray(0);
+		Shader.stop();
+
+		//OpenGLRenderAPIContext.restoreState();
+		//this.nanoVG.startRender(windowIn);
+		//this.nanoVG.render(windowIn);
+		//this.nanoVG.finishRender();
 	}
 
 	@Override
 	public void cleanup()
 	{
+		this.nanoVG.cleanup();
+
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL15.glDeleteBuffers(this.vbo);
+		GL30.glBindVertexArray(0);
+		GL30.glDeleteVertexArrays(this.vao);
 	}
 }

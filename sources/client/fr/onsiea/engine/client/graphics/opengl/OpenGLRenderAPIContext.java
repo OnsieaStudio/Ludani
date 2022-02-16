@@ -206,8 +206,8 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 
 		this.anisotropicTextureFiltering(true);
 
-		this.shaderManager(new GLShaderManager());
-		this.texturesManager(new TexturesManager(this));
+		//this.shaderManager(new GLShaderManager());
+		//this.texturesManager(new TexturesManager(this));
 
 		/**this.meshManager(new GLMeshManager());
 		this.objLoader(new OBJLoader(this.meshManager()));
@@ -396,7 +396,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 
 		GL11.glDisable(GL43.GL_DEBUG_OUTPUT);
 		GL11.glDisable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		GL11.glDisable(KHRDebug.GL_DEBUG_OUTPUT);
+		//GL11.glDisable(KHRDebug.GL_DEBUG_OUTPUT);
 
 		// GLFW
 
@@ -424,7 +424,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 
 		/**this.meshManager().cleanup();
 		OpenGLScreenshot.cleanup();**/
-		this.shaderManager().cleanup();
+		//&this.shaderManager().cleanup();
 		this.disableDebugging();
 
 		GL.destroy();
@@ -507,17 +507,17 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 	{
 		return this.meshManager;
 	}
-	
+
 	private final void meshManager(GLMeshManager meshManagerIn)
 	{
 		this.meshManager = meshManagerIn;
 	}
-	
+
 	private final OBJLoader objLoader()
 	{
 		return this.objLoader;
 	}
-	
+
 	private final void objLoader(OBJLoader objLoaderIn)
 	{
 		this.objLoader = objLoaderIn;
