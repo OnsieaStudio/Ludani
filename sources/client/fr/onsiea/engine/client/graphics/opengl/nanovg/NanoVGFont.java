@@ -24,19 +24,49 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.hud.component;
+package fr.onsiea.engine.client.graphics.opengl.nanovg;
 
-import org.joml.Vector2f;
+import java.io.File;
+
+import org.lwjgl.nanovg.NVGColor;
+import org.lwjgl.nanovg.NanoVG;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Seynax
  *
  */
-public interface IHudComponent
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
+public class NanoVGFont
 {
-	Vector2f position();
+	private File	file;
+	private String	name;
 
-	Vector2f size();
+	public NanoVGFont(File fileIn)
+	{
+		this.file	= fileIn;
+		this.name	= this.file.getName();
+	}
 
-	boolean isIn(Vector2f position);
+	public NanoVGFont(File fileIn, String nameIn)
+	{
+		this.file	= fileIn;
+		this.name	= nameIn;
+	}
+
+	public NanoVGFont draw(long handleIn, int fontSizeIn, String fontNameIn, int textAligns, NVGColor colorIn, int xIn,
+			int yIn, String contentIn)
+	{
+		NanoVG.nvgFontSize(handleIn, fontSizeIn);
+		NanoVG.nvgFontFace(handleIn, fontNameIn);
+		NanoVG.nvgTextAlign(handleIn, textAligns);
+		NanoVG.nvgFillColor(handleIn, colorIn);
+		NanoVG.nvgText(handleIn, xIn, yIn, contentIn);
+
+		return this;
+	}
 }

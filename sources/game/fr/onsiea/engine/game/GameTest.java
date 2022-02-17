@@ -26,6 +26,8 @@
 */
 package fr.onsiea.engine.game;
 
+import org.lwjgl.nanovg.NVGColor;
+import org.lwjgl.nanovg.NanoVG;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -33,7 +35,7 @@ import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
-import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGUtils;
+import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
 import fr.onsiea.engine.client.graphics.window.IWindow;
@@ -59,7 +61,7 @@ public class GameTest implements IGameLogic
 		}
 	}
 
-	private NanoVGUtils nanoVG;
+	private NanoVGManager nanoVG;
 
 	@Override
 	public boolean preInitialization()
@@ -67,9 +69,10 @@ public class GameTest implements IGameLogic
 		return true;
 	}
 
-	private int			vao;
-	private int			vbo;
-	private ShaderBasic	shaderBasic;
+	private int				vao;
+	private int				vbo;
+	private ShaderBasic		shaderBasic;
+	private final NVGColor	color	= NVGColor.calloc();
 
 	@Override
 	public boolean initialization(IWindow windowIn)
@@ -77,7 +80,7 @@ public class GameTest implements IGameLogic
 		try
 		{
 			((Window) windowIn).icon("resources/textures/aeison.png");
-			this.nanoVG = new NanoVGUtils().initialization(windowIn);
+			this.nanoVG = new NanoVGManager(windowIn);
 		}
 		catch (final Exception e)
 		{
@@ -130,8 +133,6 @@ public class GameTest implements IGameLogic
 	@Override
 	public void draw(IWindow windowIn)
 	{
-		OpenGLRenderAPIContext.initialize2DWithStencil();
-
 		//GL11.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		this.shaderBasic.start();
@@ -142,15 +143,18 @@ public class GameTest implements IGameLogic
 		GL30.glBindVertexArray(0);
 		Shader.stop();
 
-		//OpenGLRenderAPIContext.restoreState();
-		//this.nanoVG.startRender(windowIn);
-		//this.nanoVG.render(windowIn);
-		//this.nanoVG.finishRender();
+		OpenGLRenderAPIContext.restoreState();
+		this.nanoVG.startRender(windowIn);
+		this.nanoVG.nanoVGFonts().draw(42, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP,
+				this.nanoVG.set(this.color, 100, 125, 127, 255), 0, 0, "Ceci est un texte !");
+		this.nanoVG.finishRender();
 	}
 
 	@Override
 	public void cleanup()
 	{
+		this.color.free();
+
 		this.nanoVG.cleanup();
 
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
