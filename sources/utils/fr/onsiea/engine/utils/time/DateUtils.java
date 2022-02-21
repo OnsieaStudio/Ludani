@@ -28,6 +28,7 @@ package fr.onsiea.engine.utils.time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -51,5 +52,201 @@ public class DateUtils
 	public final static String str(DateFormat dateFormatIn)
 	{
 		return dateFormatIn.format(new Date());
+	}
+
+	private long ms;
+
+	public DateUtils()
+	{
+		this.setMs(DateUtils.calendar().getTimeInMillis());
+	}
+
+	// Methods : -------------------------------------------------------
+
+	/**
+	 * @return the ns
+	 */
+	public long currentNs()
+	{
+		return this.currentMs() * 1_000_000L;
+	}
+
+	/**
+	 * @return the second
+	 */
+	public long currentSecond()
+	{
+		return this.currentMs() / 1_000L;
+	}
+
+	/**
+	 * @return the minute
+	 */
+	public long currentMinute()
+	{
+		return this.currentMs() / 60_000L;
+	}
+
+	/**
+	 * @return the hour
+	 */
+	public long currentHour()
+	{
+		return this.currentMs() / 3_600_000L;
+	}
+
+	/**
+	 * @return the day
+	 */
+	public long currentDay()
+	{
+		return this.currentMs() / 86_400_000_000L;
+	}
+
+	/**
+	 * @return the week
+	 */
+	public long currentWeek()
+	{
+		return this.currentMs() / 4_492_800_000_000L;
+	}
+
+	/**
+	 * @return the month
+	 */
+	public long currentMonth()
+	{
+		return this.currentDay() / DateUtils.calendar().getActualMaximum(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
+	 * @return the year
+	 */
+	public long currentYear()
+	{
+		return this.currentDay() / 365L;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Data[" + this.currentNs() + "ns " + this.currentMs() + "ms " + this.currentSecond() + "s "
+				+ this.currentMinute() + "m " + this.currentHour() + "h " + this.currentDay() + "d "
+				+ this.currentWeek() + "w " + this.currentMonth() + "month " + this.currentYear() + "year ]";
+	}
+
+	public String toString(final String prefixIn)
+	{
+		return prefixIn + "Data[" + this.currentNs() + "ns " + this.currentMs() + "ms " + this.currentSecond() + "s "
+				+ this.currentMinute() + "m " + this.currentHour() + "h " + this.currentDay() + "d "
+				+ this.currentWeek() + "w " + this.currentMonth() + "month " + this.currentYear() + "year ]";
+	}
+
+	// -------------------------------------------------------------------------
+
+	// GETTER | SETTER : -------------------------------------------------------
+
+	/**
+	 * @return the ms
+	 */
+	public long currentMs()
+	{
+		return this.ms;
+	}
+
+	/**
+	 * @param msIn the ms to set
+	 */
+	public void setMs(final long msIn)
+	{
+		this.ms = msIn;
+	}
+
+	// -------------------------------------------------------------------------
+
+	private static final Calendar calendar = Calendar.getInstance();
+
+	public final static String getDate()
+	{
+		return Calendar.getInstance().get(Calendar.MONTH) + 1 + "." + Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+				+ "." + Calendar.getInstance().get(Calendar.HOUR) + "." + Calendar.getInstance().get(Calendar.MINUTE)
+				+ "." + (Calendar.getInstance().get(Calendar.SECOND) + 1);
+	}
+
+	/**
+	 * @return the ns
+	 */
+	public long ns()
+	{
+		return DateUtils.calendar().getTimeInMillis() * 1_000_000L;
+	}
+
+	/**
+	 * @return the ns
+	 */
+	public long ms()
+	{
+		return DateUtils.calendar().getTimeInMillis();
+	}
+
+	/**
+	 * @return the second
+	 */
+	public long seconds()
+	{
+		return DateUtils.calendar().getTimeInMillis() / 1_000L;
+	}
+
+	/**
+	 * @return the minute
+	 */
+	public long minutes()
+	{
+		return DateUtils.calendar().getTimeInMillis() / 60_000L;
+	}
+
+	/**
+	 * @return the hour
+	 */
+	public long hours()
+	{
+		return DateUtils.calendar().getTimeInMillis() / 3_600_000L;
+	}
+
+	/**
+	 * @return the day
+	 */
+	public long days()
+	{
+		return this.currentMs() / 86_400_000_000L;
+	}
+
+	/**
+	 * @return the week
+	 */
+	public long weeks()
+	{
+		return this.currentMs() / 4_492_800_000_000L;
+	}
+
+	/**
+	 * @return the month
+	 */
+	public long months()
+	{
+		return this.currentDay() / DateUtils.calendar().getActualMaximum(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
+	 * @return the year
+	 */
+	public long years()
+	{
+		return this.currentDay() / 365L;
+	}
+
+	public static final Calendar calendar()
+	{
+		return DateUtils.calendar;
 	}
 }
