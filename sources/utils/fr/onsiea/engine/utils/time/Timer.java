@@ -58,6 +58,24 @@ public class Timer
 		return time;
 	}
 
+	/**
+	 * @param textCursorBlinkingSpeedIn
+	 * @return
+	 */
+	public boolean isTime(long timeIn)
+	{
+		final var actual = System.nanoTime();
+
+		if (actual - this.last() >= timeIn)
+		{
+			this.last(actual);
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private final long last()
 	{
 		return this.last;
