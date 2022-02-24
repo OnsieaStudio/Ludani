@@ -10,9 +10,9 @@ import fr.onsiea.engine.client.graphics.window.IWindow;
 
 public class NanoVGManager
 {
-	private long		handle;
+	private long				handle;
 
-	private NanoVGFonts	nanoVGFonts;
+	private final NanoVGFonts	nanoVGFonts;
 
 	public NanoVGManager(IWindow windowIn) throws Exception
 	{
@@ -86,10 +86,5 @@ public class NanoVGManager
 	public final NanoVGFonts nanoVGFonts()
 	{
 		return this.nanoVGFonts;
-	}
-
-	private final void nanoVGFonts(NanoVGFonts nanoVGFontsIn)
-	{
-		this.nanoVGFonts = nanoVGFontsIn;
 	}
 }

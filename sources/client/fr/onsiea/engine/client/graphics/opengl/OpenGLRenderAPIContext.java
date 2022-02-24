@@ -31,7 +31,6 @@ import java.util.Collection;
 
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL43;
@@ -46,139 +45,28 @@ import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.texture.TexturesManager;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Seynax
  *
  */
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
 public class OpenGLRenderAPIContext implements IRenderAPIContext
 {
-	public final static OpenGLRenderAPIContext create()
+	public final static OpenGLRenderAPIContext create() throws IllegalStateException, Exception
 	{
 		return new OpenGLRenderAPIContext(OpenGLInitializer.initialisationOrGet());
-	}
-
-	private static boolean	inWireframe			= false;
-	private static boolean	isAlphaBlending		= false;
-	private static boolean	additiveBlending	= false;
-	private static boolean	depthTesting		= false;
-
-	private static float	anisotropyTextureFilteringAmount;
-	private static boolean	mustAnisotropyTextureFiltering;
-
-	public static void enableAlphaBlending()
-	{
-		if (!OpenGLRenderAPIContext.isAlphaBlending())
-		{
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			OpenGLRenderAPIContext.isAlphaBlending(true);
-			OpenGLRenderAPIContext.additiveBlending(false);
-		}
-	}
-
-	public static void enableAdditiveBlending()
-	{
-		if (!OpenGLRenderAPIContext.additiveBlending())
-		{
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-			OpenGLRenderAPIContext.additiveBlending(true);
-			OpenGLRenderAPIContext.isAlphaBlending(false);
-		}
-	}
-
-	public static void disableBlending()
-	{
-		if (OpenGLRenderAPIContext.isAlphaBlending() || OpenGLRenderAPIContext.additiveBlending())
-		{
-			GL11.glDisable(GL11.GL_BLEND);
-			OpenGLRenderAPIContext.isAlphaBlending(false);
-			OpenGLRenderAPIContext.additiveBlending(false);
-		}
-	}
-
-	public static void enableDepthTesting(boolean enable)
-	{
-		if (enable && !OpenGLRenderAPIContext.depthTesting())
-		{
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			OpenGLRenderAPIContext.depthTesting(true);
-		}
-		else if (!enable && OpenGLRenderAPIContext.depthTesting())
-		{
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
-			OpenGLRenderAPIContext.depthTesting(false);
-		}
-	}
-
-	public static void goWireframe(boolean goWireframe)
-	{
-		if (goWireframe && !OpenGLRenderAPIContext.inWireframe())
-		{
-			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-			OpenGLRenderAPIContext.inWireframe(true);
-		}
-		else if (!goWireframe && OpenGLRenderAPIContext.inWireframe())
-		{
-			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-			OpenGLRenderAPIContext.inWireframe(false);
-		}
-	}
-
-	public static final boolean inWireframe()
-	{
-		return OpenGLRenderAPIContext.inWireframe;
-	}
-
-	private static final void inWireframe(boolean inWireframeIn)
-	{
-		OpenGLRenderAPIContext.inWireframe = inWireframeIn;
-	}
-
-	public static final boolean isAlphaBlending()
-	{
-		return OpenGLRenderAPIContext.isAlphaBlending;
-	}
-
-	private static final void isAlphaBlending(boolean isAlphaBlendingIn)
-	{
-		OpenGLRenderAPIContext.isAlphaBlending = isAlphaBlendingIn;
-	}
-
-	public static final boolean additiveBlending()
-	{
-		return OpenGLRenderAPIContext.additiveBlending;
-	}
-
-	private static final void additiveBlending(boolean additiveBlendingIn)
-	{
-		OpenGLRenderAPIContext.additiveBlending = additiveBlendingIn;
-	}
-
-	public static final boolean depthTesting()
-	{
-		return OpenGLRenderAPIContext.depthTesting;
-	}
-
-	private static final void depthTesting(boolean depthTestingIn)
-	{
-		OpenGLRenderAPIContext.depthTesting = depthTestingIn;
-	}
-
-	public static final float anisotropyTextureFilteringAmount()
-	{
-		return OpenGLRenderAPIContext.anisotropyTextureFilteringAmount;
-	}
-
-	public static final boolean mustAnisotropyTextureFiltering()
-	{
-		return OpenGLRenderAPIContext.mustAnisotropyTextureFiltering;
 	}
 
 	private GLCapabilities			capabilities;
 	private GLDebugMessageCallback	debugProc;
 	private GLDebugMessageCallback	openGLDebug;
+
+	private OpenGLSettings			settings;
 
 	private GLShaderManager			shaderManager;
 	private TexturesManager			texturesManager;
@@ -186,9 +74,15 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 	/**private GLMeshManager	meshManager;
 	private OBJLoader		objLoader;**/
 
-	private OpenGLRenderAPIContext(GLCapabilities capabilitiesIn)
+	/**
+	 *
+	 * @param capabilitiesIn
+	 * @throws Exception
+	 */
+	private OpenGLRenderAPIContext(GLCapabilities capabilitiesIn) throws Exception
 	{
 		this.capabilities(capabilitiesIn);
+		this.settings(new OpenGLSettings(this));
 		this.initialization();
 	}
 
@@ -204,7 +98,8 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 			this.disableDebugging();
 		}
 
-		this.anisotropicTextureFiltering(true);
+		this.settings().userSettings().enable("mustAnisotropyTextureFiltering").set("anisotropyTextureFilteringAmount",
+				4.0f);
 
 		//this.shaderManager(new GLShaderManager());
 		//this.texturesManager(new TexturesManager(this));
@@ -215,66 +110,9 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		**/
 	}
 
-	public void anisotropicTextureFiltering(boolean enableIn)
-	{
-		if (this.capabilities.GL_EXT_texture_filter_anisotropic)
-		{
-			if (enableIn)
-			{
-				OpenGLRenderAPIContext.anisotropyTextureFilteringAmount	= Math.min(4.0f,
-						GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-				OpenGLRenderAPIContext.mustAnisotropyTextureFiltering	= true;
-			}
-			else
-			{
-				OpenGLRenderAPIContext.mustAnisotropyTextureFiltering = false;
-			}
-		}
-		else
-		{
-			OpenGLRenderAPIContext.mustAnisotropyTextureFiltering = false;
-
-			if (GraphicsConstants.isDebug())
-			{
-				System.err.println("GL_EXT texture filter anisotropic not supported !");
-			}
-		}
-	}
-
-	public void anisotropicTextureFiltering(boolean enableIn, int numberIn)
-	{
-		if (this.capabilities.GL_EXT_texture_filter_anisotropic)
-		{
-			if (enableIn && numberIn < GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT))
-			{
-				OpenGLRenderAPIContext.anisotropyTextureFilteringAmount	= numberIn;
-				OpenGLRenderAPIContext.mustAnisotropyTextureFiltering	= true;
-			}
-			else
-			{
-				OpenGLRenderAPIContext.mustAnisotropyTextureFiltering = false;
-
-				if (GraphicsConstants.isDebug())
-				{
-					System.err
-							.println("GL_EXT texture filter anisotropic with \"" + numberIn + "\" is not supported !");
-				}
-			}
-		}
-		else
-		{
-			OpenGLRenderAPIContext.mustAnisotropyTextureFiltering = false;
-
-			if (GraphicsConstants.isDebug())
-			{
-				System.err.println("GL_EXT texture filter anisotropic is not supported !");
-			}
-		}
-	}
-
 	public void initialization(Matrix4f projectionMatrixIn) throws Exception
 	{
-		OpenGLRenderAPIContext.initialize3D();
+		OpenGLUtils.restoreState();
 
 		// this.shaderManager().initialization(projectionMatrixIn);
 	}
@@ -282,91 +120,15 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 	@Override
 	public ITexture createTexture(int widthIn, int heightIn, ByteBuffer bufferIn)
 	{
-		return new GLTexture(widthIn, heightIn, bufferIn);
+		return new GLTexture(widthIn, heightIn, bufferIn, this);
 	}
 
-	public final static void clearColor(float rIn, float gIn, float bIn, float aIn)
+	/**
+	 * @return
+	 */
+	public boolean textureFilterAnisotropicIsCompatible()
 	{
-		GL11.glClearColor(rIn, bIn, gIn, aIn);
-	}
-
-	public final static void clear()
-	{
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
-	}
-
-	public final static void restoreState()
-	{
-		OpenGLRenderAPIContext.initialize3D();
-
-		// Accept fragment if it closer to the camera than the former on
-
-		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		// glEnable(GL_DEPTH_TEST);
-		//         if (opts.showTriangles) {
-		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		// }
-
-	}
-
-	public final static void initialize3D()
-	{
-		// Enables
-
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		// GL11.glDepthFunc(GL11.GL_LESS);
-		/**if (GraphicsConstants.isCullFace())
-		{
-			GL11.glEnable(GL11.GL_CULL_FACE);
-			GL11.glCullFace(GL11.GL_BACK);
-			// GL11.glFrontFace(GL11.GL_CCW);
-		}**/
-		GL11.glEnable(GL11.GL_STENCIL_TEST);
-		GL11.glDepthMask(true);
-	}
-
-	public final static void initialize2D()
-	{
-		// Disables
-
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_STENCIL_TEST);
-
-		// Modes
-
-		GL11.glDepthMask(false);
-	}
-
-	public final static void initialize2DWithStencil()
-	{
-		// Disables
-
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glEnable(GL11.GL_STENCIL_TEST);
-
-		// Modes
-
-		GL11.glDepthMask(false);
-	}
-
-	public final static void enableTransparency()
-	{
-		// Enables
-
-		GL11.glEnable(GL11.GL_BLEND);
-
-		// Modes
-
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	}
-
-	public final static void disableTransparency()
-	{
-		// Enables
-
-		GL11.glDisable(GL11.GL_BLEND);
+		return this.capabilities.GL_EXT_texture_filter_anisotropic;
 	}
 
 	public void enableDebugging()
@@ -420,7 +182,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 	@Override
 	public void cleanup()
 	{
-		OpenGLRenderAPIContext.restoreState();
+		OpenGLUtils.restoreState();
 
 		/**this.meshManager().cleanup();
 		OpenGLScreenshot.cleanup();**/
@@ -429,38 +191,6 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 
 		GL.destroy();
 		GL.setCapabilities(null);
-	}
-
-	@SuppressWarnings("unused")
-	private final GLCapabilities capabilities()
-	{
-		return this.capabilities;
-	}
-
-	private final void capabilities(GLCapabilities capabilitiesIn)
-	{
-		this.capabilities = capabilitiesIn;
-	}
-
-	@SuppressWarnings("unused")
-	private final GLDebugMessageCallback debugProc()
-	{
-		return this.debugProc;
-	}
-
-	private final void debugProc(GLDebugMessageCallback debugProcIn)
-	{
-		this.debugProc = debugProcIn;
-	}
-
-	private final GLDebugMessageCallback openGLDebug()
-	{
-		return this.openGLDebug;
-	}
-
-	private final void openGLDebug(GLDebugMessageCallback glDebugMessageCallbackIn)
-	{
-		this.openGLDebug = glDebugMessageCallbackIn;
 	}
 
 	@Override
@@ -482,44 +212,4 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 
 		MemoryUtil.memFree(texturesBuffer);
 	}
-
-	public final GLShaderManager shaderManager()
-	{
-		return this.shaderManager;
-	}
-
-	private final void shaderManager(GLShaderManager shaderManagerIn)
-	{
-		this.shaderManager = shaderManagerIn;
-	}
-
-	public final TexturesManager texturesManager()
-	{
-		return this.texturesManager;
-	}
-
-	private final void texturesManager(TexturesManager texturesManagerIn)
-	{
-		this.texturesManager = texturesManagerIn;
-	}
-
-	/**public final GLMeshManager meshManager()
-	{
-		return this.meshManager;
-	}
-
-	private final void meshManager(GLMeshManager meshManagerIn)
-	{
-		this.meshManager = meshManagerIn;
-	}
-
-	private final OBJLoader objLoader()
-	{
-		return this.objLoader;
-	}
-
-	private final void objLoader(OBJLoader objLoaderIn)
-	{
-		this.objLoader = objLoaderIn;
-	}**/
 }

@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.onsiea.engine.utils.function.IIFunction;
+
 /**
  * @author Seynax
  *
@@ -41,6 +43,23 @@ public class ClientSettings implements IClientSettings
 	public ClientSettings()
 	{
 		this.parameters = new HashMap<>();
+	}
+
+	@Override
+	public IClientSettings add(String nameIn)
+	{
+		this.parameters.put(nameIn, new ClientBooleanParameter(this, nameIn));
+
+		return this;
+	}
+
+	@Override
+	public IClientSettings add(String nameIn, IIFunction<IClientBooleanParameter> enableMethodIn,
+			IIFunction<IClientBooleanParameter> disableMethodIn)
+	{
+		this.parameters.put(nameIn, new ClientModulableBooleanParameter(this, nameIn, enableMethodIn, disableMethodIn));
+
+		return this;
 	}
 
 	@Override
@@ -67,6 +86,22 @@ public class ClientSettings implements IClientSettings
 	public boolean contains(String nameIn)
 	{
 		return this.parameters.containsKey(nameIn);
+	}
+
+	/**
+	 * @param stringIn
+	 * @return
+	 */
+	public boolean isEnabled(String nameIn)
+	{
+		final var parameter = this.get(nameIn);
+
+		if (parameter instanceof IClientBooleanParameter)
+		{
+			return ((IClientBooleanParameter) parameter).status();
+		}
+
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")

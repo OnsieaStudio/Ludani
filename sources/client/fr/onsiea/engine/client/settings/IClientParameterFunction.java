@@ -26,93 +26,11 @@
 */
 package fr.onsiea.engine.client.settings;
 
-import java.util.Collection;
-
-import fr.onsiea.engine.utils.function.IIFunction;
-
 /**
  * @author Seynax
  *
  */
-public interface IClientSettings
+public interface IClientParameterFunction<T>
 {
-	/**
-	 *
-	 * @return
-	 */
-	Collection<String> names();
-
-	/**
-	 *
-	 * @param nameIn
-	 * @return
-	 */
-	IClientSettings add(String nameIn);
-
-	/**
-	 *
-	 * @param nameIn
-	 * @param enableMethodIn
-	 * @param disableMethodIn
-	 * @return
-	 */
-	IClientSettings add(String nameIn, IIFunction<IClientBooleanParameter> enableMethodIn,
-			IIFunction<IClientBooleanParameter> disableMethodIn);
-
-	/**
-	 *
-	 * @param nameIn
-	 * @param parameterIn
-	 * @return
-	 */
-	IClientSettings put(String nameIn, IClientParameter<?> parameterIn);
-
-	/***
-	 *
-	 * @param nameIn
-	 * @return
-	 */
-	IClientParameter<?> get(String nameIn);
-
-	/**
-	 *
-	 * @param nameIn
-	 * @return
-	 */
-	boolean contains(String nameIn);
-
-	/**
-	 *
-	 * @param nameIn
-	 * @return
-	 */
-	IClientSettings remove(String nameIn);
-
-	/**
-	 * Set "nameIn" parameter on "valueIn" value
-	 * @param nameIn, valueIn
-	 * @return
-	 */
-	<T> IClientSettings set(String nameIn, T valueIn);
-
-	/**
-	 * Only works if the parameter is of boolean type, raises an exception otherwise.
-	 * @param nameIn
-	 * @return
-	 */
-	IClientSettings enable(String nameIn);
-
-	/**
-	 * Only works if the parameter is of boolean type, throw an exception otherwise.
-	 * @param nameIn
-	 * @return
-	 */
-	IClientSettings disable(String nameIn);
-
-	/**
-	 * Only works if the parameter is of boolean type, throw an exception otherwise.
-	 * @param nameIn
-	 * @return
-	 */
-	IClientSettings toggle(String nameIn);
+	public void set(IClientParameter<T> parameterIn, T valueIn);
 }

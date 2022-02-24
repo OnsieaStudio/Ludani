@@ -33,4 +33,6 @@ package fr.onsiea.engine.client.settings;
 public interface IClientParameter<T>
 {
 	IClientSettings set(T valueIn);
+
+	T value();
 }

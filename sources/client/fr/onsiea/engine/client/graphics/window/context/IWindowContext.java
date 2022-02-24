@@ -40,9 +40,11 @@ public interface IWindowContext
 	/**
 	 * @param handleIn
 	 * @param windowIn
+	 * @throws Exception
+	 * @throws IllegalStateException
 	 * @return
 	 */
-	IRenderAPIContext associate(long handleIn, IWindow windowIn);
+	IRenderAPIContext associate(long handleIn, IWindow windowIn) throws IllegalStateException, Exception;
 
 	/**
 	 *

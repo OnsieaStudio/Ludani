@@ -60,7 +60,7 @@ public class GLWindowContext implements IWindowContext
 	}
 
 	@Override
-	public IRenderAPIContext associate(long handleIn, IWindow windowIn)
+	public IRenderAPIContext associate(long handleIn, IWindow windowIn) throws IllegalStateException, Exception
 	{
 		GLFW.glfwMakeContextCurrent(handleIn);
 

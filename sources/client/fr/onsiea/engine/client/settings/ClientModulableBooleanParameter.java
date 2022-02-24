@@ -37,15 +37,14 @@ import lombok.NonNull;
 public class ClientModulableBooleanParameter implements IClientBooleanParameter, INameable
 {
 	private final IClientSettings						parent;
-	private final String									name;
-	public boolean											status;
+	private final String								name;
+	public boolean										status;
 
 	private final IIFunction<IClientBooleanParameter>	enableMethod;
 	private final IIFunction<IClientBooleanParameter>	disableMethod;
 
 	protected ClientModulableBooleanParameter(IClientSettings parentIn, String nameIn,
-			IIFunction<IClientBooleanParameter> enableMethodIn,
-			IIFunction<IClientBooleanParameter> disableMethodIn)
+			IIFunction<IClientBooleanParameter> enableMethodIn, IIFunction<IClientBooleanParameter> disableMethodIn)
 	{
 		this.parent			= parentIn;
 		this.name			= nameIn;
@@ -120,6 +119,12 @@ public class ClientModulableBooleanParameter implements IClientBooleanParameter,
 	}
 
 	@Override
+	public final Boolean value()
+	{
+		return this.status;
+	}
+
+	@Override
 	public final boolean status()
 	{
 		return this.status;
@@ -128,7 +133,7 @@ public class ClientModulableBooleanParameter implements IClientBooleanParameter,
 	public static class Builder
 	{
 		private final IClientSettings				parent;
-		private final String							name;
+		private final String						name;
 
 		private IIFunction<IClientBooleanParameter>	enableMethod;
 		private IIFunction<IClientBooleanParameter>	disableMethod;
@@ -139,8 +144,7 @@ public class ClientModulableBooleanParameter implements IClientBooleanParameter,
 			this.name	= nameIn;
 		}
 
-		public Builder(IClientSettings parentIn, String nameIn,
-				IIFunction<IClientBooleanParameter> enableMethodIn,
+		public Builder(IClientSettings parentIn, String nameIn, IIFunction<IClientBooleanParameter> enableMethodIn,
 				IIFunction<IClientBooleanParameter> disableMethodIn)
 		{
 			this.parent			= parentIn;

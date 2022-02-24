@@ -111,7 +111,7 @@ public class Window implements IWindow
 		this.windowContext(windowContextIn);
 	}
 
-	private final Window initialization(long[] pointerIn)
+	private final Window initialization(long[] pointerIn) throws IllegalStateException, Exception
 	{
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 

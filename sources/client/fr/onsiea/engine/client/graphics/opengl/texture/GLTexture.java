@@ -40,11 +40,16 @@ import org.lwjgl.opengl.GL30;
 import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.texture.TextureComponents;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Seynax
  *
  */
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
 public class GLTexture implements ITexture
 {
 	public final static int gen()
@@ -91,21 +96,24 @@ public class GLTexture implements ITexture
 		GL11.glDeleteTextures(texturesBufferIn);
 	}
 
-	private int					id;
-	private TextureComponents	components;
+	private int						id;
+	private TextureComponents		components;
+	private OpenGLRenderAPIContext	context;
 
 	/**
 	 * @param widthIn
 	 * @param heightIn
 	 * @param bufferIn
 	 */
-	public GLTexture(int widthIn, int heightIn, ByteBuffer bufferIn)
+	public GLTexture(int widthIn, int heightIn, ByteBuffer bufferIn, OpenGLRenderAPIContext contextIn)
 	{
 		this.id(GLTexture.gen());
 
 		this.components(new TextureComponents(widthIn, heightIn));
 
 		this.load(bufferIn);
+
+		this.context(contextIn);
 	}
 
 	private void initialization()
@@ -121,10 +129,10 @@ public class GLTexture implements ITexture
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MIN_LOD, -1000);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LOD, 1000);
 
-		if (OpenGLRenderAPIContext.mustAnisotropyTextureFiltering())
+		if (this.context().settings().userSettings().isEnabled("mustAnisotropyTextureFiltering"))
 		{
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
-					OpenGLRenderAPIContext.anisotropyTextureFilteringAmount());
+					(float) this.context().settings().userSettings().get("anisotropyTextureFilteringAmount").value());
 		}
 	}
 
@@ -224,27 +232,5 @@ public class GLTexture implements ITexture
 		}
 		final var other = (GLTexture) obj;
 		return this.id == other.id;
-	}
-
-	@Override
-	public final int id()
-	{
-		return this.id;
-	}
-
-	private final void id(int idIn)
-	{
-		this.id = idIn;
-	}
-
-	@Override
-	public final TextureComponents components()
-	{
-		return this.components;
-	}
-
-	private final void components(TextureComponents componentsIn)
-	{
-		this.components = componentsIn;
 	}
 }

@@ -27,7 +27,6 @@
 package fr.onsiea.engine.client.settings;
 
 import fr.onsiea.engine.utils.INameable;
-import fr.onsiea.engine.utils.function.IIFunction;
 
 /**
  * @author Seynax
@@ -35,14 +34,13 @@ import fr.onsiea.engine.utils.function.IIFunction;
  */
 public class ClientParameter<T> implements IClientParameter<T>, INameable
 {
-	private final IClientSettings					parent;
-	private final String								name;
-	public T											value;
+	private final IClientSettings				parent;
+	private final String						name;
+	public T									value;
 
-	private final IIFunction<IClientParameter<T>>	setMethod;
+	private final IClientParameterFunction<T>	setMethod;
 
-	protected ClientParameter(IClientSettings parentIn, String nameIn,
-			IIFunction<IClientParameter<T>> setMethodIn)
+	protected ClientParameter(IClientSettings parentIn, String nameIn, IClientParameterFunction<T> setMethodIn)
 	{
 		this.parent		= parentIn;
 		this.name		= nameIn;
@@ -54,7 +52,7 @@ public class ClientParameter<T> implements IClientParameter<T>, INameable
 	{
 		this.value = valueIn;
 
-		this.setMethod.execute(this);
+		this.setMethod.set(this, valueIn);
 
 		return this.parent;
 	}
@@ -77,10 +75,10 @@ public class ClientParameter<T> implements IClientParameter<T>, INameable
 
 	public static class Builder<T>
 	{
-		private final IClientSettings			parent;
-		private final String						name;
+		private final IClientSettings		parent;
+		private final String				name;
 
-		private IIFunction<IClientParameter<T>>	setMethod;
+		private IClientParameterFunction<T>	setMethod;
 
 		public Builder(IClientSettings parentIn, String nameIn)
 		{
@@ -88,7 +86,7 @@ public class ClientParameter<T> implements IClientParameter<T>, INameable
 			this.name	= nameIn;
 		}
 
-		public Builder(IClientSettings parentIn, String nameIn, IIFunction<IClientParameter<T>> setMethodIn)
+		public Builder(IClientSettings parentIn, String nameIn, IClientParameterFunction<T> setMethodIn)
 		{
 			this.parent		= parentIn;
 			this.name		= nameIn;
@@ -115,7 +113,7 @@ public class ClientParameter<T> implements IClientParameter<T>, INameable
 			return new ClientParameter<>(this.parent, this.name, this.setMethod);
 		}
 
-		public void setMethod(IIFunction<IClientParameter<T>> setMethodIn)
+		public void setMethod(IClientParameterFunction<T> setMethodIn)
 		{
 			this.setMethod = setMethodIn;
 		}

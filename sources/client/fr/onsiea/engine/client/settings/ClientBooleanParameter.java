@@ -36,8 +36,8 @@ import lombok.NonNull;
 public class ClientBooleanParameter implements IClientBooleanParameter, INameable
 {
 	private final IClientSettings	parent;
-	private final String				name;
-	public boolean						status;
+	private final String			name;
+	public boolean					status;
 
 	protected ClientBooleanParameter(IClientSettings parentIn, String nameIn)
 	{
@@ -90,6 +90,12 @@ public class ClientBooleanParameter implements IClientBooleanParameter, INameabl
 	}
 
 	@Override
+	public final Boolean value()
+	{
+		return this.status;
+	}
+
+	@Override
 	public final boolean status()
 	{
 		return this.status;
@@ -98,7 +104,7 @@ public class ClientBooleanParameter implements IClientBooleanParameter, INameabl
 	public static class Builder
 	{
 		private final IClientSettings	parent;
-		private final String				name;
+		private final String			name;
 
 		public Builder(IClientSettings parentIn, String nameIn)
 		{
