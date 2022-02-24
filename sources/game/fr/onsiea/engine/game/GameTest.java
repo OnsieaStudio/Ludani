@@ -34,7 +34,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
-import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
+import fr.onsiea.engine.client.graphics.opengl.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
@@ -143,7 +143,7 @@ public class GameTest implements IGameLogic
 		GL30.glBindVertexArray(0);
 		Shader.stop();
 
-		OpenGLRenderAPIContext.restoreState();
+		OpenGLUtils.restoreState();
 		this.nanoVG.startRender(windowIn);
 		this.nanoVG.nanoVGFonts().draw(42, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP,
 				this.nanoVG.set(this.color, 100, 125, 127, 255), 0, 0, "Ceci est un texte !");

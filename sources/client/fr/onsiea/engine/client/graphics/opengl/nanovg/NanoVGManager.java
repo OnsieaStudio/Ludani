@@ -58,7 +58,7 @@ public class NanoVGManager
 		NanoVG.nvgTextLetterSpacing(this.handle(), letterSpacingIn);
 	}
 
-	public NVGColor set(NVGColor colorIn, int rIn, int gIn, int bIn, int aIn)
+	public static NVGColor set(NVGColor colorIn, int rIn, int gIn, int bIn, int aIn)
 	{
 		colorIn.r(rIn / 255.0f);
 		colorIn.g(gIn / 255.0f);
