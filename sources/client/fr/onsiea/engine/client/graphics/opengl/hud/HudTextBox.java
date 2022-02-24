@@ -27,6 +27,8 @@ public class HudTextBox
 	private long			rate;
 	private Timer			timer;
 
+	private NVGColor		nvgColor	= NVGColor.calloc();
+
 	public HudTextBox(IWindow windowIn)
 	{
 		this.recorder(new StringRecorder());
@@ -166,8 +168,6 @@ public class HudTextBox
 		//}
 	}
 
-	private NVGColor nvgColor = NVGColor.calloc();
-
 	public void draw(IWindow windowIn, NanoVGManager nanoManagerVGIn)
 	{
 		nanoManagerVGIn.letterSpacing(1.50f);
@@ -177,11 +177,11 @@ public class HudTextBox
 		/**final var bounds0 = new float[4];
 		NanoVG.nvgTextBounds(nanoManagerVGIn.handle(), this.transformations().x(), this.transformations().y(),
 				this.recorder().content().substring(0, this.recorder().position()), bounds0);
-		
+
 		nanoManagerVGIn.drawText(this.policeSize(), NanoVG.FONT_NAME, NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP,
 				bounds0[2] - this.transformations().x(), this.transformations().y(), 255, 255, 255, 255,
 				inputManagerIn.keyboard().isTextCursorBlinking() ? "|" : " ");
-		
+
 		if (this.recorder().isSelected())
 		{
 			final var selectionStr = this.recorder().selectionStr();
@@ -191,10 +191,10 @@ public class HudTextBox
 				NanoVG.nvgTextBounds(nanoManagerVGIn.handle(), this.transformations().x(), this.transformations().y(),
 						this.recorder().content().substring(0, this.recorder().selection().x()), bounds1);
 				final var bounds2 = new float[4];
-		
+
 				NanoVG.nvgTextBounds(nanoManagerVGIn.handle(), this.transformations().x(), this.transformations().y(),
 						selectionStr, bounds2);
-		
+
 				NanoVG.nvgBeginPath(nanoManagerVGIn.handle());
 				NanoVG.nvgRect(nanoManagerVGIn.handle(), bounds1[2], bounds2[1], bounds2[2], bounds2[3] - bounds2[1]);
 				NanoVG.nvgFillColor(nanoManagerVGIn.handle(), nanoManagerVGIn.rgba(50, 100, 128, 200));

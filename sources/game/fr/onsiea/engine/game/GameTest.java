@@ -146,7 +146,7 @@ public class GameTest implements IGameLogic
 		OpenGLUtils.restoreState();
 		this.nanoVG.startRender(windowIn);
 		this.nanoVG.nanoVGFonts().draw(42, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP,
-				this.nanoVG.set(this.color, 100, 125, 127, 255), 0, 0, "Ceci est un texte !");
+				NanoVGManager.set(this.color, 100, 125, 127, 255), 0, 0, "Ceci est un texte !");
 		this.nanoVG.finishRender();
 	}
 
