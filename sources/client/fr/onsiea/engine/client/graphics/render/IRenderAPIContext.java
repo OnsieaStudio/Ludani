@@ -26,11 +26,6 @@
 */
 package fr.onsiea.engine.client.graphics.render;
 
-import java.nio.ByteBuffer;
-import java.util.Collection;
-
-import fr.onsiea.engine.client.graphics.texture.ITexture;
-
 /**
  * @author Seynax
  *
@@ -39,25 +34,7 @@ import fr.onsiea.engine.client.graphics.texture.ITexture;
 public interface IRenderAPIContext
 {
 	/**
-	 * @implNote Must be executed at all costs, after initializing the window and its context!
-	 */
-	void initialization();
-
-	/**
-	 * @param widthIn
-	 * @param heightIn
-	 * @param bufferIn
-	 * @return
-	 */
-	ITexture createTexture(int widthIn, int heightIn, ByteBuffer bufferIn);
-
-	/**
 	 *
 	 */
 	void cleanup();
-
-	/**
-	 * @param valuesIn
-	 */
-	void deleteTextures(Collection<ITexture> valuesIn);
 }

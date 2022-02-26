@@ -43,6 +43,7 @@ import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.texture.TexturesManager;
 import lombok.AccessLevel;
@@ -55,7 +56,7 @@ import lombok.Setter;
  */
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PRIVATE)
-public class OpenGLRenderAPIContext implements IRenderAPIContext
+public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMethods
 {
 	public final static OpenGLRenderAPIContext create() throws IllegalStateException, Exception
 	{
@@ -83,12 +84,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 	{
 		this.capabilities(capabilitiesIn);
 		this.settings(new OpenGLSettings(this));
-		this.initialization();
-	}
 
-	@Override
-	public void initialization()
-	{
 		if (GraphicsConstants.isDebug())
 		{
 			this.enableDebugging();
