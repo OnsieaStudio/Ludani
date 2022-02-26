@@ -3,14 +3,14 @@ package fr.onsiea.engine.client.graphics.texture;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
 
 public class TexturesManager
 {
-	private IRenderAPIContext		renderAPIContext;
+	private IRenderAPIMethods		renderAPIContext;
 	private Map<String, ITexture>	textures;
 
-	public TexturesManager(IRenderAPIContext renderAPIContextIn)
+	public TexturesManager(IRenderAPIMethods renderAPIContextIn)
 	{
 		this.renderAPIContext(renderAPIContextIn);
 
@@ -56,12 +56,12 @@ public class TexturesManager
 		this.textures().clear();
 	}
 
-	private final IRenderAPIContext renderAPIContext()
+	private final IRenderAPIMethods renderAPIContext()
 	{
 		return this.renderAPIContext;
 	}
 
-	private final void renderAPIContext(IRenderAPIContext renderAPIContextIn)
+	private final void renderAPIContext(IRenderAPIMethods renderAPIContextIn)
 	{
 		this.renderAPIContext = renderAPIContextIn;
 	}

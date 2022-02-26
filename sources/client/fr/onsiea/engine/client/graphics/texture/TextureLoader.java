@@ -5,14 +5,14 @@ import java.nio.ByteBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBImage;
 
-import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
 import fr.onsiea.engine.client.graphics.texture.data.TextureBuffer;
 import fr.onsiea.engine.client.graphics.texture.data.TextureBytes;
 
 public class TextureLoader
 {
 	public final static ITexture load(final String filepathIn, final TextureBytes textureBytesIn,
-			IRenderAPIContext renderAPIContextIn)
+			IRenderAPIMethods renderAPIContextIn)
 	{
 		final var	realFilepath	= TextureUtils.filepath(filepathIn);
 
@@ -38,7 +38,7 @@ public class TextureLoader
 		throw new RuntimeException("[ERREUR] Impossible de charger la texture : \"" + realFilepath + "\"");
 	}
 
-	final static ITexture load(final String filepathIn, IRenderAPIContext renderAPIContextIn)
+	final static ITexture load(final String filepathIn, IRenderAPIMethods renderAPIContextIn)
 	{
 		final var	realFilepath	= TextureUtils.filepath(filepathIn);
 
@@ -62,7 +62,7 @@ public class TextureLoader
 	}
 
 	public final static ITexture load(final ByteBuffer bufferIn, final int widthIn, final int heightIn,
-			IRenderAPIContext renderAPIContextIn)
+			IRenderAPIMethods renderAPIContextIn)
 	{
 		if (bufferIn == null)
 		{
