@@ -83,12 +83,6 @@ public class Window implements IWindow
 			throw new Exception("[ERROR] Failed to create window instance, instance pointing to settings is null !");
 		}
 
-		/**if (renderContextIn == null)
-		{
-			throw new Exception(
-					"[ERROR] Failed to create window instance, instance pointing to render context is null !");
-		}**/
-
 		if (windowContextIn == null)
 		{
 			throw new Exception(

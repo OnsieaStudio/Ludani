@@ -26,6 +26,8 @@
 */
 package fr.onsiea.engine.client.graphics.window;
 
+import fr.onsiea.engine.client.graphics.glfw.window.WindowSettings;
+
 /**
  * @author Seynax
  *
@@ -33,7 +35,7 @@ package fr.onsiea.engine.client.graphics.window;
 
 public interface IWindow
 {
-	// IClientSettings settings();
+	WindowSettings settings();
 
 	boolean shouldClose();
 
