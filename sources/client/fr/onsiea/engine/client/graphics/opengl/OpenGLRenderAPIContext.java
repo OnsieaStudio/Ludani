@@ -60,7 +60,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 {
 	public final static OpenGLRenderAPIContext create() throws IllegalStateException, Exception
 	{
-		return new OpenGLRenderAPIContext(OpenGLInitializer.initialisationOrGet());
+		return new OpenGLRenderAPIContext(OpenGLInitializer.initialize());
 	}
 
 	private GLCapabilities			capabilities;

@@ -27,7 +27,6 @@
 package fr.onsiea.engine.game;
 
 import org.lwjgl.nanovg.NVGColor;
-import org.lwjgl.nanovg.NanoVG;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -38,10 +37,16 @@ import fr.onsiea.engine.client.graphics.opengl.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
+import fr.onsiea.engine.client.graphics.shapes.AlignedShapeIndexer;
+import fr.onsiea.engine.client.graphics.shapes.Cube;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.common.OnsieaGearings;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
+import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.maths.MathInstances;
+import fr.onsiea.engine.maths.projections.Projections;
+import fr.onsiea.engine.utils.time.Timer;
 
 /**
  * @author Seynax
@@ -72,11 +77,13 @@ public class GameTest implements IGameLogic
 	private int				vao;
 	private int				vbo;
 	private ShaderBasic		shaderBasic;
+	private Camera			camera;
 	private final NVGColor	color	= NVGColor.calloc();
 
 	@Override
 	public boolean initialization(IWindow windowIn)
 	{
+		AlignedShapeIndexer.runtime();
 		try
 		{
 			((Window) windowIn).icon("resources/textures/aeison.png");
@@ -92,20 +99,40 @@ public class GameTest implements IGameLogic
 		GL30.glBindVertexArray(this.vao);
 
 		GL20.glEnableVertexAttribArray(0);
-		this.vbo = GL15.glGenBuffers();
+		//GL20.glEnableVertexAttribArray(1);
 
+		this.vbo = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.vbo);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, new float[]
-		{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f }, GL15.GL_STATIC_DRAW);
-		GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0L);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, Cube.positionsForIndices, GL15.GL_STATIC_DRAW);
+		GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0L);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
+		/**final var ubo = GL15.glGenBuffers();
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ubo);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, Cube.textureCoordinates, GL15.GL_STATIC_DRAW);
+		GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0L);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);**/
+
+		final var ibo = GL15.glGenBuffers();
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo);
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, Cube.INDICES, GL15.GL_STATIC_DRAW);
+
+		//GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 
 		GL30.glBindVertexArray(0);
 
+		this.camera = new Camera();
+
 		try
 		{
 			this.shaderBasic = new ShaderBasic();
+
+			this.shaderBasic.start();
+			this.shaderBasic.projectionMatrix().load(Projections.of(((Window) windowIn).settings().width(),
+					((Window) windowIn).settings().height(), 90.0f, 0.1f, 1000.0f));
+			this.shaderBasic.transformationsMatrix().load(MathInstances.simpleTransformationsMatrix3d());
+			Shader.stop();
 		}
 		catch (final Exception e)
 		{
@@ -120,9 +147,15 @@ public class GameTest implements IGameLogic
 	{
 	}
 
+	private final Timer cameraTimer = new Timer();
+
 	@Override
-	public void input()
+	public void input(IWindow windowIn)
 	{
+		if (this.cameraTimer.isTime(1_000_000_0L))
+		{
+			this.camera.input((Window) windowIn);
+		}
 	}
 
 	@Override
@@ -133,21 +166,28 @@ public class GameTest implements IGameLogic
 	@Override
 	public void draw(IWindow windowIn)
 	{
+		OpenGLUtils.restoreState();
 		//GL11.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		this.shaderBasic.start();
+
+		this.shaderBasic.viewMatrix().load(this.camera.viewMatrix());
+		this.shaderBasic.transformationsMatrix().load(MathInstances.simpleTransformationsMatrix3d());
 		GL30.glBindVertexArray(this.vao);
 		GL20.glEnableVertexAttribArray(0);
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
+		//GL20.glEnableVertexAttribArray(1);
+		GL11.glDrawElements(GL11.GL_TRIANGLES, 36, GL11.GL_UNSIGNED_INT, 0);
+		//GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, Cube.INDICES.length);
+		//GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 		Shader.stop();
 
-		OpenGLUtils.restoreState();
+		/**
 		this.nanoVG.startRender(windowIn);
 		this.nanoVG.nanoVGFonts().draw(42, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP,
 				NanoVGManager.set(this.color, 100, 125, 127, 255), 0, 0, "Ceci est un texte !");
-		this.nanoVG.finishRender();
+		this.nanoVG.finishRender();**/
 	}
 
 	@Override

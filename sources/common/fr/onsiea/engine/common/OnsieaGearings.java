@@ -113,7 +113,7 @@ public class OnsieaGearings
 	{
 		this.window().pollEvents();
 		this.gameLogic().highRateInput();
-		this.gameLogic().input();
+		this.gameLogic().input(this.window);
 		this.gameLogic().update();
 		this.gameLogic().draw(this.window());
 		this.window().swapBuffers();

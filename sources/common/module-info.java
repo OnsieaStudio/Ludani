@@ -34,7 +34,7 @@ module OnsieaEngine
 	requires transitive org.joml;
 	requires org.lwjgl;
 	requires org.lwjgl.glfw;
-	requires org.lwjgl.opengl;
+	requires transitive org.lwjgl.opengl;
 	requires org.lwjgl.nanovg;
 	requires org.lwjgl.stb;
 }

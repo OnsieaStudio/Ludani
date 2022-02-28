@@ -26,17 +26,30 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformMatrix4f;
+import lombok.AccessLevel;
+import lombok.Getter;
+
 /**
  * @author Seynax
  *
  */
+@Getter(AccessLevel.PUBLIC)
 public class ShaderBasic extends Shader
 {
+	private final UniformMatrix4f	projectionMatrix;
+	private final UniformMatrix4f	viewMatrix;
+	private final UniformMatrix4f	transformationsMatrix;
+
 	/**
 	 * @throws Exception
 	 */
 	public ShaderBasic() throws Exception
 	{
 		super("resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position");
+
+		this.projectionMatrix		= this.matrix4fUniform("projection");
+		this.viewMatrix				= this.matrix4fUniform("view");
+		this.transformationsMatrix	= this.matrix4fUniform("transformations");
 	}
 }

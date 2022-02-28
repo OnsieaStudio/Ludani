@@ -45,7 +45,10 @@ public interface IGameLogic
 
 	void highRateInput();
 
-	void input();
+	/**
+	 * @param windowIn
+	 */
+	void input(IWindow windowIn);
 
 	void update();
 

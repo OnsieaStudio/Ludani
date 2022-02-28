@@ -1,37 +1,35 @@
 package fr.onsiea.engine.client.graphics.opengl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
 
 public final class OpenGLInitializer
 {
-	private static GLCapabilities	capabilities;
-	private static boolean			isInitialised;
+	private final static Map<Thread, GLCapabilities> THREADED_CAPABILITIES = new HashMap<>();
 
-	static GLCapabilities initialisationOrGet() throws IllegalStateException
+	public static GLCapabilities initialize()
 	{
-		if (!OpenGLInitializer.isInitialised())
+		final var capabilities = GL.createCapabilities();
+
+		if (capabilities == null)
 		{
-			OpenGLInitializer.capabilities = GL.createCapabilities();
-
-			if (OpenGLInitializer.capabilities == null)
-			{
-				throw new IllegalStateException("[ERROR] OpenGL loading failed.");
-			}
-
-			OpenGLInitializer.initialised(true);
+			throw new IllegalStateException("[ERROR] OpenGL loading failed.");
 		}
+		OpenGLInitializer.THREADED_CAPABILITIES.put(Thread.currentThread(), capabilities);
 
-		return OpenGLInitializer.capabilities;
+		return capabilities;
 	}
 
-	public static boolean isInitialised()
+	public static GLCapabilities get()
 	{
-		return OpenGLInitializer.isInitialised;
+		return OpenGLInitializer.THREADED_CAPABILITIES.get(Thread.currentThread());
 	}
 
-	private static void initialised(boolean isInitialisedIn)
+	public static GLCapabilities get(Thread threadIn)
 	{
-		OpenGLInitializer.isInitialised = isInitialisedIn;
+		return OpenGLInitializer.THREADED_CAPABILITIES.get(threadIn);
 	}
 }
