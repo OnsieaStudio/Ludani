@@ -245,10 +245,11 @@ public class Window implements IWindow
 			image.set(textureBuffer.components().width(), textureBuffer.components().height(), textureBuffer.buffer());
 			Window.icons = GLFWImage.malloc(1);
 			Window.icons.put(0, image);
-			image.free();
-			MemoryUtil.memFree(textureBuffer.buffer());
 
 			GLFW.glfwSetWindowIcon(this.handle(), Window.icons);
+
+			image.free();
+			MemoryUtil.memFree(textureBuffer.buffer());
 		}
 		catch (final Exception e)
 		{
