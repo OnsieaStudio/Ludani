@@ -68,8 +68,8 @@ public class Projections
 
 		projectionMatrix.identity();
 
-		projectionMatrix.perspective(GraphicsConstants.fov(), aspectRatio, GraphicsConstants.zNear(),
-				GraphicsConstants.zFar());
+		projectionMatrix.perspective(GraphicsConstants.FOV, aspectRatio, GraphicsConstants.ZNEAR,
+				GraphicsConstants.ZFAR);
 
 		return projectionMatrix;
 	}
@@ -86,8 +86,7 @@ public class Projections
 
 		transposeIn.identity();
 
-		transposeIn.perspective(GraphicsConstants.fov(), aspectRatio, GraphicsConstants.zNear(),
-				GraphicsConstants.zFar());
+		transposeIn.perspective(GraphicsConstants.FOV, aspectRatio, GraphicsConstants.ZNEAR, GraphicsConstants.ZFAR);
 
 		return transposeIn;
 	}
