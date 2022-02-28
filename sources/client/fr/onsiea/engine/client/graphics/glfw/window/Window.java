@@ -95,7 +95,7 @@ public class Window implements IWindow
 					"[ERROR] Failed to create window instance, instance pointing to window context is null !");
 		}
 
-		return new Window(monitorsIn, settingsIn, windowContextIn).initialization(pointerIn);
+		return new Window(monitorsIn, settingsIn, windowContextIn, pointerIn);
 	}
 
 	private @Getter(value = AccessLevel.PROTECTED) long			handle;
@@ -105,13 +105,31 @@ public class Window implements IWindow
 	private static GLFWImage.Buffer								icons;
 
 	public Window(Monitors monitorsIn, WindowSettings settingsIn, IWindowContext windowContextIn)
+			throws IllegalStateException, Exception
 	{
 		this.monitors(monitorsIn);
 		this.settings(settingsIn);
 		this.windowContext(windowContextIn);
+
+		this.initialization();
 	}
 
-	private final Window initialization(long[] pointerIn) throws IllegalStateException, Exception
+	public Window(Monitors monitorsIn, WindowSettings settingsIn, IWindowContext windowContextIn, long[] pointerIn)
+			throws IllegalStateException, Exception
+	{
+		this.monitors(monitorsIn);
+		this.settings(settingsIn);
+		this.windowContext(windowContextIn);
+
+		this.initialization();
+
+		if (pointerIn.length > 0)
+		{
+			pointerIn[0] = this.handle();
+		}
+	}
+
+	private final void initialization() throws IllegalStateException, Exception
 	{
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 
@@ -122,10 +140,6 @@ public class Window implements IWindow
 		if (handle == MemoryUtil.NULL)
 		{
 			throw new RuntimeException("Failed to create the GLFW window");
-		}
-		if (pointerIn.length > 0)
-		{
-			pointerIn[0] = handle;
 		}
 
 		GLFW.glfwSetKeyCallback(this.handle(), (window, key, scancode, action, mods) ->
@@ -149,11 +163,11 @@ public class Window implements IWindow
 					(vidmode.height() - pHeight.get(0)) / 2);
 		}
 
-		this.windowContext.associate(this.handle, this);
+		this.windowContext().associate(this.handle, this);
 
 		if (this.settings().mustBeSynchronized())
 		{
-			GLFW.glfwSwapInterval(1);
+			GLFW.glfwSwapInterval(this.settings().sync());
 		}
 		else
 		{
@@ -162,8 +176,6 @@ public class Window implements IWindow
 
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_TRUE);
 		GLFW.glfwShowWindow(this.handle());
-
-		return this;
 	}
 
 	/**

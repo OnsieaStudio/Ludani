@@ -55,6 +55,7 @@ public class WindowSettings
 	private int				width;
 	private int				height;
 	private int				refreshRate;
+	private int				sync;
 
 	private WindowShowType	windowShowType;
 
@@ -163,7 +164,8 @@ public class WindowSettings
 
 		private Builder()
 		{
-			super.mustBeDecorated = true;
+			super.mustBeDecorated	= true;
+			super.sync				= -1;
 		}
 
 		public Builder set(String titleIn, int widthIn, int heightIn)
@@ -225,6 +227,18 @@ public class WindowSettings
 			if (super.windowShowType == null)
 			{
 				throw new Exception("[ERREUR] WindowSettings Builder FAILED : show type is undefined !");
+			}
+
+			if (super.sync < 0)
+			{
+				if (super.mustBeSynchronized)
+				{
+					super.sync = 1;
+				}
+				else
+				{
+					super.sync = 0;
+				}
 			}
 
 			return super.create();
