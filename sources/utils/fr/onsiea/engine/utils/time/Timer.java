@@ -76,7 +76,7 @@ public class Timer
 		return false;
 	}
 
-	private final long last()
+	public final long last()
 	{
 		return this.last;
 	}

@@ -1,4 +1,4 @@
-package fr.onsiea.engine.client.graphics.lwjgl;
+package fr.onsiea.engine.client.lwjgl;
 
 import org.lwjgl.Version;
 import org.lwjgl.system.Configuration;
@@ -36,10 +36,40 @@ public final class LWJGLContext
 	// Fonction
 	//	Configuration.DEBUG_STACK.set(true);
 
-	public static String version()
+	/**public static String version()
 	{
 		return Version.getVersion();
 	}
+	
+	public static int major()
+	{
+		return Version.VERSION_MAJOR;
+	}
+	
+	public static int minor()
+	{
+		return Version.VERSION_MINOR;
+	}
+	
+	public static int revision()
+	{
+		return Version.VERSION_REVISION;
+	}
+	
+	public static BuildType buildType()
+	{
+		return Version.BUILD_TYPE;
+	}
+	
+	public static String buildTypeName()
+	{
+		return Version.BUILD_TYPE.name();
+	}
+	
+	public static String buildTypePostFix()
+	{
+		return Version.BUILD_TYPE.postfix;
+	}**/
 
 	public static void enableDebugging()
 	{
@@ -52,6 +82,14 @@ public final class LWJGLContext
 		Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
 		Configuration.DEBUG_MEMORY_ALLOCATOR_INTERNAL.set(true);
 		Configuration.DEBUG_STREAM.set(true);
+
+		System.out.println("");
+		System.out.println("LWJGL Informations : ");
+		System.out.println("{");
+		System.out.println("	 Debugging is enabled !");
+		System.out.println("	 Version " + Version.getVersion());
+		System.out.println("}");
+		System.out.println("");
 	}
 
 	public static void enableDebugStack()

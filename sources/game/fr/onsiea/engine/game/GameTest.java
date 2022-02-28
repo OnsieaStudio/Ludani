@@ -66,19 +66,18 @@ public class GameTest implements IGameLogic
 		}
 	}
 
-	private NanoVGManager nanoVG;
+	private NanoVGManager	nanoVG;
+	private int				vao;
+	private int				vbo;
+	private ShaderBasic		shaderBasic;
+	private Camera			camera;
+	private NVGColor		color;
 
 	@Override
 	public boolean preInitialization()
 	{
 		return true;
 	}
-
-	private int				vao;
-	private int				vbo;
-	private ShaderBasic		shaderBasic;
-	private Camera			camera;
-	private final NVGColor	color	= NVGColor.calloc();
 
 	@Override
 	public boolean initialization(IWindow windowIn)
@@ -87,7 +86,8 @@ public class GameTest implements IGameLogic
 		try
 		{
 			((Window) windowIn).icon("resources/textures/aeison.png");
-			this.nanoVG = new NanoVGManager(windowIn);
+			this.nanoVG	= new NanoVGManager(windowIn);
+			this.color	= NVGColor.malloc();
 		}
 		catch (final Exception e)
 		{
@@ -193,7 +193,10 @@ public class GameTest implements IGameLogic
 	@Override
 	public void cleanup()
 	{
-		this.color.free();
+		if (this.color != null)
+		{
+			this.color.free();
+		}
 
 		this.nanoVG.cleanup();
 

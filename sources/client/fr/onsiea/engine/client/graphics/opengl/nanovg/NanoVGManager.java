@@ -16,20 +16,6 @@ public class NanoVGManager
 
 	public NanoVGManager(IWindow windowIn) throws Exception
 	{
-		this.initialization(windowIn);
-		this.nanoVGFonts = new NanoVGFonts(this);
-		try
-		{
-			this.nanoVGFonts.add("ARIAL", "resources/fonts/arial.ttf");
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	private NanoVGManager initialization(IWindow windowIn) throws Exception
-	{
 		this.handle(((Window) windowIn).settings().mustAntialiasing()
 				? NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS | NanoVGGL3.NVG_STENCIL_STROKES)
 				: NanoVGGL3.nvgCreate(NanoVGGL3.NVG_STENCIL_STROKES));
@@ -39,7 +25,15 @@ public class NanoVGManager
 			throw new Exception("Could not init nanovg");
 		}
 
-		return this;
+		this.nanoVGFonts = new NanoVGFonts(this);
+		try
+		{
+			this.nanoVGFonts.add("ARIAL", "resources/fonts/arial.ttf");
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void startRender(IWindow windowIn)

@@ -22,7 +22,7 @@ module OnsieaEngine
 	exports fr.onsiea.engine.client.graphics.render;
 	exports fr.onsiea.engine.client.graphics.window;
 	exports fr.onsiea.engine.client.graphics.glfw.window.context;
-	exports fr.onsiea.engine.client.graphics.lwjgl;
+	exports fr.onsiea.engine.client.lwjgl;
 	exports fr.onsiea.engine.client.graphics.opengl;
 	exports fr.onsiea.engine.utils.time;
 	exports fr.onsiea.engine.client.graphics.texture;
