@@ -1,5 +1,6 @@
 package fr.onsiea.engine.maths.normalization;
 
+import org.joml.Vector2d;
 import org.joml.Vector2f;
 
 public class Normalizer
@@ -334,107 +335,109 @@ public class Normalizer
 		return false;
 	}
 
-	/**public static double percent(double from, double to)
+	public static double percent(double from, double to)
 	{
-		return (from / to) * 100.0d;
+		return from / to * 100.0d;
 	}
-	
+
 	public static float percent(float from, float to)
 	{
-		return (from / to) * 100.0f;
+		return from / to * 100.0f;
 	}
-	
+
 	public static Vector2d percent(Vector2d from, Vector2d to)
 	{
-		return new Vector2d(percent(from.x, to.x), percent(from.y, to.y));
+		return new Vector2d(Normalizer.percent(from.x, to.x), Normalizer.percent(from.y, to.y));
 	}
-	
+
 	public static Vector2f percent(Vector2f from, Vector2f to)
 	{
-		return new Vector2f(percent(from.x, to.x), percent(from.y, to.y));
+		return new Vector2f(Normalizer.percent(from.x, to.x), Normalizer.percent(from.y, to.y));
 	}
-	
+
 	public static double percentToValue(double percent, double value)
 	{
-		return (value * percent) / 100.0d;
+		return value * percent / 100.0d;
 	}
-	
+
 	public static float percentToValue(float percent, float value)
 	{
-		return (value * percent) / 100.0f;
+		return value * percent / 100.0f;
 	}
-	
+
 	public static Vector2d percentToNormalized(Vector2d positionIn)
 	{
-		return new Vector2d(percentToNormalizedX(positionIn.x), percentToNormalizedY(positionIn.y));
+		return new Vector2d(Normalizer.percentToNormalizedX(positionIn.x),
+				Normalizer.percentToNormalizedY(positionIn.y));
 	}
-	
+
 	public static Vector2d percentToNormalized(Vector2d positionIn, Vector2d destinationIn)
 	{
-		destinationIn.x = percentToNormalizedX(positionIn.x);
-		destinationIn.y = percentToNormalizedX(positionIn.y);
+		destinationIn.x	= Normalizer.percentToNormalizedX(positionIn.x);
+		destinationIn.y	= Normalizer.percentToNormalizedX(positionIn.y);
 		return destinationIn;
 	}
-	
+
 	public static Vector2d percentToNormalized(double x, double y, Vector2d destinationIn)
 	{
-		destinationIn.x = percentToNormalizedX(x);
-		destinationIn.y = percentToNormalizedX(y);
+		destinationIn.x	= Normalizer.percentToNormalizedX(x);
+		destinationIn.y	= Normalizer.percentToNormalizedX(y);
 		return destinationIn;
 	}
-	
+
 	public static double percentToNormalizedX(double percent)
 	{
-		return ((percent * 2.0d) / 100.0d) - 1.0d;
+		return percent * 2.0d / 100.0d - 1.0d;
 	}
-	
+
 	public static double percentToNormalizedY(double percent)
 	{
-		return 1.0d - ((percent * 2.0d) / 100.0d);
+		return 1.0d - percent * 2.0d / 100.0d;
 	}
-	
+
 	public static Vector2d normalizedToPercent(Vector2d positionIn)
 	{
-		return new Vector2d(normalizedXToPercent(positionIn.x), normalizedYToPercent(positionIn.y));
+		return new Vector2d(Normalizer.normalizedXToPercent(positionIn.x),
+				Normalizer.normalizedYToPercent(positionIn.y));
 	}
-	
+
 	public static double normalizedXToPercent(double normalizedValue)
 	{
-		return ((normalizedValue + 1.0d) * 100.0d) / 2.0d;
+		return (normalizedValue + 1.0d) * 100.0d / 2.0d;
 	}
-	
+
 	public static double normalizedYToPercent(double normalizedValue)
 	{
-		return ((1.0d - normalizedValue) * 100.0d) / 2.0d;
+		return (1.0d - normalizedValue) * 100.0d / 2.0d;
 	}
-	
-	public static Vector2d normal(Vector2d positionIn, WindowOptions windowOptionsIn)
+
+	/**public static Vector2d normal(Vector2d positionIn, WindowOptions windowOptionsIn)
 	{
 		return new Vector2d(normalX(positionIn.x, windowOptionsIn.getCurrentWidth()), normalY(positionIn.y, windowOptionsIn.getCurrentHeight()));
-	}
-	
+	}**/
+
 	public static double normalX(double x, double width)
 	{
 		return (x + 1.0d) * (width / 2.0d);
 	}
-	
+
 	public static double normalY(double y, double height)
 	{
-		return (1.0d-y) * (height / 2.0d);//- 1;
+		return (1.0d - y) * (height / 2.0d);//- 1;
 	}
-	
-	public static Vector2d normalized(Vector2d positionIn, WindowOptions windowOptionsIn)
+
+	/**public static Vector2d normalized(Vector2d positionIn, WindowOptions windowOptionsIn)
 	{
 		return new Vector2d(normalizedX(positionIn.x, windowOptionsIn.getCurrentWidth()), normalizedY(positionIn.y, windowOptionsIn.getCurrentHeight()));
-	}
-	
+	}**/
+
 	public static double normalizedX(double x, double width)
 	{
-		return (x / (width / 2.0d)) - 1.0d;
+		return x / (width / 2.0d) - 1.0d;
 	}
-	
+
 	public static double normalizedY(double y, double height)
 	{
-		return 1.0d - (y / (height / 2.0d));
-	}**/
+		return 1.0d - y / (height / 2.0d);
+	}
 }
