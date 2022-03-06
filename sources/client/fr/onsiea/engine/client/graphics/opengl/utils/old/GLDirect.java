@@ -21,7 +21,6 @@ public class GLDirect
 
 	public static void prepareDraw()
 	{
-
 		//GL11.glLoadIdentity();
 
 		GL11.glTranslatef(0.0f, 0.0f, 0.0f);

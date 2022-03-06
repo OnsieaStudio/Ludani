@@ -86,7 +86,7 @@ public class OpenGLScreenshot
 				BufferedImage.TYPE_INT_RGB));
 	}
 
-	public final static ByteBuffer getPixels(final Window windowIn)
+	public final static ByteBuffer pixels(final Window windowIn)
 	{
 		GL11.glReadBuffer(GL11.GL_FRONT);
 
@@ -98,13 +98,13 @@ public class OpenGLScreenshot
 		return OpenGLScreenshot.pixels();
 	}
 
-	public final static ITexture getIntoTexture(final Window windowIn)
+	public final static ITexture intoTexture(final Window windowIn)
 	{
-		return OpenGLScreenshot.texturesManager.load(DateUtils.getDate(), OpenGLScreenshot.getPixels(windowIn),
+		return OpenGLScreenshot.texturesManager.load(DateUtils.getDate(), OpenGLScreenshot.pixels(windowIn),
 				windowIn.settings().width(), windowIn.settings().height());
 	}
 
-	public final static ITexture getIntoTexture(final ByteBuffer pixelsIn, final Window windowIn)
+	public final static ITexture intoTexture(final ByteBuffer pixelsIn, final Window windowIn)
 	{
 		return OpenGLScreenshot.texturesManager.load(DateUtils.getDate(), pixelsIn, windowIn.settings().width(),
 				windowIn.settings().height());
@@ -138,9 +138,9 @@ public class OpenGLScreenshot
 		return true;
 	}
 
-	public static BufferedImage getImage(final Window windowIn)
+	public static BufferedImage image(final Window windowIn)
 	{
-		final var pixels = OpenGLScreenshot.getPixels(windowIn);
+		final var pixels = OpenGLScreenshot.pixels(windowIn);
 
 		for (var x = OpenGLScreenshot.bufferedImage().getWidth() - 1; x >= 0; x--)
 		{

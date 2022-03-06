@@ -52,7 +52,7 @@ public class Interleave
 			GL20.glVertexAttribPointer(informationsIn[i], informationsIn[i + 1], informationsIn[i + 2], false, sizeIn,
 					currentSize);
 
-			currentSize += informationsIn[i + 3] * OpenGLPrimitive.getOpenGLSize(type);
+			currentSize += informationsIn[i + 3] * OpenGLPrimitive.bytesSizeOf(type);
 		}
 	}
 
@@ -70,7 +70,7 @@ public class Interleave
 
 			GL33.glVertexAttribDivisor(attribute, informationsIn[i + 3]);
 
-			currentSize += informationsIn[i + 4] * OpenGLPrimitive.getOpenGLSize(type);
+			currentSize += informationsIn[i + 4] * OpenGLPrimitive.bytesSizeOf(type);
 		}
 	}
 
@@ -85,9 +85,9 @@ public class Interleave
 			final var type = informationsIn[i + 2];
 
 			GL20.glVertexAttribPointer(informationsIn[i], informationsIn[i + 1], informationsIn[i + 2],
-					(informationsIn[i + 3] == 1), sizeIn, currentSize);
+					informationsIn[i + 3] == 1, sizeIn, currentSize);
 
-			currentSize += informationsIn[i + 4] * OpenGLPrimitive.getOpenGLSize(type);
+			currentSize += informationsIn[i + 4] * OpenGLPrimitive.bytesSizeOf(type);
 		}
 	}
 
@@ -101,11 +101,11 @@ public class Interleave
 			final var	type		= informationsIn[i + 2];
 
 			GL20.glVertexAttribPointer(attribute, informationsIn[i + 1], informationsIn[i + 2],
-					(informationsIn[i + 3] == 1), sizeIn, currentSize);
+					informationsIn[i + 3] == 1, sizeIn, currentSize);
 
 			GL33.glVertexAttribDivisor(attribute, informationsIn[i + 4]);
 
-			currentSize += informationsIn[i + 4] * OpenGLPrimitive.getOpenGLSize(type);
+			currentSize += informationsIn[i + 4] * OpenGLPrimitive.bytesSizeOf(type);
 		}
 	}
 }

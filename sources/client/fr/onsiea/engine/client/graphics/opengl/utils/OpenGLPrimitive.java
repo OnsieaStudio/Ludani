@@ -6,9 +6,9 @@ import fr.onsiea.engine.utils.Primitive;
 
 public class OpenGLPrimitive
 {
-	public final static int getOpenGLSize(final int glTypeIn)
+	public final static int bytesSizeOf(final int typeIn)
 	{
-		switch (glTypeIn)
+		switch (typeIn)
 		{
 			case GL11.GL_BYTE:
 				return Primitive.byteSize();
@@ -35,7 +35,7 @@ public class OpenGLPrimitive
 		return -1;
 	}
 
-	public final static float getMin(final int glTypeIn)
+	public final static float min(final int glTypeIn)
 	{
 		switch (glTypeIn)
 		{
@@ -64,7 +64,7 @@ public class OpenGLPrimitive
 		return -1;
 	}
 
-	public final static float getMax(final int glTypeIn)
+	public final static float max(final int glTypeIn)
 	{
 		switch (glTypeIn)
 		{
