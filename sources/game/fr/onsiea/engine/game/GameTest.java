@@ -39,7 +39,6 @@ import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
 import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
-import fr.onsiea.engine.client.graphics.shapes.Cube;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
@@ -107,8 +106,9 @@ public class GameTest implements IGameLogic
 
 		try
 		{
-			this.mesh = ((OpenGLRenderAPIContext) renderAPIContextIn).meshManager()
-					.build(Cube.interleaveIndicesPositionsAndTextures, Cube.positionsAndTextureCoordinates, 3, 2);
+			this.mesh = ((OpenGLRenderAPIContext) renderAPIContextIn).objLoader()
+					.loadMesh("resources\\models\\barrel.obj");//((OpenGLRenderAPIContext) renderAPIContextIn).meshManager()
+			//.build(Cube.interleaveIndicesPositionsAndTextures, Cube.positionsAndTextureCoordinates, 3, 2);
 		}
 		catch (final Exception e1)
 		{

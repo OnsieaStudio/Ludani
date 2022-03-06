@@ -27,6 +27,7 @@
 package fr.onsiea.engine.client.graphics.opengl;
 
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
+import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh.Builder;
 import fr.onsiea.engine.client.graphics.opengl.vao.VaoManager;
 import fr.onsiea.engine.client.graphics.opengl.vbo.VboManager;
 import lombok.AccessLevel;
@@ -51,6 +52,15 @@ public class GLMeshManager
 	public GLMesh.Builder meshBuilderWithVao()
 	{
 		return GLMesh.Builder.withVao(this.vaoManager, this.vboManager);
+	}
+
+	/**
+	 * @param iIn
+	 * @return
+	 */
+	public Builder meshBuilderWithVao(int enablesIn)
+	{
+		return GLMesh.Builder.withVao(this.vaoManager, this.vboManager, enablesIn);
 	}
 
 	public GLMesh.Builder meshBuilder()

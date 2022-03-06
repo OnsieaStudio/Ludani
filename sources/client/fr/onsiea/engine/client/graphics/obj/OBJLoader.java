@@ -126,12 +126,8 @@ public class OBJLoader
 		var indicesArr = new int[indices.size()];
 		indicesArr = indices.stream().mapToInt((Integer v) -> v).toArray();
 
-		/**return this.meshManager().build("cubeA",
-				this.meshManager().elementsMeshBuilder().attribBuffer(3).data(posArr).unbind().attribBuffer(2)
-						.data(textCoordArr).unbind().attribBuffer(3).data(normArr).unbind().unbind()
-						.elements(indicesArr));**/
-
-		return null;
+		return this.meshManager().meshBuilderWithVao(3).vbo(posArr, 3).vbo(textCoordArr, 2).vbo(normArr, 3)
+				.ibo(indicesArr).unbindVao().build();
 	}
 
 	private static void processFaceVertex(IdxGroup indices, List<Vector2f> textCoordList, List<Vector3f> normList,
