@@ -1,5 +1,6 @@
 package fr.onsiea.engine.client.graphics.texture;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,29 @@ public class TexturesManager
 		this.renderAPIContext(renderAPIContextIn);
 
 		this.textures(new HashMap<>());
+	}
+
+	/**
+	 * @param pixelsIn
+	 * @param widthIn
+	 * @param heightIn
+	 * @param capabilitiesIn
+	 * @return
+	 */
+	public ITexture load(String nameIn, ByteBuffer pixelsIn, int widthIn, int heightIn)
+	{
+		var texture = this.textures().get(nameIn);
+
+		if (texture != null)
+		{
+			return texture;
+		}
+
+		texture = this.renderAPIContext().createTexture(widthIn, heightIn, pixelsIn);
+
+		this.textures().put(nameIn, texture);
+
+		return texture;
 	}
 
 	public ITexture load(String nameIn, String filepathIn)

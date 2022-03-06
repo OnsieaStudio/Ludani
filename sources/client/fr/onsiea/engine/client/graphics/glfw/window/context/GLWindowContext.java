@@ -75,8 +75,8 @@ public class GLWindowContext implements IWindowContext
 
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
-		GLFWUtils.boolHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GraphicsConstants.debug());
-		GLFWUtils.boolHint(GLFW.GLFW_CONTEXT_NO_ERROR, !GraphicsConstants.debug());
+		GLFWUtils.boolHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GraphicsConstants.DEBUG);
+		GLFWUtils.boolHint(GLFW.GLFW_CONTEXT_NO_ERROR, !GraphicsConstants.DEBUG);
 
 		return this.context = OpenGLRenderAPIContext.create();
 	}

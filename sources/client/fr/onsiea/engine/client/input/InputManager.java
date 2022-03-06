@@ -9,23 +9,27 @@ import org.lwjgl.system.Callback;
 import fr.onsiea.engine.client.input.callback.ICallbackInitializationFunction;
 import fr.onsiea.engine.client.input.callback.IClearableCallback;
 import fr.onsiea.engine.client.input.callback.IResetableCallback;
+import fr.onsiea.engine.client.input.callbacks.glfw.CallbackCursorPosition;
+import fr.onsiea.engine.client.input.callbacks.glfw.CallbackMouseButton;
 import fr.onsiea.engine.client.input.callbacks.glfw.CharModsCallback;
+import fr.onsiea.engine.client.input.callbacks.glfw.FramebufferSizeCallback;
 import fr.onsiea.engine.client.input.callbacks.glfw.KeyCallback;
+import fr.onsiea.engine.client.input.callbacks.glfw.WindowSizeCallback;
 
 public class InputManager
 {
-	private Map<String, InitializableCallback<?>>	initializableCallbacks;
-	private long									windowHandle;
+	private Map<String, InitializableCallback<?>>			initializableCallbacks;
+	private long											windowHandle;
 
-	//private InitializableCallback<CallbackMouseButton>		mouseButtonCallback;
-	//private InitializableCallback<CallbackCursorPosition>	cursorPositionCallback;
-	private InitializableCallback<CharModsCallback>	charModsCallback;
-	private InitializableCallback<KeyCallback>		keyCallback;
-	//private InitializableCallback<FramebufferSizeCallback>	framebufferSizeCallback;
-	//private InitializableCallback<WindowSizeCallback>		windowSizeCallback;
+	private InitializableCallback<CallbackMouseButton>		mouseButtonCallback;
+	private InitializableCallback<CallbackCursorPosition>	cursorPositionCallback;
+	private InitializableCallback<CharModsCallback>			charModsCallback;
+	private InitializableCallback<KeyCallback>				keyCallback;
+	private InitializableCallback<FramebufferSizeCallback>	framebufferSizeCallback;
+	private InitializableCallback<WindowSizeCallback>		windowSizeCallback;
 
-	//private Cursor									cursor;
-	private Keyboard								keyboard;
+	private Cursor											cursor;
+	private Keyboard										keyboard;
 
 	private InputManager(long windowHandleIn)
 	{
@@ -71,22 +75,22 @@ public class InputManager
 
 	private void initialization() throws Exception
 	{
-		//this.cursor(new Cursor(this));
+		this.cursor(new Cursor(this));
 		this.keyboard(new Keyboard());
 
-		//this.mouseButtonCallback(this.add(new CallbackMouseButton(this.cursor()), GLFW::glfwSetMouseButtonCallback));
-		//this.cursorPositionCallback(
-		//		this.add(new CallbackCursorPosition(this.cursor()), GLFW::glfwSetCursorPosCallback));
+		this.mouseButtonCallback(this.add(new CallbackMouseButton(this.cursor()), GLFW::glfwSetMouseButtonCallback));
+		this.cursorPositionCallback(
+				this.add(new CallbackCursorPosition(this.cursor()), GLFW::glfwSetCursorPosCallback));
 		GLFW.glfwSetKeyCallback(this.windowHandle(), null).free();
 		this.keyCallback(this.add(new KeyCallback(this.keyboard()), GLFW::glfwSetKeyCallback));
 		this.charModsCallback(this.add(new CharModsCallback(this.keyboard()), GLFW::glfwSetCharModsCallback));
-		//this.framebufferSizeCallback(this.add(new FramebufferSizeCallback(), GLFW::glfwSetFramebufferSizeCallback));
-		//this.windowSizeCallback(this.add(new WindowSizeCallback(), GLFW::glfwSetWindowSizeCallback));
+		this.framebufferSizeCallback(this.add(new FramebufferSizeCallback(), GLFW::glfwSetFramebufferSizeCallback));
+		this.windowSizeCallback(this.add(new WindowSizeCallback(), GLFW::glfwSetWindowSizeCallback));
 	}
 
 	public void update()
 	{
-		//this.cursor().update(this.windowHandle(), this.cursorPositionCallback().callback());
+		this.cursor().update(this.windowHandle(), this.cursorPositionCallback().callback());
 		this.keyboard().update();
 	}
 
@@ -141,7 +145,7 @@ public class InputManager
 
 	public void reset()
 	{
-		//this.cursor().end();
+		this.cursor().end();
 		this.keyboard().end();
 
 		for (final InitializableCallback<?> initializableCallback : this.initializableCallbacks().values())
@@ -200,15 +204,15 @@ public class InputManager
 		this.windowHandle = windowHandleIn;
 	}
 
-	/**public final Cursor cursor()
+	public final Cursor cursor()
 	{
 		return this.cursor;
 	}
-	
+
 	private final void cursor(Cursor cursorIn)
 	{
 		this.cursor = cursorIn;
-	}**/
+	}
 
 	public final Keyboard keyboard()
 	{
@@ -220,26 +224,26 @@ public class InputManager
 		this.keyboard = keyboardIn;
 	}
 
-	/**@SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private InitializableCallback<CallbackMouseButton> mouseButtonCallback()
 	{
 		return this.mouseButtonCallback;
 	}
-	
+
 	private void mouseButtonCallback(InitializableCallback<CallbackMouseButton> mouseButtonCallbackIn)
 	{
 		this.mouseButtonCallback = mouseButtonCallbackIn;
 	}
-	
+
 	private final InitializableCallback<CallbackCursorPosition> cursorPositionCallback()
 	{
 		return this.cursorPositionCallback;
 	}
-	
+
 	private final void cursorPositionCallback(InitializableCallback<CallbackCursorPosition> cursorPositionCallbackIn)
 	{
 		this.cursorPositionCallback = cursorPositionCallbackIn;
-	}**/
+	}
 
 	@SuppressWarnings("unused")
 	private final InitializableCallback<CharModsCallback> charModsCallback()
@@ -263,27 +267,27 @@ public class InputManager
 		this.keyCallback = keyCallbackIn;
 	}
 
-	/**@SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private final InitializableCallback<FramebufferSizeCallback> framebufferSizeCallback()
 	{
 		return this.framebufferSizeCallback;
 	}
-	
+
 	private final void framebufferSizeCallback(InitializableCallback<FramebufferSizeCallback> framebufferSizeCallbackIn)
 	{
 		this.framebufferSizeCallback = framebufferSizeCallbackIn;
 	}
-	
+
 	@SuppressWarnings("unused")
 	private final InitializableCallback<WindowSizeCallback> windowSizeCallback()
 	{
 		return this.windowSizeCallback;
 	}
-	
+
 	private final void windowSizeCallback(InitializableCallback<WindowSizeCallback> windowSizeCallbackIn)
 	{
 		this.windowSizeCallback = windowSizeCallbackIn;
-	}**/
+	}
 
 	final static class InitializableCallback<T extends Callback>
 	{

@@ -29,6 +29,8 @@ module OnsieaEngine
 	exports fr.onsiea.engine.client.graphics.texture.data;
 	exports fr.onsiea.engine.client.graphics.opengl.texture;
 	exports fr.onsiea.engine.client.settings;
+	exports fr.onsiea.engine.client.input;
+	exports fr.onsiea.engine.utils;
 
 	requires lombok;
 	requires transitive org.joml;
@@ -37,4 +39,9 @@ module OnsieaEngine
 	requires transitive org.lwjgl.opengl;
 	requires org.lwjgl.nanovg;
 	requires org.lwjgl.stb;
+	requires org.lwjgl.vulkan;
+	requires org.lwjgl.vma;
+	requires org.lwjgl.shaderc;
+	requires org.lwjgl.openal;
+	requires java.desktop;
 }

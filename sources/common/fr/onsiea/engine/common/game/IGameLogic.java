@@ -26,7 +26,9 @@
 */
 package fr.onsiea.engine.common.game;
 
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
+import fr.onsiea.engine.client.input.InputManager;
 
 /**
  * @author Seynax
@@ -39,16 +41,18 @@ public interface IGameLogic
 
 	/**
 	 * @param windowIn
+	 * @param renderAPIContextIn
 	 * @return
 	 */
-	boolean initialization(IWindow windowIn);
+	boolean initialization(IWindow windowIn, IRenderAPIContext renderAPIContextIn);
 
 	void highRateInput();
 
 	/**
 	 * @param windowIn
+	 * @param inputManagerIn
 	 */
-	void input(IWindow windowIn);
+	void input(IWindow windowIn, InputManager inputManagerIn);
 
 	void update();
 

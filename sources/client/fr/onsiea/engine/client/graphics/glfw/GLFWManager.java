@@ -35,6 +35,7 @@ import fr.onsiea.engine.client.graphics.glfw.monitor.Monitors;
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.glfw.window.WindowSettings;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
+import fr.onsiea.engine.client.input.InputManager;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -52,11 +53,11 @@ import lombok.ToString;
 @Setter(AccessLevel.PRIVATE)
 public class GLFWManager
 {
-	private GLFWState	state;
+	private GLFWState		state;
 
-	private Monitors	monitors;
-	private Window		window;
-	// private InputManager	inputManager;
+	private Monitors		monitors;
+	private Window			window;
+	private InputManager	inputManager;
 
 	public GLFWManager()
 	{
@@ -65,7 +66,7 @@ public class GLFWManager
 
 	public GLFWManager initialization(WindowSettings windowSettingsIn, IWindowContext windowContextIn) throws Exception
 	{
-		if (GraphicsConstants.debug())
+		if (GraphicsConstants.DEBUG)
 		{
 			this.enableDebugging();
 		}
@@ -83,7 +84,7 @@ public class GLFWManager
 		this.monitors(Monitors.of(this.state()));
 		final var pointer = new long[1];
 		this.window(Window.of(pointer, this.state(), this.monitors(), windowSettingsIn, windowContextIn));
-		// this.inputManager(new InputManager.Builder(pointer[0]).build());
+		this.inputManager(new InputManager.Builder(pointer[0]).build());
 
 		return this;
 	}

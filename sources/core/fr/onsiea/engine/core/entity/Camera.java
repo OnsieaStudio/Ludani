@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
+import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.maths.MathInstances;
 import fr.onsiea.engine.maths.vector.TimedVector3f;
 
@@ -31,10 +32,10 @@ public class Camera extends Entity
 		this.viewMatrix(new Matrix4f().identity());
 	}
 
-	public void input(Window windowIn)
+	public void input(Window windowIn, InputManager inputManagerIn)
 	{
-		var speed = 0.050f;
-		// final var	rotateSpeed	= 0.25f;
+		var			speed		= 0.050f;
+		final var	rotateSpeed	= 0.25f;
 
 		if (windowIn.key(GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS)
 		{
@@ -46,8 +47,8 @@ public class Camera extends Entity
 			speed /= 2.0f;
 		}
 
-		// this.timedOrientation().add((float) inputManagerIn.cursor().translationY() * rotateSpeed,
-		//		(float) inputManagerIn.cursor().translationX() * rotateSpeed, 0);
+		this.timedOrientation().add((float) inputManagerIn.cursor().translationY() * rotateSpeed,
+				(float) inputManagerIn.cursor().translationX() * rotateSpeed, 0);
 
 		var	rx	= this.orientation().x();
 		var	ry	= this.orientation().y();

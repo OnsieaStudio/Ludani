@@ -210,14 +210,14 @@ public class Window implements IWindow
 
 		width	= switch (this.settings().windowShowType().widthSource())
 				{
-					case DEFAULT -> GraphicsConstants.defaultWidth();
+					case DEFAULT -> GraphicsConstants.DEFAULT_WIDTH;
 					case SETTINGS -> this.settings().width();
 					case MONITOR -> mode.width();
 				};
 
 		height	= switch (this.settings().windowShowType().heightSource())
 				{
-					case DEFAULT -> GraphicsConstants.defaultHeight();
+					case DEFAULT -> GraphicsConstants.DEFAULT_HEIGHT;
 					case SETTINGS -> this.settings().height();
 					case MONITOR -> mode.height();
 				};

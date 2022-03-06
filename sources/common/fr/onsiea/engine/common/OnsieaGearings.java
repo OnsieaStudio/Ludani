@@ -34,6 +34,7 @@ import fr.onsiea.engine.client.graphics.glfw.window.WindowShowType;
 import fr.onsiea.engine.client.graphics.glfw.window.context.GLWindowContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.lwjgl.LWJGLContext;
+import fr.onsiea.engine.client.sound.SoundManager;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
 import fr.onsiea.engine.utils.time.Timer;
@@ -50,29 +51,30 @@ import lombok.Setter;
 @Setter(value = AccessLevel.PRIVATE)
 public class OnsieaGearings
 {
-	private IGameLogic	gameLogic;
-	private GameOptions	options;
-	private String[]	args;
+	private IGameLogic		gameLogic;
+	private GameOptions		options;
+	private String[]		args;
 
-	private boolean		running;
+	private boolean			running;
 
-	private GLFWManager	glfwManager;
-	private IWindow		window;
-	private Timer		timer;
-	private Timer		inputTimer;
-	private Timer		framerateCounterTimer;
+	private GLFWManager		glfwManager;
+	private SoundManager	soundManager;
+	private IWindow			window;
+	private Timer			timer;
+	private Timer			inputTimer;
+	private Timer			framerateCounterTimer;
 
-	private double		refreshRate;
-	private double		updateRate;
-	private double		inputRate;
-	private double		secsPerFrame;
-	private double		secsPerUpdate;
-	private double		secsPerInput;
-	private double		elapsedTime;
-	private double		accumulator			= 0.0D;
-	private int			framerateCounter	= 0;
-	private int			framerateValue		= 0;
-	private double		loopStartTime;
+	private double			refreshRate;
+	private double			updateRate;
+	private double			inputRate;
+	private double			secsPerFrame;
+	private double			secsPerUpdate;
+	private double			secsPerInput;
+	private double			elapsedTime;
+	private double			accumulator			= 0.0D;
+	private int				framerateCounter	= 0;
+	private int				framerateValue		= 0;
+	private double			loopStartTime;
 
 	public final static OnsieaGearings start(IGameLogic gameLogicIn, GameOptions optionsIn, String[] argsIn)
 			throws Exception
@@ -96,19 +98,23 @@ public class OnsieaGearings
 		this.args(argsIn);
 
 		{
-			if (GraphicsConstants.debug())
+			if (GraphicsConstants.DEBUG)
 			{
 				LWJGLContext.enableDebugging();
 				LWJGLContext.enableDebugStack();
 			}
 
 			this.gameLogic().preInitialization();
+			final var windowContext = new GLWindowContext();
 			this.glfwManager(new GLFWManager().initialization(
 					WindowSettings.Builder.of("Onsiea Engine !", 400, 400, 60, WindowShowType.WINDOWED),
-					new GLWindowContext()));
+					windowContext));
 			this.window(this.glfwManager().window());
+			this.glfwManager().inputManager().cursor().blockedPosition(this.window().settings().width() / 2.0D,
+					this.window().settings().height() / 2.0D);
+			this.glfwManager().inputManager().cursor().mustBeBlocked();
 
-			this.gameLogic().initialization(this.window);
+			this.gameLogic().initialization(this.window, windowContext.context());
 		}
 
 		{
@@ -155,10 +161,11 @@ public class OnsieaGearings
 	private void runtime()
 	{
 		this.window().pollEvents();
+		this.glfwManager().inputManager().update();
 		this.gameLogic().highRateInput();
 		if (this.inputTimer().isTime((long) this.secsPerInput()))
 		{
-			this.gameLogic().input(this.window());
+			this.gameLogic().input(this.window(), this.glfwManager().inputManager());
 		}
 
 		while (this.accumulator >= this.secsPerUpdate())
@@ -170,6 +177,8 @@ public class OnsieaGearings
 
 		this.gameLogic().draw(this.window());
 		this.window().swapBuffers();
+
+		this.glfwManager().inputManager().reset();
 
 		if (!((Window) this.window()).settings().mustBeSynchronized())
 		{

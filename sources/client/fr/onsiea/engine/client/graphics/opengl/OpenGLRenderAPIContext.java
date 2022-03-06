@@ -42,6 +42,7 @@ import org.lwjgl.system.MemoryUtil;
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
+import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
@@ -85,7 +86,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 		this.capabilities(capabilitiesIn);
 		this.settings(new OpenGLSettings(this));
 
-		if (GraphicsConstants.isDebug())
+		if (GraphicsConstants.DEBUG)
 		{
 			this.enableDebugging();
 		}
@@ -98,7 +99,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 				4.0f);
 
 		//this.shaderManager(new GLShaderManager());
-		//this.texturesManager(new TexturesManager(this));
+		this.texturesManager(new TexturesManager(this));
 
 		/**this.meshManager(new GLMeshManager());
 		this.objLoader(new OBJLoader(this.meshManager()));

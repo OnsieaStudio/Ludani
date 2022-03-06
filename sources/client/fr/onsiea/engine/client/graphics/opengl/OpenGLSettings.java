@@ -91,7 +91,7 @@ public class OpenGLSettings
 								{
 									parameterIn.set(valueIn);
 								}
-								else if (GraphicsConstants.isDebug())
+								else if (GraphicsConstants.DEBUG)
 								{
 									System.err.println("GL_EXT texture filter anisotropic is not supported !");
 								}

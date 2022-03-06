@@ -33,68 +33,18 @@ package fr.onsiea.engine.client.graphics;
 
 public class GraphicsConstants
 {
-	private final static boolean	DEBUG					= true;
-	private final static int		DEFAULT_WIDTH			= 1920;
-	private final static int		DEFAULT_HEIGHT			= 1080;
+	public final static boolean	DEBUG					= true;
+	public final static int		DEFAULT_WIDTH			= 1920;
+	public final static int		DEFAULT_HEIGHT			= 1080;
 
-	private final static int		DEFAULT_REFRESH_RATE	= 60;
-	private final static String		DEFAULT_WINDOW_TITLE	= "Onsiea";
+	public final static int		DEFAULT_REFRESH_RATE	= 60;
+	public final static String	DEFAULT_WINDOW_TITLE	= "Onsiea";
 
 	/**
 	 * Render
 	 */
 
-	private final static float		FOV						= 70.0f;
-	private final static float		ZNEAR					= 0.1f;
-	private final static float		ZFAR					= 1000.0f;
-
-	public final static int defaultRefreshRate()
-	{
-		return GraphicsConstants.DEFAULT_REFRESH_RATE;
-	}
-
-	public final static String defaultWindowTitle()
-	{
-		return GraphicsConstants.DEFAULT_WINDOW_TITLE;
-	}
-
-	public final static boolean isDebug()
-	{
-		return GraphicsConstants.DEBUG;
-	}
-
-	/**public final static EnumRenderAPI renderAPI()
-	{
-		return GraphicsConstants.renderAPI;
-	}**/
-
-	public final static float fov()
-	{
-		return GraphicsConstants.FOV;
-	}
-
-	public final static float zNear()
-	{
-		return GraphicsConstants.ZNEAR;
-	}
-
-	public final static float zFar()
-	{
-		return GraphicsConstants.ZFAR;
-	}
-
-	public static final boolean debug()
-	{
-		return GraphicsConstants.DEBUG;
-	}
-
-	public static final int defaultWidth()
-	{
-		return GraphicsConstants.DEFAULT_WIDTH;
-	}
-
-	public static final int defaultHeight()
-	{
-		return GraphicsConstants.DEFAULT_HEIGHT;
-	}
+	public final static float	FOV						= 70.0f;
+	public final static float	ZNEAR					= 0.1f;
+	public final static float	ZFAR					= 1000.0f;
 }

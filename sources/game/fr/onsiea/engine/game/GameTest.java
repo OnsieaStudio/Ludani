@@ -33,13 +33,16 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
-import fr.onsiea.engine.client.graphics.opengl.OpenGLUtils;
+import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
 import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
-import fr.onsiea.engine.client.graphics.shapes.AlignedShapeIndexer;
+import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shapes.Cube;
+import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.window.IWindow;
+import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.common.OnsieaGearings;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
@@ -73,6 +76,10 @@ public class GameTest implements IGameLogic
 	private Camera			camera;
 	private NVGColor		color;
 
+	private Timer			cameraTimer;
+
+	private ITexture		texture;
+
 	@Override
 	public boolean preInitialization()
 	{
@@ -80,9 +87,8 @@ public class GameTest implements IGameLogic
 	}
 
 	@Override
-	public boolean initialization(IWindow windowIn)
+	public boolean initialization(IWindow windowIn, IRenderAPIContext renderAPIContextIn)
 	{
-		AlignedShapeIndexer.runtime();
 		try
 		{
 			((Window) windowIn).icon("resources/textures/aeison.png");
@@ -94,35 +100,35 @@ public class GameTest implements IGameLogic
 			e.printStackTrace();
 		}
 
-		this.vao = GL30.glGenVertexArrays();
+		this.texture	= ((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager()
+				.load("resources/textures/aeison.png");
+
+		this.vao		= GL30.glGenVertexArrays();
 
 		GL30.glBindVertexArray(this.vao);
 
 		GL20.glEnableVertexAttribArray(0);
-		//GL20.glEnableVertexAttribArray(1);
+		GL20.glEnableVertexAttribArray(1);
 
 		this.vbo = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.vbo);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, Cube.positionsForIndices, GL15.GL_STATIC_DRAW);
-		GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0L);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, Cube.positionsAndTextureCoordinates, GL15.GL_STATIC_DRAW);
+		GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, (3 + 2) * 4, 0L);
+		GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, (3 + 2) * 4, 3L * 4L);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-
-		/**final var ubo = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ubo);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, Cube.textureCoordinates, GL15.GL_STATIC_DRAW);
-		GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0L);
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);**/
 
 		final var ibo = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo);
-		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, Cube.INDICES, GL15.GL_STATIC_DRAW);
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, Cube.interleaveIndicesPositionsAndTextures,
+				GL15.GL_STATIC_DRAW);
 
-		//GL20.glDisableVertexAttribArray(1);
+		GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 
 		GL30.glBindVertexArray(0);
 
-		this.camera = new Camera();
+		this.camera			= new Camera();
+		this.cameraTimer	= new Timer();
 
 		try
 		{
@@ -147,14 +153,12 @@ public class GameTest implements IGameLogic
 	{
 	}
 
-	private final Timer cameraTimer = new Timer();
-
 	@Override
-	public void input(IWindow windowIn)
+	public void input(IWindow windowIn, InputManager inputManagerIn)
 	{
 		if (this.cameraTimer.isTime(1_000_000_0L))
 		{
-			this.camera.input((Window) windowIn);
+			this.camera.input((Window) windowIn, inputManagerIn);
 		}
 	}
 
@@ -175,10 +179,16 @@ public class GameTest implements IGameLogic
 		this.shaderBasic.transformationsMatrix().load(MathInstances.simpleTransformationsMatrix3d());
 		GL30.glBindVertexArray(this.vao);
 		GL20.glEnableVertexAttribArray(0);
-		//GL20.glEnableVertexAttribArray(1);
+		GL20.glEnableVertexAttribArray(1);
+
+		this.texture.attach();
+
 		GL11.glDrawElements(GL11.GL_TRIANGLES, 36, GL11.GL_UNSIGNED_INT, 0);
 		//GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, Cube.INDICES.length);
-		//GL20.glDisableVertexAttribArray(1);
+
+		this.texture.detach();
+
+		GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 		Shader.stop();
