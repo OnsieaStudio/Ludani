@@ -50,9 +50,18 @@ public class GLShaderManager
 {
 	private @Getter(AccessLevel.PRIVATE) final Map<String, Shader>	shaders;
 
+	// General
+
 	private ShaderBasic												shaderBasic;
 	private Shader2D												shader2D;
 	private Shader3DTo2D											shader3DTo2D;
+
+	// Effects
+
+	private FlareShader												flareShader;
+
+	// PostProcessing
+
 	private BrightFilterShader										brightFilter;
 	private CombineShader											combine;
 	private ContrastShader											contrast;
