@@ -29,15 +29,25 @@ package fr.onsiea.engine.client.graphics.opengl.shader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joml.Matrix4f;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Seynax
  *
  */
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
 public class GLShaderManager
 {
-	private final Map<String, Shader>	shaders;
+	private @Getter(AccessLevel.PRIVATE) final Map<String, Shader>	shaders;
 
-	private ShaderBasic					shaderBasic;
+	private ShaderBasic												shaderBasic;
+	private Shader2D												shader2D;
+	private Shader3DTo2D											shader3DTo2D;
 
 	public GLShaderManager()
 	{
@@ -51,6 +61,65 @@ public class GLShaderManager
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public final GLShaderManager initialization(Matrix4f projectionIn) throws Exception
+	{
+		this.updateProjection(projectionIn);
+
+		return this;
+	}
+
+	public final GLShaderManager initialization(Matrix4f projectionIn, Matrix4f viewIn) throws Exception
+	{
+		for (final Shader shader : this.shaders().values())
+		{
+			shader.start();
+
+			if (shader instanceof IView)
+			{
+				((IView) shader).uniformView().load(viewIn);
+			}
+
+			if (shader instanceof IProjection)
+			{
+				((IProjection) shader).uniformProjection().load(projectionIn);
+			}
+
+			Shader.stop();
+		}
+
+		return this;
+	}
+
+	public GLShaderManager updateProjection(Matrix4f projectionIn)
+	{
+		for (final Shader shader : this.shaders().values())
+		{
+			shader.start();
+
+			if (shader instanceof IProjection)
+			{
+				((IProjection) shader).uniformProjection().load(projectionIn);
+			}
+
+			Shader.stop();
+		}
+
+		return this;
+	}
+
+	public GLShaderManager updateViewMatrix(Matrix4f viewIn)
+	{
+		for (final Shader shader : this.shaders().values())
+		{
+			if (shader instanceof IView)
+			{
+				((IView) shader).uniformView().load(viewIn);
+			}
+		}
+
+		return this;
 	}
 
 	public GLShaderManager add(String nameIn, Shader shaderIn)
@@ -86,20 +155,5 @@ public class GLShaderManager
 		{
 			shader.cleanup();
 		}
-	}
-
-	public final Map<String, Shader> shaders()
-	{
-		return this.shaders;
-	}
-
-	public final Map<String, Shader> getShaders()
-	{
-		return this.shaders;
-	}
-
-	public final ShaderBasic shaderBasic()
-	{
-		return this.shaderBasic;
 	}
 }

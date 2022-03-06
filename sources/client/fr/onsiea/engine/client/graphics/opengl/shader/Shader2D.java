@@ -35,21 +35,15 @@ import lombok.Getter;
  *
  */
 @Getter(AccessLevel.PUBLIC)
-public class ShaderBasic extends Shader
+public class Shader2D extends Shader
 {
-	private final UniformMatrix4f	projectionMatrix;
-	private final UniformMatrix4f	viewMatrix;
-	private final UniformMatrix4f	transformationsMatrix;
+	private UniformMatrix4f transformations;
 
 	/**
 	 * @throws Exception
 	 */
-	public ShaderBasic() throws Exception
+	public Shader2D() throws Exception
 	{
-		super("resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position", "uvs");
-
-		this.projectionMatrix		= this.matrix4fUniform("projection");
-		this.viewMatrix				= this.matrix4fUniform("view");
-		this.transformationsMatrix	= this.matrix4fUniform("transformations");
+		super("resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position");
 	}
 }
