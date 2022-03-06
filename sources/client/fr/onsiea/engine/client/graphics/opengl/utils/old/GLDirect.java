@@ -155,36 +155,36 @@ public class GLDirect
 
 	public void drawQuadsCube()
 	{
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
-		GLDirect.drawColor(new Vector3f(1.0f, 0.5f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
-		GLDirect.drawColor(new Vector3f(1.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawColor(new Vector3f(0.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
-		GLDirect.drawColor(new Vector3f(1.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
+		GLDirect.drawColor(1.0f, 0.5f, 0.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
+		GLDirect.drawColor(1.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
+		GLDirect.drawColor(0.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
+		GLDirect.drawColor(1.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
 		this.endDraw();
 	}
 
@@ -250,65 +250,65 @@ public class GLDirect
 
 	public void drawCube()
 	{
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 0.8f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
+		GLDirect.drawColor(1.0f, 0.8f, 0.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.5f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.5f);
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
 
-		GLDirect.drawColor(new Vector3f(0.3f, 1.0f, 0.4f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
+		GLDirect.drawColor(0.3f, 1.0f, 0.4f);
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
 
-		GLDirect.drawColor(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
+		GLDirect.drawColor(1.0f, 1.0f, 0.0f);
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
 		this.endDraw();
 	}
 
@@ -316,88 +316,88 @@ public class GLDirect
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
 		GLDirect.drawTex(1, 1);
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
 
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
 		GLDirect.drawTex(0, 0);
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
 		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
 
 		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
 		GLDirect.drawTex(1, 1);
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
 
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
 		GLDirect.drawTex(0, 0);
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
 		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
 
 		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
 		GLDirect.drawTex(1, 1);
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
 
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
 		GLDirect.drawTex(0, 0);
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
 		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
 
 		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
 		GLDirect.drawTex(1, 1);
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
 
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
 		GLDirect.drawTex(0, 0);
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
 		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
-
-		GLDirect.drawTex(0, 0);
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
-		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 0.0f));
-		GLDirect.drawTex(1, 1);
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
-
-		GLDirect.drawTex(1, 1);
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 0.0f));
-		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(1.0f, 1.0f, 1.0f));
-		GLDirect.drawTex(0, 0);
-		GLDirect.drawVertex(new Vector3f(0.0f, 1.0f, 1.0f));
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
 
 		GLDirect.drawTex(0, 0);
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 1.0f));
-		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
+		GLDirect.drawVertex(0.0f, 1.0f, 0.0f);
+		GLDirect.drawTex(1, 1);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
+
+		GLDirect.drawTex(1, 1);
+		GLDirect.drawVertex(1.0f, 1.0f, 0.0f);
+		GLDirect.drawTex(1, 0);
+		GLDirect.drawVertex(1.0f, 1.0f, 1.0f);
+		GLDirect.drawTex(0, 0);
+		GLDirect.drawVertex(0.0f, 1.0f, 1.0f);
+
+		GLDirect.drawTex(0, 0);
+		GLDirect.drawVertex(0.0f, 0.0f, 1.0f);
+		GLDirect.drawTex(1, 0);
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
+		GLDirect.drawTex(0, 1);
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
 
 		GLDirect.drawTex(0, 1);
-		GLDirect.drawVertex(new Vector3f(0.0f, 0.0f, 0.0f));
+		GLDirect.drawVertex(0.0f, 0.0f, 0.0f);
 		GLDirect.drawTex(1, 1);
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 0.0f));
+		GLDirect.drawVertex(1.0f, 0.0f, 0.0f);
 		GLDirect.drawTex(1, 0);
-		GLDirect.drawVertex(new Vector3f(1.0f, 0.0f, 1.0f));
+		GLDirect.drawVertex(1.0f, 0.0f, 1.0f);
 		this.endDraw();
 	}
 
