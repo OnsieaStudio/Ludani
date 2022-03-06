@@ -35,6 +35,7 @@ import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
+import fr.onsiea.engine.client.graphics.window.IWindow;
 
 /**
  * @author Seynax
@@ -71,7 +72,7 @@ public class FBO
 		 *            - an int indicating the type of depth buffer attachment that
 		 *            this FBO should use.
 		 */
-	public FBO(int widthIn, int heightIn, int depthBufferTypeIn, Window windowIn) throws Exception
+	public FBO(int widthIn, int heightIn, int depthBufferTypeIn, IWindow windowIn) throws Exception
 	{
 		this.width(widthIn);
 		this.height(heightIn);
@@ -135,7 +136,7 @@ public class FBO
 	 * render target. Anything rendered after this will be rendered to the
 	 * screen, and not this FBO.
 	 */
-	public void stop(Window windowIn)
+	public void stop(IWindow windowIn)
 	{
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 		GL11.glViewport(0, 0, windowIn.settings().width(), windowIn.settings().height());
@@ -179,7 +180,7 @@ public class FBO
 	 *            FBO.
 	 * @throws Exception
 	 */
-	private void initialiseFrameBuffer(int typeIn, Window windowIn) throws Exception
+	private void initialiseFrameBuffer(int typeIn, IWindow windowIn) throws Exception
 	{
 		this.createFrameBuffer();
 		if (this.multisample())

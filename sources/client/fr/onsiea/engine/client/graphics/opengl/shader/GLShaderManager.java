@@ -31,6 +31,11 @@ import java.util.Map;
 
 import org.joml.Matrix4f;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.BrightFilterShader;
+import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.CombineShader;
+import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.ContrastShader;
+import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.HorizontalBlurShader;
+import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.VerticalBlurShader;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,6 +53,11 @@ public class GLShaderManager
 	private ShaderBasic												shaderBasic;
 	private Shader2D												shader2D;
 	private Shader3DTo2D											shader3DTo2D;
+	private BrightFilterShader										brightFilter;
+	private CombineShader											combine;
+	private ContrastShader											contrast;
+	private HorizontalBlurShader									horizontalBlur;
+	private VerticalBlurShader										verticalBlur;
 
 	public GLShaderManager()
 	{
@@ -56,6 +66,13 @@ public class GLShaderManager
 		try
 		{
 			this.add("basic", this.shaderBasic = new ShaderBasic());
+			this.add("2d", this.shader2D = new Shader2D());
+			this.add("3dto2d", this.shader3DTo2D = new Shader3DTo2D());
+			this.add("brightFilter", this.brightFilter = new BrightFilterShader());
+			this.add("combine", this.combine = new CombineShader());
+			this.add("contrast", this.contrast = new ContrastShader());
+			this.add("horizontalBlur", this.horizontalBlur = new HorizontalBlurShader());
+			this.add("verticalBlur", this.verticalBlur = new VerticalBlurShader());
 		}
 		catch (final Exception e)
 		{
