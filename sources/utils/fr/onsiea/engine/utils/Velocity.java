@@ -1,4 +1,4 @@
-package fr.seynax.onsiea.game.entity;
+package fr.onsiea.engine.utils;
 
 import org.joml.Vector3d;
 

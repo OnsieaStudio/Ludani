@@ -15,6 +15,9 @@ public class IOUtils
 
 	}
 
+	/**
+	 * Once the buffer is no longer used, it is necessary to free it MemoryUtil.free (buffer);
+	 */
 	private static ByteBuffer resizeBuffer(final ByteBuffer buffer, final int newCapacity)
 	{
 		final var newBuffer = BufferUtils.createByteBuffer(newCapacity);
@@ -25,6 +28,8 @@ public class IOUtils
 
 	/**
 	 * Reads the specified resource and returns the raw data as a ByteBuffer.
+	 *
+	 * Once the buffer is no longer used, it is necessary to free it MemoryUtil.free (buffer);
 	 *
 	 * @param resource   the resource to read
 	 * @param bufferSize the initial buffer size
