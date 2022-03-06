@@ -26,6 +26,8 @@
 */
 package fr.onsiea.engine.client.graphics;
 
+import fr.onsiea.engine.client.graphics.render.EnumRenderAPI;
+
 /**
  * @author Seynax
  *
@@ -33,18 +35,20 @@ package fr.onsiea.engine.client.graphics;
 
 public class GraphicsConstants
 {
-	public final static boolean	DEBUG					= true;
-	public final static int		DEFAULT_WIDTH			= 1920;
-	public final static int		DEFAULT_HEIGHT			= 1080;
+	public final static boolean			DEBUG					= true;
+	public final static int				DEFAULT_WIDTH			= 1920;
+	public final static int				DEFAULT_HEIGHT			= 1080;
 
-	public final static int		DEFAULT_REFRESH_RATE	= 60;
-	public final static String	DEFAULT_WINDOW_TITLE	= "Onsiea";
+	public final static int				DEFAULT_REFRESH_RATE	= 60;
+	public final static String			DEFAULT_WINDOW_TITLE	= "Onsiea";
 
 	/**
 	 * Render
 	 */
 
-	public final static float	FOV						= 70.0f;
-	public final static float	ZNEAR					= 0.1f;
-	public final static float	ZFAR					= 1000.0f;
+	public final static float			FOV						= 70.0f;
+	public final static float			ZNEAR					= 0.1f;
+	public final static float			ZFAR					= 1000.0f;
+
+	public final static EnumRenderAPI	RENDER_API				= EnumRenderAPI.OpenGL;
 }
