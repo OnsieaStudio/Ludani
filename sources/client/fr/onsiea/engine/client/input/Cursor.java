@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFW;
 
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.callbacks.glfw.CallbackCursorPosition;
-import fr.onsiea.engine.maths.normalization.Normalizer;
+import fr.onsiea.engine.utils.maths.normalization.Normalizer;
 
 public class Cursor
 {

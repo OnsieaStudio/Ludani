@@ -28,8 +28,8 @@ package fr.onsiea.engine.client.graphics.shapes;
 
 import org.joml.Vector3f;
 
-import fr.onsiea.engine.maths.transformations.Transformations3f;
-import fr.onsiea.engine.maths.triangle.Triangle3f;
+import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
+import fr.onsiea.engine.utils.maths.triangle.Triangle3f;
 
 /**
  * @author Seynax

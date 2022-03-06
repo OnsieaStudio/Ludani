@@ -4,7 +4,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import fr.onsiea.engine.maths.MathUtils;
+import fr.onsiea.engine.utils.maths.MathUtils;
 
 public class GLDirect
 {

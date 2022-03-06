@@ -3,15 +3,15 @@ package fr.onsiea.engine.core.entity;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import fr.onsiea.engine.maths.vector.TimedVector3f;
-import fr.onsiea.engine.maths.velocity.VelocityManager;
+import fr.onsiea.engine.utils.maths.vector.timed.TimedVector3f;
+import fr.onsiea.engine.utils.maths.velocity.VelocityManager;
 
 public class Entity
 {
 	private TimedVector3f	timedOrientation;
 	private TimedVector3f	timedPosition;
 
-	private VelocityManager		velocityManager;
+	private VelocityManager	velocityManager;
 
 	public Entity()
 	{
@@ -36,7 +36,8 @@ public class Entity
 
 	protected void initialization()
 	{
-		this.velocityManager(new VelocityManager(new Vector3d(1.5f, 1.5f, 1.5f), new Vector3d(1.075f, 1.1075f, 1.075f)));
+		this.velocityManager(
+				new VelocityManager(new Vector3d(1.5f, 1.5f, 1.5f), new Vector3d(1.075f, 1.1075f, 1.075f)));
 	}
 
 	final void position(float xIn, float yIn, float zIn)

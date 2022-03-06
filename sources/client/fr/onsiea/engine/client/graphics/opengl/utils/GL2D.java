@@ -10,9 +10,9 @@ import org.lwjgl.opengl.GL30;
 import fr.onsiea.engine.client.graphics.opengl.model.GLRawModel;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
-import fr.onsiea.engine.maths.normalization.Normalizer;
-import fr.onsiea.engine.maths.transformations.Transformations2f;
-import fr.onsiea.engine.maths.transformations.Transformations3f;
+import fr.onsiea.engine.utils.maths.normalization.Normalizer;
+import fr.onsiea.engine.utils.maths.transformations.Transformations2f;
+import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
 
 public class GL2D
 {

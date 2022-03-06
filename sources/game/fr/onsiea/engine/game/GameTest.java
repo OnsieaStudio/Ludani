@@ -47,8 +47,8 @@ import fr.onsiea.engine.common.OnsieaGearings;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
 import fr.onsiea.engine.core.entity.Camera;
-import fr.onsiea.engine.maths.MathInstances;
-import fr.onsiea.engine.maths.projections.Projections;
+import fr.onsiea.engine.utils.maths.MathInstances;
+import fr.onsiea.engine.utils.maths.projections.Projections;
 import fr.onsiea.engine.utils.time.Timer;
 
 /**

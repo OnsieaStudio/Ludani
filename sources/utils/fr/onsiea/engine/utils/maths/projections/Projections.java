@@ -1,9 +1,9 @@
-package fr.onsiea.engine.maths.projections;
+package fr.onsiea.engine.utils.maths.projections;
 
 import org.joml.Matrix4f;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
-import fr.onsiea.engine.maths.MathUtils;
+import fr.onsiea.engine.utils.maths.MathUtils;
 
 public class Projections
 {

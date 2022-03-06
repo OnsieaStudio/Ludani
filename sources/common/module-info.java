@@ -33,6 +33,8 @@ module OnsieaEngine
 	exports fr.onsiea.engine.utils;
 	exports fr.onsiea.engine.utils.time;
 	exports fr.onsiea.engine.utils.function;
+	exports fr.onsiea.engine.utils.maths.vector;
+	exports fr.onsiea.engine.utils.maths.vector.timed;
 
 	requires lombok;
 	requires transitive org.joml;
