@@ -40,6 +40,8 @@ import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
+import fr.onsiea.engine.client.graphics.obj.OBJLoader;
+import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
 import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
@@ -73,8 +75,8 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 	private GLShaderManager			shaderManager;
 	private TexturesManager			texturesManager;
 
-	/**private GLMeshManager	meshManager;
-	private OBJLoader		objLoader;**/
+	private GLMeshManager			meshManager;
+	private OBJLoader				objLoader;
 
 	/**
 	 *
@@ -98,20 +100,18 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 		this.settings().userSettings().enable("mustAnisotropyTextureFiltering").set("anisotropyTextureFilteringAmount",
 				4.0f);
 
-		//this.shaderManager(new GLShaderManager());
+		this.shaderManager(new GLShaderManager());
 		this.texturesManager(new TexturesManager(this));
 
-		/**this.meshManager(new GLMeshManager());
+		this.meshManager(new GLMeshManager());
 		this.objLoader(new OBJLoader(this.meshManager()));
-		Texture.initialization(capabilitiesIn);
-		**/
 	}
 
 	public void initialization(Matrix4f projectionMatrixIn) throws Exception
 	{
 		OpenGLUtils.restoreState();
 
-		// this.shaderManager().initialization(projectionMatrixIn);
+		this.shaderManager().initialization(projectionMatrixIn);
 	}
 
 	@Override
@@ -171,19 +171,19 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 		KHRDebug.glDebugMessageCallback(null, 0);
 	}
 
-	/**public GLMesh loadMesh(String fileNameIn) throws Exception
+	public GLMesh loadMesh(String fileNameIn) throws Exception
 	{
 		return this.objLoader().loadMesh(fileNameIn);
-	}**/
+	}
 
 	@Override
 	public void cleanup()
 	{
 		OpenGLUtils.restoreState();
 
-		/**this.meshManager().cleanup();
-		OpenGLScreenshot.cleanup();**/
-		//&this.shaderManager().cleanup();
+		this.meshManager().cleanup();
+		// OpenGLScreenshot.cleanup();
+		// this.shaderManager().cleanup();
 		this.disableDebugging();
 
 		GL.destroy();

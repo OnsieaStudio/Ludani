@@ -62,18 +62,20 @@ public class GLDataBuilder
 		return this.vbo();
 	}
 
-	public BaseVbo newIboAndBind()
+	public Elements newIboAndBind()
 	{
-		this.vbo(this.vboManager().createElements().bind());
+		final var elements = this.vboManager().createElements();
+		this.vbo(elements.bind());
 
-		return this.vbo();
+		return elements;
 	}
 
-	public BaseVbo newIboAndBind(int usageIn)
+	public Elements newIboAndBind(int usageIn)
 	{
-		this.vbo(this.vboManager().createElements(usageIn).bind());
+		final var elements = this.vboManager().createElements(usageIn);
+		this.vbo(elements.bind());
 
-		return this.vbo();
+		return elements;
 	}
 
 	public GLDataBuilder data(ByteBuffer bufferIn)
@@ -434,7 +436,7 @@ public class GLDataBuilder
 	{
 		public final static int bytesSizeOf(VertexAttribPointer vertexAttribPointerIn)
 		{
-			return OpenGLPrimitive.bytesSizeOf(vertexAttribPointerIn.type());
+			return vertexAttribPointerIn.size() * OpenGLPrimitive.bytesSizeOf(vertexAttribPointerIn.type());
 		}
 
 		private GLDataBuilder	dataBuilder;

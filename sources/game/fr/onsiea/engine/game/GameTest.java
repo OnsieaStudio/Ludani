@@ -29,11 +29,11 @@ package fr.onsiea.engine.game;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
+import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
 import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
@@ -80,6 +80,8 @@ public class GameTest implements IGameLogic
 
 	private ITexture		texture;
 
+	private GLMesh			mesh;
+
 	@Override
 	public boolean preInitialization()
 	{
@@ -100,32 +102,18 @@ public class GameTest implements IGameLogic
 			e.printStackTrace();
 		}
 
-		this.texture	= ((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager()
+		this.texture = ((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager()
 				.load("resources/textures/aeison.png");
 
-		this.vao		= GL30.glGenVertexArrays();
-
-		GL30.glBindVertexArray(this.vao);
-
-		GL20.glEnableVertexAttribArray(0);
-		GL20.glEnableVertexAttribArray(1);
-
-		this.vbo = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.vbo);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, Cube.positionsAndTextureCoordinates, GL15.GL_STATIC_DRAW);
-		GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, (3 + 2) * 4, 0L);
-		GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, (3 + 2) * 4, 3L * 4L);
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-
-		final var ibo = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo);
-		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, Cube.interleaveIndicesPositionsAndTextures,
-				GL15.GL_STATIC_DRAW);
-
-		GL20.glDisableVertexAttribArray(1);
-		GL20.glDisableVertexAttribArray(0);
-
-		GL30.glBindVertexArray(0);
+		try
+		{
+			this.mesh = ((OpenGLRenderAPIContext) renderAPIContextIn).meshManager()
+					.build(Cube.interleaveIndicesPositionsAndTextures, Cube.positionsAndTextureCoordinates, 3, 2);
+		}
+		catch (final Exception e1)
+		{
+			e1.printStackTrace();
+		}
 
 		this.camera			= new Camera();
 		this.cameraTimer	= new Timer();
@@ -177,20 +165,15 @@ public class GameTest implements IGameLogic
 
 		this.shaderBasic.viewMatrix().load(this.camera.viewMatrix());
 		this.shaderBasic.transformationsMatrix().load(MathInstances.simpleTransformationsMatrix3d());
-		GL30.glBindVertexArray(this.vao);
-		GL20.glEnableVertexAttribArray(0);
-		GL20.glEnableVertexAttribArray(1);
 
 		this.texture.attach();
 
-		GL11.glDrawElements(GL11.GL_TRIANGLES, 36, GL11.GL_UNSIGNED_INT, 0);
-		//GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, Cube.INDICES.length);
+		this.mesh.startDrawing(null);
+		this.mesh.draw(null);
+		this.mesh.stopDrawing(null);
 
 		this.texture.detach();
 
-		GL20.glDisableVertexAttribArray(1);
-		GL20.glDisableVertexAttribArray(0);
-		GL30.glBindVertexArray(0);
 		Shader.stop();
 
 		/**

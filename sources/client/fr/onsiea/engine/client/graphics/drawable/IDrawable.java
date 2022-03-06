@@ -4,9 +4,9 @@ import fr.onsiea.engine.client.graphics.render.Renderer;
 
 public interface IDrawable
 {
-	void startDrawing(Renderer renderAPIContextIn);
+	void startDrawing(Renderer rendererIn);
 
 	void draw(Renderer rendererIn);
 
-	void stopDrawing(Renderer renderAPIContextIn);
+	void stopDrawing(Renderer rendererIn);
 }

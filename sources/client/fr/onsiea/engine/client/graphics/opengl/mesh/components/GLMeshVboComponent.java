@@ -24,11 +24,9 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl;
+package fr.onsiea.engine.client.graphics.opengl.mesh.components;
 
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
-import fr.onsiea.engine.client.graphics.opengl.vao.VaoManager;
-import fr.onsiea.engine.client.graphics.opengl.vbo.VboManager;
+import fr.onsiea.engine.client.graphics.opengl.vbo.BaseVbo;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -37,43 +35,20 @@ import lombok.Getter;
  *
  */
 @Getter(AccessLevel.PUBLIC)
-public class GLMeshManager
+public class GLMeshVboComponent implements IGLMeshComponent
 {
-	private final VaoManager	vaoManager;
-	private final VboManager	vboManager;
+	private final EnumGLMeshComponentType	type;
+	private final BaseVbo					vbo;
 
-	public GLMeshManager()
+	public GLMeshVboComponent(BaseVbo vboIn)
 	{
-		this.vaoManager	= new VaoManager();
-		this.vboManager	= new VboManager();
+		this.type	= EnumGLMeshComponentType.VBO;
+		this.vbo	= vboIn;
 	}
 
-	public GLMesh.Builder meshBuilderWithVao()
-	{
-		return GLMesh.Builder.withVao(this.vaoManager, this.vboManager);
-	}
-
-	public GLMesh.Builder meshBuilder()
-	{
-		return new GLMesh.Builder(this.vaoManager, this.vboManager);
-	}
-
-	/**
-	 *
-	 * @param indicesIn
-	 * @param vertexAndAttributesIn
-	 * @param attributesSizesIn
-	 * @return
-	 * @throws Exception
-	 */
-	public GLMesh build(int[] indicesIn, float[] vertexAndAttributesIn, int... attributesSizesIn) throws Exception
-	{
-		return GLMesh.Builder.build(this.vaoManager, this.vboManager, indicesIn, vertexAndAttributesIn,
-				attributesSizesIn);
-	}
-
+	@Override
 	public void cleanup()
 	{
-		this.vboManager.cleanup();
+
 	}
 }

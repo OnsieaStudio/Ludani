@@ -24,56 +24,52 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl;
+package fr.onsiea.engine.client.graphics.opengl.mesh.draw;
 
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
-import fr.onsiea.engine.client.graphics.opengl.vao.VaoManager;
-import fr.onsiea.engine.client.graphics.opengl.vbo.VboManager;
-import lombok.AccessLevel;
-import lombok.Getter;
+import fr.onsiea.engine.client.graphics.opengl.mesh.IMeshDrawFunction;
+import fr.onsiea.engine.client.graphics.opengl.vao.Vao;
+import fr.onsiea.engine.client.graphics.opengl.vao.VaoUtils;
+import fr.onsiea.engine.client.graphics.render.Renderer;
 
 /**
  * @author Seynax
  *
  */
-@Getter(AccessLevel.PUBLIC)
-public class GLMeshManager
+public class DrawersVao implements IMeshDrawFunction
 {
-	private final VaoManager	vaoManager;
-	private final VboManager	vboManager;
+	private final Vao	vao;
+	private final int	attribs;
+	private final int	vertexCount;
 
-	public GLMeshManager()
+	public DrawersVao(Vao vaoIn, int attribsIn, int vertexCountIn)
 	{
-		this.vaoManager	= new VaoManager();
-		this.vboManager	= new VboManager();
+		this.vao			= vaoIn;
+		this.attribs		= attribsIn;
+		this.vertexCount	= vertexCountIn;
 	}
 
-	public GLMesh.Builder meshBuilderWithVao()
+	@Override
+	public IMeshDrawFunction start(GLMesh meshIn, Renderer rendererIn)
 	{
-		return GLMesh.Builder.withVao(this.vaoManager, this.vboManager);
+		VaoUtils.bindAndEnables(this.vao, this.attribs);
+
+		return this;
 	}
 
-	public GLMesh.Builder meshBuilder()
+	@Override
+	public IMeshDrawFunction draw(GLMesh meshIn, Renderer rendererIn)
 	{
-		return new GLMesh.Builder(this.vaoManager, this.vboManager);
+		this.vao.draw(this.vertexCount);
+
+		return this;
 	}
 
-	/**
-	 *
-	 * @param indicesIn
-	 * @param vertexAndAttributesIn
-	 * @param attributesSizesIn
-	 * @return
-	 * @throws Exception
-	 */
-	public GLMesh build(int[] indicesIn, float[] vertexAndAttributesIn, int... attributesSizesIn) throws Exception
+	@Override
+	public IMeshDrawFunction stop(GLMesh meshIn, Renderer rendererIn)
 	{
-		return GLMesh.Builder.build(this.vaoManager, this.vboManager, indicesIn, vertexAndAttributesIn,
-				attributesSizesIn);
-	}
+		VaoUtils.disablesAndUnbind(this.attribs);
 
-	public void cleanup()
-	{
-		this.vboManager.cleanup();
+		return this;
 	}
 }
