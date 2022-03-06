@@ -45,13 +45,13 @@ public class AlignedShapeIndexer
 	{
 		var	i0	= 0;
 		var	i1	= 0;
-		for (var i = 0; i < Cube.allPositions.length;)
+		for (var i = 0; i < ShapeCube.allPositions.length;)
 		{
-			final var x = Cube.allPositions[i];
+			final var x = ShapeCube.allPositions[i];
 			i++;
-			final var y = Cube.allPositions[i];
+			final var y = ShapeCube.allPositions[i];
 			i++;
-			final var z = Cube.allPositions[i];
+			final var z = ShapeCube.allPositions[i];
 			i++;
 
 			C c = null;
@@ -77,7 +77,7 @@ public class AlignedShapeIndexer
 
 			System.out.print(c.index);
 
-			if (i + 3 <= Cube.allPositions.length)
+			if (i + 3 <= ShapeCube.allPositions.length)
 			{
 				System.out.print(",");
 			}
