@@ -35,4 +35,20 @@ public class Transformations2f
 		return new Matrix4f().identity().translate(xIn, yIn, 0.0f).rotateX((float) Math.toRadians(rxIn))
 				.rotateY((float) Math.toRadians(ryIn)).scale(sxIn, syIn, 1.0f);
 	}
+
+	/**
+	 * @param positionIn
+	 * @param fIn
+	 * @param f2In
+	 * @param scaleIn
+	 * @param transformationsMatrixIn
+	 * @return
+	 */
+	public static Matrix4f transformations(Vector2f positionIn, float rxIn, float ryIn, Vector2f scaleIn,
+			Matrix4f transformationsMatrixIn)
+	{
+		return transformationsMatrixIn.identity().translate(positionIn.x(), positionIn.y(), 0.0f)
+				.rotateX((float) Math.toRadians(rxIn)).rotateY((float) Math.toRadians(ryIn))
+				.scale(scaleIn.x(), scaleIn.y(), 1.0f);
+	}
 }
