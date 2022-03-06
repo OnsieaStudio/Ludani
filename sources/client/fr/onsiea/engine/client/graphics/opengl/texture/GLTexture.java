@@ -111,9 +111,9 @@ public class GLTexture implements ITexture
 
 		this.components(new TextureComponents(widthIn, heightIn));
 
-		this.load(bufferIn);
-
 		this.context(contextIn);
+
+		this.load(bufferIn);
 	}
 
 	private void initialization()

@@ -1,5 +1,6 @@
 package fr.onsiea.engine.client.graphics.texture;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -16,8 +17,8 @@ public class TextureLoader
 	{
 		final var	realFilepath	= TextureUtils.filepath(filepathIn);
 
-		final var	textureBuffer	= new TextureBuffer();
-		if (textureBuffer.load(realFilepath, false) != null)
+		final var	textureBuffer	= TextureBuffer.load(new File(realFilepath), false);
+		if (textureBuffer != null)
 		{
 			final var buffer = BufferUtils.createByteBuffer(textureBytesIn.bytes().length);
 			buffer.put(textureBytesIn.bytes());
@@ -40,22 +41,28 @@ public class TextureLoader
 
 	final static ITexture load(final String filepathIn, IRenderAPIMethods renderAPIContextIn)
 	{
-		final var	realFilepath	= TextureUtils.filepath(filepathIn);
+		final var realFilepath = TextureUtils.filepath(filepathIn);
 
-		final var	textureBuffer	= new TextureBuffer();
-
-		if (textureBuffer.load(realFilepath, false) != null)
+		try
 		{
-			final var texture = renderAPIContextIn.createTexture(textureBuffer.components().width(),
-					textureBuffer.components().height(), textureBuffer.buffer());
-
-			if (!textureBuffer.cleanup())
+			final var textureBuffer = TextureBuffer.load(new File(realFilepath), false);
+			if (textureBuffer != null)
 			{
-				throw new RuntimeException(
-						"[ERREUR] Impossible de décharger le buffer de la texture : \"" + realFilepath + "\"");
-			}
+				final var texture = renderAPIContextIn.createTexture(textureBuffer.components().width(),
+						textureBuffer.components().height(), textureBuffer.buffer());
 
-			return texture;
+				if (!textureBuffer.cleanup())
+				{
+					throw new RuntimeException(
+							"[ERREUR] Impossible de décharger le buffer de la texture : \"" + realFilepath + "\"");
+				}
+
+				return texture;
+			}
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
 		}
 
 		throw new RuntimeException("[ERREUR] Impossible de charger la texture : \"" + realFilepath + "\"");
