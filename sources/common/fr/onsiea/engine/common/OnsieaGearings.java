@@ -37,6 +37,7 @@ import fr.onsiea.engine.client.lwjgl.LWJGLContext;
 import fr.onsiea.engine.client.sound.SoundManager;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
+import fr.onsiea.engine.utils.maths.MathInstances;
 import fr.onsiea.engine.utils.time.Timer;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -113,6 +114,7 @@ public class OnsieaGearings
 			this.glfwManager().inputManager().cursor().blockedPosition(this.window().settings().width() / 2.0D,
 					this.window().settings().height() / 2.0D);
 			this.glfwManager().inputManager().cursor().mustBeBlocked();
+			MathInstances.initialization(this.window);
 
 			this.gameLogic().initialization(this.window, windowContext.context());
 		}

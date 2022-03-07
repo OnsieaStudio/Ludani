@@ -26,6 +26,9 @@
 */
 package fr.onsiea.engine.game;
 
+import java.util.List;
+
+import org.joml.Matrix4f;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -35,9 +38,13 @@ import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
 import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
+import fr.onsiea.engine.client.graphics.opengl.shader.InstancedShader;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
 import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
+import fr.onsiea.engine.client.graphics.particles.IParticleSystem;
+import fr.onsiea.engine.client.graphics.particles.Particle;
+import fr.onsiea.engine.client.graphics.particles.ParticleManager;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.window.IWindow;
@@ -47,7 +54,7 @@ import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.utils.maths.MathInstances;
-import fr.onsiea.engine.utils.maths.projections.Projections;
+import fr.onsiea.engine.utils.maths.MathUtils;
 import fr.onsiea.engine.utils.time.Timer;
 
 /**
@@ -68,18 +75,23 @@ public class GameTest implements IGameLogic
 		}
 	}
 
-	private NanoVGManager	nanoVG;
-	private int				vao;
-	private int				vbo;
-	private ShaderBasic		shaderBasic;
-	private Camera			camera;
-	private NVGColor		color;
+	private NanoVGManager				nanoVG;
+	private int							vao;
+	private int							vbo;
+	private ShaderBasic					shaderBasic;
+	private InstancedShader				instancedShader;
+	private Camera						camera;
+	private NVGColor					color;
 
-	private Timer			cameraTimer;
+	private Timer						cameraTimer;
 
-	private ITexture		texture;
+	private ITexture					texture;
 
-	private GLMesh			mesh;
+	private GLMesh						mesh;
+
+	private Matrix4f					projView;
+
+	private ParticleManager<Particle>	particleManager;
 
 	@Override
 	public boolean preInitialization()
@@ -123,10 +135,69 @@ public class GameTest implements IGameLogic
 			this.shaderBasic = new ShaderBasic();
 
 			this.shaderBasic.start();
-			this.shaderBasic.projectionMatrix().load(Projections.of(((Window) windowIn).settings().width(),
-					((Window) windowIn).settings().height(), 90.0f, 0.1f, 1000.0f));
-			this.shaderBasic.transformationsMatrix().load(MathInstances.simpleTransformationsMatrix3d());
+			this.shaderBasic.projectionMatrix().load(MathInstances.projectionMatrix());
+
 			Shader.stop();
+
+			this.instancedShader = new InstancedShader();
+
+			this.instancedShader.start();
+			this.instancedShader.projectionMatrix().load(MathInstances.projectionMatrix());
+			Shader.stop();
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		this.projView = new Matrix4f(MathInstances.projectionMatrix()).identity();
+		this.projView.mul(this.camera.viewMatrix());
+
+		try
+		{
+			this.particleManager = new ParticleManager<>(new IParticleSystem<Particle>()
+			{
+				@Override
+				public IParticleSystem<Particle> initialization(List<Particle> particlesIn,
+						ParticleManager<Particle> particleManagerIn)
+				{
+					for (var i = 0; i < 100; i++)
+					{
+						final var particle = new Particle();
+
+						particle.position().x		= MathUtils.randomInt(4, 50);
+						particle.position().y		= MathUtils.randomInt(4, 50);
+						particle.position().z		= MathUtils.randomInt(4, 50);
+						particle.orientation().x	= MathUtils.randomInt(0, 360);
+						particle.orientation().y	= MathUtils.randomInt(0, 360);
+						particle.orientation().z	= MathUtils.randomInt(0, 360);
+						particle.scale().x			= MathUtils.randomInt(0, 2);
+						particle.scale().y			= MathUtils.randomInt(0, 2);
+						particle.scale().z			= MathUtils.randomInt(0, 2);
+
+						particlesIn.add(particle);
+					}
+
+					return this;
+				}
+
+				@Override
+				public IParticleSystem<Particle> update(Particle particleIn,
+						ParticleManager<Particle> particleManagerIn)
+				{
+					particleIn.position().x		+= MathUtils.randomInt(-1, 1) / 12.0f;
+					particleIn.position().y		+= MathUtils.randomInt(0, 1);
+					particleIn.position().z		+= MathUtils.randomInt(-1, 1) / 12.0f;
+					particleIn.orientation().x	+= MathUtils.randomInt(-10, 10);
+					particleIn.orientation().y	+= MathUtils.randomInt(-10, 10);
+					particleIn.orientation().z	+= MathUtils.randomInt(-10, 10);
+					//particleIn.scale().x			+= MathUtils.randomInt(-1, 1);
+					//particleIn.scale().y			+= MathUtils.randomInt(-1, 1);
+					//particleIn.scale().z			+= MathUtils.randomInt(-1, 1);
+
+					return this;
+				}
+			}, 100, ((OpenGLRenderAPIContext) renderAPIContextIn).meshManager());
 		}
 		catch (final Exception e)
 		{
@@ -158,6 +229,16 @@ public class GameTest implements IGameLogic
 	@Override
 	public void draw(IWindow windowIn)
 	{
+		this.projView.set(MathInstances.projectionMatrix()).mul(this.camera.viewMatrix());
+		try
+		{
+			this.particleManager.update(this.projView);
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+
 		OpenGLUtils.restoreState();
 		//GL11.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
@@ -171,6 +252,14 @@ public class GameTest implements IGameLogic
 		this.mesh.startDrawing(null);
 		this.mesh.draw(null);
 		this.mesh.stopDrawing(null);
+
+		Shader.stop();
+
+		this.instancedShader.start();
+
+		this.instancedShader.viewMatrix().load(this.camera.viewMatrix());
+
+		this.particleManager.draw();
 
 		this.texture.detach();
 

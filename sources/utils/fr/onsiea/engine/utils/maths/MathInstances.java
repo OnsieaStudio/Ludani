@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
+import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.utils.maths.projections.Projections;
 import fr.onsiea.engine.utils.maths.transformations.Transformations2f;
 import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
@@ -37,7 +38,7 @@ public class MathInstances
 	private final static int		MATRIX_SIZE_BYTES					= 4 * MathInstances.VECTOR4F_SIZE_BYTES;
 	private final static int		MATRIX_SIZE_FLOATS					= 4 * 4;
 
-	private final static Matrix4f	projectionMatrix					= new Matrix4f().identity();
+	private final static Matrix4f	projectionMatrix					= new Matrix4f();
 	private final static Matrix4f	viewMatrix							= new Matrix4f().identity();
 
 	private final static Matrix4f	SIMPLE_TRANSFORMATIONS_MATRIX_2D	= Transformations2f
@@ -61,11 +62,11 @@ public class MathInstances
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------------
 
-	public final static void initialization(Window windowIn)
+	public final static void initialization(IWindow windowIn)
 	{
-		MathInstances.fov(MathInstances.defaultFov());
-		MathInstances.zNear(MathInstances.zNear());
-		MathInstances.zFar(MathInstances.zFar());
+		MathInstances.fov(MathInstances.DEFAULT_FOV);
+		MathInstances.zNear(MathInstances.DEFAULT_NEAR_PLANE);
+		MathInstances.zFar(MathInstances.DEFAULT_FAR_PLANE);
 
 		Projections.of(windowIn.settings().width(), windowIn.settings().height(), MathInstances.fov(),
 				MathInstances.zNear(), MathInstances.zFar(), MathInstances.projectionMatrix());
