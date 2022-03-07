@@ -27,6 +27,7 @@
 package fr.onsiea.engine.client.graphics.opengl.shader;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformMatrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformVector2f;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -39,6 +40,7 @@ public class InstancedShader extends Shader
 {
 	private final UniformMatrix4f	projectionMatrix;
 	private final UniformMatrix4f	viewMatrix;
+	private final UniformVector2f	rowsAndColumns;
 
 	/**
 	 * @throws Exception
@@ -46,9 +48,10 @@ public class InstancedShader extends Shader
 	public InstancedShader() throws Exception
 	{
 		super("resources/shaders/instancedVertex.vs", "resources/shaders/instancedFragment.fs", "position", "uvs",
-				"m_transformations");
+				"m_transformations", "tex");
 
 		this.projectionMatrix	= this.matrix4fUniform("projection");
 		this.viewMatrix			= this.matrix4fUniform("view");
+		this.rowsAndColumns		= this.vector2fUniform("rowsAndColumns");
 	}
 }

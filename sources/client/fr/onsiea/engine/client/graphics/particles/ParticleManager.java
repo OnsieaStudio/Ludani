@@ -90,9 +90,11 @@ public class ParticleManager<T extends IParticle>
 		}
 		this.particleSystem.update(this.particles, this);
 
+		InsertionSort.sortHighToLow(this.particles);
+
 		if (size != this.particles.size())
 		{
-			this.particleRenderer.resize(this.particles.size() * 4 * 4);
+			this.particleRenderer.resize(this.particles.size());
 		}
 
 		for (final T particle : this.particles)

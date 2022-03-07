@@ -86,6 +86,7 @@ public class GameTest implements IGameLogic
 	private Timer									cameraTimer;
 
 	private ITexture								texture;
+	private ITexture								particleTexture;
 
 	private GLMesh									mesh;
 
@@ -113,8 +114,10 @@ public class GameTest implements IGameLogic
 			e.printStackTrace();
 		}
 
-		this.texture = ((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager()
+		this.texture			= ((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager()
 				.load("resources/textures/aeison.png");
+		this.particleTexture	= ((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager()
+				.load("resources/textures/particle.png");
 
 		try
 		{
@@ -157,20 +160,21 @@ public class GameTest implements IGameLogic
 		{
 			this.particleManager = new ParticleManager<>(new IParticleSystem<ParticleWithLifeTime>()
 			{
-				private long	last;
-				private long	last0;
+				private long last0;
 
 				@Override
 				public IParticleSystem<ParticleWithLifeTime> initialization(List<ParticleWithLifeTime> particlesIn,
 						ParticleManager<ParticleWithLifeTime> particleManagerIn)
 				{
-					for (var i = 0; i < 100; i++)
+					for (var i = 0; i < 10; i++)
 					{
-						final var particle = new ParticleWithLifeTime(MathUtils.randomLong(1_000L, 4_000_000_000L));
+						final var particle = new ParticleWithLifeTime(GameTest.this.camera,
+								MathUtils.randomLong(2_500_000L, 24_000_000_000L), MathUtils.randomInt(0, 1),
+								MathUtils.randomInt(0, 2), MathUtils.randomInt(0, 1));
 
-						particle.position().x		= 0;								//MathUtils.randomInt(0, 2);
-						particle.position().y		= 0;								//MathUtils.randomInt(0, 2);
-						particle.position().z		= 0;								//MathUtils.randomInt(0, 2);
+						particle.position().x		= MathUtils.randomInt(0, 40);
+						particle.position().y		= MathUtils.randomInt(0, 40);
+						particle.position().z		= MathUtils.randomInt(0, 40);
 						particle.orientation().x	= MathUtils.randomInt(0, 360);
 						particle.orientation().y	= MathUtils.randomInt(0, 360);
 						particle.orientation().z	= MathUtils.randomInt(0, 360);
@@ -189,26 +193,41 @@ public class GameTest implements IGameLogic
 						ParticleManager<ParticleWithLifeTime> particleManagerIn)
 				{
 					final var actual = System.nanoTime();
-					//if (actual - this.last > 1_00L)
-					//{
-					this.last = actual;
-
-					if (MathUtils.randomInt(0, 5000) == 0 || actual - particleIn.last() >= particleIn.lifeTime())
+					if (MathUtils.randomInt(0, 5000) == 0 || actual - particleIn.lastLifeTime() >= particleIn.lifeTime()
+							|| particleIn.position().y() <= 0)
 					{
 						return true;
 					}
 
-					particleIn.position().x		+= MathUtils.randomInt(-1, 1) / 12.0f;
-					particleIn.position().y		+= MathUtils.randomInt(4, 18);
-					particleIn.position().y		-= 9.8f;
-					particleIn.position().z		+= MathUtils.randomInt(-1, 1) / 12.0f;
-					particleIn.orientation().x	+= MathUtils.randomInt(-5, 5);
-					particleIn.orientation().y	+= MathUtils.randomInt(-5, 5);
-					particleIn.orientation().z	+= MathUtils.randomInt(-5, 5);
-					//particleIn.scale().x			+= MathUtils.randomInt(-1, 1);
-					//particleIn.scale().y			+= MathUtils.randomInt(-1, 1);
-					//particleIn.scale().z			+= MathUtils.randomInt(-1, 1);
-					//}
+					if (actual - particleIn.last > 2_500_000_0L)
+					{
+						particleIn.last = actual;
+						particleIn.texX++;
+
+						if (particleIn.texX() >= 4)
+						{
+							particleIn.texX = 0;
+							particleIn.texY++;
+						}
+
+						if (particleIn.texY() >= 4)
+						{
+							particleIn.texX	= 0;
+							particleIn.texY	= 0;
+						}
+					}
+
+					particleIn.position().x		+= MathUtils.randomInt(-1, 1) / 14.0f;
+					particleIn.velocity.y		-= 9.8f * 1.0f * (1.0f / 60.0f);
+
+					particleIn.position().y		+= particleIn.velocity.y();
+					particleIn.position().z		+= MathUtils.randomInt(-1, 1) / 14.0f;
+					particleIn.orientation().x	+= MathUtils.randomInt(-50, 50);
+					particleIn.orientation().y	+= MathUtils.randomInt(-50, 50);
+					particleIn.orientation().z	+= MathUtils.randomInt(-50, 50);
+					particleIn.scale().x		+= MathUtils.randomInt(-1, 1) / 2.0f;
+					particleIn.scale().y		+= MathUtils.randomInt(-1, 1) / 2.0f;
+					particleIn.scale().z		+= MathUtils.randomInt(-1, 1) / 2.0f;
 
 					return false;
 				}
@@ -232,11 +251,13 @@ public class GameTest implements IGameLogic
 								continue;
 							}
 
-							final var particle = new ParticleWithLifeTime(MathUtils.randomLong(1_000L, 4_000_000_000L));
+							final var particle = new ParticleWithLifeTime(GameTest.this.camera,
+									MathUtils.randomLong(2_500_000L, 24_000_000_000L), MathUtils.randomInt(0, 1),
+									MathUtils.randomInt(0, 2), MathUtils.randomInt(0, 1));
 
-							particle.position().x		= 0;								//MathUtils.randomInt(0, 2);
-							particle.position().y		= 0;								//MathUtils.randomInt(0, 2);
-							particle.position().z		= 0;								//MathUtils.randomInt(0, 2);
+							particle.position().x		= MathUtils.randomInt(0, 2);
+							particle.position().y		= MathUtils.randomInt(0, 2);
+							particle.position().z		= MathUtils.randomInt(0, 2);
 							particle.orientation().x	= MathUtils.randomInt(0, 360);
 							particle.orientation().y	= MathUtils.randomInt(0, 360);
 							particle.orientation().z	= MathUtils.randomInt(0, 360);
@@ -248,7 +269,6 @@ public class GameTest implements IGameLogic
 						}
 						this.last0 = actual;
 					}
-					System.out.println(particlesIn.size());
 
 					return this;
 				}
@@ -308,15 +328,23 @@ public class GameTest implements IGameLogic
 		this.mesh.draw(null);
 		this.mesh.stopDrawing(null);
 
+		this.texture.detach();
+
 		Shader.stop();
 
 		this.instancedShader.start();
 
 		this.instancedShader.viewMatrix().load(this.camera.viewMatrix());
+		this.instancedShader.rowsAndColumns().load(4.0f, 4.0f);
+
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		this.particleTexture.attach();
 
 		this.particleManager.draw();
 
-		this.texture.detach();
+		this.particleTexture.detach();
+		GL11.glDisable(GL11.GL_BLEND);
 
 		Shader.stop();
 

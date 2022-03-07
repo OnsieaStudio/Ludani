@@ -34,7 +34,7 @@ public class Camera extends Entity
 
 	public void input(Window windowIn, InputManager inputManagerIn)
 	{
-		var			speed		= 0.050f;
+		var			speed		= 0.5f;
 		final var	rotateSpeed	= 0.25f;
 
 		if (windowIn.key(GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS)
@@ -118,7 +118,7 @@ public class Camera extends Entity
 
 		/**this.velocityManager().accelerate(x, y, z);
 		this.velocityManager().runtime();
-
+		
 		this.position().add((float) this.velocityManager().speed().x(), (float) this.velocityManager().speed().y(),
 				(float) this.velocityManager().speed().z());**/
 
@@ -133,8 +133,8 @@ public class Camera extends Entity
 		/**xa += xDir * Mathf.cos(Mathf.toRadians(rot.y)) - zDir * Mathf.sin(Mathf.toRadians(rot.y));
 			za += zDir * Mathf.cos(Mathf.toRadians(rot.y)) + xDir * Mathf.sin(Mathf.toRadians(rot.y));
 			ya += yDir;
-		
-		
+
+
 		public Vec3 getForward()
 		{
 			Vec3 r = new Vec3();
@@ -142,14 +142,14 @@ public class Camera extends Entity
 			float sinY = (float) Math.sin(Math.toRadians(rot.y + 90));
 			float cosP = (float) Math.cos(Math.toRadians(rot.x));
 			float sinP = (float) Math.sin(Math.toRadians(rot.x));
-		
+
 			r.x = cosY * cosP;
 			r.y = -sinP;
 			r.z = sinY * cosP;
-		
+
 			return r;
 		}
-		
+
 		public Vec3 getLookAt()
 		{
 			Vec3 forward = getForward();
@@ -179,7 +179,7 @@ public class Camera extends Entity
 		}
 		this.linkedInformations().add(MathUtils.round(this.orientation().x(), 100) + ", "
 				+ MathUtils.round(this.orientation().y(), 100) + ", " + MathUtils.round(this.orientation().z(), 100));
-	
+
 		final var totalRotationSpeed = MathUtils
 				.round(Math.sqrt(this.timedOrientation().variation().x() * this.timedOrientation().variation().x()
 						+ this.timedOrientation().variation().y() * this.timedOrientation().variation().y()

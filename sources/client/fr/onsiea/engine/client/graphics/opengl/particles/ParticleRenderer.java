@@ -38,7 +38,7 @@ import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
 import fr.onsiea.engine.client.graphics.opengl.vbo.BaseVbo;
 import fr.onsiea.engine.client.graphics.opengl.vbo.Vbo;
 import fr.onsiea.engine.client.graphics.particles.IParticle;
-import fr.onsiea.engine.client.graphics.shapes.ShapeCube;
+import fr.onsiea.engine.client.graphics.shapes.ShapeRectangle;
 import fr.onsiea.engine.utils.Pair;
 import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
 import lombok.AccessLevel;
@@ -63,7 +63,7 @@ public class ParticleRenderer
 		ParticleRenderer.TRANSFORMATIONS.rotateX((float) Math.toRadians(particleIn.orientation().x()))
 				.rotateY((float) Math.toRadians(particleIn.orientation().y()))
 				.rotateZ((float) Math.toRadians(particleIn.orientation().z()));**/
-		/*ParticleRenderer.TRANSFORMATIONS.m00(projViewIn.m00());
+		ParticleRenderer.TRANSFORMATIONS.m00(projViewIn.m00());
 		ParticleRenderer.TRANSFORMATIONS.m01(projViewIn.m10());
 		ParticleRenderer.TRANSFORMATIONS.m02(projViewIn.m20());
 		ParticleRenderer.TRANSFORMATIONS.m10(projViewIn.m01());
@@ -71,7 +71,7 @@ public class ParticleRenderer
 		ParticleRenderer.TRANSFORMATIONS.m12(projViewIn.m21());
 		ParticleRenderer.TRANSFORMATIONS.m20(projViewIn.m02());
 		ParticleRenderer.TRANSFORMATIONS.m21(projViewIn.m12());
-		ParticleRenderer.TRANSFORMATIONS.m22(projViewIn.m22());*/
+		ParticleRenderer.TRANSFORMATIONS.m22(projViewIn.m22());
 
 		ParticleRenderer.PROJ_VIEW_TRANSFORMATIONS.set(projViewIn);
 		ParticleRenderer.PROJ_VIEW_TRANSFORMATIONS.mul(ParticleRenderer.TRANSFORMATIONS);
@@ -98,15 +98,18 @@ public class ParticleRenderer
 		instancesIn.put(ParticleRenderer.PROJ_VIEW_TRANSFORMATIONS.m31());
 		instancesIn.put(ParticleRenderer.PROJ_VIEW_TRANSFORMATIONS.m32());
 		instancesIn.put(ParticleRenderer.PROJ_VIEW_TRANSFORMATIONS.m33());
+		instancesIn.put(particleIn.texX());
+		instancesIn.put(particleIn.texY());
 	}
 
 	public final static Pair<GLMesh, BaseVbo> make(GLMeshManager meshManagerIn, List<IParticle> particlesIn,
 			Matrix4f projViewIn, FloatBuffer instancesIn) throws Exception
 	{
-		final var builder = meshManagerIn.meshBuilderWithVao(5)
-				.vbo(GL15.GL_STREAM_DRAW, ShapeCube.positionsAndTextureCoordinates, 3, 2)
-				.ibo(GL15.GL_STREAM_DRAW, ShapeCube.interleaveIndicesPositionsAndTextures).newInstancesVboAndBind()
-				.multipleVertexAttribPointerAndDivisor(4, 4).data(instancesIn).primCount(particlesIn.size());
+		final var builder = meshManagerIn.meshBuilderWithVao(5).vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2)
+				.ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices).newInstancesVboAndBind()
+				.multipleVertexAttribPointerAndDivisor(4, 4)
+				.createVertexAttribPointerAndDivisor(2)/**.data(4L * 4L * 2L * particlesIn.size())**/
+				.data(instancesIn).primCount(particlesIn.size());
 
 		return new Pair<>(builder.build(), builder.instancesVbo());
 	}
@@ -118,12 +121,12 @@ public class ParticleRenderer
 
 	public ParticleRenderer(int particlesIn, GLMeshManager meshManagerIn) throws Exception
 	{
-		this.instances = BufferUtils.createFloatBuffer(4 * 4 * particlesIn);
+		this.instances = BufferUtils.createFloatBuffer(4 * 4 * 2 * particlesIn);
 
-		final var builder = meshManagerIn.meshBuilderWithVao(5)
-				.vbo(GL15.GL_STREAM_DRAW, ShapeCube.positionsAndTextureCoordinates, 3, 2)
-				.ibo(GL15.GL_STREAM_DRAW, ShapeCube.interleaveIndicesPositionsAndTextures).newInstancesVboAndBind()
-				.multipleVertexAttribPointerAndDivisor(4, 4).data(4L * 4L * particlesIn).primCount(particlesIn);
+		final var builder = meshManagerIn.meshBuilderWithVao(6).vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2)
+				.ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices).newInstancesVboAndBind()
+				.multipleVertexAttribPointerAndDivisor(4, 4).createVertexAttribPointerAndDivisor(2)
+				.data(4L * 4L * 2L * particlesIn).primCount(particlesIn);
 		this.vbo	= (Vbo) builder.instancesVbo();
 		this.mesh	= builder.build();
 	}
@@ -168,11 +171,11 @@ public class ParticleRenderer
 	public final Pair<GLMesh, BaseVbo> makeNewMesh(GLMeshManager meshManagerIn, List<IParticle> particlesIn,
 			Matrix4f projViewIn) throws Exception
 	{
-		final var builder = meshManagerIn.meshBuilderWithVao(5)
-				.vbo(GL15.GL_STREAM_DRAW, ShapeCube.positionsAndTextureCoordinates, 3, 2)
-				.ibo(GL15.GL_STREAM_DRAW, ShapeCube.interleaveIndicesPositionsAndTextures).newInstancesVboAndBind()
-				.multipleVertexAttribPointerAndDivisor(4, 4).data(this.bufferOf(particlesIn, projViewIn))
-				.primCount(particlesIn.size());
+		final var builder = meshManagerIn.meshBuilderWithVao(5).vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2)
+				.ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices).newInstancesVboAndBind()
+				.multipleVertexAttribPointerAndDivisor(4, 4)
+				.createVertexAttribPointerAndDivisor(2)/**.data(4L * 4L * 2L * particlesIn.size())**/
+				.data(this.bufferOf(particlesIn, projViewIn)).primCount(particlesIn.size());
 
 		return new Pair<>(builder.build(), builder.instancesVbo());
 	}
@@ -196,7 +199,6 @@ public class ParticleRenderer
 
 	public final void update() throws Exception
 	{
-
 		if (this.instances.capacity() > 0)
 		{
 			this.vbo.updateData(this.instances);
@@ -216,8 +218,8 @@ public class ParticleRenderer
 	 */
 	public void resize(int sizeIn)
 	{
-		this.instances = BufferUtils.createFloatBuffer(sizeIn);
+		this.instances = BufferUtils.createFloatBuffer(sizeIn * 4 * 4 * 2);
 
-		this.vbo.updateData(sizeIn * 4 * 4);
+		this.vbo.updateData(sizeIn * 4 * 4 * 2);
 	}
 }

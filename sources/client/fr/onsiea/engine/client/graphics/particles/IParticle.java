@@ -34,9 +34,15 @@ import org.joml.Vector3f;
  */
 public interface IParticle
 {
+	float getSquareDistance();
+
 	Vector3f position();
 
 	Vector3f orientation();
 
 	Vector3f scale();
+
+	float texX();
+
+	float texY();
 }
