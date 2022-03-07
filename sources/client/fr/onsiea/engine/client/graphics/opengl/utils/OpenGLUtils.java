@@ -34,6 +34,17 @@ import org.lwjgl.opengl.GL11;
  */
 public class OpenGLUtils
 {
+	/**
+	 * GL11.glDepthMask(false);
+	 *	GL11.glDepthMask(true);
+	 */
+	/**
+	 *
+	 * @param rIn
+	 * @param gIn
+	 * @param bIn
+	 * @param aIn
+	 */
 	public final static void clearColor(float rIn, float gIn, float bIn, float aIn)
 	{
 		GL11.glClearColor(rIn, bIn, gIn, aIn);
@@ -46,7 +57,7 @@ public class OpenGLUtils
 
 	public final static void restoreState()
 	{
-		initialize3D();
+		OpenGLUtils.initialize3D();
 
 		// Accept fragment if it closer to the camera than the former on
 

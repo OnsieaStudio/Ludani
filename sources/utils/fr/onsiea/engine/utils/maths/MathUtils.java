@@ -47,4 +47,34 @@ public class MathUtils
 	{
 		return MathInstances.random().nextFloat();
 	}
+
+	public final static long randomLong(long minIn, long maxIn)
+	{
+		return MathInstances.random().nextLong(minIn, maxIn);
+	}
+
+	public final static Vector3f generateRandomUnitVector(Vector3f transposeIn)
+	{
+		final var theta = (float) (MathUtils.randomFloat() * 2f * Math.PI);
+		transposeIn.z = MathUtils.randomFloat() * 2 - 1;
+		final var rootOneMinusZSquared = (float) Math.sqrt(1 - transposeIn.z * transposeIn.z);
+		transposeIn.x	= (float) (rootOneMinusZSquared * Math.cos(theta));
+		transposeIn.y	= (float) (rootOneMinusZSquared * Math.sin(theta));
+		return transposeIn;
+	}
+
+	public final static Vector3f generateRandomUnitVector()
+	{
+		final var	theta					= (float) (MathUtils.randomFloat() * 2f * Math.PI);
+		final var	z						= MathUtils.randomFloat() * 2 - 1;
+		final var	rootOneMinusZSquared	= (float) Math.sqrt(1 - z * z);
+		final var	x						= (float) (rootOneMinusZSquared * Math.cos(theta));
+		final var	y						= (float) (rootOneMinusZSquared * Math.sin(theta));
+		return new Vector3f(x, y, z);
+	}
+
+	public final static float generateValue(float averageIn, float offsetIn)
+	{
+		return averageIn + offsetIn * MathUtils.randomFloat();
+	}
 }

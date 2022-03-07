@@ -39,8 +39,22 @@ public interface IParticleSystem<T extends IParticle>
 	 * @param particleManagerIn
 	 * @return
 	 */
-	IParticleSystem<Particle> initialization(List<T> particlesIn, ParticleManager<T> particleManagerIn);
+	IParticleSystem<T> initialization(List<T> particlesIn, ParticleManager<T> particleManagerIn);
 
-	IParticleSystem<T> update(T particleIn, ParticleManager<T> particleManagerIn);
+	/**
+	 * Return true if particle must be removed
+	 * @param particleIn
+	 * @param particleManagerIn
+	 * @return
+	 */
+	boolean updateParticle(T particleIn, ParticleManager<T> particleManagerIn);
+
+	/**
+	 * Return true if particle must be removed
+	 * @param particleIn
+	 * @param particleManagerIn
+	 * @return
+	 */
+	IParticleSystem<T> update(List<T> particlesIn, ParticleManager<T> particleManagerIn);
 
 }

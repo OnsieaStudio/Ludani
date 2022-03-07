@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.joml.Matrix4f;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.effects.FlareShader;
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.BrightFilterShader;
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.CombineShader;
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.ContrastShader;

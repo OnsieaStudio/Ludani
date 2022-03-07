@@ -1,5 +1,6 @@
-package fr.onsiea.engine.client.graphics.opengl.shader;
+package fr.onsiea.engine.client.graphics.opengl.shader.effects;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformFloat;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformInt;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformMatrix4f;

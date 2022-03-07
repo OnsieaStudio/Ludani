@@ -32,6 +32,7 @@ import java.util.List;
 import org.joml.Matrix4f;
 
 import fr.onsiea.engine.client.graphics.opengl.GLMeshManager;
+import fr.onsiea.engine.client.graphics.opengl.particles.ParticleRenderer;
 
 /**
  * @author Seynax
@@ -54,24 +55,53 @@ public class ParticleManager<T extends IParticle>
 		this.particleSystem.initialization(this.particles, this);
 	}
 
+	public ParticleManager<T> remove(int indexIn)
+	{
+		this.particles.remove(indexIn);
+
+		this.particleRenderer.resize(this.particles.size());
+
+		return this;
+	}
+
 	public ParticleManager<T> add(T particleIn)
 	{
 		this.particles.add(particleIn);
+
+		this.particleRenderer.resize(this.particles.size());
 
 		return this;
 	}
 
 	public ParticleManager<T> update(Matrix4f projViewMatrixIn) throws Exception
 	{
-		this.particleRenderer.reset();
+		final var	size		= this.particles.size();
+
+		final var	iterator	= this.particles.iterator();
+
+		while (iterator.hasNext())
+		{
+			final var particle = iterator.next();
+
+			if (this.particleSystem.updateParticle(particle, this))
+			{
+				iterator.remove();
+			}
+		}
+		this.particleSystem.update(this.particles, this);
+
+		if (size != this.particles.size())
+		{
+			this.particleRenderer.resize(this.particles.size() * 4 * 4);
+		}
+
 		for (final T particle : this.particles)
 		{
-			this.particleSystem.update(particle, this);
-
 			this.particleRenderer.put(particle, projViewMatrixIn);
 		}
 		this.particleRenderer.flip();
 		this.particleRenderer.update();
+		this.particleRenderer.reset();
 
 		return this;
 	}

@@ -43,8 +43,8 @@ import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
 import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.particles.IParticleSystem;
-import fr.onsiea.engine.client.graphics.particles.Particle;
 import fr.onsiea.engine.client.graphics.particles.ParticleManager;
+import fr.onsiea.engine.client.graphics.particles.ParticleWithLifeTime;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.window.IWindow;
@@ -75,23 +75,23 @@ public class GameTest implements IGameLogic
 		}
 	}
 
-	private NanoVGManager				nanoVG;
-	private int							vao;
-	private int							vbo;
-	private ShaderBasic					shaderBasic;
-	private InstancedShader				instancedShader;
-	private Camera						camera;
-	private NVGColor					color;
+	private NanoVGManager							nanoVG;
+	private int										vao;
+	private int										vbo;
+	private ShaderBasic								shaderBasic;
+	private InstancedShader							instancedShader;
+	private Camera									camera;
+	private NVGColor								color;
 
-	private Timer						cameraTimer;
+	private Timer									cameraTimer;
 
-	private ITexture					texture;
+	private ITexture								texture;
 
-	private GLMesh						mesh;
+	private GLMesh									mesh;
 
-	private Matrix4f					projView;
+	private Matrix4f								projView;
 
-	private ParticleManager<Particle>	particleManager;
+	private ParticleManager<ParticleWithLifeTime>	particleManager;
 
 	@Override
 	public boolean preInitialization()
@@ -155,25 +155,28 @@ public class GameTest implements IGameLogic
 
 		try
 		{
-			this.particleManager = new ParticleManager<>(new IParticleSystem<Particle>()
+			this.particleManager = new ParticleManager<>(new IParticleSystem<ParticleWithLifeTime>()
 			{
+				private long	last;
+				private long	last0;
+
 				@Override
-				public IParticleSystem<Particle> initialization(List<Particle> particlesIn,
-						ParticleManager<Particle> particleManagerIn)
+				public IParticleSystem<ParticleWithLifeTime> initialization(List<ParticleWithLifeTime> particlesIn,
+						ParticleManager<ParticleWithLifeTime> particleManagerIn)
 				{
 					for (var i = 0; i < 100; i++)
 					{
-						final var particle = new Particle();
+						final var particle = new ParticleWithLifeTime(MathUtils.randomLong(1_000L, 4_000_000_000L));
 
-						particle.position().x		= MathUtils.randomInt(4, 50);
-						particle.position().y		= MathUtils.randomInt(4, 50);
-						particle.position().z		= MathUtils.randomInt(4, 50);
+						particle.position().x		= 0;								//MathUtils.randomInt(0, 2);
+						particle.position().y		= 0;								//MathUtils.randomInt(0, 2);
+						particle.position().z		= 0;								//MathUtils.randomInt(0, 2);
 						particle.orientation().x	= MathUtils.randomInt(0, 360);
 						particle.orientation().y	= MathUtils.randomInt(0, 360);
 						particle.orientation().z	= MathUtils.randomInt(0, 360);
-						particle.scale().x			= MathUtils.randomInt(0, 2);
-						particle.scale().y			= MathUtils.randomInt(0, 2);
-						particle.scale().z			= MathUtils.randomInt(0, 2);
+						particle.scale().x			= MathUtils.randomInt(1, 2) / 4.0f;
+						particle.scale().y			= MathUtils.randomInt(1, 2) / 4.0f;
+						particle.scale().z			= MathUtils.randomInt(1, 2) / 4.0f;
 
 						particlesIn.add(particle);
 					}
@@ -182,18 +185,70 @@ public class GameTest implements IGameLogic
 				}
 
 				@Override
-				public IParticleSystem<Particle> update(Particle particleIn,
-						ParticleManager<Particle> particleManagerIn)
+				public boolean updateParticle(ParticleWithLifeTime particleIn,
+						ParticleManager<ParticleWithLifeTime> particleManagerIn)
 				{
+					final var actual = System.nanoTime();
+					//if (actual - this.last > 1_00L)
+					//{
+					this.last = actual;
+
+					if (MathUtils.randomInt(0, 5000) == 0 || actual - particleIn.last() >= particleIn.lifeTime())
+					{
+						return true;
+					}
+
 					particleIn.position().x		+= MathUtils.randomInt(-1, 1) / 12.0f;
-					particleIn.position().y		+= MathUtils.randomInt(0, 1);
+					particleIn.position().y		+= MathUtils.randomInt(4, 18);
+					particleIn.position().y		-= 9.8f;
 					particleIn.position().z		+= MathUtils.randomInt(-1, 1) / 12.0f;
-					particleIn.orientation().x	+= MathUtils.randomInt(-10, 10);
-					particleIn.orientation().y	+= MathUtils.randomInt(-10, 10);
-					particleIn.orientation().z	+= MathUtils.randomInt(-10, 10);
+					particleIn.orientation().x	+= MathUtils.randomInt(-5, 5);
+					particleIn.orientation().y	+= MathUtils.randomInt(-5, 5);
+					particleIn.orientation().z	+= MathUtils.randomInt(-5, 5);
 					//particleIn.scale().x			+= MathUtils.randomInt(-1, 1);
 					//particleIn.scale().y			+= MathUtils.randomInt(-1, 1);
 					//particleIn.scale().z			+= MathUtils.randomInt(-1, 1);
+					//}
+
+					return false;
+				}
+
+				@Override
+				public IParticleSystem<ParticleWithLifeTime> update(List<ParticleWithLifeTime> particlesIn,
+						ParticleManager<ParticleWithLifeTime> particleManagerIn)
+				{
+					if (particlesIn.size() >= 1_000)
+					{
+						return this;
+					}
+
+					final var actual = System.nanoTime();
+					if (actual - this.last0 > 1_000_000L)
+					{
+						for (var i = 0; i < Math.min(1000 - particlesIn.size(), 10); i++)
+						{
+							if (MathUtils.randomInt(0, 1) > 0)
+							{
+								continue;
+							}
+
+							final var particle = new ParticleWithLifeTime(MathUtils.randomLong(1_000L, 4_000_000_000L));
+
+							particle.position().x		= 0;								//MathUtils.randomInt(0, 2);
+							particle.position().y		= 0;								//MathUtils.randomInt(0, 2);
+							particle.position().z		= 0;								//MathUtils.randomInt(0, 2);
+							particle.orientation().x	= MathUtils.randomInt(0, 360);
+							particle.orientation().y	= MathUtils.randomInt(0, 360);
+							particle.orientation().z	= MathUtils.randomInt(0, 360);
+							particle.scale().x			= MathUtils.randomInt(1, 2) / 4.0f;
+							particle.scale().y			= MathUtils.randomInt(1, 2) / 4.0f;
+							particle.scale().z			= MathUtils.randomInt(1, 2) / 4.0f;
+
+							particlesIn.add(particle);
+						}
+						this.last0 = actual;
+					}
+					System.out.println(particlesIn.size());
 
 					return this;
 				}

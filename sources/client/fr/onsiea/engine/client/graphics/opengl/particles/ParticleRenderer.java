@@ -24,7 +24,7 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.particles;
+package fr.onsiea.engine.client.graphics.opengl.particles;
 
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -37,6 +37,7 @@ import fr.onsiea.engine.client.graphics.opengl.GLMeshManager;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
 import fr.onsiea.engine.client.graphics.opengl.vbo.BaseVbo;
 import fr.onsiea.engine.client.graphics.opengl.vbo.Vbo;
+import fr.onsiea.engine.client.graphics.particles.IParticle;
 import fr.onsiea.engine.client.graphics.shapes.ShapeCube;
 import fr.onsiea.engine.utils.Pair;
 import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
@@ -58,9 +59,28 @@ public class ParticleRenderer
 				particleIn.position().z(), particleIn.orientation().x(), particleIn.orientation().y(),
 				particleIn.orientation().z(), particleIn.scale().x(), particleIn.scale().y(), particleIn.scale().z(),
 				ParticleRenderer.TRANSFORMATIONS);
+		/**ParticleRenderer.TRANSFORMATIONS.identity().translate(particleIn.position());
+		ParticleRenderer.TRANSFORMATIONS.rotateX((float) Math.toRadians(particleIn.orientation().x()))
+				.rotateY((float) Math.toRadians(particleIn.orientation().y()))
+				.rotateZ((float) Math.toRadians(particleIn.orientation().z()));**/
+		/*ParticleRenderer.TRANSFORMATIONS.m00(projViewIn.m00());
+		ParticleRenderer.TRANSFORMATIONS.m01(projViewIn.m10());
+		ParticleRenderer.TRANSFORMATIONS.m02(projViewIn.m20());
+		ParticleRenderer.TRANSFORMATIONS.m10(projViewIn.m01());
+		ParticleRenderer.TRANSFORMATIONS.m11(projViewIn.m11());
+		ParticleRenderer.TRANSFORMATIONS.m12(projViewIn.m21());
+		ParticleRenderer.TRANSFORMATIONS.m20(projViewIn.m02());
+		ParticleRenderer.TRANSFORMATIONS.m21(projViewIn.m12());
+		ParticleRenderer.TRANSFORMATIONS.m22(projViewIn.m22());*/
 
 		ParticleRenderer.PROJ_VIEW_TRANSFORMATIONS.set(projViewIn);
 		ParticleRenderer.PROJ_VIEW_TRANSFORMATIONS.mul(ParticleRenderer.TRANSFORMATIONS);
+
+		// var modelMatrix = new Matrix4f().identity().translate(particle.position());
+
+		//modelMatrix.rotateX(rotation);
+		//modelMatrix.rotateY(rotation);
+		//modelMatrix.rotateZ((float) Math.toRadians(rotation));
 
 		instancesIn.put(ParticleRenderer.PROJ_VIEW_TRANSFORMATIONS.m00());
 		instancesIn.put(ParticleRenderer.PROJ_VIEW_TRANSFORMATIONS.m01());
@@ -91,9 +111,10 @@ public class ParticleRenderer
 		return new Pair<>(builder.build(), builder.instancesVbo());
 	}
 
-	private final FloatBuffer							instances;
+	private FloatBuffer									instances;
 	private @Getter(AccessLevel.PUBLIC) final GLMesh	mesh;
 	private final Vbo									vbo;
+	private boolean										somethingToShow;
 
 	public ParticleRenderer(int particlesIn, GLMeshManager meshManagerIn) throws Exception
 	{
@@ -112,9 +133,12 @@ public class ParticleRenderer
 	 */
 	public void draw()
 	{
-		this.mesh.startDrawing(null);
-		this.mesh.draw(null);
-		this.mesh.stopDrawing(null);
+		if (this.somethingToShow)
+		{
+			this.mesh.startDrawing(null);
+			this.mesh.draw(null);
+			this.mesh.stopDrawing(null);
+		}
 	}
 
 	/**
@@ -130,7 +154,10 @@ public class ParticleRenderer
 	 */
 	public void flip()
 	{
-		this.instances.flip();
+		if (this.instances.position() > 0)
+		{
+			this.instances.flip();
+		}
 	}
 
 	public final void put(IParticle particleIn, Matrix4f projViewIn)
@@ -169,6 +196,28 @@ public class ParticleRenderer
 
 	public final void update() throws Exception
 	{
-		this.vbo.updateData(this.instances);
+
+		if (this.instances.capacity() > 0)
+		{
+			this.vbo.updateData(this.instances);
+
+			this.somethingToShow = true;
+		}
+		else
+		{
+			this.vbo.updateData(0L);
+
+			this.somethingToShow = false;
+		}
+	}
+
+	/**
+	 * @param sizeIn
+	 */
+	public void resize(int sizeIn)
+	{
+		this.instances = BufferUtils.createFloatBuffer(sizeIn);
+
+		this.vbo.updateData(sizeIn * 4 * 4);
 	}
 }
