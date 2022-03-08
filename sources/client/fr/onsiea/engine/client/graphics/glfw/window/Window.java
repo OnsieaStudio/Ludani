@@ -41,6 +41,7 @@ import fr.onsiea.engine.client.graphics.glfw.monitor.Monitors;
 import fr.onsiea.engine.client.graphics.texture.data.TextureBuffer;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
+import fr.onsiea.engine.utils.maths.MathInstances;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -115,6 +116,7 @@ public class Window implements IWindow
 		this.settings(settingsIn);
 		this.windowContext(windowContextIn);
 
+		MathInstances.initialization(this);
 		this.initialization();
 
 		if (pointerIn.length > 0)
