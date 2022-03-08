@@ -11,19 +11,19 @@ import org.lwjgl.opengl.GL15;
 
 public class Vbo extends BaseVbo
 {
-	final static int gen()
+	public final static int gen()
 	{
 		return GL15.glGenBuffers();
 	}
 
-	final static int[] gen(int[] vbosIn)
+	public final static int[] gen(int[] vbosIn)
 	{
 		GL15.glGenBuffers(vbosIn);
 
 		return vbosIn;
 	}
 
-	final static int[] genAll(int numberIn)
+	public final static int[] genAll(int numberIn)
 	{
 		final var vbos = new int[numberIn];
 
@@ -34,21 +34,21 @@ public class Vbo extends BaseVbo
 
 	private int target;
 
-	Vbo()
+	public Vbo()
 	{
 		this.id(GL15.glGenBuffers());
 		this.drawType(GL15.GL_STATIC_DRAW);
 		this.target(GL15.GL_ARRAY_BUFFER);
 	}
 
-	Vbo(int targetIn)
+	public Vbo(int targetIn)
 	{
 		this.id(GL15.glGenBuffers());
 		this.drawType(GL15.GL_STATIC_DRAW);
 		this.target(targetIn);
 	}
 
-	Vbo(int targetIn, int drawTypeIn)
+	public Vbo(int targetIn, int drawTypeIn)
 	{
 		super(drawTypeIn);
 		this.target(targetIn);
