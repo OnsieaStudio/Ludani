@@ -4,8 +4,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 
@@ -26,7 +29,7 @@ public class OpenGLScreenshot
 {
 	private static ByteBuffer		pixels;
 	private static BufferedImage	bufferedImage;
-	private final static int		bpp	= 4;
+	private final static int		BPP	= 4;
 	private static TexturesManager	texturesManager;
 
 	public final static void initialize(TexturesManager texturesManagerIn)
@@ -205,6 +208,113 @@ public class OpenGLScreenshot
 
 	private static final int bpp()
 	{
-		return OpenGLScreenshot.bpp;
+		return OpenGLScreenshot.BPP;
+	}
+
+	static class ScreenshotWriter implements Runnable
+	{
+		private ByteBuffer	byteBuffer;
+		private int			width;
+		private int			height;
+
+		public ScreenshotWriter()
+		{
+		}
+
+		public void init(final ByteBuffer byteBufferIn, final int widthIn, final int heightIn)
+		{
+			this.setByteBuffer(byteBufferIn);
+			this.setWidth(widthIn);
+			this.setHeight(heightIn);
+		}
+
+		@Override
+		public void run()
+		{
+			var file = new File("gameData/screenshots/");
+			if (!file.exists())
+			{
+				file.mkdirs();
+			}
+			final DateFormat	dateFormat	= new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+			final var			date		= new Date();
+
+			file = new File("gameData/screenshots/" + dateFormat.format(date) + ".png"); // The file to save
+			// to.
+			final var	format	= "png";																			// Example:
+			// "PNG"
+			// or
+			// "JPG"
+			final var	image	= new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+			for (var x = 0; x < this.getWidth(); x++)
+			{
+				for (var y = 0; y < this.getHeight(); y++)
+				{
+					final var	i	= (x + this.getWidth() * y) * OpenGLScreenshot.BPP;
+					final var	r	= this.getByteBuffer().get(i) & 0xFF;
+					final var	g	= this.getByteBuffer().get(i + 1) & 0xFF;
+					final var	b	= this.getByteBuffer().get(i + 2) & 0xFF;
+					image.setRGB(x, this.getHeight() - (y + 1), 0xFF << 24 | r << 16 | g << 8 | b);
+				}
+			}
+
+			try
+			{
+				ImageIO.write(image, format, file);
+			}
+			catch (final IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		/**
+		 * @return the byteBuffer
+		 */
+		private ByteBuffer getByteBuffer()
+		{
+			return this.byteBuffer;
+		}
+
+		/**
+		 * @param byteBufferIn the byteBuffer to set
+		 */
+		private void setByteBuffer(final ByteBuffer byteBufferIn)
+		{
+			this.byteBuffer = byteBufferIn;
+		}
+
+		/**
+		 * @return the width
+		 */
+		private int getWidth()
+		{
+			return this.width;
+		}
+
+		/**
+		 * @param widthIn the width to set
+		 */
+		private void setWidth(final int widthIn)
+		{
+			this.width = widthIn;
+		}
+
+		/**
+		 * @return the height
+		 */
+		private int getHeight()
+		{
+			return this.height;
+		}
+
+		/**
+		 * @param heightIn the height to set
+		 */
+		private void setHeight(final int heightIn)
+		{
+			this.height = heightIn;
+		}
 	}
 }
