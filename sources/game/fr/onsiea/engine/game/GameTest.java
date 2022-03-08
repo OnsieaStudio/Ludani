@@ -31,40 +31,31 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
-import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
 import fr.onsiea.engine.client.graphics.opengl.fbo.FBO;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareManager;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareTexture;
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
 import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
 import fr.onsiea.engine.client.graphics.opengl.postprocessing.PostProcessing;
 import fr.onsiea.engine.client.graphics.opengl.shader.InstancedShader;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader2D;
-import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
 import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.particles.IParticleSystem;
 import fr.onsiea.engine.client.graphics.particles.ParticleManager;
 import fr.onsiea.engine.client.graphics.particles.ParticleWithLifeTime;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.Renderer;
-import fr.onsiea.engine.client.graphics.shapes.ShapeRectangle;
+import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.common.OnsieaGearings;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.game.scene.GameScene;
 import fr.onsiea.engine.utils.maths.MathInstances;
 import fr.onsiea.engine.utils.maths.MathUtils;
-import fr.onsiea.engine.utils.time.Timer;
 
 /**
  * @author Seynax
@@ -85,30 +76,22 @@ public class GameTest implements IGameLogic
 	}
 
 	private NanoVGManager							nanoVG;
-	private int										vao;
-	private int										vbo;
-	private ShaderBasic								shaderBasic;
-	private InstancedShader							instancedShader;
-	private Camera									camera;
-	private NVGColor								color;
 
-	private Timer									cameraTimer;
-
-	private ITexture								texture;
 	private ITexture								particleTexture;
-
-	private GLMesh									mesh;
 
 	private Matrix4f								projView;
 
 	private ParticleManager<ParticleWithLifeTime>	particleManager;
+
 	private FlareManager							flareManager;
-
 	private PostProcessing							postProcessing;
-	private FBO										fbo;
-	private GLMesh									rectangle;
 
-	private Shader2D								shader2D;
+	private FBO										fbo;
+
+	private GameScene								scene;
+
+	private InstancedShader							shader;
+	private IShadersManager							shadersManager;
 
 	@Override
 	public boolean preInitialization()
@@ -122,55 +105,28 @@ public class GameTest implements IGameLogic
 		try
 		{
 			((Window) windowIn).icon("resources/textures/aeison.png");
-			this.nanoVG	= new NanoVGManager(windowIn);
-			this.color	= NVGColor.malloc();
+			this.nanoVG = new NanoVGManager(windowIn);
 		}
 		catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
 
-		this.texture			= ((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager()
-				.load("resources/textures/aeison.png");
-		this.particleTexture	= ((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager()
-				.load("resources/textures/particle.png");
-
 		try
 		{
-			this.mesh = ((OpenGLRenderAPIContext) renderAPIContextIn).objLoader()
-					.loadMesh("resources\\models\\barrel.obj");//((OpenGLRenderAPIContext) renderAPIContextIn).meshManager()
-			//.build(Cube.interleaveIndicesPositionsAndTextures, Cube.positionsAndTextureCoordinates, 3, 2);
-		}
-		catch (final Exception e1)
-		{
-			e1.printStackTrace();
-		}
-
-		this.camera			= new Camera();
-		this.cameraTimer	= new Timer();
-
-		try
-		{
-			this.shaderBasic = new ShaderBasic();
-
-			this.shaderBasic.start();
-			this.shaderBasic.projectionMatrix().load(MathInstances.projectionMatrix());
-
-			Shader.stop();
-
-			this.instancedShader = new InstancedShader();
-
-			this.instancedShader.start();
-			this.instancedShader.projectionMatrix().load(MathInstances.projectionMatrix());
-			Shader.stop();
+			this.particleTexture	= renderAPIContextIn.texturesManager().load("resources/textures/particle.png");
+			this.scene				= new GameScene(renderAPIContextIn.shadersManager());
+			this.scene.add("barrel",
+					renderAPIContextIn.meshsManager().objLoader().load("resources\\models\\barrel.obj"),
+					renderAPIContextIn.texturesManager().load("resources/textures/aeison.png"),
+					MathInstances.simpleTransformationsMatrix3d());
 		}
 		catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
-
 		this.projView = new Matrix4f(MathInstances.projectionMatrix()).identity();
-		this.projView.mul(this.camera.viewMatrix());
+		this.projView.mul(this.scene.camera().viewMatrix());
 
 		try
 		{
@@ -185,7 +141,8 @@ public class GameTest implements IGameLogic
 										{
 											for (var i = 0; i < 10; i++)
 											{
-												final var particle = new ParticleWithLifeTime(GameTest.this.camera,
+												final var particle = new ParticleWithLifeTime(
+														GameTest.this.scene.camera(),
 														MathUtils.randomLong(2_500_000L, 24_000_000_000L),
 														MathUtils.randomInt(0, 1), MathUtils.randomInt(0, 2),
 														MathUtils.randomInt(0, 1));
@@ -271,7 +228,8 @@ public class GameTest implements IGameLogic
 														continue;
 													}
 
-													final var particle = new ParticleWithLifeTime(GameTest.this.camera,
+													final var particle = new ParticleWithLifeTime(
+															GameTest.this.scene.camera(),
 															MathUtils.randomLong(2_500_000L, 24_000_000_000L),
 															MathUtils.randomInt(0, 1), MathUtils.randomInt(0, 2),
 															MathUtils.randomInt(0, 1));
@@ -294,47 +252,30 @@ public class GameTest implements IGameLogic
 											return this;
 										}
 									},
-					100, ((OpenGLRenderAPIContext) renderAPIContextIn).meshManager());
+					100, renderAPIContextIn.meshsManager());
 
-			this.postProcessing		= new PostProcessing(((OpenGLRenderAPIContext) renderAPIContextIn).meshManager(),
-					windowIn, ((OpenGLRenderAPIContext) renderAPIContextIn).shaderManager());
+			this.postProcessing		= new PostProcessing(windowIn, renderAPIContextIn);
 			this.fbo				= new FBO(windowIn.settings().width(), windowIn.settings().height(), windowIn);
 
-			this.rectangle			= ((OpenGLRenderAPIContext) renderAPIContextIn).meshManager().meshBuilderWithVao(1)
-					.vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2)
-					.ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices).build();
-			this.shader2D			= new Shader2D();
+			this.flareManager		= new FlareManager(0.125f, renderAPIContextIn,
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex1.png"), 0.75f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex2.png"), 0.50f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex3.png"), 0.25f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex4.png"), 0.125f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex4.png"), 0.075f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex5.png"), 0.050f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex6.png"), 0.025f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex7.png"), 0.0125f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex8.png"), 0.0075f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex9.png"), 0.0050f / 2.0f));
 		}
 		catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
 
-		this.flareManager = new FlareManager(0.125f, ((OpenGLRenderAPIContext) renderAPIContextIn).meshManager(),
-				((OpenGLRenderAPIContext) renderAPIContextIn).settings(),
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex1.png"),
-						0.75f / 2.0f),
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex2.png"),
-						0.50f / 2.0f),
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex3.png"),
-						0.25f / 2.0f),
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex4.png"),
-						0.125f / 2.0f),
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex4.png"),
-						0.075f / 2.0f),
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex5.png"),
-						0.050f / 2.0f),
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex6.png"),
-						0.025f / 2.0f),
-
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex7.png"),
-						0.0125f / 2.0f),
-
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex8.png"),
-						0.0075f / 2.0f),
-
-				new FlareTexture(((OpenGLRenderAPIContext) renderAPIContextIn).texturesManager().load("tex9.png"),
-						0.0050f / 2.0f));
+		this.shadersManager	= renderAPIContextIn.shadersManager();
+		this.shader			= (InstancedShader) renderAPIContextIn.shadersManager().get("instanced");
 
 		return true;
 	}
@@ -349,10 +290,7 @@ public class GameTest implements IGameLogic
 	@Override
 	public void input(IWindow windowIn, InputManager inputManagerIn)
 	{
-		if (this.cameraTimer.isTime(1_000_000_0L))
-		{
-			this.camera.input((Window) windowIn, inputManagerIn);
-		}
+		this.scene.input(windowIn, inputManagerIn);
 		if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_0) == GLFW.GLFW_PRESS && !GameTest.e)
 		{
 			this.FBO = !this.FBO;
@@ -376,7 +314,7 @@ public class GameTest implements IGameLogic
 	@Override
 	public void draw(IWindow windowIn, IRenderAPIContext renderAPIContextIn, Renderer rendererIn)
 	{
-		this.projView.set(MathInstances.projectionMatrix()).mul(this.camera.viewMatrix());
+		this.projView.set(MathInstances.projectionMatrix()).mul(this.scene.camera().viewMatrix());
 		try
 		{
 			this.particleManager.update(this.projView);
@@ -390,28 +328,17 @@ public class GameTest implements IGameLogic
 		{
 			this.fbo.start();
 		}
+
+		renderAPIContextIn.shadersManager().updateView(this.scene.camera().viewMatrix());
 		//GL11.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		OpenGLUtils.restoreState();
-		this.shaderBasic.start();
 
-		this.shaderBasic.viewMatrix().load(this.camera.viewMatrix());
-		this.shaderBasic.transformationsMatrix().load(MathInstances.simpleTransformationsMatrix3d());
+		this.scene.draw();
 
-		this.texture.attach();
+		this.shader.attach();
 
-		this.mesh.startDrawing(null);
-		this.mesh.draw(null);
-		this.mesh.stopDrawing(null);
-
-		this.texture.detach();
-
-		Shader.stop();
-
-		this.instancedShader.start();
-
-		this.instancedShader.viewMatrix().load(this.camera.viewMatrix());
-		this.instancedShader.rowsAndColumns().load(4.0f, 4.0f);
+		this.shader.rowsAndColumns().load(4.0f, 4.0f);
 
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -422,33 +349,18 @@ public class GameTest implements IGameLogic
 		this.particleTexture.detach();
 		GL11.glDisable(GL11.GL_BLEND);
 
-		Shader.stop();
+		this.shadersManager.detach();
 
-		this.flareManager.render(this.camera, new Vector3f(0.0f, 0.0f, 0.0f),
-				((OpenGLRenderAPIContext) renderAPIContextIn).shaderManager(), windowIn, rendererIn);
+		this.flareManager.render(this.scene.camera(), new Vector3f(0.0f, 0.0f, 0.0f), windowIn, rendererIn);
 
 		if (this.FBO)
 		{
 			this.fbo.stop(windowIn);
 
-			/**OpenGLUtils.initialize2D();
-
-			this.shader2D.start();
-
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.fbo.colourTexture());
-
-			this.rectangle.startDrawing(null);
-			this.rectangle.draw(null);
-			this.rectangle.stopDrawing(null);
-
-			Shader.stop();**/
-
-			this.postProcessing.doPostProcessing(((OpenGLRenderAPIContext) renderAPIContextIn).shaderManager(),
-					this.fbo.colourTexture(), windowIn);
+			this.postProcessing.doPostProcessing(this.fbo.colourTexture(), windowIn);
 		}
 
-		/**
-		this.nanoVG.startRender(windowIn);
+		/**this.nanoVG.startRender(windowIn);
 		this.nanoVG.nanoVGFonts().draw(42, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP,
 				NanoVGManager.set(this.color, 100, 125, 127, 255), 0, 0, "Ceci est un texte !");
 		this.nanoVG.finishRender();**/
@@ -457,16 +369,6 @@ public class GameTest implements IGameLogic
 	@Override
 	public void cleanup()
 	{
-		if (this.color != null)
-		{
-			this.color.free();
-		}
-
 		this.nanoVG.cleanup();
-
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-		GL15.glDeleteBuffers(this.vbo);
-		GL30.glBindVertexArray(0);
-		GL30.glDeleteVertexArrays(this.vao);
 	}
 }

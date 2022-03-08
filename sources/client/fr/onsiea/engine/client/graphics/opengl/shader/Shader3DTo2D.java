@@ -26,7 +26,7 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformMatrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -37,7 +37,7 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class Shader3DTo2D extends Shader
 {
-	private final UniformMatrix4f transformations;
+	private final GLUniformMatrix4f transformations;
 
 	/**
 	 * @throws Exception

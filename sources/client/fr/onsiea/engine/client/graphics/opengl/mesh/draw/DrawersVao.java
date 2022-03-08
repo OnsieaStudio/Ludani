@@ -30,7 +30,6 @@ import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
 import fr.onsiea.engine.client.graphics.opengl.mesh.IMeshDrawFunction;
 import fr.onsiea.engine.client.graphics.opengl.vao.Vao;
 import fr.onsiea.engine.client.graphics.opengl.vao.VaoUtils;
-import fr.onsiea.engine.client.graphics.render.Renderer;
 
 /**
  * @author Seynax
@@ -50,7 +49,7 @@ public class DrawersVao implements IMeshDrawFunction
 	}
 
 	@Override
-	public IMeshDrawFunction start(GLMesh meshIn, Renderer rendererIn)
+	public IMeshDrawFunction attach(GLMesh meshIn)
 	{
 		VaoUtils.bindAndEnables(this.vao, this.attribs);
 
@@ -58,7 +57,7 @@ public class DrawersVao implements IMeshDrawFunction
 	}
 
 	@Override
-	public IMeshDrawFunction draw(GLMesh meshIn, Renderer rendererIn)
+	public IMeshDrawFunction draw(GLMesh meshIn)
 	{
 		this.vao.draw(this.vertexCount);
 
@@ -66,7 +65,7 @@ public class DrawersVao implements IMeshDrawFunction
 	}
 
 	@Override
-	public IMeshDrawFunction stop(GLMesh meshIn, Renderer rendererIn)
+	public IMeshDrawFunction detach(GLMesh meshIn)
 	{
 		VaoUtils.disablesAndUnbind(this.attribs);
 

@@ -26,7 +26,9 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformMatrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
+import fr.onsiea.engine.client.graphics.shader.IProjection;
+import fr.onsiea.engine.client.graphics.shader.IView;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -37,9 +39,9 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class ShaderBasic extends Shader implements IProjection, IView
 {
-	private final UniformMatrix4f	projection;
-	private final UniformMatrix4f	view;
-	private final UniformMatrix4f	transformationsMatrix;
+	private final GLUniformMatrix4f	projection;
+	private final GLUniformMatrix4f	view;
+	private final GLUniformMatrix4f	transformationsMatrix;
 
 	/**
 	 * @throws Exception

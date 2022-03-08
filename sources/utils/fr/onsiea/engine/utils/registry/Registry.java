@@ -24,55 +24,71 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.mesh.draw;
+package fr.onsiea.engine.utils.registry;
 
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
-import fr.onsiea.engine.client.graphics.opengl.mesh.IMeshDrawFunction;
-import fr.onsiea.engine.client.graphics.opengl.vao.Vao;
-import fr.onsiea.engine.client.graphics.opengl.vao.VaoUtils;
-import fr.onsiea.engine.client.graphics.opengl.vbo.Elements;
+import java.util.HashMap;
+import java.util.Map;
+
+import fr.onsiea.engine.utils.ICleanable;
+import lombok.NonNull;
 
 /**
  * @author Seynax
  *
  */
-public class DrawersInstancedElements implements IMeshDrawFunction
+public class Registry<T> implements IRegistry<T>, ICleanable
 {
-	private final Elements	elements;
-	private final Vao		vao;
-	private final int		attribs;
-	private final int		vertexCount;
-	private final int		primCount;
+	private final Map<String, T> values;
 
-	public DrawersInstancedElements(Elements elementsIn, Vao vaoIn, int attribsIn, int vertexCountIn, int primCountIn)
+	public Registry()
 	{
-		this.elements		= elementsIn;
-		this.vao			= vaoIn;
-		this.attribs		= attribsIn;
-		this.vertexCount	= vertexCountIn;
-		this.primCount		= primCountIn;
+		this.values = new HashMap<>();
 	}
 
 	@Override
-	public IMeshDrawFunction attach(GLMesh meshIn)
+	@NonNull
+	public IRegistry<T> add(String nameIn, T valueIn)
 	{
-		VaoUtils.bindAndEnables(this.vao, this.attribs);
+		this.values.put(nameIn, valueIn);
 
 		return this;
 	}
 
 	@Override
-	public IMeshDrawFunction draw(GLMesh meshIn)
+	@NonNull
+	public boolean has(String nameIn)
 	{
-		this.elements.drawInstanced(this.vertexCount, this.primCount);
+		return this.values.containsKey(nameIn);
+	}
+
+	@Override
+	@NonNull
+	public T get(String nameIn)
+	{
+		return this.values.get(nameIn);
+	}
+
+	@Override
+	@NonNull
+	public IRegistry<T> remove(String nameIn)
+	{
+		this.values.remove(nameIn);
 
 		return this;
 	}
 
 	@Override
-	public IMeshDrawFunction detach(GLMesh meshIn)
+	public IRegistry<T> clear()
 	{
-		VaoUtils.disablesAndUnbind(this.attribs);
+		this.values.clear();
+
+		return this;
+	}
+
+	@Override
+	public ICleanable cleanup()
+	{
+		this.values.clear();
 
 		return this;
 	}

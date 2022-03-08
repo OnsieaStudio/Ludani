@@ -26,6 +26,10 @@
 */
 package fr.onsiea.engine.client.graphics.render;
 
+import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
+import fr.onsiea.engine.client.graphics.shader.IShadersManager;
+import fr.onsiea.engine.client.graphics.texture.ITexturesManager;
+
 /**
  * @author Seynax
  *
@@ -37,4 +41,12 @@ public interface IRenderAPIContext
 	 *
 	 */
 	void cleanup();
+
+	ITexturesManager texturesManager();
+
+	IMeshsManager meshsManager();
+
+	IShadersManager shadersManager();
+
+	IRenderAPIContextSettings settings();
 }

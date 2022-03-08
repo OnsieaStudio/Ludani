@@ -1,18 +1,18 @@
 package fr.onsiea.engine.client.graphics.opengl.shader.postprocessing;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformInt;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
 
 public class CombineShader extends Shader
 {
 	private static final String	VERTEX_FILE		= "resources/shaders/postprocessing/simpleVertex.glsl";
 	private static final String	FRAGMENT_FILE	= "resources/shaders/postprocessing/combineFragment.glsl";
 
-	private UniformInt			uniformColourTexture;
-	private UniformInt			uniformHighlightTexture0;
-	private UniformInt			uniformHighlightTexture1;
-	private UniformInt			uniformHighlightTexture2;
-	private UniformInt			uniformHighlightTexture3;
+	private GLUniformInt		uniformColourTexture;
+	private GLUniformInt		uniformHighlightTexture0;
+	private GLUniformInt		uniformHighlightTexture1;
+	private GLUniformInt		uniformHighlightTexture2;
+	private GLUniformInt		uniformHighlightTexture3;
 
 	public CombineShader() throws Exception
 	{
@@ -24,9 +24,8 @@ public class CombineShader extends Shader
 		this.uniformHighlightTexture2(this.intUniform("highlightTexture2"));
 		this.uniformHighlightTexture3(this.intUniform("highlightTexture3"));
 
-		this.start();
+		this.attach();
 		this.connectTextureUnits();
-		Shader.stop();
 	}
 
 	private void connectTextureUnits()
@@ -38,52 +37,52 @@ public class CombineShader extends Shader
 		this.uniformHighlightTexture3().load(4);
 	}
 
-	public final UniformInt uniformColourTexture()
+	public final GLUniformInt uniformColourTexture()
 	{
 		return this.uniformColourTexture;
 	}
 
-	private final void uniformColourTexture(UniformInt uniformColourTextureIn)
+	private final void uniformColourTexture(GLUniformInt uniformColourTextureIn)
 	{
 		this.uniformColourTexture = uniformColourTextureIn;
 	}
 
-	public final UniformInt uniformHighlightTexture0()
+	public final GLUniformInt uniformHighlightTexture0()
 	{
 		return this.uniformHighlightTexture0;
 	}
 
-	private final void uniformHighlightTexture0(UniformInt uniformHighlightTexture0In)
+	private final void uniformHighlightTexture0(GLUniformInt uniformHighlightTexture0In)
 	{
 		this.uniformHighlightTexture0 = uniformHighlightTexture0In;
 	}
 
-	public final UniformInt uniformHighlightTexture1()
+	public final GLUniformInt uniformHighlightTexture1()
 	{
 		return this.uniformHighlightTexture1;
 	}
 
-	private final void uniformHighlightTexture1(UniformInt uniformHighlightTexture1In)
+	private final void uniformHighlightTexture1(GLUniformInt uniformHighlightTexture1In)
 	{
 		this.uniformHighlightTexture1 = uniformHighlightTexture1In;
 	}
 
-	public final UniformInt uniformHighlightTexture2()
+	public final GLUniformInt uniformHighlightTexture2()
 	{
 		return this.uniformHighlightTexture2;
 	}
 
-	private final void uniformHighlightTexture2(UniformInt uniformHighlightTexture2In)
+	private final void uniformHighlightTexture2(GLUniformInt uniformHighlightTexture2In)
 	{
 		this.uniformHighlightTexture2 = uniformHighlightTexture2In;
 	}
 
-	public final UniformInt uniformHighlightTexture3()
+	public final GLUniformInt uniformHighlightTexture3()
 	{
 		return this.uniformHighlightTexture3;
 	}
 
-	private final void uniformHighlightTexture3(UniformInt uniformHighlightTexture3In)
+	private final void uniformHighlightTexture3(GLUniformInt uniformHighlightTexture3In)
 	{
 		this.uniformHighlightTexture3 = uniformHighlightTexture3In;
 	}

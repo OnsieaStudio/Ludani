@@ -39,7 +39,6 @@ import fr.onsiea.engine.client.lwjgl.LWJGLContext;
 import fr.onsiea.engine.client.sound.SoundManager;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
-import fr.onsiea.engine.utils.maths.MathInstances;
 import fr.onsiea.engine.utils.time.Timer;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -98,47 +97,46 @@ public class OnsieaGearings
 			throw new Exception("[ERROR] GameOptions are null !");
 		}
 
-		this.gameLogic(gameLogicIn);
-		this.options(optionsIn);
-		this.args(argsIn);
-
-		{
-			if (GraphicsConstants.DEBUG)
-			{
-				LWJGLContext.enableDebugging();
-				LWJGLContext.enableDebugStack();
-			}
-
-			this.gameLogic().preInitialization();
-			final var windowContext = new GLWindowContext();
-			this.glfwManager(new GLFWManager().initialization(
-					WindowSettings.Builder.of("Onsiea Engine !", 400, 400, 60, WindowShowType.WINDOWED),
-					windowContext));
-			this.window(this.glfwManager().window());
-			this.glfwManager().inputManager().cursor().blockedPosition(this.window().settings().width() / 2.0D,
-					this.window().settings().height() / 2.0D);
-			this.glfwManager().inputManager().cursor().mustBeBlocked();
-			MathInstances.initialization(this.window);
-			this.renderAPIContext	= windowContext.context();
-			this.renderer			= new Renderer(this.renderAPIContext);
-			this.gameLogic().initialization(this.window, this.renderAPIContext);
-		}
-
-		{
-			this.timer(new Timer());
-			this.inputTimer(new Timer());
-			this.framerateCounterTimer(new Timer());
-
-			this.refreshRate(60.0D);
-			this.updateRate(50.0D);
-			this.inputRate(120.0D);
-			this.secsPerFrame(1.0d / this.refreshRate());
-			this.secsPerUpdate(1.0d / this.updateRate());
-			this.secsPerInput(1.0d / this.inputRate());
-		}
-
 		try
 		{
+			this.gameLogic(gameLogicIn);
+			this.options(optionsIn);
+			this.args(argsIn);
+
+			{
+				if (GraphicsConstants.DEBUG)
+				{
+					LWJGLContext.enableDebugging();
+					LWJGLContext.enableDebugStack();
+				}
+
+				this.gameLogic().preInitialization();
+				final var windowContext = new GLWindowContext();
+				this.glfwManager(new GLFWManager().initialization(
+						WindowSettings.Builder.of("Onsiea Engine !", 400, 400, 60, WindowShowType.WINDOWED),
+						windowContext));
+				this.window(this.glfwManager().window());
+				this.glfwManager().inputManager().cursor().blockedPosition(this.window().settings().width() / 2.0D,
+						this.window().settings().height() / 2.0D);
+				this.glfwManager().inputManager().cursor().mustBeBlocked();
+				this.renderAPIContext	= windowContext.context();
+				this.renderer			= new Renderer(this.renderAPIContext);
+				this.gameLogic().initialization(this.window, this.renderAPIContext);
+			}
+
+			{
+				this.timer(new Timer());
+				this.inputTimer(new Timer());
+				this.framerateCounterTimer(new Timer());
+
+				this.refreshRate(60.0D);
+				this.updateRate(50.0D);
+				this.inputRate(120.0D);
+				this.secsPerFrame(1.0d / this.refreshRate());
+				this.secsPerUpdate(1.0d / this.updateRate());
+				this.secsPerInput(1.0d / this.inputRate());
+			}
+
 			this.loop();
 		}
 		catch (final Exception e)
@@ -147,6 +145,7 @@ public class OnsieaGearings
 		}
 		finally
 		{
+			System.out.println("Clean !");
 			this.cleanup();
 		}
 	}

@@ -2,14 +2,13 @@ package fr.onsiea.engine.client.graphics.opengl.flare;
 
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
 
-import fr.onsiea.engine.client.graphics.opengl.GLMeshManager;
-import fr.onsiea.engine.client.graphics.opengl.OpenGLSettings;
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
-import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.mesh.IMesh;
+import fr.onsiea.engine.client.graphics.opengl.shader.effects.FlareShader;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContextSettings;
 import fr.onsiea.engine.client.graphics.render.Renderer;
+import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 
 /**
@@ -23,25 +22,30 @@ public class FlareRenderer
 {
 
 	// 4 vertex positions for a 2D quad.
-	private static final float[]	POSITIONS	=
+	private static final float[]			POSITIONS	=
 	{ -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f };
 
 	// A VAO containing the quad's positions in attribute 0
-	private GLMesh					mesh;
-	private final OpenGLSettings	settings;
+	private IMesh							mesh;
+	private final IRenderAPIContextSettings	settings;
+
+	private final FlareShader				flareShader;
+	private final IShadersManager			shadersManager;
 
 	/**
 	 * Initializes the shader program, and creates a VAO for the quad, storing
 	 * the data for the 4 quad vertices in attribute 0 of the VAO.
 	 */
-	public FlareRenderer(GLMeshManager meshManagerIn, OpenGLSettings settingsIn)
+	public FlareRenderer(IRenderAPIContext renderAPIContextIn)
 	{
-		this.settings = settingsIn;
+		this.settings		= renderAPIContextIn.settings();
+
+		this.shadersManager	= renderAPIContextIn.shadersManager();
+		this.flareShader	= (FlareShader) renderAPIContextIn.shadersManager().get("flare");
 
 		try
 		{
-			this.mesh = meshManagerIn.meshBuilderWithVao(1).vbo(GL15.GL_STREAM_DRAW, FlareRenderer.positions(), 2)
-					.vertexCount(FlareRenderer.positions().length).unbind().build();
+			this.mesh = renderAPIContextIn.meshsManager().create(FlareRenderer.POSITIONS, 2);
 		}
 		catch (final Exception e)
 		{
@@ -60,13 +64,12 @@ public class FlareRenderer
 	 *            - The brightness that all the FlareTextures should be rendered
 	 *            at.
 	 */
-	public void render(FlareTexture[] flares, float brightness, GLShaderManager shaderManagerIn, IWindow windowIn,
-			Renderer rendererIn)
+	public void render(FlareTexture[] flares, float brightness, IWindow windowIn, Renderer rendererIn)
 	{
-		this.prepare(brightness, shaderManagerIn, rendererIn);
+		this.prepare(brightness, rendererIn);
 		for (final FlareTexture flare : flares)
 		{
-			this.renderFlare(flare, windowIn, shaderManagerIn);
+			this.renderFlare(flare, windowIn);
 		}
 		this.endRendering(rendererIn);
 	}
@@ -89,17 +92,17 @@ public class FlareRenderer
 	 * @param brightness
 	 *            - the brightness at which the flares are going to be rendered.
 	 */
-	private void prepare(float brightness, GLShaderManager shaderManagerIn, Renderer rendererIn)
+	private void prepare(float brightness, Renderer rendererIn)
 	{
-		this.settings.userSettings().disable("antialias");
-		this.settings.userSettings().enable("blend");
+		this.settings.user().disable("antialias");
+		this.settings.user().enable("blend");
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		this.settings.engineSettings().disable("depthTesting");
-		this.settings.engineSettings().disable("cullBackFaces");
+		this.settings.engine().disable("depthTesting");
+		this.settings.user().disable("cullBackFaces");
 
-		this.mesh().startDrawing(rendererIn);
-		shaderManagerIn.flareShader().start();
-		shaderManagerIn.flareShader().uniformBrightness().load(brightness);
+		this.mesh().attach();
+		this.flareShader.attach();
+		this.flareShader.uniformBrightness().load(brightness);
 	}
 
 	/**
@@ -120,14 +123,13 @@ public class FlareRenderer
 	 * @param flare
 	 *            - The flare to be rendered.
 	 */
-	private void renderFlare(FlareTexture flare, IWindow windowIn, GLShaderManager shaderManagerIn)
+	private void renderFlare(FlareTexture flare, IWindow windowIn)
 	{
 		flare.texture().attach();
 		final var	xScale		= flare.scale();
 		final var	yScale		= xScale * windowIn.settings().width() / windowIn.settings().height();
 		final var	centerPos	= flare.screenPos();
-		shaderManagerIn.flareShader().uniformTransformations()
-				.load(new Vector4f(centerPos.x, centerPos.y, xScale, yScale));
+		this.flareShader.uniformTransformations().load(new Vector4f(centerPos.x, centerPos.y, xScale, yScale));
 		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
 	}
 
@@ -137,23 +139,18 @@ public class FlareRenderer
 	 */
 	private void endRendering(Renderer rendererIn)
 	{
-		this.mesh().stopDrawing(rendererIn);
-		Shader.stop();
+		this.mesh().detach();
+		this.shadersManager.detach();
 
-		this.settings.userSettings().enable("antialiasing");
-		this.settings.userSettings().disable("blend");
+		this.settings.user().enable("antialiasing");
+		this.settings.user().disable("blend");
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		this.settings.engineSettings().enable("depthTesting");
-		this.settings.userSettings().enable("cullBackface");
+		this.settings.engine().enable("depthTesting");
+		this.settings.user().enable("cullBackface");
 	}
 
-	private final GLMesh mesh()
+	private final IMesh mesh()
 	{
 		return this.mesh;
-	}
-
-	private static final float[] positions()
-	{
-		return FlareRenderer.POSITIONS;
 	}
 }

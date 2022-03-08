@@ -24,56 +24,15 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.mesh.draw;
-
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
-import fr.onsiea.engine.client.graphics.opengl.mesh.IMeshDrawFunction;
-import fr.onsiea.engine.client.graphics.opengl.vao.Vao;
-import fr.onsiea.engine.client.graphics.opengl.vao.VaoUtils;
-import fr.onsiea.engine.client.graphics.opengl.vbo.Elements;
+package fr.onsiea.engine.client.graphics.mesh;
 
 /**
  * @author Seynax
  *
  */
-public class DrawersInstancedElements implements IMeshDrawFunction
+public interface IOBJLoader
 {
-	private final Elements	elements;
-	private final Vao		vao;
-	private final int		attribs;
-	private final int		vertexCount;
-	private final int		primCount;
+	IOBJLoader link(IMeshsManager meshsManagerIn);
 
-	public DrawersInstancedElements(Elements elementsIn, Vao vaoIn, int attribsIn, int vertexCountIn, int primCountIn)
-	{
-		this.elements		= elementsIn;
-		this.vao			= vaoIn;
-		this.attribs		= attribsIn;
-		this.vertexCount	= vertexCountIn;
-		this.primCount		= primCountIn;
-	}
-
-	@Override
-	public IMeshDrawFunction attach(GLMesh meshIn)
-	{
-		VaoUtils.bindAndEnables(this.vao, this.attribs);
-
-		return this;
-	}
-
-	@Override
-	public IMeshDrawFunction draw(GLMesh meshIn)
-	{
-		this.elements.drawInstanced(this.vertexCount, this.primCount);
-
-		return this;
-	}
-
-	@Override
-	public IMeshDrawFunction detach(GLMesh meshIn)
-	{
-		VaoUtils.disablesAndUnbind(this.attribs);
-
-		return this;
-	}
+	IMesh load(String filepathIn) throws Exception;
 }

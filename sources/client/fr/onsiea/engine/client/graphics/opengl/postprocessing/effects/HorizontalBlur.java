@@ -4,30 +4,38 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 import fr.onsiea.engine.client.graphics.opengl.fbo.ImageRenderer;
-import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.HorizontalBlurShader;
+import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 
 public class HorizontalBlur
 {
-	private ImageRenderer renderer;
+	private ImageRenderer				renderer;
+
+	private final IShadersManager		shadersManager;
+	private final HorizontalBlurShader	shader;
 
 	public HorizontalBlur(int targetFboWidthIn, int targetFboHeightIn, IWindow windowIn,
-			GLShaderManager shaderManagerIn) throws Exception
+			IShadersManager shadersManagerIn) throws Exception
 	{
 		this.renderer(new ImageRenderer(targetFboWidthIn, targetFboHeightIn, windowIn));
-		shaderManagerIn.horizontalBlur().start();
-		shaderManagerIn.horizontalBlur().uniformTargetWidth().load(targetFboWidthIn);
-		Shader.stop();
+
+		this.shadersManager	= shadersManagerIn;
+
+		this.shader			= (HorizontalBlurShader) shadersManagerIn.get("horizontalBlur");
+		this.shader.attach();
+		this.shader.uniformTargetWidth().load((float) targetFboWidthIn);
+
+		shadersManagerIn.detach();
 	}
 
-	public void render(int textureIn, IWindow windowIn, GLShaderManager shaderManagerIn)
+	public void render(int textureIn, IWindow windowIn)
 	{
-		shaderManagerIn.horizontalBlur().start();
+		this.shader.attach();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIn);
 		this.renderer().renderQuad(windowIn);
-		Shader.stop();
+		this.shadersManager.detach();
 	}
 
 	public int outputTexture()

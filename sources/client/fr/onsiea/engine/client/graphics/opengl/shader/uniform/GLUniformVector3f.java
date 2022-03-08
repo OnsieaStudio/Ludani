@@ -4,8 +4,10 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL20;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
-public class UniformVector3f
+public class GLUniformVector3f implements IShaderUniform<Vector3f>
 {
 	public final static void load(int locationIn, Vector3f valueIn)
 	{
@@ -17,35 +19,36 @@ public class UniformVector3f
 		GL20.glUniform3f(locationIn, xIn, yIn, zIn);
 	}
 
-	private Shader	parent;
-	private int		location;
+	private IShaderProgram	parent;
+	private int				location;
 
-	public UniformVector3f(Shader parentIn, String nameIn)
+	public GLUniformVector3f(Shader parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 		this.location(parentIn.uniformLocation(nameIn));
 	}
 
-	public Shader load(Vector3f valueIn)
+	@Override
+	public IShaderProgram load(Vector3f valueIn)
 	{
 		GL20.glUniform3f(this.location(), valueIn.x(), valueIn.y(), valueIn.z());
 
 		return this.parent();
 	}
 
-	public Shader load(float xIn, float yIn, float zIn)
+	public IShaderProgram load(float xIn, float yIn, float zIn)
 	{
 		GL20.glUniform3f(this.location(), xIn, yIn, zIn);
 
 		return this.parent();
 	}
 
-	private final Shader parent()
+	private final IShaderProgram parent()
 	{
 		return this.parent;
 	}
 
-	private final void parent(Shader parentIn)
+	private final void parent(IShaderProgram parentIn)
 	{
 		this.parent = parentIn;
 	}

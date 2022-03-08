@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL20;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.effects.FlareShader;
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.BrightFilterShader;
@@ -37,6 +38,11 @@ import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.CombineShad
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.ContrastShader;
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.HorizontalBlurShader;
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.VerticalBlurShader;
+import fr.onsiea.engine.client.graphics.shader.IProjection;
+import fr.onsiea.engine.client.graphics.shader.IProjectionView;
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.IShadersManager;
+import fr.onsiea.engine.client.graphics.shader.IView;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,28 +53,28 @@ import lombok.Setter;
  */
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PRIVATE)
-public class GLShaderManager
+public class GLShaderManager implements IShadersManager
 {
-	private @Getter(AccessLevel.PRIVATE) final Map<String, Shader>	shaders;
+	private @Getter(AccessLevel.PRIVATE) final Map<String, IShaderProgram>	shaders;
 
 	// General
 
-	private ShaderBasic												shaderBasic;
-	private Shader2D												shader2D;
-	private Shader3DTo2D											shader3DTo2D;
-	private InstancedShader											instancedShader;
+	private ShaderBasic														shaderBasic;
+	private Shader2D														shader2D;
+	private Shader3DTo2D													shader3DTo2D;
+	private InstancedShader													instancedShader;
 
 	// Effects
 
-	private FlareShader												flareShader;
+	private FlareShader														flareShader;
 
 	// PostProcessing
 
-	private BrightFilterShader										brightFilter;
-	private CombineShader											combine;
-	private ContrastShader											contrast;
-	private HorizontalBlurShader									horizontalBlur;
-	private VerticalBlurShader										verticalBlur;
+	private BrightFilterShader												brightFilter;
+	private CombineShader													combine;
+	private ContrastShader													contrast;
+	private HorizontalBlurShader											horizontalBlur;
+	private VerticalBlurShader												verticalBlur;
 
 	public GLShaderManager()
 	{
@@ -78,11 +84,11 @@ public class GLShaderManager
 		{
 			this.add("basic", this.shaderBasic = new ShaderBasic());
 			this.add("flare", this.flareShader = new FlareShader());
-			this.add("2d", this.shader2D = new Shader2D());
+			this.add("2D", this.shader2D = new Shader2D());
 			/**this.add("3dto2d", this.shader3DTo2D = new Shader3DTo2D());
 			this.add("brightFilter", this.brightFilter = new BrightFilterShader());
-			this.add("combine", this.combine = new CombineShader());
-			this.add("contrast", this.contrast = new ContrastShader());**/
+			this.add("combineFilter", this.combine = new CombineShader());
+			this.add("contrastChanger", this.contrast = new ContrastShader());**/
 			this.add("horizontalBlur", this.horizontalBlur = new HorizontalBlurShader());
 			this.add("verticalBlur", this.verticalBlur = new VerticalBlurShader());
 			this.add("instanced", this.instancedShader = new InstancedShader());
@@ -93,89 +99,123 @@ public class GLShaderManager
 		}
 	}
 
-	public final GLShaderManager initialization(Matrix4f projectionIn) throws Exception
+	@Override
+	public IShadersManager updateView(Matrix4f viewIn)
 	{
-		this.updateProjection(projectionIn);
-
-		return this;
-	}
-
-	public final GLShaderManager initialization(Matrix4f projectionIn, Matrix4f viewIn) throws Exception
-	{
-		for (final Shader shader : this.shaders().values())
+		for (final IShaderProgram shader : this.shaders().values())
 		{
-			shader.start();
+			shader.attach();
 
 			if (shader instanceof IView)
 			{
 				((IView) shader).view().load(viewIn);
 			}
 
-			if (shader instanceof IProjection)
-			{
-				((IProjection) shader).projection().load(projectionIn);
-			}
-
-			Shader.stop();
+			this.detach();
 		}
 
 		return this;
 	}
 
-	public GLShaderManager updateProjection(Matrix4f projectionIn)
+	@Override
+	public IShadersManager updateProjection(Matrix4f projectionIn)
 	{
-		for (final Shader shader : this.shaders().values())
+		for (final IShaderProgram shader : this.shaders().values())
 		{
-			shader.start();
+			shader.attach();
 
 			if (shader instanceof IProjection)
 			{
 				((IProjection) shader).projection().load(projectionIn);
 			}
 
-			Shader.stop();
+			this.detach();
 		}
 
 		return this;
 	}
 
-	public GLShaderManager updateViewMatrix(Matrix4f viewIn)
+	@Override
+	public IShadersManager updateProjectionAndView(Matrix4f projectionIn, Matrix4f viewIn)
 	{
-		for (final Shader shader : this.shaders().values())
+		for (final IShaderProgram shader : this.shaders().values())
 		{
-			shader.start();
+			shader.attach();
+
+			if (shader instanceof IProjection)
+			{
+				((IProjection) shader).projection().load(projectionIn);
+			}
 
 			if (shader instanceof IView)
 			{
 				((IView) shader).view().load(viewIn);
 			}
 
-			Shader.stop();
+			this.detach();
 		}
 
 		return this;
 	}
 
-	public GLShaderManager add(String nameIn, Shader shaderIn)
+	@Override
+	public IShadersManager updateAttachedProjectionAndView(Matrix4f projectionViewIn)
 	{
-		this.shaders.put(nameIn, shaderIn);
+		for (final IShaderProgram shader : this.shaders().values())
+		{
+			shader.attach();
+
+			if (shader instanceof IProjectionView)
+			{
+				((IProjectionView) shader).projectionView().load(projectionViewIn);
+			}
+
+			this.detach();
+		}
 
 		return this;
 	}
 
-	public Shader get(String nameIn)
+	@Override
+	public IShadersManager add(String nameIn, IShaderProgram shaderProgramIn)
 	{
-		return this.shaders.get(nameIn);
+		this.shaders.put(nameIn.toLowerCase(), shaderProgramIn);
+
+		return this;
 	}
 
-	public boolean contains(String nameIn)
+	@Override
+	public boolean has(String nameIn)
 	{
-		return this.shaders.containsKey(nameIn);
+		return this.shaders.containsKey(nameIn.toLowerCase());
 	}
 
-	public GLShaderManager remove(String nameIn)
+	@Override
+	public IShaderProgram get(String nameIn)
 	{
-		this.shaders.remove(nameIn);
+		return this.shaders.get(nameIn.toLowerCase());
+	}
+
+	@Override
+	public IShadersManager remove(String nameIn)
+	{
+		this.shaders.remove(nameIn.toLowerCase());
+
+		return this;
+	}
+
+	@Override
+	public IShadersManager clear()
+	{
+		this.shaders.clear();
+
+		return this;
+	}
+
+	@Override
+	public IShadersManager detach()
+	{
+		GL20.glUseProgram(0);
 
 		return this;
 	}
@@ -183,11 +223,15 @@ public class GLShaderManager
 	/**
 	 *
 	 */
-	public void cleanup()
+	@Override
+	public IShadersManager cleanup()
 	{
-		for (final Shader shader : this.shaders.values())
+		for (final IShaderProgram shader : this.shaders.values())
 		{
 			shader.cleanup();
 		}
+		this.shaders.clear();
+
+		return this;
 	}
 }

@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
+import fr.onsiea.engine.utils.ICleanable;
 
-public class TexturesManager
+public class TexturesManager implements ITexturesManager
 {
 	private IRenderAPIMethods		renderAPIContext;
 	private Map<String, ITexture>	textures;
@@ -18,45 +19,7 @@ public class TexturesManager
 		this.textures(new HashMap<>());
 	}
 
-	/**
-	 * @param pixelsIn
-	 * @param widthIn
-	 * @param heightIn
-	 * @param capabilitiesIn
-	 * @return
-	 */
-	public ITexture load(String nameIn, ByteBuffer pixelsIn, int widthIn, int heightIn)
-	{
-		var texture = this.textures().get(nameIn);
-
-		if (texture != null)
-		{
-			return texture;
-		}
-
-		texture = this.renderAPIContext().createTexture(widthIn, heightIn, pixelsIn);
-
-		this.textures().put(nameIn, texture);
-
-		return texture;
-	}
-
-	public ITexture load(String nameIn, String filepathIn)
-	{
-		var texture = this.textures().get(nameIn);
-
-		if (texture != null)
-		{
-			return texture;
-		}
-
-		texture = TextureLoader.load(filepathIn, this.renderAPIContext());
-
-		this.textures().put(nameIn, texture);
-
-		return texture;
-	}
-
+	@Override
 	public ITexture load(String filepathIn)
 	{
 		var texture = this.textures().get(filepathIn);
@@ -73,11 +36,91 @@ public class TexturesManager
 		return texture;
 	}
 
-	public void cleanup()
+	@Override
+	public ITexture load(String nameIn, String filepathIn)
+	{
+		var texture = this.textures().get(nameIn);
+
+		if (texture != null)
+		{
+			return texture;
+		}
+
+		texture = TextureLoader.load(filepathIn, this.renderAPIContext());
+
+		this.textures().put(nameIn, texture);
+
+		return texture;
+	}
+
+	/**
+	 * @param pixelsIn
+	 * @param widthIn
+	 * @param heightIn
+	 * @param capabilitiesIn
+	 * @return
+	 */
+	@Override
+	public ITexture load(String nameIn, ByteBuffer pixelsIn, int widthIn, int heightIn)
+	{
+		var texture = this.textures().get(nameIn);
+
+		if (texture != null)
+		{
+			return texture;
+		}
+
+		texture = this.renderAPIContext().createTexture(widthIn, heightIn, pixelsIn);
+
+		this.textures().put(nameIn, texture);
+
+		return texture;
+	}
+
+	@Override
+	public ITexturesManager add(String nameIn, ITexture textureIn)
+	{
+		this.textures.put(nameIn, textureIn);
+
+		return this;
+	}
+
+	@Override
+	public boolean has(String nameIn)
+	{
+		return this.textures().containsKey(nameIn);
+	}
+
+	@Override
+	public ITexture get(String nameIn)
+	{
+		return this.textures().get(nameIn);
+	}
+
+	@Override
+	public ITexturesManager remove(String nameIn)
+	{
+		this.textures().remove(nameIn);
+
+		return this;
+	}
+
+	@Override
+	public ITexturesManager clear()
+	{
+		this.textures().clear();
+
+		return this;
+	}
+
+	@Override
+	public ICleanable cleanup()
 	{
 		this.renderAPIContext().deleteTextures(this.textures().values());
 
 		this.textures().clear();
+
+		return this;
 	}
 
 	private final IRenderAPIMethods renderAPIContext()

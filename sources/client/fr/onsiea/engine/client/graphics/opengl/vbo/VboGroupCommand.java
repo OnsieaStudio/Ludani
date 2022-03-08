@@ -1,6 +1,6 @@
 package fr.onsiea.engine.client.graphics.opengl.vbo;
 
-import fr.onsiea.engine.client.graphics.opengl.model.GroupAttributCommand;
+import fr.onsiea.engine.client.graphics.opengl.mesh.GroupAttributCommand;
 
 public class VboGroupCommand extends GroupAttributCommand
 {

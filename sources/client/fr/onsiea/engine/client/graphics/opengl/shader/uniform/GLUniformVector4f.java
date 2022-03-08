@@ -4,8 +4,10 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL20;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
-public class UniformVector4f
+public class GLUniformVector4f implements IShaderUniform<Vector4f>
 {
 	public final static void load(int locationIn, Vector4f valueIn)
 	{
@@ -17,35 +19,37 @@ public class UniformVector4f
 		GL20.glUniform4f(locationIn, xIn, yIn, zIn, wIn);
 	}
 
-	private Shader	parent;
-	private int		location;
+	private IShaderProgram	parent;
+	private int				location;
 
-	public UniformVector4f(Shader parentIn, String nameIn)
+	public GLUniformVector4f(Shader parentIn, String nameIn)
 	{
 		this.parent(parentIn);
+
 		this.location(parentIn.uniformLocation(nameIn));
 	}
 
-	public Shader load(Vector4f valueIn)
+	@Override
+	public IShaderProgram load(Vector4f valueIn)
 	{
 		GL20.glUniform4f(this.location(), valueIn.x(), valueIn.y(), valueIn.z(), valueIn.w());
 
 		return this.parent();
 	}
 
-	public Shader load(float xIn, float yIn, float zIn, float wIn)
+	public IShaderProgram load(float xIn, float yIn, float zIn, float wIn)
 	{
 		GL20.glUniform4f(this.location(), xIn, yIn, zIn, wIn);
 
 		return this.parent();
 	}
 
-	private final Shader parent()
+	private final IShaderProgram parent()
 	{
 		return this.parent;
 	}
 
-	private final void parent(Shader parentIn)
+	private final void parent(IShaderProgram parentIn)
 	{
 		this.parent = parentIn;
 	}

@@ -24,56 +24,37 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.mesh.draw;
+package fr.onsiea.engine.client.graphics.mesh;
 
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
-import fr.onsiea.engine.client.graphics.opengl.mesh.IMeshDrawFunction;
-import fr.onsiea.engine.client.graphics.opengl.vao.Vao;
-import fr.onsiea.engine.client.graphics.opengl.vao.VaoUtils;
-import fr.onsiea.engine.client.graphics.opengl.vbo.Elements;
+import fr.onsiea.engine.utils.registry.ILoadable;
+import fr.onsiea.engine.utils.registry.IRegistry;
 
 /**
  * @author Seynax
  *
  */
-public class DrawersInstancedElements implements IMeshDrawFunction
+public interface IMeshsManager extends IRegistry<IMesh>, ILoadable<IMesh>
 {
-	private final Elements	elements;
-	private final Vao		vao;
-	private final int		attribs;
-	private final int		vertexCount;
-	private final int		primCount;
+	/**
+	 * @param posArrIn
+	 * @param textCoordArrIn
+	 * @param normArrIn
+	 * @param indicesArrIn
+	 * @return
+	 * @throws Exception
+	 */
+	IMesh create(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn, int[] indicesIn,
+			int dimensionSizeIn) throws Exception;
 
-	public DrawersInstancedElements(Elements elementsIn, Vao vaoIn, int attribsIn, int vertexCountIn, int primCountIn)
-	{
-		this.elements		= elementsIn;
-		this.vao			= vaoIn;
-		this.attribs		= attribsIn;
-		this.vertexCount	= vertexCountIn;
-		this.primCount		= primCountIn;
-	}
+	/**
+	 * @param posArrIn
+	 * @param textCoordArrIn
+	 * @param normArrIn
+	 * @param indicesArrIn
+	 * @return
+	 * @throws Exception
+	 */
+	IMesh create(float[] positionsIn, int dimensionSizeIn) throws Exception;
 
-	@Override
-	public IMeshDrawFunction attach(GLMesh meshIn)
-	{
-		VaoUtils.bindAndEnables(this.vao, this.attribs);
-
-		return this;
-	}
-
-	@Override
-	public IMeshDrawFunction draw(GLMesh meshIn)
-	{
-		this.elements.drawInstanced(this.vertexCount, this.primCount);
-
-		return this;
-	}
-
-	@Override
-	public IMeshDrawFunction detach(GLMesh meshIn)
-	{
-		VaoUtils.disablesAndUnbind(this.attribs);
-
-		return this;
-	}
+	IOBJLoader objLoader();
 }

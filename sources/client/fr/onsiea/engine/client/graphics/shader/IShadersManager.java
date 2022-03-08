@@ -24,56 +24,25 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.mesh.draw;
+package fr.onsiea.engine.client.graphics.shader;
 
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
-import fr.onsiea.engine.client.graphics.opengl.mesh.IMeshDrawFunction;
-import fr.onsiea.engine.client.graphics.opengl.vao.Vao;
-import fr.onsiea.engine.client.graphics.opengl.vao.VaoUtils;
-import fr.onsiea.engine.client.graphics.opengl.vbo.Elements;
+import org.joml.Matrix4f;
+
+import fr.onsiea.engine.utils.registry.IRegistry;
 
 /**
  * @author Seynax
  *
  */
-public class DrawersInstancedElements implements IMeshDrawFunction
+public interface IShadersManager extends IRegistry<IShaderProgram>
 {
-	private final Elements	elements;
-	private final Vao		vao;
-	private final int		attribs;
-	private final int		vertexCount;
-	private final int		primCount;
+	IShadersManager updateProjection(Matrix4f projectionMatrixIn);
 
-	public DrawersInstancedElements(Elements elementsIn, Vao vaoIn, int attribsIn, int vertexCountIn, int primCountIn)
-	{
-		this.elements		= elementsIn;
-		this.vao			= vaoIn;
-		this.attribs		= attribsIn;
-		this.vertexCount	= vertexCountIn;
-		this.primCount		= primCountIn;
-	}
+	IShadersManager updateView(Matrix4f viewMatrixIn);
 
-	@Override
-	public IMeshDrawFunction attach(GLMesh meshIn)
-	{
-		VaoUtils.bindAndEnables(this.vao, this.attribs);
+	IShadersManager updateAttachedProjectionAndView(Matrix4f projectionAndViewMatrixIn);
 
-		return this;
-	}
+	IShadersManager updateProjectionAndView(Matrix4f projectionMatrixIn, Matrix4f viewMatrixIn);
 
-	@Override
-	public IMeshDrawFunction draw(GLMesh meshIn)
-	{
-		this.elements.drawInstanced(this.vertexCount, this.primCount);
-
-		return this;
-	}
-
-	@Override
-	public IMeshDrawFunction detach(GLMesh meshIn)
-	{
-		VaoUtils.disablesAndUnbind(this.attribs);
-
-		return this;
-	}
+	IShadersManager detach();
 }

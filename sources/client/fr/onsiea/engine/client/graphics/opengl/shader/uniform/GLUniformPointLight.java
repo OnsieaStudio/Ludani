@@ -6,8 +6,10 @@ import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.light.PointLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
-public class UniformPointLight
+public class GLUniformPointLight implements IShaderUniform<PointLight>
 {
 	/**
 	 * Return components locations in int array (int[])
@@ -45,12 +47,12 @@ public class UniformPointLight
 
 	private final static void base(int[] locationsIn, PointLight pointLightIn)
 	{
-		UniformVector3f.load(locationsIn[0], pointLightIn.color());
-		UniformFloat.load(locationsIn[2], pointLightIn.intensity());
+		GLUniformVector3f.load(locationsIn[0], pointLightIn.color());
+		GLUniformFloat.load(locationsIn[2], pointLightIn.intensity());
 		final var att = pointLightIn.attenuation();
-		UniformFloat.load(locationsIn[3], att.constant());
-		UniformFloat.load(locationsIn[4], att.linear());
-		UniformFloat.load(locationsIn[5], att.exponent());
+		GLUniformFloat.load(locationsIn[3], att.constant());
+		GLUniformFloat.load(locationsIn[4], att.linear());
+		GLUniformFloat.load(locationsIn[5], att.exponent());
 	}
 
 	public final static void load(int[] locationsIn, PointLight pointLightIn, Matrix4f viewMatrixIn)
@@ -60,48 +62,49 @@ public class UniformPointLight
 		vec.x	= aux.x();
 		vec.y	= aux.y();
 		vec.z	= aux.z();
-		UniformVector3f.load(locationsIn[1], vec);
+		GLUniformVector3f.load(locationsIn[1], vec);
 
-		UniformPointLight.base(locationsIn, pointLightIn);
+		GLUniformPointLight.base(locationsIn, pointLightIn);
 	}
 
 	public final static void load(int[] locationsIn, PointLight pointLightIn)
 	{
-		UniformVector3f.load(locationsIn[1], pointLightIn.position());
+		GLUniformVector3f.load(locationsIn[1], pointLightIn.position());
 
-		UniformPointLight.base(locationsIn, pointLightIn);
+		GLUniformPointLight.base(locationsIn, pointLightIn);
 	}
 
-	private Shader	parent;
-	private int[]	locations;
+	private IShaderProgram	parent;
+	private int[]			locations;
 
-	public UniformPointLight(Shader parentIn, String nameIn)
+	public GLUniformPointLight(Shader parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 
-		this.locations(UniformPointLight.create(parentIn, nameIn));
+		this.locations(GLUniformPointLight.create(parentIn, nameIn));
 	}
 
-	public Shader load(PointLight pointLightIn)
+	@Override
+	public IShaderProgram load(PointLight pointLightIn)
 	{
-		UniformPointLight.load(this.locations(), pointLightIn);
+		GLUniformPointLight.load(this.locations(), pointLightIn);
 
 		return this.parent();
 	}
 
-	public Shader load(PointLight pointLightIn, Matrix4f viewMatrixIn)
+	public IShaderProgram load(PointLight pointLightIn, Matrix4f viewMatrixIn)
 	{
-		UniformPointLight.load(this.locations(), pointLightIn, viewMatrixIn);
+		GLUniformPointLight.load(this.locations(), pointLightIn, viewMatrixIn);
 
 		return this.parent();
 	}
 
-	private final Shader parent()
+	private final IShaderProgram parent()
 	{
 		return this.parent;
 	}
 
-	private final void parent(Shader parentIn)
+	private final void parent(IShaderProgram parentIn)
 	{
 		this.parent = parentIn;
 	}

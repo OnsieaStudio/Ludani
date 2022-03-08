@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.joml.Matrix4f;
 
-import fr.onsiea.engine.client.graphics.opengl.GLMeshManager;
+import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
 import fr.onsiea.engine.client.graphics.opengl.particles.ParticleRenderer;
 
 /**
@@ -44,7 +44,7 @@ public class ParticleManager<T extends IParticle>
 	private final IParticleSystem<T>	particleSystem;
 	private final ParticleRenderer		particleRenderer;
 
-	public ParticleManager(IParticleSystem<T> particleSystemIn, int particlesIn, GLMeshManager meshManagerIn)
+	public ParticleManager(IParticleSystem<T> particleSystemIn, int particlesIn, IMeshsManager meshManagerIn)
 			throws Exception
 	{
 		this.particles			= new ArrayList<>();

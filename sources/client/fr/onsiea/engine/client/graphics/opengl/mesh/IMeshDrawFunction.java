@@ -26,17 +26,15 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.mesh;
 
-import fr.onsiea.engine.client.graphics.render.Renderer;
-
 /**
  * @author Seynax
  *
  */
 public interface IMeshDrawFunction
 {
-	IMeshDrawFunction start(GLMesh meshIn, Renderer rendererIn);
+	IMeshDrawFunction attach(GLMesh meshIn);
 
-	IMeshDrawFunction draw(GLMesh meshIn, Renderer rendererIn);
+	IMeshDrawFunction draw(GLMesh meshIn);
 
-	IMeshDrawFunction stop(GLMesh meshIn, Renderer rendererIn);
+	IMeshDrawFunction detach(GLMesh meshIn);
 }

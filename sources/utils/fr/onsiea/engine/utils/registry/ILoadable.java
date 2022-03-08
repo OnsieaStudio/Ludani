@@ -24,18 +24,28 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shader;
-
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformMatrix4f;
+package fr.onsiea.engine.utils.registry;
 
 /**
  * @author Seynax
  *
  */
-public interface IProjection
+public interface ILoadable<T>
 {
 	/**
+	 *
+	 * @param filepathIn
 	 * @return
+	 * @throws Exception
 	 */
-	UniformMatrix4f projection();
+	T load(String filepathIn) throws Exception;
+
+	/**
+	 *
+	 * @param nameIn
+	 * @param filepathIn
+	 * @return
+	 * @throws Exception
+	 */
+	T load(String nameIn, String filepathIn) throws Exception;
 }

@@ -35,7 +35,7 @@ import fr.onsiea.engine.client.graphics.render.EnumRenderAPI;
 
 public class GraphicsConstants
 {
-	public final static boolean			DEBUG					= true;
+	public final static boolean			DEBUG					= false;
 	public final static int				DEFAULT_WIDTH			= 1920;
 	public final static int				DEFAULT_HEIGHT			= 1080;
 

@@ -2,8 +2,10 @@ package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 
 import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
-public class UniformMaterial
+public class GLUniformMaterial implements IShaderUniform<Material>
 {
 	public final static int[] create(Shader shaderIn, String nameIn)
 	{
@@ -20,36 +22,37 @@ public class UniformMaterial
 
 	public final static void load(int[] locationsIn, Material materialIn)
 	{
-		UniformVector4f.load(locationsIn[0], materialIn.ambientColour());
-		UniformVector4f.load(locationsIn[1], materialIn.diffuseColour());
-		UniformVector4f.load(locationsIn[2], materialIn.specularColour());
-		UniformInt.load(locationsIn[3], materialIn.isTextured() ? 1 : 0);
-		UniformFloat.load(locationsIn[4], materialIn.reflectance());
+		GLUniformVector4f.load(locationsIn[0], materialIn.ambientColour());
+		GLUniformVector4f.load(locationsIn[1], materialIn.diffuseColour());
+		GLUniformVector4f.load(locationsIn[2], materialIn.specularColour());
+		GLUniformInt.load(locationsIn[3], materialIn.isTextured() ? 1 : 0);
+		GLUniformFloat.load(locationsIn[4], materialIn.reflectance());
 	}
 
-	private Shader	parent;
-	private int[]	locations;
+	private IShaderProgram	parent;
+	private int[]			locations;
 
-	public UniformMaterial(Shader parentIn, String nameIn)
+	public GLUniformMaterial(Shader parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 
-		this.locations(UniformMaterial.create(parentIn, nameIn));
+		this.locations(GLUniformMaterial.create(parentIn, nameIn));
 	}
 
-	public Shader load(Material materialIn)
+	@Override
+	public IShaderProgram load(Material materialIn)
 	{
-		UniformMaterial.load(this.locations(), materialIn);
+		GLUniformMaterial.load(this.locations(), materialIn);
 
 		return this.parent();
 	}
 
-	private final Shader parent()
+	private final IShaderProgram parent()
 	{
 		return this.parent;
 	}
 
-	private final void parent(Shader parentIn)
+	private final void parent(IShaderProgram parentIn)
 	{
 		this.parent = parentIn;
 	}

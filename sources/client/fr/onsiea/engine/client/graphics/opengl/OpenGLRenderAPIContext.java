@@ -29,7 +29,6 @@ package fr.onsiea.engine.client.graphics.opengl;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 
-import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -40,15 +39,18 @@ import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
-import fr.onsiea.engine.client.graphics.obj.OBJLoader;
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
+import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
+import fr.onsiea.engine.client.graphics.mesh.OBJLoader;
+import fr.onsiea.engine.client.graphics.opengl.mesh.GLMeshManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
+import fr.onsiea.engine.client.graphics.opengl.texture.GLTexturesManager;
 import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
+import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
-import fr.onsiea.engine.client.graphics.texture.TexturesManager;
+import fr.onsiea.engine.client.graphics.texture.ITexturesManager;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,11 +74,9 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 
 	private OpenGLSettings			settings;
 
-	private GLShaderManager			shaderManager;
-	private TexturesManager			texturesManager;
-
-	private GLMeshManager			meshManager;
-	private OBJLoader				objLoader;
+	private ITexturesManager		texturesManager;
+	private IMeshsManager			meshsManager;
+	private IShadersManager			shadersManager;
 
 	/**
 	 *
@@ -97,21 +97,14 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 			this.disableDebugging();
 		}
 
-		this.settings().userSettings().enable("mustAnisotropyTextureFiltering").set("anisotropyTextureFilteringAmount",
-				4.0f);
+		this.settings().user().enable("mustAnisotropyTextureFiltering").set("anisotropyTextureFilteringAmount", 4.0f);
 
-		this.shaderManager(new GLShaderManager());
-		this.texturesManager(new TexturesManager(this));
+		this.shadersManager(new GLShaderManager());
+		this.texturesManager(new GLTexturesManager(this));
 
-		this.meshManager(new GLMeshManager());
-		this.objLoader(new OBJLoader(this.meshManager()));
-	}
+		this.meshsManager(new GLMeshManager(new OBJLoader()));
 
-	public void initialization(Matrix4f projectionMatrixIn) throws Exception
-	{
 		OpenGLUtils.restoreState();
-
-		this.shaderManager().initialization(projectionMatrixIn);
 	}
 
 	@Override
@@ -163,17 +156,15 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 
 		// Callback
 
-		this.openGLDebug().free();
-		this.openGLDebug(null);
-		// this.debugProc().free();
-		this.debugProc(null);
+		if (this.openGLDebug != null)
+		{
+			this.openGLDebug().free();
+			this.openGLDebug(null);
+			// this.debugProc().free();
+			this.debugProc(null);
+		}
 
 		KHRDebug.glDebugMessageCallback(null, 0);
-	}
-
-	public GLMesh loadMesh(String fileNameIn) throws Exception
-	{
-		return this.objLoader().loadMesh(fileNameIn);
 	}
 
 	@Override
@@ -181,7 +172,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 	{
 		OpenGLUtils.restoreState();
 
-		this.meshManager().cleanup();
+		this.meshsManager().cleanup();
 		// OpenGLScreenshot.cleanup();
 		// this.shaderManager().cleanup();
 		this.disableDebugging();

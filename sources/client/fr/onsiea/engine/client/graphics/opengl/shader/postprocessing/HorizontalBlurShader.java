@@ -1,14 +1,14 @@
 package fr.onsiea.engine.client.graphics.opengl.shader.postprocessing;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformFloat;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
 
 public class HorizontalBlurShader extends Shader
 {
 	private static final String	VERTEX_FILE		= "resources/shaders/postprocessing/blur/horizontalBlurVertex.glsl";
 	private static final String	FRAGMENT_FILE	= "resources/shaders/postprocessing/blur/blurFragment.glsl";
 
-	private UniformFloat		uniformTargetWidth;
+	private GLUniformFloat		uniformTargetWidth;
 
 	public HorizontalBlurShader() throws Exception
 	{
@@ -17,12 +17,12 @@ public class HorizontalBlurShader extends Shader
 		this.uniformTargetWidth(this.floatUniform("targetWidth"));
 	}
 
-	public final UniformFloat uniformTargetWidth()
+	public final GLUniformFloat uniformTargetWidth()
 	{
 		return this.uniformTargetWidth;
 	}
 
-	private final void uniformTargetWidth(UniformFloat uniformTargetWidthIn)
+	private final void uniformTargetWidth(GLUniformFloat uniformTargetWidthIn)
 	{
 		this.uniformTargetWidth = uniformTargetWidthIn;
 	}

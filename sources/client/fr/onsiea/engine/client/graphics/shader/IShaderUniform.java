@@ -24,68 +24,13 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.texture;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import fr.onsiea.engine.client.graphics.texture.TexturesManager;
+package fr.onsiea.engine.client.graphics.shader;
 
 /**
  * @author Seynax
  *
- *
- * Specialized texture manager for opengl, managing texture tables and using the generic texture manager.
  */
-public class GLTextureManager
+public interface IShaderUniform<T>
 {
-	private TexturesManager						texturesManager;
-	private Map<String, GLTextureArrayManager>	texturesArrayManager;
-
-	public GLTextureManager(TexturesManager texturesManagerIn)
-	{
-		this.texturesManager = texturesManagerIn;
-		this.texturesArrayManager(new HashMap<>());
-	}
-
-	public GLTextureArrayManager newTextureArray(String nameIn)
-	{
-		final var textureArrayManager = new GLTextureArrayManager();
-
-		this.texturesArrayManager().put(nameIn, textureArrayManager);
-
-		return textureArrayManager;
-	}
-
-	public GLTextureArrayManager textureArrayManager(String nameIn)
-	{
-		return this.texturesArrayManager().get(nameIn);
-	}
-
-	@Override
-	public String toString()
-	{
-		return "GLTextureManager []";
-	}
-
-	public final TexturesManager texturesManager()
-	{
-		return this.texturesManager;
-	}
-
-	@SuppressWarnings("unused")
-	private final void texturesManager(TexturesManager texturesManagerIn)
-	{
-		this.texturesManager = texturesManagerIn;
-	}
-
-	private final Map<String, GLTextureArrayManager> texturesArrayManager()
-	{
-		return this.texturesArrayManager;
-	}
-
-	private final void texturesArrayManager(Map<String, GLTextureArrayManager> texturesArrayManagerIn)
-	{
-		this.texturesArrayManager = texturesArrayManagerIn;
-	}
+	IShaderProgram load(T valueIn);
 }

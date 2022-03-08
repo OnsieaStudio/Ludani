@@ -9,14 +9,16 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformFloat;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformInt;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformMatrix4f;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformVector2f;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformVector3f;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformVector4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector2f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector4f;
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
-public abstract class Shader
+public abstract class Shader implements IShaderProgram
 {
 	private static final int loadShader(final String filenameIn, final int type)
 	{
@@ -74,12 +76,12 @@ public abstract class Shader
 		return shaderId;
 	}
 
-	private int						vertexId;
-	private int						fragmentId;
+	private int								vertexId;
+	private int								fragmentId;
 
-	private int						programId;
+	private int								programId;
 
-	private Map<String, Integer>	uniforms;
+	private Map<String, IShaderUniform<?>>	uniforms;
 
 	protected Shader(String vertexShaderFilepathIn, String fragmentShaderFilepathIn, String... attributesIn)
 			throws Exception
@@ -125,13 +127,15 @@ public abstract class Shader
 		}
 	}
 
+	@Override
+	public <T> IShaderUniform<?> get(String nameIn)
+	{
+		return this.uniforms.get(nameIn);
+	}
+
 	public int uniformLocation(final String uniformNameIn)
 	{
-		final var id = GL20.glGetUniformLocation(this.programId(), uniformNameIn);
-
-		this.uniforms().put(uniformNameIn, id);
-
-		return id;
+		return GL20.glGetUniformLocation(this.programId(), uniformNameIn);
 	}
 
 	protected int[] getUniformsLocation(final String... uniformNamesIn)
@@ -146,42 +150,58 @@ public abstract class Shader
 
 			locations[i] = id;
 
-			this.uniforms().put(uniformName, id);
-
 			i++;
 		}
 
 		return locations;
 	}
 
-	public UniformInt intUniform(String nameIn)
+	public GLUniformInt intUniform(String nameIn)
 	{
-		return new UniformInt(this, nameIn);
+		final var uniform = new GLUniformInt(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
 	}
 
-	public UniformFloat floatUniform(String nameIn)
+	public GLUniformFloat floatUniform(String nameIn)
 	{
-		return new UniformFloat(this, nameIn);
+		final var uniform = new GLUniformFloat(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
 	}
 
-	public UniformVector2f vector2fUniform(String nameIn)
+	public GLUniformVector2f vector2fUniform(String nameIn)
 	{
-		return new UniformVector2f(this, nameIn);
+		final var uniform = new GLUniformVector2f(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
 	}
 
-	public UniformVector3f vector3fUniform(String nameIn)
+	public GLUniformVector3f vector3fUniform(String nameIn)
 	{
-		return new UniformVector3f(this, nameIn);
+		final var uniform = new GLUniformVector3f(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
 	}
 
-	public UniformVector4f vector4fUniform(String nameIn)
+	public GLUniformVector4f vector4fUniform(String nameIn)
 	{
-		return new UniformVector4f(this, nameIn);
+		final var uniform = new GLUniformVector4f(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
 	}
 
-	public UniformMatrix4f matrix4fUniform(String nameIn)
+	public GLUniformMatrix4f matrix4fUniform(String nameIn)
 	{
-		return new UniformMatrix4f(this, nameIn);
+		final var uniform = new GLUniformMatrix4f(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
 	}
 
 	protected void bindAttribute(final int attributeIn, final String variableNameIn)
@@ -207,19 +227,18 @@ public abstract class Shader
 		return locations;
 	}
 
-	public void start()
+	@Override
+	public IShaderProgram attach()
 	{
 		GL20.glUseProgram(this.programId());
+
+		return this;
 	}
 
-	public final static void stop()
+	@Override
+	public IShaderProgram cleanup()
 	{
 		GL20.glUseProgram(0);
-	}
-
-	public void cleanup()
-	{
-		Shader.stop();
 
 		//GL20.glDetachShader(this.programId(), this.vertexId());
 		//GL20.glDetachShader(this.programId(), this.fragmentId());
@@ -237,6 +256,8 @@ public abstract class Shader
 		{
 			GL20.glDeleteProgram(this.programId());
 		}
+
+		return this;
 	}
 
 	protected int vertexId()
@@ -269,12 +290,12 @@ public abstract class Shader
 		this.programId = programIdIn;
 	}
 
-	protected Map<String, Integer> uniforms()
+	protected Map<String, IShaderUniform<?>> uniforms()
 	{
 		return this.uniforms;
 	}
 
-	protected void uniforms(Map<String, Integer> uniformsIn)
+	protected void uniforms(Map<String, IShaderUniform<?>> uniformsIn)
 	{
 		this.uniforms = uniformsIn;
 	}

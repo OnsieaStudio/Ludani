@@ -24,7 +24,7 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.obj;
+package fr.onsiea.engine.client.graphics.mesh;
 
 /**
  * @author Seynax
@@ -36,22 +36,29 @@ import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import fr.onsiea.engine.client.graphics.opengl.GLMeshManager;
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
 import fr.onsiea.engine.utils.file.FileUtils;
 
-public class OBJLoader
+public class OBJLoader implements IOBJLoader
 {
-	private GLMeshManager meshManager;
+	private IMeshsManager meshsManager;
 
-	public OBJLoader(GLMeshManager meshManagerIn)
+	public OBJLoader()
 	{
-		this.meshManager(meshManagerIn);
+
 	}
 
-	public GLMesh loadMesh(String fileName) throws Exception
+	@Override
+	public IOBJLoader link(IMeshsManager meshsManagerIn)
 	{
-		final var				lines		= FileUtils.loadLines(fileName);
+		this.meshsManager = meshsManagerIn;
+
+		return this;
+	}
+
+	@Override
+	public IMesh load(String filepathIn) throws Exception
+	{
+		final var				lines		= FileUtils.loadLines(filepathIn);
 
 		final List<Vector3f>	vertices	= new ArrayList<>();
 		final List<Vector2f>	textures	= new ArrayList<>();
@@ -97,7 +104,7 @@ public class OBJLoader
 		return this.reorderLists(vertices, textures, normals, faces);
 	}
 
-	private GLMesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList, List<Vector3f> normList,
+	private IMesh reorderLists(List<Vector3f> posList, List<Vector2f> textCoordList, List<Vector3f> normList,
 			List<Face> facesList) throws Exception
 	{
 
@@ -126,8 +133,7 @@ public class OBJLoader
 		var indicesArr = new int[indices.size()];
 		indicesArr = indices.stream().mapToInt((Integer v) -> v).toArray();
 
-		return this.meshManager().meshBuilderWithVao(3).vbo(posArr, 3).vbo(textCoordArr, 2).vbo(normArr, 3)
-				.ibo(indicesArr).unbindVao().build();
+		return this.meshsManager.create(posArr, textCoordArr, normArr, indicesArr, 3);
 	}
 
 	private static void processFaceVertex(IdxGroup indices, List<Vector2f> textCoordList, List<Vector3f> normList,
@@ -153,16 +159,6 @@ public class OBJLoader
 			normArr[posIndex * 3 + 1]	= vecNorm.y;
 			normArr[posIndex * 3 + 2]	= vecNorm.z;
 		}
-	}
-
-	private final GLMeshManager meshManager()
-	{
-		return this.meshManager;
-	}
-
-	private final void meshManager(GLMeshManager meshManagerIn)
-	{
-		this.meshManager = meshManagerIn;
 	}
 
 	protected static class Face

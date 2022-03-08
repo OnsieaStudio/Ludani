@@ -24,56 +24,62 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.mesh.draw;
+package fr.onsiea.engine.client.graphics.opengl.texture;
 
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
-import fr.onsiea.engine.client.graphics.opengl.mesh.IMeshDrawFunction;
-import fr.onsiea.engine.client.graphics.opengl.vao.Vao;
-import fr.onsiea.engine.client.graphics.opengl.vao.VaoUtils;
-import fr.onsiea.engine.client.graphics.opengl.vbo.Elements;
+import java.util.HashMap;
+import java.util.Map;
+
+import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
+import fr.onsiea.engine.client.graphics.texture.ITexturesManager;
+import fr.onsiea.engine.client.graphics.texture.TexturesManager;
+import fr.onsiea.engine.utils.ICleanable;
 
 /**
  * @author Seynax
  *
+ *
+ * Specialized texture manager for opengl, managing texture tables and using the generic texture manager.
  */
-public class DrawersInstancedElements implements IMeshDrawFunction
+public class GLTexturesManager extends TexturesManager implements ITexturesManager
 {
-	private final Elements	elements;
-	private final Vao		vao;
-	private final int		attribs;
-	private final int		vertexCount;
-	private final int		primCount;
+	private Map<String, GLTextureArrayManager> texturesArrayManager;
 
-	public DrawersInstancedElements(Elements elementsIn, Vao vaoIn, int attribsIn, int vertexCountIn, int primCountIn)
+	public GLTexturesManager(IRenderAPIMethods renderAPIMethodsIn)
 	{
-		this.elements		= elementsIn;
-		this.vao			= vaoIn;
-		this.attribs		= attribsIn;
-		this.vertexCount	= vertexCountIn;
-		this.primCount		= primCountIn;
+		super(renderAPIMethodsIn);
+
+		this.texturesArrayManager(new HashMap<>());
+	}
+
+	public GLTextureArrayManager newTextureArray(String nameIn)
+	{
+		final var textureArrayManager = new GLTextureArrayManager();
+
+		this.texturesArrayManager().put(nameIn, textureArrayManager);
+
+		return textureArrayManager;
+	}
+
+	public GLTextureArrayManager textureArrayManager(String nameIn)
+	{
+		return this.texturesArrayManager().get(nameIn);
 	}
 
 	@Override
-	public IMeshDrawFunction attach(GLMesh meshIn)
+	public ICleanable cleanup()
 	{
-		VaoUtils.bindAndEnables(this.vao, this.attribs);
+		this.texturesArrayManager.clear();
 
-		return this;
+		return super.cleanup();
 	}
 
-	@Override
-	public IMeshDrawFunction draw(GLMesh meshIn)
+	private final Map<String, GLTextureArrayManager> texturesArrayManager()
 	{
-		this.elements.drawInstanced(this.vertexCount, this.primCount);
-
-		return this;
+		return this.texturesArrayManager;
 	}
 
-	@Override
-	public IMeshDrawFunction detach(GLMesh meshIn)
+	private final void texturesArrayManager(Map<String, GLTextureArrayManager> texturesArrayManagerIn)
 	{
-		VaoUtils.disablesAndUnbind(this.attribs);
-
-		return this;
+		this.texturesArrayManager = texturesArrayManagerIn;
 	}
 }

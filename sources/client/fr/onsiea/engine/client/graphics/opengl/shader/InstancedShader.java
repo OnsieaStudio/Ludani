@@ -26,7 +26,7 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformVector2f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector2f;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -37,7 +37,7 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class InstancedShader extends Shader
 {
-	private final UniformVector2f rowsAndColumns;
+	private final GLUniformVector2f rowsAndColumns;
 
 	/**
 	 * @throws Exception

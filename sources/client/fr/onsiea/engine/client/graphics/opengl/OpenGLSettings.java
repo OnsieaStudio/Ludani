@@ -31,6 +31,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContextSettings;
 import fr.onsiea.engine.client.settings.ClientParameter;
 import fr.onsiea.engine.client.settings.ClientSettings;
 import lombok.AccessLevel;
@@ -43,20 +44,20 @@ import lombok.Setter;
  */
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PRIVATE)
-public class OpenGLSettings
+public class OpenGLSettings implements IRenderAPIContextSettings
 {
-	private ClientSettings			userSettings;
-	private ClientSettings			engineSettings;
+	private ClientSettings			user;
+	private ClientSettings			engine;
 	private OpenGLRenderAPIContext	context;
 
 	public OpenGLSettings(OpenGLRenderAPIContext contextIn) throws Exception
 	{
 		this.context(contextIn);
 
-		this.userSettings(new ClientSettings());
-		this.engineSettings(new ClientSettings());
+		this.user(new ClientSettings());
+		this.engine(new ClientSettings());
 
-		this.userSettings()
+		this.user()
 				.add("antialiasing", parameterIn -> GL11.glEnable(GL13.GL_MULTISAMPLE),
 						parameterIn -> GL11.glDisable(GL13.GL_MULTISAMPLE))
 				.add("blend", parameterIn -> GL11.glEnable(GL11.GL_BLEND), parameterIn -> GL11.glDisable(GL11.GL_BLEND))
@@ -66,7 +67,7 @@ public class OpenGLSettings
 					GL11.glCullFace(GL11.GL_BACK);
 				}, parameterIn -> GL11.glDisable(GL11.GL_CULL_FACE)).add("anisotropy");
 
-		this.engineSettings()
+		this.engine()
 				.add("wireframe", parameterIn -> GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE),
 						parameterIn -> GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL))
 				.add("alphaBlending", parameterIn ->
@@ -81,7 +82,7 @@ public class OpenGLSettings
 				.add("depthTesting", parameterIn -> GL11.glEnable(GL11.GL_DEPTH_TEST),
 						parameterIn -> GL11.glDisable(GL11.GL_DEPTH_TEST))
 				.add("mustAnisotropyTextureFiltering")
-				.put("anisotropyTextureFilteringAmount", new ClientParameter.Builder<Float>(this.engineSettings(),
+				.put("anisotropyTextureFilteringAmount", new ClientParameter.Builder<Float>(this.engine(),
 						"anisotropyTextureFilteringAmount", (parameterIn, valueIn) ->
 						{
 							if (this.context().textureFilterAnisotropicIsCompatible())

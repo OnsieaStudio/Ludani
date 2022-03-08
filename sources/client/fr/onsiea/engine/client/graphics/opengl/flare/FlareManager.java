@@ -5,9 +5,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import fr.onsiea.engine.client.graphics.opengl.GLMeshManager;
-import fr.onsiea.engine.client.graphics.opengl.OpenGLSettings;
-import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.Renderer;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.core.entity.Camera;
@@ -23,15 +21,14 @@ public class FlareManager
 
 	private final FlareRenderer		renderer;
 
-	public FlareManager(float spacing, GLMeshManager meshManagerIn, OpenGLSettings settingsIn, FlareTexture... textures)
+	public FlareManager(float spacing, IRenderAPIContext renderAPIContextIn, FlareTexture... textures)
 	{
 		this.spacing		= spacing;
 		this.flareTextures	= textures;
-		this.renderer		= new FlareRenderer(meshManagerIn, settingsIn);
+		this.renderer		= new FlareRenderer(renderAPIContextIn);
 	}
 
-	public void render(Camera camera, Vector3f sunWorldPos, GLShaderManager shaderManagerIn, IWindow windowIn,
-			Renderer rendererIn)
+	public void render(Camera camera, Vector3f sunWorldPos, IWindow windowIn, Renderer rendererIn)
 	{
 		final var sunCoords = this.convertToScreenSpace(sunWorldPos, camera.viewMatrix(),
 				MathInstances.projectionMatrix());
@@ -44,7 +41,7 @@ public class FlareManager
 		if (brightness > 0)
 		{
 			this.calcFlarePositions(sunToCenter, sunCoords);
-			this.renderer().render(this.flareTextures(), brightness, shaderManagerIn, windowIn, rendererIn);
+			this.renderer().render(this.flareTextures(), brightness, windowIn, rendererIn);
 		}
 	}
 

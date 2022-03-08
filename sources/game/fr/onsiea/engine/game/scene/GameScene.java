@@ -35,7 +35,15 @@ import java.util.Objects;
 
 import org.joml.Matrix4f;
 
-import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
+import fr.onsiea.engine.client.graphics.mesh.IMesh;
+import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
+import fr.onsiea.engine.client.graphics.shader.IShadersManager;
+import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.window.IWindow;
+import fr.onsiea.engine.client.input.InputManager;
+import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.utils.maths.MathInstances;
+import fr.onsiea.engine.utils.time.Timer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,38 +54,106 @@ import lombok.Getter;
  */
 public class GameScene
 {
-	private Map<IdentifiableMesh, List<Matrix4f>> objects;
+	private Map<IdentifiableMesh, Map<ITexture, List<Matrix4f>>>	objects;
 
-	public GameScene()
+	private @Getter(AccessLevel.PUBLIC) final Camera				camera;
+	private final Timer												cameraTimer;
+	// private PostProcessing											postProcessing;
+
+	private final IShadersManager									shadersManager;
+	private final ShaderBasic										shader;
+
+	public GameScene(IShadersManager shadersManagerIn) throws Exception
 	{
-		this.objects = new HashMap<>();
+		this.shadersManager	= shadersManagerIn;
+		this.shader			= (ShaderBasic) shadersManagerIn.get("basic");
+
+		this.objects		= new HashMap<>();
+
+		this.camera			= new Camera();
+		this.cameraTimer	= new Timer();
+		this.shadersManager.updateProjectionAndView(MathInstances.projectionMatrix(), this.camera.viewMatrix());
 	}
 
-	public void add(String nameIn, GLMesh meshIn, Matrix4f... transformationsIn)
+	public void input(IWindow windowIn, InputManager inputManagerIn)
 	{
-		this.add(new IdentifiableMesh(nameIn, meshIn), transformationsIn);
-	}
-
-	public void add(IdentifiableMesh identifiableMeshIn, Matrix4f... transformationsIn)
-	{
-		var list = this.objects().get(identifiableMeshIn);
-
-		if (list == null)
+		if (this.cameraTimer.isTime(1_000_000_0L))
 		{
-			list = new ArrayList<>();
+			this.camera.input(windowIn, inputManagerIn);
+		}
+	}
 
-			this.objects().put(identifiableMeshIn, list);
+	public void draw()
+	{
+		this.shader.attach();
+
+		final var meshedObjectsIterator = this.objects.entrySet().iterator();
+
+		while (meshedObjectsIterator.hasNext())
+		{
+			final var	meshedObjectsEntry		= meshedObjectsIterator.next();
+			final var	mesh					= meshedObjectsEntry.getKey();
+			final var	texturedObjects			= meshedObjectsEntry.getValue();
+
+			final var	texturedObjectsIterator	= texturedObjects.entrySet().iterator();
+
+			mesh.mesh().attach();
+			while (texturedObjectsIterator.hasNext())
+			{
+				final var	texturedObjectsEntry	= texturedObjectsIterator.next();
+				final var	texture					= texturedObjectsEntry.getKey();
+				texture.attach();
+
+				final var objects = texturedObjectsEntry.getValue();
+
+				for (final Matrix4f transformations : objects)
+				{
+					this.shader.transformationsMatrix().load(transformations);
+
+					mesh.mesh().draw();
+				}
+
+				texture.detach();
+			}
+			mesh.mesh().detach();
+		}
+		this.shadersManager.detach();
+	}
+
+	public void add(String nameIn, IMesh meshIn, ITexture textureIn, Matrix4f... transformationsIn)
+	{
+		this.add(new IdentifiableMesh(nameIn, meshIn), textureIn, transformationsIn);
+	}
+
+	public void add(IdentifiableMesh identifiableMeshIn, ITexture textureIn, Matrix4f... transformationsIn)
+	{
+		var texturedObjects = this.objects().get(identifiableMeshIn);
+
+		if (texturedObjects == null)
+		{
+			texturedObjects = new HashMap<>();
+
+			this.objects().put(identifiableMeshIn, texturedObjects);
 		}
 
-		Collections.addAll(list, transformationsIn);
+		var objects = texturedObjects.get(textureIn);
+
+		if (objects == null)
+		{
+			objects = new ArrayList<>();
+
+			texturedObjects.put(textureIn, objects);
+		}
+
+		Collections.addAll(objects, transformationsIn);
 	}
 
-	public final Map<IdentifiableMesh, List<Matrix4f>> objects()
+	public final Map<IdentifiableMesh, Map<ITexture, List<Matrix4f>>> objects()
 	{
 		return this.objects;
 	}
 
-	public final void objects(Map<IdentifiableMesh, List<Matrix4f>> objectsIn)
+	public final void objects(Map<IdentifiableMesh, Map<ITexture, List<Matrix4f>>> objectsIn)
 	{
 		this.objects = objectsIn;
 	}
@@ -87,7 +163,7 @@ public class GameScene
 	public final static class IdentifiableMesh
 	{
 		private final String	name;
-		private final GLMesh	mesh;
+		private final IMesh		mesh;
 
 		@Override
 		public int hashCode()

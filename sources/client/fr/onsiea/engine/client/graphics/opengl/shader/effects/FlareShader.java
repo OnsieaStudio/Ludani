@@ -1,9 +1,9 @@
 package fr.onsiea.engine.client.graphics.opengl.shader.effects;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformFloat;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformInt;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformVector4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector4f;
 
 /**
  * Sets up the shader program for the rendering the lens flare. It gets the
@@ -19,9 +19,9 @@ public class FlareShader extends Shader
 	private final static String	VERTEX_SHADER	= "resources/shaders/lensflare/flareVertex.glsl";
 	private final static String	FRAGMENT_SHADER	= "resources/shaders/lensflare/flareFragment.glsl";
 
-	private UniformFloat		uniformBrightness;
-	private UniformVector4f		uniformTransformations;
-	private UniformInt			uniformFlareTexture;
+	private GLUniformFloat		uniformBrightness;
+	private GLUniformVector4f	uniformTransformations;
+	private GLUniformInt		uniformFlareTexture;
 
 	public FlareShader() throws Exception
 	{
@@ -36,37 +36,36 @@ public class FlareShader extends Shader
 
 	private void connectTextureUnits()
 	{
-		super.start();
+		super.attach();
 		this.uniformFlareTexture().load(0);
-		super.stop();
 	}
 
-	public final UniformFloat uniformBrightness()
+	public final GLUniformFloat uniformBrightness()
 	{
 		return this.uniformBrightness;
 	}
 
-	private final void uniformBrightness(UniformFloat uniformBrightnessIn)
+	private final void uniformBrightness(GLUniformFloat uniformBrightnessIn)
 	{
 		this.uniformBrightness = uniformBrightnessIn;
 	}
 
-	public final UniformVector4f uniformTransformations()
+	public final GLUniformVector4f uniformTransformations()
 	{
 		return this.uniformTransformations;
 	}
 
-	private final void uniformTransformationss(UniformVector4f uniformTransformationsIn)
+	private final void uniformTransformationss(GLUniformVector4f uniformTransformationsIn)
 	{
 		this.uniformTransformations = uniformTransformationsIn;
 	}
 
-	public final UniformInt uniformFlareTexture()
+	public final GLUniformInt uniformFlareTexture()
 	{
 		return this.uniformFlareTexture;
 	}
 
-	private final void uniformFlareTexture(UniformInt uniformFlareTextureIn)
+	private final void uniformFlareTexture(GLUniformInt uniformFlareTextureIn)
 	{
 		this.uniformFlareTexture = uniformFlareTextureIn;
 	}

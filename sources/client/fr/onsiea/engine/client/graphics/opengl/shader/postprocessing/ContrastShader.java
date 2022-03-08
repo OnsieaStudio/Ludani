@@ -1,14 +1,14 @@
 package fr.onsiea.engine.client.graphics.opengl.shader.postprocessing;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformInt;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
 
 public class ContrastShader extends Shader
 {
 	private static final String	VERTEX_FILE		= "resources/shaders/postProcessing/contrastVertex.glsl";
 	private static final String	FRAGMENT_FILE	= "resources/shaders/postProcessing/contrastFragment.glsl";
 
-	private UniformInt			uniformColourTexture;
+	private GLUniformInt		uniformColourTexture;
 
 	public ContrastShader() throws Exception
 	{
@@ -17,12 +17,12 @@ public class ContrastShader extends Shader
 		this.uniformColourTexture(this.intUniform("colourTexture"));
 	}
 
-	public final UniformInt uniformColourTexture()
+	public final GLUniformInt uniformColourTexture()
 	{
 		return this.uniformColourTexture;
 	}
 
-	private final void uniformColourTexture(UniformInt uniformColourTextureIn)
+	private final void uniformColourTexture(GLUniformInt uniformColourTextureIn)
 	{
 		this.uniformColourTexture = uniformColourTextureIn;
 	}

@@ -5,8 +5,10 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
-public class UniformMatrix4f
+public class GLUniformMatrix4f implements IShaderUniform<Matrix4f>
 {
 	public final static void load(int locationIn, Matrix4f valueIn)
 	{
@@ -32,35 +34,36 @@ public class UniformMatrix4f
 		}
 	}
 
-	private Shader	parent;
-	private int		location;
+	private IShaderProgram	parent;
+	private int				location;
 
-	public UniformMatrix4f(Shader parentIn, String nameIn)
+	public GLUniformMatrix4f(Shader parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 		this.location(parentIn.uniformLocation(nameIn));
 	}
 
-	public Shader load(Matrix4f valueIn)
+	@Override
+	public IShaderProgram load(Matrix4f valueIn)
 	{
-		UniformMatrix4f.load(this.location(), valueIn);
+		GLUniformMatrix4f.load(this.location(), valueIn);
 
 		return this.parent();
 	}
 
-	public Shader loadTranspose(Matrix4f valueIn)
+	public IShaderProgram loadTranspose(Matrix4f valueIn)
 	{
-		UniformMatrix4f.loadTranspose(this.location(), valueIn);
+		GLUniformMatrix4f.loadTranspose(this.location(), valueIn);
 
 		return this.parent();
 	}
 
-	private final Shader parent()
+	private final IShaderProgram parent()
 	{
 		return this.parent;
 	}
 
-	private final void parent(Shader parentIn)
+	private final void parent(IShaderProgram parentIn)
 	{
 		this.parent = parentIn;
 	}

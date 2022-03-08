@@ -129,10 +129,10 @@ public class GLTexture implements ITexture
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MIN_LOD, -1000);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LOD, 1000);
 
-		if (this.context().settings().userSettings().isEnabled("mustAnisotropyTextureFiltering"))
+		if (this.context().settings().user().isEnabled("mustAnisotropyTextureFiltering"))
 		{
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
-					(float) this.context().settings().userSettings().get("anisotropyTextureFilteringAmount").value());
+					(float) this.context().settings().user().get("anisotropyTextureFilteringAmount").value());
 		}
 	}
 

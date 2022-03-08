@@ -3,36 +3,42 @@ package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 import org.lwjgl.opengl.GL20;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
+import lombok.NonNull;
 
-public class UniformFloat
+public class GLUniformFloat implements IShaderUniform<Float>
 {
 	public final static void load(int locationIn, float valueIn)
 	{
 		GL20.glUniform1f(locationIn, valueIn);
 	}
 
-	private Shader	parent;
-	private int		location;
+	private IShaderProgram	parent;
+	private int				location;
 
-	public UniformFloat(Shader parentIn, String nameIn)
+	public GLUniformFloat(Shader parentIn, String nameIn)
 	{
 		this.parent(parentIn);
+
 		this.location(parentIn.uniformLocation(nameIn));
 	}
 
-	public Shader load(float valueIn)
+	@Override
+	@NonNull
+	public IShaderProgram load(Float valueIn)
 	{
 		GL20.glUniform1f(this.location(), valueIn);
 
 		return this.parent();
 	}
 
-	private final Shader parent()
+	private final IShaderProgram parent()
 	{
 		return this.parent;
 	}
 
-	private final void parent(Shader parentIn)
+	private final void parent(IShaderProgram parentIn)
 	{
 		this.parent = parentIn;
 	}

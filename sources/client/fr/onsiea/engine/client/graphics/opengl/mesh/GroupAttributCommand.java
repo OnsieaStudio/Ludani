@@ -1,4 +1,4 @@
-package fr.onsiea.engine.client.graphics.opengl.model;
+package fr.onsiea.engine.client.graphics.opengl.mesh;
 
 import java.util.HashMap;
 import java.util.Map;

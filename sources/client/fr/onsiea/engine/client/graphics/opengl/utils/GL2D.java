@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.opengl.model.GLRawModel;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderUtils;
 import fr.onsiea.engine.utils.maths.normalization.Normalizer;
 import fr.onsiea.engine.utils.maths.transformations.Transformations2f;
 import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
@@ -41,7 +41,7 @@ public class GL2D
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL2D.shaderManager.shader2D().start();
+		GL2D.shaderManager.shader2D().attach();
 		//GL30.glBindVertexArray(rawModel.getVaoId());
 		GL20.glEnableVertexAttribArray(0);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
@@ -56,7 +56,7 @@ public class GL2D
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL2D.shaderManager.shader3DTo2D().start();
+		GL2D.shaderManager.shader3DTo2D().attach();
 		GL30.glBindVertexArray(rawModel.vao());
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
@@ -103,7 +103,7 @@ public class GL2D
 		GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
-		Shader.stop();
+		GLShaderUtils.detach();
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 	}
@@ -113,7 +113,7 @@ public class GL2D
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
-		Shader.stop();
+		GLShaderUtils.detach();
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}

@@ -4,27 +4,33 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 import fr.onsiea.engine.client.graphics.opengl.fbo.ImageRenderer;
-import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.ContrastShader;
+import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 
 public class ContrastChanger
 {
-	private ImageRenderer imageRenderer;
+	private ImageRenderer			imageRenderer;
 
-	public ContrastChanger() throws Exception
+	private final IShadersManager	shadersManager;
+	private final ContrastShader	shader;
+
+	public ContrastChanger(IShadersManager shadersManagerIn) throws Exception
 	{
 		this.imageRenderer(new ImageRenderer());
+
+		this.shadersManager	= shadersManagerIn;
+		this.shader			= (ContrastShader) this.shadersManager.get("contrastChanger");
 	}
 
-	public void render(GLShaderManager shaderManagerIn, int textureIn, IWindow windowIn)
+	public void render(int textureIn, IWindow windowIn)
 	{
-		shaderManagerIn.contrast().start();
-		shaderManagerIn.contrast().uniformColourTexture().load(0);
+		this.shader.attach();
+		this.shader.uniformColourTexture().load(0);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIn);
 		this.imageRenderer().renderQuad(windowIn);
-		Shader.stop();
+		this.shadersManager.detach();
 	}
 
 	public void cleanup()

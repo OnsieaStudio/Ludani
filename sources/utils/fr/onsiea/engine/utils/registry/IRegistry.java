@@ -24,18 +24,23 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shader;
+package fr.onsiea.engine.utils.registry;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformMatrix4f;
+import fr.onsiea.engine.utils.ICleanable;
 
 /**
  * @author Seynax
  *
  */
-public interface IView
+public interface IRegistry<T> extends ICleanable
 {
-	/**
-	 * @return
-	 */
-	UniformMatrix4f view();
+	IRegistry<T> add(String nameIn, T valueIn);
+
+	boolean has(String nameIn);
+
+	T get(String nameIn);
+
+	IRegistry<T> remove(String nameIn);
+
+	IRegistry<T> clear();
 }

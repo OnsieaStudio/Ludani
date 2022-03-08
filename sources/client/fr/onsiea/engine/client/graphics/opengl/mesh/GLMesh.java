@@ -35,7 +35,7 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.onsiea.engine.client.graphics.drawable.IDrawable;
+import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.mesh.components.GLMeshElementsComponent;
 import fr.onsiea.engine.client.graphics.opengl.mesh.components.GLMeshVaoComponent;
 import fr.onsiea.engine.client.graphics.opengl.mesh.components.GLMeshVboComponent;
@@ -51,7 +51,6 @@ import fr.onsiea.engine.client.graphics.opengl.vbo.Elements;
 import fr.onsiea.engine.client.graphics.opengl.vbo.GLDataBuilder;
 import fr.onsiea.engine.client.graphics.opengl.vbo.GLDataBuilder.VertexAttribPointer;
 import fr.onsiea.engine.client.graphics.opengl.vbo.VboManager;
-import fr.onsiea.engine.client.graphics.render.Renderer;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -60,7 +59,7 @@ import lombok.Getter;
  *
  */
 @Getter(AccessLevel.PUBLIC)
-public class GLMesh implements IDrawable
+public class GLMesh implements IMesh
 {
 	private IMeshDrawFunction				drawFunction;
 	private final List<IGLMeshComponent>	components;
@@ -84,23 +83,28 @@ public class GLMesh implements IDrawable
 	}
 
 	@Override
-	public void startDrawing(Renderer rendererIn)
+	public IMesh attach()
 	{
-		this.drawFunction.start(this, rendererIn);
+		this.drawFunction.attach(this);
+
+		return this;
+	}
+
+	@Override
+	public IMesh draw()
+	{
+		this.drawFunction.draw(this);
+
+		return this;
 
 	}
 
 	@Override
-	public void draw(Renderer rendererIn)
+	public IMesh detach()
 	{
-		this.drawFunction.draw(this, rendererIn);
+		this.drawFunction.detach(this);
 
-	}
-
-	@Override
-	public void stopDrawing(Renderer rendererIn)
-	{
-		this.drawFunction.stop(this, rendererIn);
+		return this;
 	}
 
 	public final static class Builder
@@ -761,191 +765,191 @@ public class GLMesh implements IDrawable
 		/**public Builder bindVbo()
 		{
 			this.lastVbo.bind();
-
+		
 			return this;
 		}
-
+		
 		public Builder unbindVbo()
 		{
 			this.lastVbo.unbind();
-
+		
 			this.elementsRunning = false;
-
+		
 			return this;
 		}
-
+		
 		public Builder drawType(int drawTypeIn)
 		{
 			this.lastVbo.drawType(drawTypeIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(ByteBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(short[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(ShortBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(int[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(IntBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(float[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(FloatBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(double[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(DoubleBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(long[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(LongBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder updateData(long sizeIn)
 		{
 			this.lastVbo.updateData(sizeIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(ByteBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(short[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(ShortBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(int[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(IntBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(float[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(FloatBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(double[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(DoubleBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(long[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(LongBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-
+		
 			return this;
 		}
-
+		
 		public Builder data(long sizeIn)
 		{
 			this.lastVbo.data(sizeIn);
-
+		
 			return this;
 		}**/
 

@@ -49,7 +49,7 @@ public class Renderer
 	{
 		for (final SubscriberDrawable subscriber : this.subscribersDrawable().values())
 		{
-			subscriber.drawable().draw(this);
+			subscriber.drawable().draw();
 		}
 		//this.drawHud(hudManagerIn, windowIn, cameraIn, 0, inputManagerIn);
 	}

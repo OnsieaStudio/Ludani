@@ -33,8 +33,10 @@ import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
 
-import fr.onsiea.engine.client.graphics.opengl.GLMeshManager;
+import fr.onsiea.engine.client.graphics.mesh.IMesh;
+import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
+import fr.onsiea.engine.client.graphics.opengl.mesh.GLMeshManager;
 import fr.onsiea.engine.client.graphics.opengl.vbo.BaseVbo;
 import fr.onsiea.engine.client.graphics.opengl.vbo.Vbo;
 import fr.onsiea.engine.client.graphics.particles.IParticle;
@@ -102,31 +104,31 @@ public class ParticleRenderer
 		instancesIn.put(particleIn.texY());
 	}
 
-	public final static Pair<GLMesh, BaseVbo> make(GLMeshManager meshManagerIn, List<IParticle> particlesIn,
+	public final static Pair<GLMesh, BaseVbo> make(IMeshsManager meshManagerIn, List<IParticle> particlesIn,
 			Matrix4f projViewIn, FloatBuffer instancesIn) throws Exception
 	{
-		final var builder = meshManagerIn.meshBuilderWithVao(5).vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2)
-				.ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices).newInstancesVboAndBind()
-				.multipleVertexAttribPointerAndDivisor(4, 4)
+		final var builder = ((GLMeshManager) meshManagerIn).meshBuilderWithVao(5)
+				.vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2).ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices)
+				.newInstancesVboAndBind().multipleVertexAttribPointerAndDivisor(4, 4)
 				.createVertexAttribPointerAndDivisor(2)/**.data(4L * 4L * 2L * particlesIn.size())**/
 				.data(instancesIn).primCount(particlesIn.size());
 
 		return new Pair<>(builder.build(), builder.instancesVbo());
 	}
 
-	private FloatBuffer									instances;
-	private @Getter(AccessLevel.PUBLIC) final GLMesh	mesh;
-	private final Vbo									vbo;
-	private boolean										somethingToShow;
+	private FloatBuffer								instances;
+	private @Getter(AccessLevel.PUBLIC) final IMesh	mesh;
+	private final Vbo								vbo;
+	private boolean									somethingToShow;
 
-	public ParticleRenderer(int particlesIn, GLMeshManager meshManagerIn) throws Exception
+	public ParticleRenderer(int particlesIn, IMeshsManager meshManagerIn) throws Exception
 	{
 		this.instances = BufferUtils.createFloatBuffer(4 * 4 * 2 * particlesIn);
 
-		final var builder = meshManagerIn.meshBuilderWithVao(6).vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2)
-				.ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices).newInstancesVboAndBind()
-				.multipleVertexAttribPointerAndDivisor(4, 4).createVertexAttribPointerAndDivisor(2)
-				.data(4L * 4L * 2L * particlesIn).primCount(particlesIn);
+		final var builder = ((GLMeshManager) meshManagerIn).meshBuilderWithVao(6)
+				.vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2).ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices)
+				.newInstancesVboAndBind().multipleVertexAttribPointerAndDivisor(4, 4)
+				.createVertexAttribPointerAndDivisor(2).data(4L * 4L * 2L * particlesIn).primCount(particlesIn);
 		this.vbo	= (Vbo) builder.instancesVbo();
 		this.mesh	= builder.build();
 	}
@@ -138,9 +140,9 @@ public class ParticleRenderer
 	{
 		if (this.somethingToShow)
 		{
-			this.mesh.startDrawing(null);
-			this.mesh.draw(null);
-			this.mesh.stopDrawing(null);
+			this.mesh.attach();
+			this.mesh.draw();
+			this.mesh.detach();
 		}
 	}
 
@@ -168,12 +170,12 @@ public class ParticleRenderer
 		ParticleRenderer.put(particleIn, this.instances, projViewIn);
 	}
 
-	public final Pair<GLMesh, BaseVbo> makeNewMesh(GLMeshManager meshManagerIn, List<IParticle> particlesIn,
+	public final Pair<IMesh, BaseVbo> makeNewMesh(IMeshsManager meshManagerIn, List<IParticle> particlesIn,
 			Matrix4f projViewIn) throws Exception
 	{
-		final var builder = meshManagerIn.meshBuilderWithVao(5).vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2)
-				.ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices).newInstancesVboAndBind()
-				.multipleVertexAttribPointerAndDivisor(4, 4)
+		final var builder = ((GLMeshManager) meshManagerIn).meshBuilderWithVao(5)
+				.vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2).ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices)
+				.newInstancesVboAndBind().multipleVertexAttribPointerAndDivisor(4, 4)
 				.createVertexAttribPointerAndDivisor(2)/**.data(4L * 4L * 2L * particlesIn.size())**/
 				.data(this.bufferOf(particlesIn, projViewIn)).primCount(particlesIn.size());
 
