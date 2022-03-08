@@ -56,6 +56,7 @@ public class GLShaderManager
 	private ShaderBasic												shaderBasic;
 	private Shader2D												shader2D;
 	private Shader3DTo2D											shader3DTo2D;
+	private InstancedShader											instancedShader;
 
 	// Effects
 
@@ -84,6 +85,7 @@ public class GLShaderManager
 			this.add("contrast", this.contrast = new ContrastShader());**/
 			this.add("horizontalBlur", this.horizontalBlur = new HorizontalBlurShader());
 			this.add("verticalBlur", this.verticalBlur = new VerticalBlurShader());
+			this.add("instanced", this.instancedShader = new InstancedShader());
 		}
 		catch (final Exception e)
 		{
@@ -106,12 +108,12 @@ public class GLShaderManager
 
 			if (shader instanceof IView)
 			{
-				((IView) shader).uniformView().load(viewIn);
+				((IView) shader).view().load(viewIn);
 			}
 
 			if (shader instanceof IProjection)
 			{
-				((IProjection) shader).uniformProjection().load(projectionIn);
+				((IProjection) shader).projection().load(projectionIn);
 			}
 
 			Shader.stop();
@@ -128,7 +130,7 @@ public class GLShaderManager
 
 			if (shader instanceof IProjection)
 			{
-				((IProjection) shader).uniformProjection().load(projectionIn);
+				((IProjection) shader).projection().load(projectionIn);
 			}
 
 			Shader.stop();
@@ -141,10 +143,14 @@ public class GLShaderManager
 	{
 		for (final Shader shader : this.shaders().values())
 		{
+			shader.start();
+
 			if (shader instanceof IView)
 			{
-				((IView) shader).uniformView().load(viewIn);
+				((IView) shader).view().load(viewIn);
 			}
+
+			Shader.stop();
 		}
 
 		return this;

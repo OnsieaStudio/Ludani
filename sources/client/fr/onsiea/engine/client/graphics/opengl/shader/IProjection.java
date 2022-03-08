@@ -37,5 +37,5 @@ public interface IProjection
 	/**
 	 * @return
 	 */
-	UniformMatrix4f uniformProjection();
+	UniformMatrix4f projection();
 }

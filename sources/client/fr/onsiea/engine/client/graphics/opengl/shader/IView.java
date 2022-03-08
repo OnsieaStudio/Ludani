@@ -37,5 +37,5 @@ public interface IView
 	/**
 	 * @return
 	 */
-	UniformMatrix4f uniformView();
+	UniformMatrix4f view();
 }
