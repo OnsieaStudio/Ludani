@@ -26,6 +26,9 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,12 +41,24 @@ import lombok.Setter;
 @Setter(AccessLevel.PRIVATE)
 public class GLRawModel
 {
-	private int	vao;
-	private int	vbo;
+	private int				vao;
+	private int				vbo;
 
-	public GLRawModel(int vaoIn, int vboIn)
+	private int				vertexCount;
+
+	private List<Integer>	attributes;
+
+	public GLRawModel(int vaoIn, int vboIn, int vertexCountIn, int... attributesIn)
 	{
+
 		this.vao(vaoIn);
 		this.vbo(vboIn);
+		this.vertexCount(vertexCountIn);
+
+		this.attributes = new ArrayList<>();
+		for (final int attribute : attributesIn)
+		{
+			this.attributes.add(attribute);
+		}
 	}
 }
