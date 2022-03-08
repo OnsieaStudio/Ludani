@@ -43,35 +43,12 @@ import fr.onsiea.engine.utils.maths.vertice.Vertice2f;
  */
 public class ShapeRectangle
 {
-	private final static float[]	VERTICES	=
-	{ 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
-
-	private final static float[]	UVS			= ShapeRectangle.VERTICES;
-
-	private final static int[]		INDICES		=
-	{ 0, 1, 2, 2, 3, 0 };
-
-	public static final float[] vertices()
-	{
-		return ShapeRectangle.VERTICES;
-	}
-
-	public static final float[] uvs()
-	{
-		return ShapeRectangle.UVS;
-	}
-
-	public static final int[] indices()
-	{
-		return ShapeRectangle.INDICES;
-	}
-
 	/**
 	 * @formatter:off
 	 */
-	public final static Vertice2f	V00				= new Vertice2f(0.0f, 0.0f);
-	public final static Vertice2f	V10				= new Vertice2f(1.0f, 0.0f);
-	public final static Vertice2f	V01				= new Vertice2f(0.0f, 1.0f);
+	public final static Vertice2f	V00				= new Vertice2f(-1.0f, -1.0f);
+	public final static Vertice2f	V10				= new Vertice2f(1.0f, -1.0f);
+	public final static Vertice2f	V01				= new Vertice2f(-1.0f, 1.0f);
 	public final static Vertice2f	V11				= new Vertice2f(1.0f, 1.0f);
 
 	public final static float[]			positions			=
