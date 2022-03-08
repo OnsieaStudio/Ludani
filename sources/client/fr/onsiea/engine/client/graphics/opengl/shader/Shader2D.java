@@ -44,6 +44,6 @@ public class Shader2D extends Shader
 	 */
 	public Shader2D() throws Exception
 	{
-		super("resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position");
+		super("resources/shaders/vertex2D.vs", "resources/shaders/fragment2D.fs", "position");
 	}
 }
