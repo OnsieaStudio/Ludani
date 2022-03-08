@@ -1,6 +1,6 @@
 package fr.onsiea.engine.client.graphics.opengl.flare;
 
-import org.joml.Vector2f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
@@ -11,7 +11,6 @@ import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.render.Renderer;
 import fr.onsiea.engine.client.graphics.window.IWindow;
-import fr.onsiea.engine.utils.maths.transformations.Transformations2f;
 
 /**
  *
@@ -41,9 +40,8 @@ public class FlareRenderer
 
 		try
 		{
-			this.mesh = meshManagerIn.meshBuilderWithVao(2).newVboAndBind(GL15.GL_STREAM_DRAW)
-					.data(FlareRenderer.positions()).createVertexAttribPointers(2, 3)
-					.vertexCount(FlareRenderer.positions().length / 5).unbind().build();
+			this.mesh = meshManagerIn.meshBuilderWithVao(1).vbo(GL15.GL_STREAM_DRAW, FlareRenderer.positions(), 2)
+					.vertexCount(FlareRenderer.positions().length).unbind().build();
 		}
 		catch (final Exception e)
 		{
@@ -93,11 +91,6 @@ public class FlareRenderer
 	 */
 	private void prepare(float brightness, GLShaderManager shaderManagerIn, Renderer rendererIn)
 	{
-		/**final var	antialias			= this.settings.userSettings().isEnabled("antialias");
-		final var	additiveBlending	= this.settings.engineSettings().isEnabled("additiveBlending");
-		final var	depthTesting		= this.settings.engineSettings().isEnabled("depthTesting");
-		final var	cullBackFaces		= this.settings.engineSettings().isEnabled("cullBackFaces");**/
-
 		this.settings.userSettings().disable("antialias");
 		this.settings.userSettings().enable("blend");
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
@@ -107,23 +100,6 @@ public class FlareRenderer
 		this.mesh().startDrawing(rendererIn);
 		shaderManagerIn.flareShader().start();
 		shaderManagerIn.flareShader().uniformBrightness().load(brightness);
-
-		/**if (antialias)
-		{
-			this.settings.userSettings().enable("antialias");
-		}
-		if (!additiveBlending)
-		{
-			this.settings.userSettings().disable("additiveBlending");
-		}
-		if (depthTesting)
-		{
-			this.settings.userSettings().enable("depthTesting");
-		}
-		if (cullBackFaces)
-		{
-			this.settings.userSettings().enable("cullBackFaces");
-		}**/
 	}
 
 	/**
@@ -151,7 +127,7 @@ public class FlareRenderer
 		final var	yScale		= xScale * windowIn.settings().width() / windowIn.settings().height();
 		final var	centerPos	= flare.screenPos();
 		shaderManagerIn.flareShader().uniformTransformations()
-				.load(Transformations2f.transformations(centerPos, new Vector2f(xScale, yScale)));
+				.load(new Vector4f(centerPos.x, centerPos.y, xScale, yScale));
 		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
 	}
 

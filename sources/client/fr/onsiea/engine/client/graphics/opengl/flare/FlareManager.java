@@ -5,11 +5,11 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.opengl.GLMeshManager;
 import fr.onsiea.engine.client.graphics.opengl.OpenGLSettings;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
 import fr.onsiea.engine.client.graphics.render.Renderer;
+import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.utils.maths.MathInstances;
 
@@ -30,7 +30,7 @@ public class FlareManager
 		this.renderer		= new FlareRenderer(meshManagerIn, settingsIn);
 	}
 
-	public void render(Camera camera, Vector3f sunWorldPos, GLShaderManager shaderManagerIn, Window windowIn,
+	public void render(Camera camera, Vector3f sunWorldPos, GLShaderManager shaderManagerIn, IWindow windowIn,
 			Renderer rendererIn)
 	{
 		final var sunCoords = this.convertToScreenSpace(sunWorldPos, camera.viewMatrix(),
@@ -52,24 +52,31 @@ public class FlareManager
 	{
 		for (var i = 0; i < this.flareTextures().length; i++)
 		{
-			final var direction = new Vector2f(sunToCenter);
+			final var direction = new Vector2f(sunToCenter).add(0.5f, 0.5f);
 			direction.mul(i * this.spacing());
-			final var flarePos = direction.add(sunCoords);
+			final var flarePos = direction.add(sunCoords).add(0.5f, 0.5f);
 			this.flareTextures()[i].screenPos(flarePos);
 		}
 	}
 
 	private Vector2f convertToScreenSpace(Vector3f worldPos, Matrix4f viewMat, Matrix4f projectionMat)
 	{
-		final var coords = new Vector4f(worldPos.x(), worldPos.y(), worldPos.z(), 1f);
-		coords.mul(viewMat);
-		if (coords.w() <= 0)
+		var coords = new Vector4f(worldPos.x(), worldPos.y(), worldPos.z(), 1f);
+
+		coords		= viewMat.transform(coords);
+		coords		= projectionMat.transform(coords);
+
+		coords.x	/= coords.w;
+		coords.y	/= coords.w;
+
+		if (coords.x < -1 || coords.x > 1 || coords.y < -1 || coords.y > 1 || coords.w() <= 0)
 		{
 			return null;
 		}
-		final var	x	= (coords.x() / coords.w() + 1) / 2f;
-		final var	y	= 1 - (coords.y() / coords.w() + 1) / 2f;
-		return new Vector2f(x, y);
+
+		final var vec = new Vector2f(coords.x, coords.y).add(1.0f, 1.0f).div(2.0f);
+		vec.y = 1.0f - vec.y;
+		return vec;
 	}
 
 	private final FlareTexture[] flareTextures()
