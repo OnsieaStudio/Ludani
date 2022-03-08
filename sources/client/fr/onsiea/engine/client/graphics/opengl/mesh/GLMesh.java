@@ -103,11 +103,6 @@ public class GLMesh implements IDrawable
 		this.drawFunction.stop(this, rendererIn);
 	}
 
-	public void cleanup()
-	{
-
-	}
-
 	public final static class Builder
 	{
 		public static Builder withVao(VaoManager vaoManagerIn, VboManager vboManagerIn)
