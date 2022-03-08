@@ -31,6 +31,7 @@ module OnsieaEngine
 	exports fr.onsiea.engine.client.graphics.opengl.mesh.draw;
 	exports fr.onsiea.engine.client.graphics.opengl.vao;
 	exports fr.onsiea.engine.client.graphics.opengl.vbo;
+	exports fr.onsiea.engine.client.graphics.opengl.model;
 	exports fr.onsiea.engine.client.graphics.texture;
 	exports fr.onsiea.engine.client.graphics.texture.data;
 	exports fr.onsiea.engine.client.graphics.opengl.texture;
@@ -44,7 +45,7 @@ module OnsieaEngine
 	requires lombok;
 	requires transitive org.joml;
 	requires org.lwjgl;
-	requires org.lwjgl.glfw;
+	requires transitive org.lwjgl.glfw;
 	requires transitive org.lwjgl.opengl;
 	requires org.lwjgl.nanovg;
 	requires org.lwjgl.stb;
