@@ -3,6 +3,7 @@ package fr.onsiea.engine.client.graphics.glfw.monitor;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWVidMode;
 
 public class Monitor
 {
@@ -13,12 +14,27 @@ public class Monitor
 	private Vector2i	size;
 	private Vector2i	position;
 	private WorkArea	workArea;
+	private GLFWVidMode	vidMode;
 
 	Monitor(long handleIn)
 	{
 		this.handle(handleIn);
 
 		this.initialization();
+
+		/**
+		 	GLFWgammaramp ramp;
+			unsigned short red[256], green[256], blue[256];
+			ramp.size = 256;
+			ramp.red = red;
+			ramp.green = green;
+			ramp.blue = blue;
+			for (i = 0;  i < ramp.size;  i++)
+			{
+			    // Fill out gamma ramp arrays as desired
+			}
+			glfwSetGammaRamp(monitor, &ramp);
+		 */
 	}
 
 	private void initialization()
@@ -29,6 +45,7 @@ public class Monitor
 		this.size(this.inferScale());
 		this.position(this.inferPosition());
 		this.workAera(this.inferWorkArea());
+		this.vidMode(GLFW.glfwGetVideoMode(this.handle()));
 	}
 
 	private Vector2f inferContentScale()
@@ -173,6 +190,16 @@ public class Monitor
 	private void workAera(WorkArea workAreaIn)
 	{
 		this.workArea = workAreaIn;
+	}
+
+	public final GLFWVidMode vidMode()
+	{
+		return this.vidMode;
+	}
+
+	public final void vidMode(GLFWVidMode vidModeIn)
+	{
+		this.vidMode = vidModeIn;
 	}
 
 	public final static class WorkArea

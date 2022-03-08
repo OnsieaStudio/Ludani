@@ -80,7 +80,7 @@ public class FBO
 		this.multisample(false);
 	}
 
-	public FBO(int widthIn, int heightIn, Window windowIn) throws Exception
+	public FBO(int widthIn, int heightIn, IWindow windowIn) throws Exception
 	{
 		this.width(widthIn);
 		this.height(heightIn);
@@ -88,7 +88,7 @@ public class FBO
 		this.initialiseFrameBuffer(FBO.DEPTH_TEXTURE, windowIn);
 	}
 
-	public FBO(int widthIn, int heightIn, int depthRenderBufferIn, Window windowIn, boolean multisampledIn)
+	public FBO(int widthIn, int heightIn, int depthRenderBufferIn, IWindow windowIn, boolean multisampledIn)
 			throws Exception
 	{
 		this.width(widthIn);
