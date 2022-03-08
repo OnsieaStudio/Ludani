@@ -51,4 +51,7 @@ public class GraphicsConstants
 	public final static float			ZFAR					= 1000.0f;
 
 	public final static EnumRenderAPI	RENDER_API				= EnumRenderAPI.OpenGL;
+
+	public static final boolean			CULL_FACE				= false;
+	public static final boolean			SHOW_TRIANGLES			= false;
 }
