@@ -27,6 +27,7 @@
 package fr.onsiea.engine.common.game;
 
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.render.Renderer;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
 
@@ -58,8 +59,10 @@ public interface IGameLogic
 
 	/**
 	 * @param windowIn
+	 * @param renderAPIContextIn
+	 * @param rendererIn
 	 */
-	void draw(IWindow windowIn);
+	void draw(IWindow windowIn, IRenderAPIContext renderAPIContextIn, Renderer rendererIn);
 
 	void cleanup();
 }

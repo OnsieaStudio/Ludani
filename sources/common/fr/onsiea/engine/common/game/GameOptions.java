@@ -39,5 +39,12 @@ import lombok.Setter;
 @Setter
 public class GameOptions
 {
-
+	/**
+	 * private boolean		sameCrashRestartSecurity;
+	 *	private boolean		activeMaxNumberOfRestart;
+	 *	private boolean		lowIntervalRestartSecurity;
+	 *	private long				maxIntervalTime;
+	 *	private int					maxRestart;
+	 *	private float				maxRestartInterval;
+	 **/
 }
