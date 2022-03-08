@@ -5,8 +5,8 @@ import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformFloat;
 
 public class VerticalBlurShader extends Shader
 {
-	private static final String	VERTEX_FILE		= "resources/shaders/postprocessing/verticalBlurVertex.glsl";
-	private static final String	FRAGMENT_FILE	= "resources/shaders/postprocessing/blurFragment.glsl";
+	private static final String	VERTEX_FILE		= "resources/shaders/postprocessing/blur/verticalBlurVertex.glsl";
+	private static final String	FRAGMENT_FILE	= "resources/shaders/postprocessing/blur/blurFragment.glsl";
 
 	private UniformFloat		uniformTargetHeight;
 
