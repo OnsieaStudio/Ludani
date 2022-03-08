@@ -40,7 +40,7 @@ import fr.onsiea.engine.client.graphics.texture.TexturesManager;
 public class GLTextureManager
 {
 	private TexturesManager						texturesManager;
-	private Map<String, TextureArrayManager>	texturesArrayManager;
+	private Map<String, GLTextureArrayManager>	texturesArrayManager;
 
 	public GLTextureManager(TexturesManager texturesManagerIn)
 	{
@@ -48,16 +48,16 @@ public class GLTextureManager
 		this.texturesArrayManager(new HashMap<>());
 	}
 
-	public TextureArrayManager newTextureArray(String nameIn)
+	public GLTextureArrayManager newTextureArray(String nameIn)
 	{
-		final var textureArrayManager = new TextureArrayManager();
+		final var textureArrayManager = new GLTextureArrayManager();
 
 		this.texturesArrayManager().put(nameIn, textureArrayManager);
 
 		return textureArrayManager;
 	}
 
-	public TextureArrayManager textureArrayManager(String nameIn)
+	public GLTextureArrayManager textureArrayManager(String nameIn)
 	{
 		return this.texturesArrayManager().get(nameIn);
 	}
@@ -79,12 +79,12 @@ public class GLTextureManager
 		this.texturesManager = texturesManagerIn;
 	}
 
-	private final Map<String, TextureArrayManager> texturesArrayManager()
+	private final Map<String, GLTextureArrayManager> texturesArrayManager()
 	{
 		return this.texturesArrayManager;
 	}
 
-	private final void texturesArrayManager(Map<String, TextureArrayManager> texturesArrayManagerIn)
+	private final void texturesArrayManager(Map<String, GLTextureArrayManager> texturesArrayManagerIn)
 	{
 		this.texturesArrayManager = texturesArrayManagerIn;
 	}
