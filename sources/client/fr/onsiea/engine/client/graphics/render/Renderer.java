@@ -27,6 +27,15 @@ public class Renderer
 		this.renderAPI(GraphicsConstants.RENDER_API.initializer().initialization());
 	}
 
+	/**
+	 * Render API initialization (OpenGL, Vulkan), associated render methods and drawables management
+	 */
+	public Renderer(IRenderAPIContext renderAPIContextIn)
+	{
+		this.subscribersDrawable(new HashMap<>());
+		this.renderAPI(renderAPIContextIn);
+	}
+
 	private void unsubscribe(SubscriberDrawable subscriberIn)
 	{
 		if (subscriberIn.canUnsubscribe())
