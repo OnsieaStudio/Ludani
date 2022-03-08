@@ -3,7 +3,7 @@ package fr.onsiea.engine.client.graphics.opengl.shader.effects;
 import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformFloat;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformInt;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformMatrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.UniformVector4f;
 
 /**
  * Sets up the shader program for the rendering the lens flare. It gets the
@@ -20,7 +20,7 @@ public class FlareShader extends Shader
 	private final static String	FRAGMENT_SHADER	= "resources/shaders/lensflare/flareFragment.glsl";
 
 	private UniformFloat		uniformBrightness;
-	private UniformMatrix4f		uniformTransformations;
+	private UniformVector4f		uniformTransformations;
 	private UniformInt			uniformFlareTexture;
 
 	public FlareShader() throws Exception
@@ -28,7 +28,7 @@ public class FlareShader extends Shader
 		super(FlareShader.VERTEX_SHADER, FlareShader.FRAGMENT_SHADER, "position");
 
 		this.uniformBrightness(this.floatUniform("brightness"));
-		this.uniformTransformationss(this.matrix4fUniform("transformations"));
+		this.uniformTransformationss(this.vector4fUniform("transformations"));
 		this.uniformFlareTexture(this.intUniform("flareTexture"));
 
 		this.connectTextureUnits();
@@ -51,12 +51,12 @@ public class FlareShader extends Shader
 		this.uniformBrightness = uniformBrightnessIn;
 	}
 
-	public final UniformMatrix4f uniformTransformations()
+	public final UniformVector4f uniformTransformations()
 	{
 		return this.uniformTransformations;
 	}
 
-	private final void uniformTransformationss(UniformMatrix4f uniformTransformationsIn)
+	private final void uniformTransformationss(UniformVector4f uniformTransformationsIn)
 	{
 		this.uniformTransformations = uniformTransformationsIn;
 	}
