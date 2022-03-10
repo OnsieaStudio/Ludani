@@ -56,5 +56,14 @@ public interface IMeshsManager extends IRegistry<IMesh>, ILoadable<IMesh>
 	 */
 	IMesh create(float[] positionsIn, int dimensionSizeIn) throws Exception;
 
+	/**
+	 * @param withSizeIn
+	 * @param indicesIn
+	 * @param iIn
+	 * @return
+	 * @throws Exception
+	 */
+	IMesh create(float[] positionsIn, int[] indicesIn, int dimensionSizeIn) throws Exception;
+
 	IOBJLoader objLoader();
 }

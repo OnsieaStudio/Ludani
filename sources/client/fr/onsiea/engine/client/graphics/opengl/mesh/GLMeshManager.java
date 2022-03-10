@@ -131,6 +131,12 @@ public class GLMeshManager implements IMeshsManager
 	}
 
 	@Override
+	public IMesh create(float[] positionsIn, int[] indicesIn, int dimensionSizeIn) throws Exception
+	{
+		return this.meshBuilderWithVao(1).vbo(positionsIn, dimensionSizeIn).ibo(indicesIn).unbindVao().build();
+	}
+
+	@Override
 	public IMeshsManager add(String nameIn, IMesh meshIn)
 	{
 		this.meshs.put(nameIn, meshIn);
