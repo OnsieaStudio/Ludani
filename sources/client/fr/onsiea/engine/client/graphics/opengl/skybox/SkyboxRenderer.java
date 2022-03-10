@@ -42,7 +42,7 @@ public class SkyboxRenderer
 	 * @param ofIn
 	 * @return
 	 */
-	public final static IResourcesPath[] determinOrder(IResourcesPath[] resourcesPathIn)
+	public final static IResourcesPath[] sort(IResourcesPath[] resourcesPathIn)
 	{
 		final var resourcesPath = new IResourcesPath[resourcesPathIn.length];
 
