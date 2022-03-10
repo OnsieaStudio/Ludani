@@ -8,28 +8,40 @@ import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.utils.maths.MathInstances;
 import fr.onsiea.engine.utils.maths.vector.timed.TimedVector3f;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-public class Camera extends Entity
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
+public class Camera extends Entity implements ICamera
 {
-	private Matrix4f viewMatrix;
+	private Matrix4f	view;
+	private Matrix4f	viewWithoutTranslations;
 
 	public Camera()
 	{
 		this.timedOrientation(new TimedVector3f());
 		this.initialization();
-		this.viewMatrix(new Matrix4f().identity());
+		this.view(new Matrix4f().identity());
+		this.viewWithoutTranslations(new Matrix4f().identity());
+		this.calcViewMatrix();
 	}
 
 	public Camera(Vector3f positionIn)
 	{
 		super(positionIn);
-		this.viewMatrix(new Matrix4f().identity());
+		this.view(new Matrix4f().identity());
+		this.viewWithoutTranslations(new Matrix4f().identity());
+		this.calcViewMatrix();
 	}
 
 	public Camera(Vector3f positionIn, Vector3f orientationIn)
 	{
 		super(positionIn, orientationIn);
-		this.viewMatrix(new Matrix4f().identity());
+		this.view(new Matrix4f().identity());
+		this.viewWithoutTranslations(new Matrix4f().identity());
+		this.calcViewMatrix();
 	}
 
 	public void input(IWindow windowIn, InputManager inputManagerIn)
@@ -124,11 +136,7 @@ public class Camera extends Entity
 
 		this.timedPosition().add(x, y, z);
 
-		final var negativePosition = new Vector3f(-this.position().x(), -this.position().y(), -this.position().z());
-
-		this.viewMatrix().identity().rotateX((float) Math.toRadians(this.orientation().x()))
-				.rotateY((float) Math.toRadians(this.orientation().y()))
-				.rotateZ((float) Math.toRadians(this.orientation().z())).translate(negativePosition);
+		this.calcViewMatrix();
 
 		/**xa += xDir * Mathf.cos(Mathf.toRadians(rot.y)) - zDir * Mathf.sin(Mathf.toRadians(rot.y));
 			za += zDir * Mathf.cos(Mathf.toRadians(rot.y)) + xDir * Mathf.sin(Mathf.toRadians(rot.y));
@@ -194,13 +202,16 @@ public class Camera extends Entity
 		}
 	}**/
 
-	public Matrix4f viewMatrix()
+	private void calcViewMatrix()
 	{
-		return this.viewMatrix;
-	}
+		final var negativePosition = new Vector3f(-this.position().x(), -this.position().y(), -this.position().z());
 
-	private void viewMatrix(Matrix4f viewMatrixIn)
-	{
-		this.viewMatrix = viewMatrixIn;
+		this.view().identity().rotateX((float) Math.toRadians(this.orientation().x()))
+				.rotateY((float) Math.toRadians(this.orientation().y()))
+				.rotateZ((float) Math.toRadians(this.orientation().z())).translate(negativePosition);
+		this.viewWithoutTranslations().set(this.view());
+		this.viewWithoutTranslations().m30(0.0f);
+		this.viewWithoutTranslations().m31(0.0f);
+		this.viewWithoutTranslations().m32(0.0f);
 	}
 }
