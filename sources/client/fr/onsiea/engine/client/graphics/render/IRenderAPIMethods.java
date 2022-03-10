@@ -26,10 +26,10 @@
 */
 package fr.onsiea.engine.client.graphics.render;
 
-import java.nio.ByteBuffer;
 import java.util.Collection;
 
 import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.texture.ITextureData;
 
 /**
  * @author Seynax
@@ -43,7 +43,7 @@ public interface IRenderAPIMethods
 	 * @param bufferIn
 	 * @return
 	 */
-	ITexture createTexture(int widthIn, int heightIn, ByteBuffer bufferIn);
+	ITexture createTexture(ITextureData textureDataIn);
 
 	/**
 	 * @param widthIn
@@ -56,8 +56,27 @@ public interface IRenderAPIMethods
 	 * @param mipmappingIn
 	 * @return
 	 */
-	ITexture createTexture(int widthIn, int heightIn, ByteBuffer bufferIn, int minIn, int magIn, int wrapSIn,
-			int wrapTIn, boolean mipmappingIn);
+	ITexture createTexture(ITextureData textureDataIn, int minIn, int magIn, int wrapSIn, int wrapTIn,
+			boolean mipmappingIn);
+
+	/*
+	 * @param filespathsIn
+	 * @return
+	 */
+	ITexture createCubeMapTextures(ITextureData... texturesDataIn) throws Exception;
+
+	/**
+	 * @param minIn
+	 * @param magIn
+	 * @param wrapSIn
+	 * @param wrapTIn
+	 * @param mipmappingIn
+	 * @param filespathsIn
+	 * @return
+	 * @throws Exception
+	 */
+	ITexture createCubeMapTextures(int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn,
+			ITextureData... texturesDataIn) throws Exception;
 
 	/**
 	 * @param valuesIn
