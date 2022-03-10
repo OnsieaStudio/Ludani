@@ -30,8 +30,7 @@ public class FlareManager
 
 	public void render(Camera camera, Vector3f sunWorldPos, IWindow windowIn, Renderer rendererIn)
 	{
-		final var sunCoords = this.convertToScreenSpace(sunWorldPos, camera.viewMatrix(),
-				MathInstances.projectionMatrix());
+		final var sunCoords = this.convertToScreenSpace(sunWorldPos, camera.view(), MathInstances.projectionMatrix());
 		if (sunCoords == null)
 		{
 			return;

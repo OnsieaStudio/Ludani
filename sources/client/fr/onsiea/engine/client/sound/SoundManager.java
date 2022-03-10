@@ -114,7 +114,7 @@ public class SoundManager implements Runnable
 	//private void runtime()
 	//{
 	/**this.i++;
-
+	
 	if (this.i >= 100)
 	{
 		this.i = 0;
@@ -169,7 +169,7 @@ public class SoundManager implements Runnable
 	public void updateListenerPosition(Camera camera)
 	{
 		// Update camera matrix with camera data
-		this.cameraMatrix().set(camera.viewMatrix());
+		this.cameraMatrix().set(camera.view());
 
 		this.listener().setPosition(camera.position());
 		final var at = new Vector3f();

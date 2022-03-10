@@ -37,22 +37,31 @@ import fr.onsiea.engine.client.graphics.texture.ITexture;
  */
 public class SkyboxRenderer
 {
-	private ITexture[]				textures;
-	private IMesh					mesh;
+	private final ITexture			texture;
+	private final IMesh				mesh;
 
 	private final IShadersManager	shadersManager;
 	private final ShaderSkybox		shader;
 
-	public SkyboxRenderer(IShadersManager shadersManagerIn, IMesh meshIn, ITexture... texturesIn)
+	public SkyboxRenderer(IShadersManager shadersManagerIn, IMesh meshIn, ITexture textureIn)
 	{
 		this.shadersManager	= shadersManagerIn;
 		this.shader			= (ShaderSkybox) shadersManagerIn.get("skybox");
+		this.mesh			= meshIn;
+
+		this.texture		= textureIn;
 	}
 
 	public SkyboxRenderer attach()
 	{
+
+		//GL11.glDepthMask(false);
+		//GL11.glDepthRange(1f, 1f);
 		this.shader.attach();
 		this.mesh.attach();
+		this.texture.attach();
+		//GL11.glDepthRange(0f, 1f);
+		//GL11.glDepthMask(true);
 
 		return this;
 	}
@@ -66,6 +75,7 @@ public class SkyboxRenderer
 
 	public SkyboxRenderer detach()
 	{
+		this.texture.detach();
 		this.mesh.detach();
 		this.shadersManager.detach();
 
