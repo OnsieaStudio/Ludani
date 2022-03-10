@@ -38,6 +38,7 @@ module OnsieaEngine
 	exports fr.onsiea.engine.client.graphics.drawable;
 	exports fr.onsiea.engine.client.graphics.mesh;
 	exports fr.onsiea.engine.client.graphics.shader;
+	exports fr.onsiea.engine.client.resources;
 	exports fr.onsiea.engine.utils;
 	exports fr.onsiea.engine.utils.time;
 	exports fr.onsiea.engine.utils.function;

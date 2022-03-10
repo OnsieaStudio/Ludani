@@ -115,7 +115,7 @@ public class GameTest implements IGameLogic
 		try
 		{
 			this.particleTexture	= renderAPIContextIn.texturesManager().load("resources/textures/particle.png");
-			this.scene				= new GameScene(renderAPIContextIn.shadersManager());
+			this.scene				= new GameScene(renderAPIContextIn);
 			this.scene.add("barrel",
 					renderAPIContextIn.meshsManager().objLoader().load("resources\\models\\barrel.obj"),
 					renderAPIContextIn.texturesManager().load("resources/textures/aeison.png"),
@@ -126,7 +126,7 @@ public class GameTest implements IGameLogic
 			e.printStackTrace();
 		}
 		this.projView = new Matrix4f(MathInstances.projectionMatrix()).identity();
-		this.projView.mul(this.scene.camera().viewMatrix());
+		this.projView.mul(this.scene.camera().view());
 
 		try
 		{
@@ -330,7 +330,7 @@ public class GameTest implements IGameLogic
 	@Override
 	public void draw(IWindow windowIn, IRenderAPIContext renderAPIContextIn, Renderer rendererIn)
 	{
-		this.projView.set(MathInstances.projectionMatrix()).mul(this.scene.camera().viewMatrix());
+		this.projView.set(MathInstances.projectionMatrix()).mul(this.scene.camera().view());
 		try
 		{
 			this.particleManager.update(this.projView);
@@ -345,7 +345,7 @@ public class GameTest implements IGameLogic
 			this.fbo.start();
 		}
 
-		renderAPIContextIn.shadersManager().updateView(this.scene.camera().viewMatrix());
+		renderAPIContextIn.shadersManager().updateView(this.scene.camera());
 		GL11.glClearColor(0.125f, 0.125f, 0.25f, 1.0f);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		OpenGLUtils.restoreState();

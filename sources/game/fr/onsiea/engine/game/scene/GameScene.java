@@ -36,12 +36,17 @@ import java.util.Objects;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
+import fr.onsiea.engine.client.graphics.opengl.skybox.SkyboxRenderer;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
+import fr.onsiea.engine.client.graphics.shapes.ShapeCube;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
+import fr.onsiea.engine.client.resources.ResourcesPath;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.utils.maths.MathInstances;
 import fr.onsiea.engine.utils.time.Timer;
@@ -64,20 +69,27 @@ public class GameScene
 	private final IShadersManager									shadersManager;
 	private final ShaderBasic										shader;
 
-	public GameScene(IShadersManager shadersManagerIn) throws Exception
+	private final SkyboxRenderer									skyboxRenderer;
+
+	public GameScene(IRenderAPIContext renderAPIContextIn) throws Exception
 	{
-		this.shadersManager	= shadersManagerIn;
-		this.shader			= (ShaderBasic) shadersManagerIn.get("basic");
+		this.shadersManager	= renderAPIContextIn.shadersManager();
+		this.shader			= (ShaderBasic) renderAPIContextIn.shadersManager().get("basic");
 
 		this.objects		= new HashMap<>();
 
 		this.camera			= new Camera();
 		this.cameraTimer	= new Timer();
-		this.shadersManager.updateProjectionAndView(MathInstances.projectionMatrix(), this.camera.viewMatrix());
+		this.shadersManager.updateProjectionAndView(MathInstances.projectionMatrix(), this.camera);
 
 		this.shader.attach();
 		this.shader.fogColour().load(new Vector3f(0.125f, 0.125f, 0.25f));
-		shadersManagerIn.detach();
+		renderAPIContextIn.shadersManager().detach();
+
+		this.skyboxRenderer = new SkyboxRenderer(renderAPIContextIn.shadersManager(),
+				renderAPIContextIn.meshsManager().create(ShapeCube.withSize(400.0f), ShapeCube.INDICES, 3),
+				renderAPIContextIn.texturesManager().loadCubeMapTextures("skybox",
+						ResourcesPath.of(new ResourcesPath(GraphicsConstants.TEXTURES, "skybox"))));
 	}
 
 	public void input(IWindow windowIn, InputManager inputManagerIn)
@@ -123,6 +135,10 @@ public class GameScene
 			mesh.mesh().detach();
 		}
 		this.shadersManager.detach();
+
+		this.skyboxRenderer.attach();
+		this.skyboxRenderer.draw();
+		this.skyboxRenderer.detach();
 	}
 
 	public void add(String nameIn, IMesh meshIn, ITexture textureIn, Matrix4f... transformationsIn)
