@@ -27,7 +27,6 @@
 package fr.onsiea.engine.client.graphics.opengl.texture;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.Objects;
 
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
@@ -39,7 +38,6 @@ import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
-import fr.onsiea.engine.client.graphics.texture.ITextureData;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,76 +48,10 @@ import lombok.Setter;
  */
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PRIVATE)
-public class GLTexture implements ITexture
+public class GLTextureCubeMap implements ITexture
 {
-	public final static int gen()
-	{
-		return GL11.glGenTextures();
-	}
-
-	public final static int[] gen(int[] texturesIn)
-	{
-		GL11.glGenTextures(texturesIn);
-
-		return texturesIn;
-	}
-
-	public final static IntBuffer gen(IntBuffer texturesIn)
-	{
-		GL11.glGenTextures(texturesIn);
-
-		return texturesIn;
-	}
-
-	public final static void bind(final int textureIdIn)
-	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
-	}
-
-	public final static void active(final int idIn)
-	{
-		GL13.glActiveTexture(idIn);
-	}
-
-	public final static void unbind()
-	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-	}
-
-	public final static void delete(final int textureIdIn)
-	{
-		GL11.glDeleteTextures(textureIdIn);
-	}
-
-	public final static void deletes(IntBuffer texturesBufferIn)
-	{
-		GL11.glDeleteTextures(texturesBufferIn);
-	}
-
 	private int						id;
-	private int						width;
-	private int						height;
 	private OpenGLRenderAPIContext	context;
-
-	/**
-	 * @param widthIn
-	 * @param heightIn
-	 * @param bufferIn
-	 */
-	public GLTexture(ITextureData textureDataIn, OpenGLRenderAPIContext contextIn)
-	{
-		this.id(GLTexture.gen());
-
-		this.width(textureDataIn.width());
-		this.height(textureDataIn.width());
-
-		this.context(contextIn);
-
-		this.context(contextIn);
-
-		this.load(textureDataIn.buffer(), GL11.GL_LINEAR_MIPMAP_LINEAR, GL11.GL_NEAREST, GL11.GL_REPEAT, GL11.GL_REPEAT,
-				true);
-	}
 
 	/**
 	 * @param widthIn
@@ -132,65 +64,42 @@ public class GLTexture implements ITexture
 	 * @param wrapTIn
 	 * @param mipmappingIn
 	 */
-	public GLTexture(ITextureData textureDataIn, OpenGLRenderAPIContext contextIn, int minIn, int magIn, int wrapSIn,
+	public GLTextureCubeMap(int textureIdIn, OpenGLRenderAPIContext contextIn, int minIn, int magIn, int wrapSIn,
 			int wrapTIn, boolean mipmappingIn)
 	{
-		this.id(GLTexture.gen());
-
-		this.width(textureDataIn.width());
-		this.height(textureDataIn.width());
+		this.id(textureIdIn);
 
 		this.context(contextIn);
 
-		this.load(textureDataIn.buffer(), minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
-	}
-
-	private void initialization(int minIn, int magIn, int wrapSIn, int wrapTIn)
-	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id());
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, this.id());
 		GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
 
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minIn);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, magIn);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, wrapSIn);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, wrapTIn);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -0.4f);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MIN_LOD, -1000);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LOD, 1000);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, minIn);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, magIn);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_S, wrapSIn);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_T, wrapTIn);
+		GL11.glTexParameterf(GL13.GL_TEXTURE_CUBE_MAP, GL14.GL_TEXTURE_LOD_BIAS, -0.4f);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL12.GL_TEXTURE_MIN_LOD, -1000);
+		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL12.GL_TEXTURE_MAX_LOD, 1000);
 
 		if (this.context().settings().user().isEnabled("mustAnisotropyTextureFiltering"))
 		{
-			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
+			GL11.glTexParameterf(GL13.GL_TEXTURE_CUBE_MAP, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
 					(float) this.context().settings().user().get("anisotropyTextureFilteringAmount").value());
 		}
-	}
-
-	private void mipmap()
-	{
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, 1000);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_BASE_LEVEL, 0);
-		GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-	}
-
-	private void load(ByteBuffer bufferIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn)
-	{
-		this.initialization(minIn, magIn, wrapSIn, wrapTIn);
-
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, this.width(), this.height(), 0, GL11.GL_RGBA,
-				GL11.GL_UNSIGNED_BYTE, bufferIn);
 
 		if (mipmappingIn)
 		{
-			this.mipmap();
+			GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL12.GL_TEXTURE_MAX_LEVEL, 1000);
+			GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL12.GL_TEXTURE_BASE_LEVEL, 0);
+			GL30.glGenerateMipmap(GL13.GL_TEXTURE_CUBE_MAP);
 		}
-
-		GLTexture.unbind();
 	}
 
 	@Override
 	public ITexture attach()
 	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, this.id);
 
 		return this;
 	}
@@ -204,7 +113,7 @@ public class GLTexture implements ITexture
 
 	public ITexture attachAndActive0()
 	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id());
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, this.id());
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 
 		return this;
@@ -215,18 +124,30 @@ public class GLTexture implements ITexture
 	{
 		this.attach();
 
-		GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, this.width(), this.height(), GL11.GL_RGBA,
+		GL11.glTexSubImage2D(GL13.GL_TEXTURE_CUBE_MAP, 0, 0, 0, this.width(), this.height(), GL11.GL_RGBA,
 				GL11.GL_UNSIGNED_BYTE, bufferIn);
 
-		GLTexture.unbind();
+		this.detach();
 	}
 
 	@Override
 	public ITexture detach()
 	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, 0);
 
 		return this;
+	}
+
+	@Override
+	public int width()
+	{
+		return -1;
+	}
+
+	@Override
+	public int height()
+	{
+		return -1;
 	}
 
 	@Override
@@ -262,7 +183,7 @@ public class GLTexture implements ITexture
 		{
 			return false;
 		}
-		final var other = (GLTexture) obj;
+		final var other = (GLTextureCubeMap) obj;
 		return this.id == other.id;
 	}
 }

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
+import fr.onsiea.engine.client.graphics.texture.data.TextureData;
+import fr.onsiea.engine.client.resources.IResourcesPath;
 import fr.onsiea.engine.utils.ICleanable;
 
 public class TexturesManager implements ITexturesManager
@@ -87,7 +89,43 @@ public class TexturesManager implements ITexturesManager
 			return texture;
 		}
 
-		texture = this.renderAPIContext().createTexture(widthIn, heightIn, pixelsIn);
+		texture = this.renderAPIContext().createTexture(new TextureData(pixelsIn, widthIn, heightIn));
+
+		this.textures().put(nameIn, texture);
+
+		return texture;
+	}
+
+	@Override
+	public ITexture loadCubeMapTextures(String nameIn, IResourcesPath... resourcesPathIn) throws Exception
+	{
+		var texture = this.textures().get(nameIn);
+
+		if (texture != null)
+		{
+			return texture;
+		}
+
+		texture = TextureLoader.loadCubeMapTextures(this.renderAPIContext(), resourcesPathIn);
+
+		this.textures().put(nameIn, texture);
+
+		return texture;
+	}
+
+	@Override
+	public ITexture loadCubeMapTextures(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn,
+			boolean mipmappingIn, IResourcesPath... resourcesPathIn) throws Exception
+	{
+		var texture = this.textures().get(nameIn);
+
+		if (texture != null)
+		{
+			return texture;
+		}
+
+		texture = TextureLoader.loadCubeMapTextures(this.renderAPIContext(), minIn, magIn, wrapSIn, wrapTIn,
+				mipmappingIn, resourcesPathIn);
 
 		this.textures().put(nameIn, texture);
 

@@ -6,15 +6,31 @@ import java.nio.ByteBuffer;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
-import fr.onsiea.engine.client.graphics.texture.TextureComponents;
+import fr.onsiea.engine.client.graphics.texture.ITextureData;
+import lombok.AccessLevel;
+import lombok.Setter;
 
-public class TextureBuffer
+@Setter(AccessLevel.PRIVATE)
+public class TextureData implements ITextureData
 {
-	private ByteBuffer			buffer;
-	private TextureComponents	components;
+	private ByteBuffer	buffer;
+	private int			width;
+	private int			height;
 
-	public TextureBuffer()
+	public TextureData()
 	{
+	}
+
+	/**
+	 * @param bufferIn
+	 * @param widthIn
+	 * @param heightIn
+	 */
+	public TextureData(ByteBuffer bufferIn, int widthIn, int heightIn)
+	{
+		this.buffer	= bufferIn;
+		this.width	= widthIn;
+		this.height	= heightIn;
 	}
 
 	/**
@@ -22,9 +38,9 @@ public class TextureBuffer
 	 * @param filepathIn
 	 * @return TextureBuffer
 	 */
-	public TextureBuffer load(String filepathIn)
+	public TextureData load(String filepathIn)
 	{
-		return TextureBuffer.load(new File(filepathIn), true);
+		return TextureData.load(new File(filepathIn), true);
 	}
 
 	/**
@@ -33,9 +49,9 @@ public class TextureBuffer
 	 * @param flipIn
 	 * @return TextureBuffer
 	 */
-	public TextureBuffer load(String filepathIn, boolean flipIn)
+	public TextureData load(String filepathIn, boolean flipIn)
 	{
-		return TextureBuffer.load(new File(filepathIn), flipIn);
+		return TextureData.load(new File(filepathIn), flipIn);
 	}
 
 	/**
@@ -43,9 +59,9 @@ public class TextureBuffer
 	 * @param fileIn
 	 * @return TextureBuffer
 	 */
-	public final static TextureBuffer load(File fileIn)
+	public final static TextureData load(File fileIn)
 	{
-		return TextureBuffer.load(fileIn, true);
+		return TextureData.load(fileIn, true);
 	}
 
 	/**
@@ -54,7 +70,7 @@ public class TextureBuffer
 	 * @param flipIn
 	 * @return TextureBuffer
 	 */
-	public final static TextureBuffer load(File fileIn, boolean flipIn)
+	public final static TextureData load(File fileIn, boolean flipIn)
 	{
 		if (!fileIn.exists())
 		{
@@ -71,7 +87,7 @@ public class TextureBuffer
 
 			STBImage.stbi_set_flip_vertically_on_load(flipIn);
 
-			final var textureBuffer = new TextureBuffer();
+			final var textureBuffer = new TextureData();
 			textureBuffer.buffer(STBImage.stbi_load(filepath, w, h, channels, 4));
 
 			if (textureBuffer.buffer() == null)
@@ -80,7 +96,8 @@ public class TextureBuffer
 						"Can't load buffer of file texture \"" + filepath + "\" " + STBImage.stbi_failure_reason());
 			}
 
-			textureBuffer.components(new TextureComponents(w.get(), h.get()));
+			textureBuffer.width(w.get());
+			textureBuffer.height(h.get());
 
 			return textureBuffer;
 		}
@@ -108,23 +125,21 @@ public class TextureBuffer
 		return true;
 	}
 
-	public ByteBuffer buffer()
+	@Override
+	public final ByteBuffer buffer()
 	{
 		return this.buffer;
 	}
 
-	private void buffer(ByteBuffer bufferIn)
+	@Override
+	public final int width()
 	{
-		this.buffer = bufferIn;
+		return this.width;
 	}
 
-	public TextureComponents components()
+	@Override
+	public final int height()
 	{
-		return this.components;
-	}
-
-	private void components(TextureComponents componentsIn)
-	{
-		this.components = componentsIn;
+		return this.height;
 	}
 }

@@ -28,38 +28,17 @@ package fr.onsiea.engine.client.graphics.texture;
 
 import java.nio.ByteBuffer;
 
-import fr.onsiea.engine.client.resources.IResourcesPath;
-import fr.onsiea.engine.utils.registry.ILoadable;
-import fr.onsiea.engine.utils.registry.IRegistry;
-
 /**
  * @author Seynax
  *
  */
-public interface ITexturesManager extends IRegistry<ITexture>, ILoadable<ITexture>
+public interface ITextureData
 {
-	ITexture load(String nameIn, ByteBuffer pixelsIn, int widthIn, int heightIn);
+	ByteBuffer buffer();
 
-	/**
-	 * @param nameIn
-	 * @param glLinearIn
-	 * @return
-	 */
-	ITexture load(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn);
+	int width();
 
-	/**
-	 * @param nameIn
-	 * @param glLinearIn
-	 * @return
-	 * @throws Exception
-	 */
-	ITexture loadCubeMapTextures(String nameIn, IResourcesPath... resourcesPathIn) throws Exception;
+	int height();
 
-	/**
-	 * @param nameIn
-	 * @param glLinearIn
-	 * @return
-	 */
-	ITexture loadCubeMapTextures(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn,
-			IResourcesPath... resourcesPathIn) throws Exception;
+	boolean cleanup();
 }

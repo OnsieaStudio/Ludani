@@ -56,7 +56,9 @@ public interface ITexture
 	 */
 	ITexture detach();
 
-	TextureComponents components();
+	int width();
+
+	int height();
 
 	/**
 	 *

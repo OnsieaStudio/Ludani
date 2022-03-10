@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL42;
 
 import fr.onsiea.engine.client.graphics.texture.TextureLoader;
-import fr.onsiea.engine.client.graphics.texture.data.TextureBuffer;
+import fr.onsiea.engine.client.graphics.texture.data.TextureData;
 
 public class GLTextureArray
 {
@@ -40,7 +40,7 @@ public class GLTextureArray
 
 	public void send(String textureFilepathIn, int layerIn)
 	{
-		final var textureBuffer = new TextureBuffer();
+		final var textureBuffer = new TextureData();
 		if (textureBuffer.load(textureFilepathIn, true) == null)
 		{
 			throw new RuntimeException("[ERREUR] Impossible de charger la texture \"" + textureFilepathIn + "\"");
@@ -55,7 +55,7 @@ public class GLTextureArray
 		}
 	}
 
-	void send(TextureBuffer textureBufferIn, int layerIn)
+	void send(TextureData textureBufferIn, int layerIn)
 	{
 		GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, this.id());
 
@@ -63,9 +63,8 @@ public class GLTextureArray
 		// textureBufferIn.width(), textureBufferIn.height(),
 		// 1, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textureBufferIn.buffer());
 
-		GL12.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, layerIn, textureBufferIn.components().width(),
-				textureBufferIn.components().height(), 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
-				textureBufferIn.buffer());
+		GL12.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, layerIn, textureBufferIn.width(),
+				textureBufferIn.height(), 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textureBufferIn.buffer());
 
 		GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
 		GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
