@@ -29,9 +29,9 @@ package fr.onsiea.engine.game;
 import java.util.List;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.opengl.fbo.FBO;
@@ -258,16 +258,32 @@ public class GameTest implements IGameLogic
 			this.fbo				= new FBO(windowIn.settings().width(), windowIn.settings().height(), windowIn);
 
 			this.flareManager		= new FlareManager(0.125f, renderAPIContextIn,
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex1.png"), 0.75f / 2.0f),
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex2.png"), 0.50f / 2.0f),
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex3.png"), 0.25f / 2.0f),
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex4.png"), 0.125f / 2.0f),
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex4.png"), 0.075f / 2.0f),
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex5.png"), 0.050f / 2.0f),
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex6.png"), 0.025f / 2.0f),
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex7.png"), 0.0125f / 2.0f),
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex8.png"), 0.0075f / 2.0f),
-					new FlareTexture(renderAPIContextIn.texturesManager().load("tex9.png"), 0.0050f / 2.0f));
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex1.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+							GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true), 0.75f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex2.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+							GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true), 0.50f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex3.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+							GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true), 0.25f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex4.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+							GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true), 0.125f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex4.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+							GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true), 0.075f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex5.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+							GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true), 0.050f / 2.0f),
+					new FlareTexture(renderAPIContextIn.texturesManager().load("tex6.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+							GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true), 0.025f / 2.0f),
+					new FlareTexture(
+							renderAPIContextIn.texturesManager().load("tex7.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+									GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true),
+							0.0125f / 2.0f),
+					new FlareTexture(
+							renderAPIContextIn.texturesManager().load("tex8.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+									GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true),
+							0.0075f / 2.0f),
+					new FlareTexture(
+							renderAPIContextIn.texturesManager().load("tex9.png", GL11.GL_LINEAR_MIPMAP_LINEAR,
+									GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true),
+							0.0050f / 2.0f));
 		}
 		catch (final Exception e)
 		{
@@ -330,7 +346,7 @@ public class GameTest implements IGameLogic
 		}
 
 		renderAPIContextIn.shadersManager().updateView(this.scene.camera().viewMatrix());
-		//GL11.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		GL11.glClearColor(0.125f, 0.125f, 0.25f, 1.0f);
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		OpenGLUtils.restoreState();
 
@@ -351,7 +367,7 @@ public class GameTest implements IGameLogic
 
 		this.shadersManager.detach();
 
-		this.flareManager.render(this.scene.camera(), new Vector3f(0.0f, 0.0f, 0.0f), windowIn, rendererIn);
+		//this.flareManager.render(this.scene.camera(), new Vector3f(0.0f, 0.0f, 0.0f), windowIn, rendererIn);
 
 		if (this.FBO)
 		{

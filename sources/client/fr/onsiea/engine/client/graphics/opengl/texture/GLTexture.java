@@ -113,18 +113,41 @@ public class GLTexture implements ITexture
 
 		this.context(contextIn);
 
-		this.load(bufferIn);
+		this.load(bufferIn, GL11.GL_LINEAR_MIPMAP_LINEAR, GL11.GL_NEAREST, GL11.GL_REPEAT, GL11.GL_REPEAT, true);
 	}
 
-	private void initialization()
+	/**
+	 * @param widthIn
+	 * @param heightIn
+	 * @param bufferIn
+	 * @param contextIn
+	 * @param minIn
+	 * @param magIn
+	 * @param wrapXIn
+	 * @param wrapTIn
+	 * @param mipmappingIn
+	 */
+	public GLTexture(int widthIn, int heightIn, ByteBuffer bufferIn, OpenGLRenderAPIContext contextIn, int minIn,
+			int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn)
+	{
+		this.id(GLTexture.gen());
+
+		this.components(new TextureComponents(widthIn, heightIn));
+
+		this.context(contextIn);
+
+		this.load(bufferIn, minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
+	}
+
+	private void initialization(int minIn, int magIn, int wrapSIn, int wrapTIn)
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id());
 		GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
 
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minIn);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, magIn);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, wrapSIn);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, wrapTIn);
 		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -0.4f);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MIN_LOD, -1000);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LOD, 1000);
@@ -143,14 +166,17 @@ public class GLTexture implements ITexture
 		GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 	}
 
-	private void load(ByteBuffer bufferIn)
+	private void load(ByteBuffer bufferIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn)
 	{
-		this.initialization();
+		this.initialization(minIn, magIn, wrapSIn, wrapTIn);
 
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, this.components().width(), this.components().height(), 0,
 				GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, bufferIn);
 
-		this.mipmap();
+		if (mipmappingIn)
+		{
+			this.mipmap();
+		}
 
 		GLTexture.unbind();
 	}

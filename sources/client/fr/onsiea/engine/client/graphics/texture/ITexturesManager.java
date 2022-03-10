@@ -38,4 +38,11 @@ import fr.onsiea.engine.utils.registry.IRegistry;
 public interface ITexturesManager extends IRegistry<ITexture>, ILoadable<ITexture>
 {
 	ITexture load(String nameIn, ByteBuffer pixelsIn, int widthIn, int heightIn);
+
+	/**
+	 * @param nameIn
+	 * @param glLinearIn
+	 * @return
+	 */
+	ITexture load(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn);
 }

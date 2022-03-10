@@ -113,6 +113,13 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 		return new GLTexture(widthIn, heightIn, bufferIn, this);
 	}
 
+	@Override
+	public ITexture createTexture(int widthIn, int heightIn, ByteBuffer bufferIn, int minIn, int magIn, int wrapSIn,
+			int wrapTIn, boolean mipmappingIn)
+	{
+		return new GLTexture(widthIn, heightIn, bufferIn, this, minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
+	}
+
 	/**
 	 * @return
 	 */

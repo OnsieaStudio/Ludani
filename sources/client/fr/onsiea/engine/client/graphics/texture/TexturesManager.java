@@ -53,6 +53,23 @@ public class TexturesManager implements ITexturesManager
 		return texture;
 	}
 
+	@Override
+	public ITexture load(String filepathIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn)
+	{
+		var texture = this.textures().get(filepathIn);
+
+		if (texture != null)
+		{
+			return texture;
+		}
+
+		texture = TextureLoader.load(filepathIn, this.renderAPIContext(), minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
+
+		this.textures().put(filepathIn, texture);
+
+		return texture;
+	}
+
 	/**
 	 * @param pixelsIn
 	 * @param widthIn

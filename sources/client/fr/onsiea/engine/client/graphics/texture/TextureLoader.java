@@ -29,14 +29,13 @@ public class TextureLoader
 
 			if (!textureBuffer.cleanup())
 			{
-				throw new RuntimeException(
-						"[ERREUR] Impossible de décharger le buffer de la texture : \"" + realFilepath + "\"");
+				throw new RuntimeException("[ERROR] Unable to unload texture buffer : \"" + realFilepath + "\"");
 			}
 
 			return texture;
 		}
 
-		throw new RuntimeException("[ERREUR] Impossible de charger la texture : \"" + realFilepath + "\"");
+		throw new RuntimeException("[ERROR] Unable to load texture : \"" + realFilepath + "\"");
 	}
 
 	final static ITexture load(final String filepathIn, IRenderAPIMethods renderAPIContextIn)
@@ -53,8 +52,7 @@ public class TextureLoader
 
 				if (!textureBuffer.cleanup())
 				{
-					throw new RuntimeException(
-							"[ERREUR] Impossible de décharger le buffer de la texture : \"" + realFilepath + "\"");
+					throw new RuntimeException("[ERROR] Unable to unload texture buffer : \"" + realFilepath + "\"");
 				}
 
 				return texture;
@@ -65,7 +63,47 @@ public class TextureLoader
 			e.printStackTrace();
 		}
 
-		throw new RuntimeException("[ERREUR] Impossible de charger la texture : \"" + realFilepath + "\"");
+		throw new RuntimeException("[ERROR] Unable to load texture : \"" + realFilepath + "\"");
+	}
+
+	/**
+	 * @param filepathIn
+	 * @param renderAPIContextIn
+	 * @param minIn
+	 * @param magIn
+	 * @param wrapSIn
+	 * @param wrapTIn
+	 * @param mipmappingIn
+	 * @return
+	 */
+	public static ITexture load(String filepathIn, IRenderAPIMethods renderAPIContextIn, int minIn, int magIn,
+			int wrapSIn, int wrapTIn, boolean mipmappingIn)
+	{
+		final var realFilepath = TextureUtils.filepath(filepathIn);
+
+		try
+		{
+			final var textureBuffer = TextureBuffer.load(new File(realFilepath), false);
+			if (textureBuffer != null)
+			{
+				final var texture = renderAPIContextIn.createTexture(textureBuffer.components().width(),
+						textureBuffer.components().height(), textureBuffer.buffer(), minIn, magIn, wrapSIn, wrapTIn,
+						mipmappingIn);
+
+				if (!textureBuffer.cleanup())
+				{
+					throw new RuntimeException("[ERROR] Unable to unload texture buffer : \"" + realFilepath + "\"");
+				}
+
+				return texture;
+			}
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		throw new RuntimeException("[ERROR] Unable to load texture : \"" + realFilepath + "\"");
 	}
 
 	public final static ITexture load(final ByteBuffer bufferIn, final int widthIn, final int heightIn,
