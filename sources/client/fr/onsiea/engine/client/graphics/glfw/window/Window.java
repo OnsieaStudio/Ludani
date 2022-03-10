@@ -38,7 +38,7 @@ import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
 import fr.onsiea.engine.client.graphics.glfw.GLFWUtils;
 import fr.onsiea.engine.client.graphics.glfw.monitor.Monitors;
-import fr.onsiea.engine.client.graphics.texture.data.TextureBuffer;
+import fr.onsiea.engine.client.graphics.texture.data.TextureData;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
 import fr.onsiea.engine.utils.maths.MathInstances;
@@ -232,20 +232,20 @@ public class Window implements IWindow
 
 	public void icon(String filepathIn) throws IOException
 	{
-		final var		image			= GLFWImage.malloc();
-		TextureBuffer	textureBuffer	= null;
+		final var	image		= GLFWImage.malloc();
+		TextureData	textureData	= null;
 		try
 		{
-			textureBuffer = new TextureBuffer().load(filepathIn);
+			textureData = new TextureData().load(filepathIn);
 
-			image.set(textureBuffer.components().width(), textureBuffer.components().height(), textureBuffer.buffer());
+			image.set(textureData.width(), textureData.height(), textureData.buffer());
 			Window.icons = GLFWImage.malloc(1);
 			Window.icons.put(0, image);
 
 			GLFW.glfwSetWindowIcon(this.handle(), Window.icons);
 
 			image.free();
-			MemoryUtil.memFree(textureBuffer.buffer());
+			MemoryUtil.memFree(textureData.buffer());
 		}
 		catch (final Exception e)
 		{
