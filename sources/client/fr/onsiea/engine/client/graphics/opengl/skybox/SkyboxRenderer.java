@@ -30,6 +30,7 @@ import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderSkybox;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.resources.IResourcesPath;
 
 /**
  * @author Seynax
@@ -37,6 +38,45 @@ import fr.onsiea.engine.client.graphics.texture.ITexture;
  */
 public class SkyboxRenderer
 {
+	/**
+	 * @param ofIn
+	 * @return
+	 */
+	public final static IResourcesPath[] determinOrder(IResourcesPath[] resourcesPathIn)
+	{
+		final var resourcesPath = new IResourcesPath[resourcesPathIn.length];
+
+		for (final var resourcePath : resourcesPathIn)
+		{
+			if (resourcePath.file().getName().contains("right"))
+			{
+				resourcesPath[0] = resourcePath;
+			}
+			else if (resourcePath.file().getName().contains("left"))
+			{
+				resourcesPath[1] = resourcePath;
+			}
+			else if (resourcePath.file().getName().contains("top"))
+			{
+				resourcesPath[2] = resourcePath;
+			}
+			else if (resourcePath.file().getName().contains("bottom"))
+			{
+				resourcesPath[3] = resourcePath;
+			}
+			else if (resourcePath.file().getName().contains("back"))
+			{
+				resourcesPath[4] = resourcePath;
+			}
+			else if (resourcePath.file().getName().contains("front"))
+			{
+				resourcesPath[5] = resourcePath;
+			}
+		}
+
+		return resourcesPath;
+	}
+
 	private final ITexture			texture;
 	private final IMesh				mesh;
 
