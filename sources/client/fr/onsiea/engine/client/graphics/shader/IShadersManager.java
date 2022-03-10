@@ -28,6 +28,7 @@ package fr.onsiea.engine.client.graphics.shader;
 
 import org.joml.Matrix4f;
 
+import fr.onsiea.engine.core.entity.ICamera;
 import fr.onsiea.engine.utils.registry.IRegistry;
 
 /**
@@ -38,11 +39,11 @@ public interface IShadersManager extends IRegistry<IShaderProgram>
 {
 	IShadersManager updateProjection(Matrix4f projectionMatrixIn);
 
-	IShadersManager updateView(Matrix4f viewMatrixIn);
+	IShadersManager updateView(ICamera cameraIn);
 
 	IShadersManager updateAttachedProjectionAndView(Matrix4f projectionAndViewMatrixIn);
 
-	IShadersManager updateProjectionAndView(Matrix4f projectionMatrixIn, Matrix4f viewMatrixIn);
+	IShadersManager updateProjectionAndView(Matrix4f projectionMatrixIn, ICamera cameraIn);
 
 	IShadersManager detach();
 }

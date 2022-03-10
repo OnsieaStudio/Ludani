@@ -43,6 +43,8 @@ import fr.onsiea.engine.client.graphics.shader.IProjectionView;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.shader.IView;
+import fr.onsiea.engine.client.graphics.shader.IViewWithoutTranslations;
+import fr.onsiea.engine.core.entity.ICamera;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -63,6 +65,7 @@ public class GLShaderManager implements IShadersManager
 	private Shader2D														shader2D;
 	private Shader3DTo2D													shader3DTo2D;
 	private InstancedShader													instancedShader;
+	private ShaderSkybox													skybox;
 
 	// Effects
 
@@ -85,6 +88,7 @@ public class GLShaderManager implements IShadersManager
 			this.add("basic", this.shaderBasic = new ShaderBasic());
 			this.add("flare", this.flareShader = new FlareShader());
 			this.add("2D", this.shader2D = new Shader2D());
+			this.add("skybox", this.skybox = new ShaderSkybox());
 			//this.add("3dto2d", this.shader3DTo2D = new Shader3DTo2D());
 			this.add("brightFilter", this.brightFilter = new BrightFilterShader());
 			this.add("combineFilter", this.combine = new CombineShader());
@@ -100,7 +104,7 @@ public class GLShaderManager implements IShadersManager
 	}
 
 	@Override
-	public IShadersManager updateView(Matrix4f viewIn)
+	public IShadersManager updateView(ICamera cameraIn)
 	{
 		for (final IShaderProgram shader : this.shaders().values())
 		{
@@ -108,7 +112,11 @@ public class GLShaderManager implements IShadersManager
 
 			if (shader instanceof IView)
 			{
-				((IView) shader).view().load(viewIn);
+				((IView) shader).view().load(cameraIn.view());
+			}
+			else if (shader instanceof IViewWithoutTranslations)
+			{
+				((IViewWithoutTranslations) shader).view().load(cameraIn.viewWithoutTranslations());
 			}
 
 			this.detach();
@@ -136,7 +144,7 @@ public class GLShaderManager implements IShadersManager
 	}
 
 	@Override
-	public IShadersManager updateProjectionAndView(Matrix4f projectionIn, Matrix4f viewIn)
+	public IShadersManager updateProjectionAndView(Matrix4f projectionIn, ICamera cameraIn)
 	{
 		for (final IShaderProgram shader : this.shaders().values())
 		{
@@ -146,10 +154,13 @@ public class GLShaderManager implements IShadersManager
 			{
 				((IProjection) shader).projection().load(projectionIn);
 			}
-
-			if (shader instanceof IView)
+			else if (shader instanceof IView)
 			{
-				((IView) shader).view().load(viewIn);
+				((IView) shader).view().load(cameraIn.view());
+			}
+			else if (shader instanceof IViewWithoutTranslations)
+			{
+				((IViewWithoutTranslations) shader).view().load(cameraIn.viewWithoutTranslations());
 			}
 
 			this.detach();
