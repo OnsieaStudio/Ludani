@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
@@ -73,6 +74,10 @@ public class GameScene
 		this.camera			= new Camera();
 		this.cameraTimer	= new Timer();
 		this.shadersManager.updateProjectionAndView(MathInstances.projectionMatrix(), this.camera.viewMatrix());
+
+		this.shader.attach();
+		this.shader.fogColour().load(new Vector3f(0.125f, 0.125f, 0.25f));
+		shadersManagerIn.detach();
 	}
 
 	public void input(IWindow windowIn, InputManager inputManagerIn)

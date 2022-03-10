@@ -27,6 +27,7 @@
 package fr.onsiea.engine.client.graphics.opengl.shader;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
 import fr.onsiea.engine.client.graphics.shader.IProjection;
 import fr.onsiea.engine.client.graphics.shader.IView;
 import lombok.AccessLevel;
@@ -42,6 +43,7 @@ public class ShaderBasic extends Shader implements IProjection, IView
 	private final GLUniformMatrix4f	projection;
 	private final GLUniformMatrix4f	view;
 	private final GLUniformMatrix4f	transformationsMatrix;
+	private final GLUniformVector3f	fogColour;
 
 	/**
 	 * @throws Exception
@@ -53,5 +55,6 @@ public class ShaderBasic extends Shader implements IProjection, IView
 		this.projection				= this.matrix4fUniform("projection");
 		this.view					= this.matrix4fUniform("view");
 		this.transformationsMatrix	= this.matrix4fUniform("transformations");
+		this.fogColour				= this.vector3fUniform("fogColour");
 	}
 }
