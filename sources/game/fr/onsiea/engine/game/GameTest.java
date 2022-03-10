@@ -116,9 +116,7 @@ public class GameTest implements IGameLogic
 		{
 			this.particleTexture	= renderAPIContextIn.texturesManager().load("resources/textures/particle.png");
 			this.scene				= new GameScene(renderAPIContextIn);
-			this.scene.add("barrel",
-					renderAPIContextIn.meshsManager().objLoader().load("resources\\models\\barrel.obj"),
-					renderAPIContextIn.texturesManager().load("resources/textures/aeison.png"),
+			this.scene.add("barrel", "resources\\models\\barrel.obj", "resources/textures/aeison.png",
 					MathInstances.simpleTransformationsMatrix3d());
 		}
 		catch (final Exception e)

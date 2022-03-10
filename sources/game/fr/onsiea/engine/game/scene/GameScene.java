@@ -35,8 +35,12 @@ import java.util.Objects;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
+import fr.onsiea.engine.client.graphics.light.PointLight;
+import fr.onsiea.engine.client.graphics.light.PointLight.Attenuation;
+import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
 import fr.onsiea.engine.client.graphics.opengl.skybox.SkyboxRenderer;
@@ -67,83 +71,55 @@ public class GameScene
 	// private PostProcessing											postProcessing;
 
 	private final IShadersManager									shadersManager;
+	private final IRenderAPIContext									renderAPIContext;
 	private final ShaderBasic										shader;
 
 	private final SkyboxRenderer									skyboxRenderer;
 
+	private final Vector3f											ambientLight;
+	private final PointLight										pointLight;
+	private final float												specularPower;
+	private Material												material;
+
 	public GameScene(IRenderAPIContext renderAPIContextIn) throws Exception
 	{
-		this.shadersManager	= renderAPIContextIn.shadersManager();
-		this.shader			= (ShaderBasic) renderAPIContextIn.shadersManager().get("basic");
+		this.renderAPIContext	= renderAPIContextIn;
+		this.shadersManager		= renderAPIContextIn.shadersManager();
+		this.shader				= (ShaderBasic) renderAPIContextIn.shadersManager().get("basic");
 
-		this.objects		= new HashMap<>();
+		this.objects			= new HashMap<>();
 
-		this.camera			= new Camera();
-		this.cameraTimer	= new Timer();
+		this.camera				= new Camera();
+		this.cameraTimer		= new Timer();
 		this.shadersManager.updateProjectionAndView(MathInstances.projectionMatrix(), this.camera);
 
 		this.shader.attach();
 		this.shader.fogColour().load(new Vector3f(0.125f, 0.125f, 0.25f));
 		renderAPIContextIn.shadersManager().detach();
 
-		this.skyboxRenderer = new SkyboxRenderer(renderAPIContextIn.shadersManager(),
+		this.skyboxRenderer	= new SkyboxRenderer(renderAPIContextIn.shadersManager(),
 				renderAPIContextIn.meshsManager().create(ShapeCube.withSize(400.0f), ShapeCube.INDICES, 3),
 				renderAPIContextIn.texturesManager().loadCubeMapTextures("skybox",
 						ResourcesPath.of(new ResourcesPath(GraphicsConstants.TEXTURES, "skybox"))));
-	}
 
-	public void input(IWindow windowIn, InputManager inputManagerIn)
-	{
-		if (this.cameraTimer.isTime(1_000_000_0L))
-		{
-			this.camera.input(windowIn, inputManagerIn);
-		}
-	}
-
-	public void draw()
-	{
-		this.shader.attach();
-
-		final var meshedObjectsIterator = this.objects.entrySet().iterator();
-
-		while (meshedObjectsIterator.hasNext())
-		{
-			final var	meshedObjectsEntry		= meshedObjectsIterator.next();
-			final var	mesh					= meshedObjectsEntry.getKey();
-			final var	texturedObjects			= meshedObjectsEntry.getValue();
-
-			final var	texturedObjectsIterator	= texturedObjects.entrySet().iterator();
-
-			mesh.mesh().attach();
-			while (texturedObjectsIterator.hasNext())
-			{
-				final var	texturedObjectsEntry	= texturedObjectsIterator.next();
-				final var	texture					= texturedObjectsEntry.getKey();
-				texture.attach();
-
-				final var objects = texturedObjectsEntry.getValue();
-
-				for (final Matrix4f transformations : objects)
-				{
-					this.shader.transformationsMatrix().load(transformations);
-
-					mesh.mesh().draw();
-				}
-
-				texture.detach();
-			}
-			mesh.mesh().detach();
-		}
-		this.shadersManager.detach();
-
-		this.skyboxRenderer.attach();
-		this.skyboxRenderer.draw();
-		this.skyboxRenderer.detach();
+		this.ambientLight	= new Vector3f(1.0f, 1.0f, 1.0f);
+		this.pointLight		= new PointLight(new Vector3f(1.0f, 1.0f, 0.25f), new Vector3f(0.0f, 2.0f, 0.0f), 1.0f,
+				new Attenuation(0.025f, 0.01f, 0.01f));
+		this.specularPower	= 1.0f;
 	}
 
 	public void add(String nameIn, IMesh meshIn, ITexture textureIn, Matrix4f... transformationsIn)
 	{
 		this.add(new IdentifiableMesh(nameIn, meshIn), textureIn, transformationsIn);
+	}
+
+	public void add(String nameIn, String meshFilepathIn, String textureFilepathIn, Matrix4f... transformationsIn)
+			throws Exception
+	{
+		final var texture = this.renderAPIContext.texturesManager().load(textureFilepathIn);
+		this.add(new IdentifiableMesh(nameIn, this.renderAPIContext.meshsManager().objLoader().load(meshFilepathIn)),
+				texture, transformationsIn);
+		this.material = new Material(new Vector4f(1.0f), new Vector4f(1.0f), new Vector4f(1.0f), texture, 0.025f);
 	}
 
 	public void add(IdentifiableMesh identifiableMeshIn, ITexture textureIn, Matrix4f... transformationsIn)
@@ -167,6 +143,59 @@ public class GameScene
 		}
 
 		Collections.addAll(objects, transformationsIn);
+	}
+
+	public void input(IWindow windowIn, InputManager inputManagerIn)
+	{
+		if (this.cameraTimer.isTime(1_000_000_0L))
+		{
+			this.camera.input(windowIn, inputManagerIn);
+		}
+	}
+
+	public void draw()
+	{
+		this.shader.attach();
+		this.shader.ambientLight().load(this.ambientLight);
+		this.shader.pointLight().load(this.pointLight);
+		this.shader.specularPower().load(this.specularPower);
+		this.shader.material().load(this.material);
+
+		final var meshedObjectsIterator = this.objects.entrySet().iterator();
+
+		while (meshedObjectsIterator.hasNext())
+		{
+			final var	meshedObjectsEntry		= meshedObjectsIterator.next();
+			final var	mesh					= meshedObjectsEntry.getKey();
+			final var	texturedObjects			= meshedObjectsEntry.getValue();
+
+			final var	texturedObjectsIterator	= texturedObjects.entrySet().iterator();
+
+			mesh.mesh().attach();
+			while (texturedObjectsIterator.hasNext())
+			{
+				final var	texturedObjectsEntry	= texturedObjectsIterator.next();
+				final var	texture					= texturedObjectsEntry.getKey();
+				texture.attach();
+
+				final var objects = texturedObjectsEntry.getValue();
+
+				for (final Matrix4f transformations : objects)
+				{
+					this.shader.transformations().load(transformations);
+
+					mesh.mesh().draw();
+				}
+
+				texture.detach();
+			}
+			mesh.mesh().detach();
+		}
+		this.shadersManager.detach();
+
+		this.skyboxRenderer.attach();
+		this.skyboxRenderer.draw();
+		this.skyboxRenderer.detach();
 	}
 
 	public final Map<IdentifiableMesh, Map<ITexture, List<Matrix4f>>> objects()

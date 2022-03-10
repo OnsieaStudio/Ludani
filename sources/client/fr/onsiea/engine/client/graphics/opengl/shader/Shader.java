@@ -12,7 +12,9 @@ import org.lwjgl.opengl.GL20;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloatArray;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMaterial;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector2f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector4f;
@@ -212,6 +214,22 @@ public abstract class Shader implements IShaderProgram
 	public GLUniformMatrix4f matrix4fUniform(String nameIn)
 	{
 		final var uniform = new GLUniformMatrix4f(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public GLUniformMaterial materialUniform(String nameIn)
+	{
+		final var uniform = new GLUniformMaterial(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public GLUniformPointLight pointLightUniform(String nameIn)
+	{
+		final var uniform = new GLUniformPointLight(this, nameIn);
 		this.uniforms.put(nameIn, uniform);
 
 		return uniform;

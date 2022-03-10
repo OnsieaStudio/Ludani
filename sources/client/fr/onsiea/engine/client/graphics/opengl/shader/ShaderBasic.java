@@ -26,7 +26,10 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMaterial;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
 import fr.onsiea.engine.client.graphics.shader.IProjection;
 import fr.onsiea.engine.client.graphics.shader.IView;
@@ -40,10 +43,14 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class ShaderBasic extends Shader implements IProjection, IView
 {
-	private final GLUniformMatrix4f	projection;
-	private final GLUniformMatrix4f	view;
-	private final GLUniformMatrix4f	transformationsMatrix;
-	private final GLUniformVector3f	fogColour;
+	private final GLUniformMatrix4f		projection;
+	private final GLUniformMatrix4f		view;
+	private final GLUniformMatrix4f		transformations;
+	private final GLUniformVector3f		ambientLight;
+	private final GLUniformFloat		specularPower;
+	private final GLUniformMaterial		material;
+	private final GLUniformPointLight	pointLight;
+	private final GLUniformVector3f		fogColour;
 
 	/**
 	 * @throws Exception
@@ -52,9 +59,13 @@ public class ShaderBasic extends Shader implements IProjection, IView
 	{
 		super("resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position", "uvs");
 
-		this.projection				= this.matrix4fUniform("projection");
-		this.view					= this.matrix4fUniform("view");
-		this.transformationsMatrix	= this.matrix4fUniform("transformations");
-		this.fogColour				= this.vector3fUniform("fogColour");
+		this.projection			= this.matrix4fUniform("projection");
+		this.view				= this.matrix4fUniform("view");
+		this.transformations	= this.matrix4fUniform("transformations");
+		this.ambientLight		= this.vector3fUniform("ambientLight");
+		this.specularPower		= this.floatUniform("specularPower");
+		this.material			= this.materialUniform("material");
+		this.pointLight			= this.pointLightUniform("pointLight");
+		this.fogColour			= this.vector3fUniform("fogColour");
 	}
 }
