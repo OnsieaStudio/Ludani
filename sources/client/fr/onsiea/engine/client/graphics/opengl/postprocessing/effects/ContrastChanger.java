@@ -23,10 +23,11 @@ public class ContrastChanger
 		this.shader			= (ContrastShader) this.shadersManager.get("contrastChanger");
 	}
 
-	public void render(int textureIn, IWindow windowIn)
+	public void render(int textureIn, IWindow windowIn, float contrastIn)
 	{
 		this.shader.attach();
-		this.shader.uniformColourTexture().load(0);
+		//this.shader.colourTexture().load(textureIn);
+		this.shader.contrast().load(contrastIn);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIn);
 		this.imageRenderer().renderQuad(windowIn);

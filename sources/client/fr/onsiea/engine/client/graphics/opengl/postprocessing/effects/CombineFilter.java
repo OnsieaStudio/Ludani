@@ -21,7 +21,6 @@ public class CombineFilter
 
 		this.shadersManager	= shadersManagerIn;
 		this.shader			= (CombineShader) shadersManagerIn.get("combineFilter");
-
 	}
 
 	public void render(IWindow windowIn, int colourTextureIn, int... texturesIn)

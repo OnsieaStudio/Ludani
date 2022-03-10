@@ -29,9 +29,10 @@ public class HorizontalBlur
 		shadersManagerIn.detach();
 	}
 
-	public void render(int textureIn, IWindow windowIn)
+	public void render(int textureIn, IWindow windowIn, float[] valuesIn)
 	{
 		this.shader.attach();
+		this.shader.uniformValues().load(valuesIn);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIn);
 		this.renderer().renderQuad(windowIn);
