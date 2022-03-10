@@ -26,12 +26,13 @@
 */
 package fr.onsiea.engine.client.graphics.opengl;
 
-import java.nio.ByteBuffer;
 import java.util.Collection;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLDebugMessageCallback;
@@ -44,12 +45,14 @@ import fr.onsiea.engine.client.graphics.mesh.OBJLoader;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMeshManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
+import fr.onsiea.engine.client.graphics.opengl.texture.GLTextureCubeMap;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexturesManager;
 import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.texture.ITextureData;
 import fr.onsiea.engine.client.graphics.texture.ITexturesManager;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -108,16 +111,46 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 	}
 
 	@Override
-	public ITexture createTexture(int widthIn, int heightIn, ByteBuffer bufferIn)
+	public ITexture createTexture(ITextureData textureDataIn)
 	{
-		return new GLTexture(widthIn, heightIn, bufferIn, this);
+		return new GLTexture(textureDataIn, this);
 	}
 
 	@Override
-	public ITexture createTexture(int widthIn, int heightIn, ByteBuffer bufferIn, int minIn, int magIn, int wrapSIn,
-			int wrapTIn, boolean mipmappingIn)
+	public ITexture createTexture(ITextureData textureDataIn, int minIn, int magIn, int wrapSIn, int wrapTIn,
+			boolean mipmappingIn)
 	{
-		return new GLTexture(widthIn, heightIn, bufferIn, this, minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
+		return new GLTexture(textureDataIn, this, minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
+	}
+
+	@Override
+	public ITexture createCubeMapTextures(ITextureData... texturesDataIn) throws Exception
+	{
+		return this.createCubeMapTextures(GL11.GL_LINEAR, GL11.GL_LINEAR_MIPMAP_LINEAR, GL12.GL_CLAMP_TO_EDGE,
+				GL12.GL_CLAMP_TO_EDGE, true, texturesDataIn);
+	}
+
+	@Override
+	public ITexture createCubeMapTextures(int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn,
+			ITextureData... texturesDataIn) throws Exception
+	{
+		final var texture = GL11.glGenTextures();
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texture);
+
+		for (var i = 0; i < texturesDataIn.length; i++)
+		{
+			final var textureData = texturesDataIn[i];
+			GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, textureData.width(),
+					textureData.height(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textureData.buffer());
+
+			if (!textureData.cleanup())
+			{
+				throw new Exception("[ERROR] Unable to unload buffer of textures cube map data !");
+			}
+		}
+
+		return new GLTextureCubeMap(texture, this, minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
 	}
 
 	/**
