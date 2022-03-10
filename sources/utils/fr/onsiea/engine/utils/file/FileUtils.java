@@ -541,4 +541,66 @@ public class FileUtils
 
 		return true;
 	}
+
+	/**
+	 * @param stringIn
+	 * @return
+	 * @throws Exception
+	 */
+	public static String[] allAbsoluteFilepathOf(String filepathIn) throws Exception
+	{
+		final var root = new File(filepathIn);
+
+		if (!root.exists())
+		{
+			return null;
+		}
+		if (root.isFile())
+		{
+			throw new Exception("[ERROR] \"" + filepathIn + "\" is file  !");
+		}
+
+		final var	files		= root.listFiles();
+		final var	filespath	= new String[files.length];
+		var			i			= 0;
+		for (final File file : files)
+		{
+			filespath[i] = file.getAbsolutePath();
+
+			i++;
+		}
+
+		return filespath;
+	}
+
+	/**
+	 * @param stringIn
+	 * @return
+	 * @throws Exception
+	 */
+	public static String[] allLocalFilepathOf(String filepathIn) throws Exception
+	{
+		final var root = new File(filepathIn);
+
+		if (!root.exists())
+		{
+			return null;
+		}
+		if (root.isFile())
+		{
+			throw new Exception("[ERROR] \"" + filepathIn + "\" is file  !");
+		}
+
+		final var	files		= root.listFiles();
+		final var	filespath	= new String[files.length];
+		var			i			= 0;
+		for (final File file : files)
+		{
+			filespath[i] = file.getName();
+
+			i++;
+		}
+
+		return filespath;
+	}
 }
