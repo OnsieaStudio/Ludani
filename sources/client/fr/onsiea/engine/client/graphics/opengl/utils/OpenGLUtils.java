@@ -145,7 +145,7 @@ public class OpenGLUtils
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 
-	public static GLRawModel makeModel(float[] vertexIn, float[] uvIn)
+	public final static GLRawModel makeModel(float[] vertexIn, float[] uvIn)
 	{
 		final var vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
@@ -167,7 +167,7 @@ public class OpenGLUtils
 		return new GLRawModel(vao, vbo, vertexIn.length, ubo);
 	}
 
-	public static GLRawModel makeModel(FloatBuffer vertexBufferIn, FloatBuffer uvBufferIn)
+	public final static GLRawModel makeModel(FloatBuffer vertexBufferIn, FloatBuffer uvBufferIn)
 	{
 		final var vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
@@ -189,7 +189,7 @@ public class OpenGLUtils
 		return new GLRawModel(vao, vbo, vertexBufferIn.capacity(), ubo);
 	}
 
-	public static GLRawModel makeModel(float[] vertexIn, float[] uvIn, int[] indicesIn)
+	public final static GLRawModel makeModel(float[] vertexIn, float[] uvIn, int[] indicesIn)
 	{
 		final var vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
@@ -216,7 +216,8 @@ public class OpenGLUtils
 		return new GLRawModel(vao, vbo, vertexIn.length, ubo, ibo);
 	}
 
-	public static GLRawModel makeVao(FloatBuffer vertexBufferIn, FloatBuffer uvBufferIn, IntBuffer indicesBufferIn)
+	public final static GLRawModel makeVao(FloatBuffer vertexBufferIn, FloatBuffer uvBufferIn,
+			IntBuffer indicesBufferIn)
 	{
 		final var vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
@@ -243,7 +244,7 @@ public class OpenGLUtils
 		return new GLRawModel(vao, vbo, vertexBufferIn.capacity(), ubo, ibo);
 	}
 
-	public static void drawArray(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawArray(int textureIdIn, int vaoIn, int vertexCountIn)
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 
@@ -258,7 +259,7 @@ public class OpenGLUtils
 		GL30.glBindVertexArray(0);
 	}
 
-	public static void drawArrayLines(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawArrayLines(int textureIdIn, int vaoIn, int vertexCountIn)
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 
@@ -273,7 +274,7 @@ public class OpenGLUtils
 		GL30.glBindVertexArray(0);
 	}
 
-	public static void drawElements(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawElements(int textureIdIn, int vaoIn, int vertexCountIn)
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 
@@ -288,7 +289,7 @@ public class OpenGLUtils
 		GL30.glBindVertexArray(0);
 	}
 
-	public static void drawElementsLines(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawElementsLines(int textureIdIn, int vaoIn, int vertexCountIn)
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 		GL30.glBindVertexArray(vaoIn);
@@ -302,21 +303,21 @@ public class OpenGLUtils
 		GL30.glBindVertexArray(0);
 	}
 
-	public static void drawElements(GLTexturedModel modelIn)
+	public final static void drawElements(GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawElements(modelIn.texture().id(), modelIn.rawModel().vao(), modelIn.rawModel().vertexCount());
 	}
 
-	public static void drawElementsLines(GLTexturedModel modelIn)
+	public final static void drawElementsLines(GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawElementsLines(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());
 	}
 
-	public static void drawElementsCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawElementsCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
 	{
-		//GL11.glDepthMask(false);
-		//GL11.glDepthRange(1f, 1f);
+		GL11.glDepthMask(false);
+		GL11.glDepthRange(1f, 1f);
 
 		GL30.glBindVertexArray(vaoIn);
 		GL20.glEnableVertexAttribArray(0);
@@ -331,12 +332,15 @@ public class OpenGLUtils
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 
-		//GL11.glDepthRange(0f, 1f);
-		//GL11.glDepthMask(true);
+		GL11.glDepthRange(0f, 1f);
+		GL11.glDepthMask(true);
 	}
 
-	public static void drawElementsLinesCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawElementsLinesCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
 	{
+		GL11.glDepthMask(false);
+		GL11.glDepthRange(1f, 1f);
+
 		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureIdIn);
 		GL30.glBindVertexArray(vaoIn);
 		GL20.glEnableVertexAttribArray(0);
@@ -347,12 +351,15 @@ public class OpenGLUtils
 		//GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
+
+		GL11.glDepthRange(0f, 1f);
+		GL11.glDepthMask(true);
 	}
 
-	public static void drawArraysCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawArraysCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
 	{
-		//GL11.glDepthMask(false);
-		//GL11.glDepthRange(1f, 1f);
+		GL11.glDepthMask(false);
+		GL11.glDepthRange(1f, 1f);
 
 		GL30.glBindVertexArray(vaoIn);
 		GL20.glEnableVertexAttribArray(0);
@@ -367,12 +374,15 @@ public class OpenGLUtils
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 
-		//GL11.glDepthRange(0f, 1f);
-		//GL11.glDepthMask(true);
+		GL11.glDepthRange(0f, 1f);
+		GL11.glDepthMask(true);
 	}
 
-	public static void drawArraysLinesCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawArraysLinesCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
 	{
+		GL11.glDepthMask(false);
+		GL11.glDepthRange(1f, 1f);
+
 		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureIdIn);
 		GL30.glBindVertexArray(vaoIn);
 		GL20.glEnableVertexAttribArray(0);
@@ -383,27 +393,30 @@ public class OpenGLUtils
 		//GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
+
+		GL11.glDepthRange(0f, 1f);
+		GL11.glDepthMask(true);
 	}
 
-	public static void drawElementsCubeMap(GLTexturedModel modelIn)
+	public final static void drawElementsCubeMap(GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawElementsCubeMap(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());
 	}
 
-	public static void drawElementsLinesCubeMap(GLTexturedModel modelIn)
+	public final static void drawElementsLinesCubeMap(GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawElementsLinesCubeMap(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());
 	}
 
-	public static void drawArraysCubeMap(GLTexturedModel modelIn)
+	public final static void drawArraysCubeMap(GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawArraysCubeMap(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());
 	}
 
-	public static void drawArraysLinesCubeMap(GLTexturedModel modelIn)
+	public final static void drawArraysLinesCubeMap(GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawArraysLinesCubeMap(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());
