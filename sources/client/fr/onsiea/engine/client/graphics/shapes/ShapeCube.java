@@ -503,4 +503,30 @@ public class ShapeCube
 		i++;
 		return corners;
 	}
+
+	/**
+	 * @param fIn
+	 * @return
+	 */
+	public static float[] withSize(float sizeIn)
+	{
+		final var positions = new float[ShapeCube.positionsForIndices.length];
+		for (var i = 0; i < ShapeCube.positionsForIndices.length; i++)
+		{
+			var v = ShapeCube.positionsForIndices[i];
+
+			if (v == 0.0f)
+			{
+				v = -sizeIn;
+			}
+			else
+			{
+				v = sizeIn;
+			}
+
+			positions[i] = v;
+		}
+
+		return positions;
+	}
 }
