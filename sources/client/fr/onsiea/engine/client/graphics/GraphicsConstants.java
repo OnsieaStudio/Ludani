@@ -27,6 +27,8 @@
 package fr.onsiea.engine.client.graphics;
 
 import fr.onsiea.engine.client.graphics.render.EnumRenderAPI;
+import fr.onsiea.engine.client.resources.IResourcesPath;
+import fr.onsiea.engine.client.resources.ResourcesRootPath;
 
 /**
  * @author Seynax
@@ -42,13 +44,17 @@ public class GraphicsConstants
 	public final static int				DEFAULT_REFRESH_RATE	= 60;
 	public final static String			DEFAULT_WINDOW_TITLE	= "Onsiea";
 
+	public final static IResourcesPath	TEXTURES				= new ResourcesRootPath("resources\\textures");
+	public final static IResourcesPath	SHADERS					= new ResourcesRootPath("resources\\shaders");
+	public final static IResourcesPath	FONTS					= new ResourcesRootPath("resources\\fonts");
+
 	/**
 	 * Render
 	 */
 
 	public final static float			FOV						= 70.0f;
 	public final static float			ZNEAR					= 0.1f;
-	public final static float			ZFAR					= 1000.0f;
+	public final static float			ZFAR					= 1200.0f;
 
 	public final static EnumRenderAPI	RENDER_API				= EnumRenderAPI.OpenGL;
 
