@@ -85,10 +85,10 @@ public class GLShaderManager implements IShadersManager
 			this.add("basic", this.shaderBasic = new ShaderBasic());
 			this.add("flare", this.flareShader = new FlareShader());
 			this.add("2D", this.shader2D = new Shader2D());
-			/**this.add("3dto2d", this.shader3DTo2D = new Shader3DTo2D());
+			//this.add("3dto2d", this.shader3DTo2D = new Shader3DTo2D());
 			this.add("brightFilter", this.brightFilter = new BrightFilterShader());
 			this.add("combineFilter", this.combine = new CombineShader());
-			this.add("contrastChanger", this.contrast = new ContrastShader());**/
+			this.add("contrastChanger", this.contrast = new ContrastShader());
 			this.add("horizontalBlur", this.horizontalBlur = new HorizontalBlurShader());
 			this.add("verticalBlur", this.verticalBlur = new VerticalBlurShader());
 			this.add("instanced", this.instancedShader = new InstancedShader());

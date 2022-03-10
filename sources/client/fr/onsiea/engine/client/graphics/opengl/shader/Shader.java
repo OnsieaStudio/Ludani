@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloatArray;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector2f;
@@ -167,6 +168,18 @@ public abstract class Shader implements IShaderProgram
 	public GLUniformFloat floatUniform(String nameIn)
 	{
 		final var uniform = new GLUniformFloat(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	/**
+	 * @param nameIn
+	 * @return
+	 */
+	public GLUniformFloatArray floatArrayUniform(String nameIn)
+	{
+		final var uniform = new GLUniformFloatArray(this, nameIn);
 		this.uniforms.put(nameIn, uniform);
 
 		return uniform;

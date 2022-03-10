@@ -145,7 +145,6 @@ public class OnsieaGearings
 		}
 		finally
 		{
-			System.out.println("Clean !");
 			this.cleanup();
 		}
 	}

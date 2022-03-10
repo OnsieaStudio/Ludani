@@ -57,17 +57,17 @@ public class FlareRenderer
 	 * Renders FlareTextures onto the screen at their positions, at the
 	 * specified brightness.
 	 *
-	 * @param flares
+	 * @param flaresIn
 	 *            - An array of the FlareTextures that need to be rendered to
 	 *            the screen.
-	 * @param brightness
+	 * @param brightnessIn
 	 *            - The brightness that all the FlareTextures should be rendered
 	 *            at.
 	 */
-	public void render(FlareTexture[] flares, float brightness, IWindow windowIn, Renderer rendererIn)
+	public void render(FlareTexture[] flaresIn, float brightnessIn, IWindow windowIn, Renderer rendererIn)
 	{
-		this.prepare(brightness, rendererIn);
-		for (final FlareTexture flare : flares)
+		this.prepare(brightnessIn, rendererIn);
+		for (final FlareTexture flare : flaresIn)
 		{
 			this.renderFlare(flare, windowIn);
 		}
@@ -89,10 +89,10 @@ public class FlareRenderer
 	 * attribute 0 is enabled (attribute 0 contains the position data).
 	 *
 	 *
-	 * @param brightness
+	 * @param brightnessIn
 	 *            - the brightness at which the flares are going to be rendered.
 	 */
-	private void prepare(float brightness, Renderer rendererIn)
+	private void prepare(float brightnessIn, Renderer rendererIn)
 	{
 		this.settings.user().disable("antialias");
 		this.settings.user().enable("blend");
@@ -102,7 +102,7 @@ public class FlareRenderer
 
 		this.mesh().attach();
 		this.flareShader.attach();
-		this.flareShader.uniformBrightness().load(brightness);
+		this.flareShader.uniformBrightness().load(brightnessIn);
 	}
 
 	/**

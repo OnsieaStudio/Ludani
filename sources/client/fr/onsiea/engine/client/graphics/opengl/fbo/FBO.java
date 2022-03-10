@@ -237,16 +237,14 @@ public class FBO
 		this.colourTexture(GL11.glGenTextures());
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.colourTexture());
 		GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
-		/**
-		* GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, widthIn, heightIn, 0, GL11.GL_RGBA,
-		* 		GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-		**/
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.width(), this.height(), 0, GL11.GL_RGBA,
-				GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, this.width(), this.height(), 0, GL11.GL_RGBA,
+				GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
 		GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D,
 				this.colourTexture(), 0);
 	}
