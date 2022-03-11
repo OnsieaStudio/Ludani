@@ -29,11 +29,13 @@ package fr.onsiea.engine.game;
 import java.util.List;
 
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
+import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.opengl.fbo.FBO;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareManager;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareTexture;
@@ -116,7 +118,10 @@ public class GameTest implements IGameLogic
 		{
 			this.particleTexture	= renderAPIContextIn.texturesManager().load("resources/textures/particle.png");
 			this.scene				= new GameScene(renderAPIContextIn);
-			this.scene.add("barrel", "resources\\models\\barrel.obj", "resources/textures/aeison.png",
+			this.scene.add("barrel", "resources\\models\\barrel.obj",
+					new Material(new Vector4f(1.0f), new Vector4f(1.0f), new Vector4f(1.0f),
+							renderAPIContextIn.texturesManager().load("resources/textures/barrel.png"), 0.025f,
+							renderAPIContextIn.texturesManager().load("resources/textures/barrelNormal.png")),
 					MathInstances.simpleTransformationsMatrix3d());
 		}
 		catch (final Exception e)

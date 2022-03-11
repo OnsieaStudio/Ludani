@@ -35,11 +35,13 @@ import java.util.Objects;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.lwjgl.opengl.GL13;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
+import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.light.PointLight;
 import fr.onsiea.engine.client.graphics.light.PointLight.Attenuation;
+import fr.onsiea.engine.client.graphics.light.SpotLight;
 import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
@@ -47,7 +49,6 @@ import fr.onsiea.engine.client.graphics.opengl.skybox.SkyboxRenderer;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.shapes.ShapeCube;
-import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.client.resources.ResourcesPath;
@@ -64,7 +65,7 @@ import lombok.Getter;
  */
 public class GameScene
 {
-	private Map<IdentifiableMesh, Map<ITexture, List<Matrix4f>>>	objects;
+	private Map<IdentifiableMesh, Map<Material, List<GameItem>>>	objects;
 
 	private @Getter(AccessLevel.PUBLIC) final Camera				camera;
 	private final Timer												cameraTimer;
@@ -78,8 +79,9 @@ public class GameScene
 
 	private final Vector3f											ambientLight;
 	private final PointLight										pointLight;
+	private final SpotLight											spotLight;
+	private final DirectionalLight									directionalLight;
 	private final float												specularPower;
-	private Material												material;
 
 	public GameScene(IRenderAPIContext renderAPIContextIn) throws Exception
 	{
@@ -97,32 +99,45 @@ public class GameScene
 		this.shader.fogColour().load(new Vector3f(0.125f, 0.125f, 0.25f));
 		renderAPIContextIn.shadersManager().detach();
 
-		this.skyboxRenderer	= new SkyboxRenderer(renderAPIContextIn.shadersManager(),
+		this.skyboxRenderer		= new SkyboxRenderer(renderAPIContextIn.shadersManager(),
 				renderAPIContextIn.meshsManager().create(ShapeCube.withSize(400.0f), ShapeCube.INDICES, 3),
 				renderAPIContextIn.texturesManager().loadCubeMapTextures("skybox",
 						ResourcesPath.of(new ResourcesPath(GraphicsConstants.TEXTURES, "skybox"))));
 
-		this.ambientLight	= new Vector3f(1.0f, 1.0f, 1.0f);
-		this.pointLight		= new PointLight(new Vector3f(1.0f, 1.0f, 0.25f), new Vector3f(0.0f, 2.0f, 0.0f), 1.0f,
+		this.ambientLight		= new Vector3f(0.125f, 0.125f, 0.125f);
+		this.pointLight			= new PointLight(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(0.0f, 2.0f, 0.0f), 1.0f,
 				new Attenuation(0.025f, 0.01f, 0.01f));
-		this.specularPower	= 1.0f;
+		this.spotLight			= new SpotLight(new PointLight(new Vector3f(1.0f, 1.0f, 1.0f),
+				new Vector3f(0.0f, 2.0f, 0.0f), 1.0f, new Attenuation(0.025f, 0.01f, 0.01f)),
+				new Vector3f(-0.25f, -0.5f, -0.25f), 75.0f);
+		this.directionalLight	= new DirectionalLight(new Vector3f(1.0f, 1.0f, 1.0f),
+				new Vector3f(-0.125f, -0.25f, -0.125f), 1.0f);
+
+		this.specularPower		= 1.0f;
 	}
 
-	public void add(String nameIn, IMesh meshIn, ITexture textureIn, Matrix4f... transformationsIn)
-	{
-		this.add(new IdentifiableMesh(nameIn, meshIn), textureIn, transformationsIn);
-	}
-
-	public void add(String nameIn, String meshFilepathIn, String textureFilepathIn, Matrix4f... transformationsIn)
+	public void add(String nameIn, String meshFilepathIn, Material materialIn, Matrix4f... transformationsIn)
 			throws Exception
 	{
-		final var texture = this.renderAPIContext.texturesManager().load(textureFilepathIn);
-		this.add(new IdentifiableMesh(nameIn, this.renderAPIContext.meshsManager().objLoader().load(meshFilepathIn)),
-				texture, transformationsIn);
-		this.material = new Material(new Vector4f(1.0f), new Vector4f(1.0f), new Vector4f(1.0f), texture, 0.025f);
+		this.add(nameIn, this.renderAPIContext.meshsManager().objLoader().load(meshFilepathIn), materialIn,
+				transformationsIn);
 	}
 
-	public void add(IdentifiableMesh identifiableMeshIn, ITexture textureIn, Matrix4f... transformationsIn)
+	public void add(String nameIn, IMesh meshIn, Material commonMaterialIn, Matrix4f... transformationsIn)
+			throws Exception
+	{
+		final var	gameItems	= new GameItem[transformationsIn.length];
+		var			i			= 0;
+		for (final Matrix4f transformations : transformationsIn)
+		{
+			gameItems[i] = new GameItem(nameIn, meshIn, commonMaterialIn, transformations);
+			i++;
+		}
+
+		this.add(new IdentifiableMesh(nameIn, meshIn), commonMaterialIn, gameItems);
+	}
+
+	public void add(IdentifiableMesh identifiableMeshIn, Material commonMaterialIn, GameItem... gameItemsIn)
 	{
 		var texturedObjects = this.objects().get(identifiableMeshIn);
 
@@ -133,16 +148,39 @@ public class GameScene
 			this.objects().put(identifiableMeshIn, texturedObjects);
 		}
 
-		var objects = texturedObjects.get(textureIn);
+		var objects = texturedObjects.get(commonMaterialIn);
 
 		if (objects == null)
 		{
 			objects = new ArrayList<>();
 
-			texturedObjects.put(textureIn, objects);
+			texturedObjects.put(commonMaterialIn, objects);
 		}
 
-		Collections.addAll(objects, transformationsIn);
+		Collections.addAll(objects, gameItemsIn);
+	}
+
+	public void add(IdentifiableMesh identifiableMeshIn, GameItem gameItemIn)
+	{
+		var texturedObjects = this.objects().get(identifiableMeshIn);
+
+		if (texturedObjects == null)
+		{
+			texturedObjects = new HashMap<>();
+
+			this.objects().put(identifiableMeshIn, texturedObjects);
+		}
+
+		var objects = texturedObjects.get(gameItemIn.material());
+
+		if (objects == null)
+		{
+			objects = new ArrayList<>();
+
+			texturedObjects.put(gameItemIn.material(), objects);
+		}
+
+		objects.add(gameItemIn);
 	}
 
 	public void input(IWindow windowIn, InputManager inputManagerIn)
@@ -157,9 +195,10 @@ public class GameScene
 	{
 		this.shader.attach();
 		this.shader.ambientLight().load(this.ambientLight);
-		this.shader.pointLight().load(this.pointLight);
+		this.shader.pointLights()[0].load(this.pointLight);
+		this.shader.spotLights()[0].load(this.spotLight);
+		this.shader.directionalLight().load(this.directionalLight);
 		this.shader.specularPower().load(this.specularPower);
-		this.shader.material().load(this.material);
 
 		final var meshedObjectsIterator = this.objects.entrySet().iterator();
 
@@ -175,19 +214,34 @@ public class GameScene
 			while (texturedObjectsIterator.hasNext())
 			{
 				final var	texturedObjectsEntry	= texturedObjectsIterator.next();
-				final var	texture					= texturedObjectsEntry.getKey();
-				texture.attach();
+				final var	material				= texturedObjectsEntry.getKey();
+
+				this.shader.material().load(material);
+
+				GL13.glActiveTexture(GL13.GL_TEXTURE0);
+				material.texture().attach();
+
+				if (material.hasNormalMap())
+				{
+					GL13.glActiveTexture(GL13.GL_TEXTURE1);
+					material.normalMap().attach();
+				}
 
 				final var objects = texturedObjectsEntry.getValue();
 
-				for (final Matrix4f transformations : objects)
+				for (final GameItem gameItem : objects)
 				{
-					this.shader.transformations().load(transformations);
+					this.shader.transformations().load(gameItem.transformations());
 
 					mesh.mesh().draw();
 				}
 
-				texture.detach();
+				if (material.hasNormalMap())
+				{
+					material.normalMap().detach();
+				}
+				GL13.glActiveTexture(GL13.GL_TEXTURE0);
+				material.texture().detach();
 			}
 			mesh.mesh().detach();
 		}
@@ -198,12 +252,12 @@ public class GameScene
 		this.skyboxRenderer.detach();
 	}
 
-	public final Map<IdentifiableMesh, Map<ITexture, List<Matrix4f>>> objects()
+	public final Map<IdentifiableMesh, Map<Material, List<GameItem>>> objects()
 	{
 		return this.objects;
 	}
 
-	public final void objects(Map<IdentifiableMesh, Map<ITexture, List<Matrix4f>>> objectsIn)
+	public final void objects(Map<IdentifiableMesh, Map<Material, List<GameItem>>> objectsIn)
 	{
 		this.objects = objectsIn;
 	}

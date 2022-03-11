@@ -9,12 +9,15 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformBoolean;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloatArray;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMaterial;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformSpotLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector2f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector4f;
@@ -230,6 +233,34 @@ public abstract class Shader implements IShaderProgram
 	public GLUniformPointLight pointLightUniform(String nameIn)
 	{
 		final var uniform = new GLUniformPointLight(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public GLUniformSpotLight spotLightUniform(String nameIn)
+	{
+		final var uniform = new GLUniformSpotLight(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public GLUniformDirectionalLight directionalLightUniform(String nameIn)
+	{
+		final var uniform = new GLUniformDirectionalLight(this, nameIn);
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	/**
+	 * @param stringIn
+	 * @return
+	 */
+	public GLUniformBoolean booleanUniform(String nameIn)
+	{
+		final var uniform = new GLUniformBoolean(this, nameIn);
 		this.uniforms.put(nameIn, uniform);
 
 		return uniform;

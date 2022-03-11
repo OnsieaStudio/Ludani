@@ -26,10 +26,14 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformBoolean;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMaterial;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformSpotLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
 import fr.onsiea.engine.client.graphics.shader.IProjection;
 import fr.onsiea.engine.client.graphics.shader.IView;
@@ -43,14 +47,21 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class ShaderBasic extends Shader implements IProjection, IView
 {
-	private final GLUniformMatrix4f		projection;
-	private final GLUniformMatrix4f		view;
-	private final GLUniformMatrix4f		transformations;
-	private final GLUniformVector3f		ambientLight;
-	private final GLUniformFloat		specularPower;
-	private final GLUniformMaterial		material;
-	private final GLUniformPointLight	pointLight;
-	private final GLUniformVector3f		fogColour;
+	private final static int				LIGHTS	= 5;
+
+	private final GLUniformMatrix4f			projection;
+	private final GLUniformMatrix4f			view;
+	private final GLUniformMatrix4f			transformations;
+	private final GLUniformVector3f			ambientLight;
+	private final GLUniformFloat			specularPower;
+	private final GLUniformMaterial			material;
+	private final GLUniformBoolean			hasNormalMap;
+	private final GLUniformPointLight[]		pointLights;
+	private final GLUniformSpotLight[]		spotLights;
+	private final GLUniformDirectionalLight	directionalLight;
+	private final GLUniformVector3f			fogColour;
+	private final GLUniformInt				textureSampler;
+	private final GLUniformInt				normalMapSampler;
 
 	/**
 	 * @throws Exception
@@ -65,7 +76,20 @@ public class ShaderBasic extends Shader implements IProjection, IView
 		this.ambientLight		= this.vector3fUniform("ambientLight");
 		this.specularPower		= this.floatUniform("specularPower");
 		this.material			= this.materialUniform("material");
-		this.pointLight			= this.pointLightUniform("pointLight");
+		this.hasNormalMap		= this.booleanUniform("hasNormalMap");
+		this.pointLights		= new GLUniformPointLight[ShaderBasic.LIGHTS];
+		this.spotLights			= new GLUniformSpotLight[ShaderBasic.LIGHTS];
+		for (var i = 0; i < ShaderBasic.LIGHTS; i++)
+		{
+			this.pointLights[i]	= this.pointLightUniform("pointLights[" + i + "]");
+			this.spotLights[i]	= this.spotLightUniform("spotLights[" + i + "]");
+		}
+		this.directionalLight	= this.directionalLightUniform("directionalLight");
 		this.fogColour			= this.vector3fUniform("fogColour");
+		this.attach();
+		this.textureSampler = this.intUniform("texture_sampler");
+		this.textureSampler.load(0);
+		this.normalMapSampler = this.intUniform("normalMap_sampler");
+		this.normalMapSampler.load(1);
 	}
 }

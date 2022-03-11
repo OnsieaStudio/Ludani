@@ -9,13 +9,14 @@ public class GLUniformMaterial implements IShaderUniform<Material>
 {
 	public final static int[] create(Shader shaderIn, String nameIn)
 	{
-		final var locations = new int[5];
+		final var locations = new int[6];
 
 		locations[0]	= shaderIn.uniformLocation(nameIn + ".ambient");
 		locations[1]	= shaderIn.uniformLocation(nameIn + ".diffuse");
 		locations[2]	= shaderIn.uniformLocation(nameIn + ".specular");
 		locations[3]	= shaderIn.uniformLocation(nameIn + ".hasTexture");
-		locations[4]	= shaderIn.uniformLocation(nameIn + ".reflectance");
+		locations[4]	= shaderIn.uniformLocation(nameIn + ".hasNormalMap");
+		locations[5]	= shaderIn.uniformLocation(nameIn + ".reflectance");
 
 		return locations;
 	}
@@ -26,7 +27,8 @@ public class GLUniformMaterial implements IShaderUniform<Material>
 		GLUniformVector4f.load(locationsIn[1], materialIn.diffuseColour());
 		GLUniformVector4f.load(locationsIn[2], materialIn.specularColour());
 		GLUniformInt.load(locationsIn[3], materialIn.isTextured() ? 1 : 0);
-		GLUniformFloat.load(locationsIn[4], materialIn.reflectance());
+		GLUniformInt.load(locationsIn[4], materialIn.hasNormalMap() ? 1 : 0);
+		GLUniformFloat.load(locationsIn[5], materialIn.reflectance());
 	}
 
 	private IShaderProgram	parent;

@@ -3,20 +3,28 @@ package fr.onsiea.engine.client.graphics.material;
 import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.texture.ITexture;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PUBLIC)
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode
 public class Material
 {
 	private static final Vector4f	DEFAULT_COLOUR	= new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	private Vector4f				ambientColour;
-
 	private Vector4f				diffuseColour;
-
 	private Vector4f				specularColour;
-
 	private float					reflectance;
-
 	private ITexture				texture;
+	private ITexture				normalMap;
 
 	public Material()
 	{
@@ -51,63 +59,24 @@ public class Material
 		this.reflectance(reflectanceIn);
 	}
 
+	public Material(Vector4f ambientColourIn, Vector4f diffuseColourIn, Vector4f specularColourIn, ITexture textureIn,
+			float reflectanceIn, ITexture normalMapIn)
+	{
+		this.ambientColour(ambientColourIn);
+		this.diffuseColour(diffuseColourIn);
+		this.specularColour(specularColourIn);
+		this.texture(textureIn);
+		this.reflectance(reflectanceIn);
+		this.normalMap(normalMapIn);
+	}
+
+	public boolean hasNormalMap()
+	{
+		return this.normalMap() != null;
+	}
+
 	public boolean isTextured()
 	{
-		return this.texture != null;
-	}
-
-	public final Vector4f ambientColour()
-	{
-		return this.ambientColour;
-	}
-
-	private final void ambientColour(Vector4f ambientColourIn)
-	{
-		this.ambientColour = ambientColourIn;
-	}
-
-	public final Vector4f diffuseColour()
-	{
-		return this.diffuseColour;
-	}
-
-	private final void diffuseColour(Vector4f diffuseColourIn)
-	{
-		this.diffuseColour = diffuseColourIn;
-	}
-
-	public final Vector4f specularColour()
-	{
-		return this.specularColour;
-	}
-
-	private final void specularColour(Vector4f specularColourIn)
-	{
-		this.specularColour = specularColourIn;
-	}
-
-	public final float reflectance()
-	{
-		return this.reflectance;
-	}
-
-	public final void reflectance(float reflectanceIn)
-	{
-		this.reflectance = reflectanceIn;
-	}
-
-	public final ITexture texture()
-	{
-		return this.texture;
-	}
-
-	private final void texture(ITexture textureIn)
-	{
-		this.texture = textureIn;
-	}
-
-	public static final Vector4f defaultColour()
-	{
-		return Material.DEFAULT_COLOUR;
+		return this.texture() != null;
 	}
 }

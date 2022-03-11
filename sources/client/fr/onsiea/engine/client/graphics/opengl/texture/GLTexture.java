@@ -202,14 +202,6 @@ public class GLTexture implements ITexture
 		return this;
 	}
 
-	public ITexture attachAndActive0()
-	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id());
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-
-		return this;
-	}
-
 	@Override
 	public void send(ByteBuffer bufferIn)
 	{
