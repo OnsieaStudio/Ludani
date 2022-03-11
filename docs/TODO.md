@@ -13,7 +13,7 @@
 | CODE_OF_CONDUCT.md                    | :white_check_mark:    |
 | CONVENTIONS.md                        | :white_check_mark:    |
 | TODO.md                               | :white_check_mark:    |
-| SECURITY.md                           | :white_check_mark:     |
+| SECURITY.md                           | :white_check_mark:    |
 | Base sources, resources and folders   | :white_check_mark:    |
 | CodeQL setup                          | :white_check_mark:    |
 | pom.xml                               | :white_check_mark:    |
@@ -30,9 +30,12 @@
 | Initial Wiki pages                    | :white_check_mark:    |
 | Wiki contact page                     | :white_check_mark:    |
 | Wiki license page                     | :white_check_mark:    |
+| Todo page                             | :white_check_mark:    |
+
+
 ## Engine
 
-# Core, common and game
+### Core, common and game
 
 | Name                                  | do ?                  |
 | -------                               | ------------------    |
@@ -42,12 +45,15 @@
 | Game scene manager                    | 50 %    				      |
 | Entity, ICamera, Camera               | :white_check_mark:    |
 | Network                     			    | 10 %    				      |
-| Shape utils, shape cube and rectangle | :white_check_mark:   	|
+| 3D objects picking                    | :x:   	              |
+| Heights map                           | :x:   	              |
+| Procedural terrain                    | :x:   	              |
+| Colisions                             | :x:   	              |
 
 
 ## Client
 
-# Common
+### Common
 
 | Name                                  		    | do ?                  |
 | -------                               		    | ------------------    |
@@ -60,41 +66,81 @@
 | Meshs manager, utils and interfaces   		    | :white_check_mark:    |
 | Shader program and uniform            		    | :white_check_mark:    |
 | Shaders manager                     			    | :white_check_mark:    |
-| Skybox renderer                     			    | :white_check_mark:    |
-| Point, spot, directional lights      		      | :white_check_mark:    |
-| Material, specularPower, ambient light        | :white_check_mark:    |
 | Keyboard and cursor inputs manager and utils  | :white_check_mark:    |
 | Resources paths utils                     	  | :white_check_mark:    |
 | OpenAL sound manager and utils                | :white_check_mark:    |
+| Assimp manager and utils                      | :white_check_mark:    |
+| Skybox renderer                     			    | :white_check_mark:    |
+| Point, spot, directional lights      		      | :white_check_mark:    |
+| Fog                                           | 50 %                  |
+| Mipmapping                                    | :white_check_mark:    |
+| Multiple lights                               | 50 %                  |
+| Cel shading                                   | :x:                   |
+| Normal mapping                                | :x:                   |
+| Shadow mapping                                | :x:                   |
+| Shadows                                       | :x:                   |
+| Cascaded shadow maps                          | :x:                   |
+| Specular Maps                                 | :x:                   |
+| Font rendering using NanoVG                   | :white_check_mark:    |
+| Font rendering                                | :x:                   |
+| Distance Field Text Rendering                 | :x:                   |
+| Particles                                     | 50 %                  |
+| Animated particles textures                   | 50 %                  |
+| Percentage Closer Filtering                   | :x:                   |
+| Antialiasing and anisotropic                  | :white_check_mark:    |
+| Reflections                                   | :x:                   |
+| Cube map texture                              | :white_check_mark:    |
+| Render to cube map texture                    | :x:                   |
+| Mesh animation                                | :x:                   |
+| Water                                         | :x:                   |
+| Lens flare                    				        | 50 %                  |
+| PostProcessing                   				      | 50 %                  |
+| PostProcessing - BrightFilter                 | 50 %                  |
+| PostProcessing - combineFilter                | 50 %                  |
+| PostProcessing - contrastChanger              | 50 %                  |
+| PostProcessing - horizontal and vertical blur | 50 %                  |
 
-
-# OpenGL
+### OpenGL
 
 | Name                                  		    | do ?                  |
 | -------                               		    | ------------------    |
 | OpenGL context initializer, utils and manager | :white_check_mark:    |
 | OpenGL debugging                    			    | :white_check_mark:    |
-| OpenGLSettings                    		      	| :white_check_mark:    |
-| OpenGLScreenshot                    			    | :white_check_mark:    |
-| Mesh, models structures                    	  | :white_check_mark:    |
+| OpenGL settings                    		      	| :white_check_mark:    |
+| OpenGL screenshot                    			    | :white_check_mark:    |
+| Rendering system implementations              | :white_check_mark:    |
+| Textures manager implementations              | :white_check_mark:    |
+| Meshs manager implementations                 | :white_check_mark:    |
+| Shaders manager implementations               | :white_check_mark:    |
+| Shaders program and uniform implementations   | :white_check_mark:    |
 | Vao and vbo complete builder                  | :white_check_mark:    |
 | FBO                    						            | :white_check_mark:   	|
-| Lens flare                    				        | :white_check_mark:    |
-| Particles system                    			    | :white_check_mark:    |
-| PostProcessing                   				      | :white_check_mark:    |
-| PostProcessing - BrightFilter                 | :white_check_mark:    |
-| PostProcessing - combineFilter                | :white_check_mark:    |
-| PostProcessing - contrastChanger              | :white_check_mark:    |
-| PostProcessing - horizontal and vertical blur | :white_check_mark:    |
+| Multisampled FBOs                    					| :white_check_mark:   	|
+| Instanced rendering                           | :x:                   |
+| Multiple render targets                       | :x:                   |
+| Occlusion queries                             | :x:                   |
+| Deffered shading                              | :x:                   |
 
-# NanoVG
+### NanoVG
 
 | Name                                  | do ?                  |
 | -------                               | ------------------    |
 | Manager                    			      | :white_check_mark:    |
 | Font                    				      | :white_check_mark:    |
 
-# Vulkan
+### Vulkan
+
+| Name                                  		    | do ?                  |
+| -------                               		    | ------------------    |
+| Vulkan context initializer, utils and manager | :white_check_mark:    |
+| Vulkan debugging                    			    | :white_check_mark:    |
+| Vulkan settings                    		      	| :white_check_mark:    |
+| Vulkan screenshot                    			    | :white_check_mark:    |
+| Rendering system implementations              | :white_check_mark:    |
+| Textures manager implementations              | :white_check_mark:    |
+| Meshs manager implementations                 | :white_check_mark:    |
+| Shaders manager implementations               | :white_check_mark:    |
+| Shaders program and uniform implementations   | :white_check_mark:    |
 
 ## Utils
 
