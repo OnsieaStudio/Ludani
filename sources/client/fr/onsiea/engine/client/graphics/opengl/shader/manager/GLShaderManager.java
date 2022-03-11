@@ -24,7 +24,7 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shader;
+package fr.onsiea.engine.client.graphics.opengl.shader.manager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,12 +38,17 @@ import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.CombineShad
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.ContrastShader;
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.HorizontalBlurShader;
 import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.VerticalBlurShader;
-import fr.onsiea.engine.client.graphics.shader.IProjection;
-import fr.onsiea.engine.client.graphics.shader.IProjectionView;
+import fr.onsiea.engine.client.graphics.opengl.shaders.InstancedShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.Shader2D;
+import fr.onsiea.engine.client.graphics.opengl.shaders.Shader3DTo2D;
+import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderBasic;
+import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderSkybox;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
-import fr.onsiea.engine.client.graphics.shader.IView;
-import fr.onsiea.engine.client.graphics.shader.IViewWithoutTranslations;
+import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
+import fr.onsiea.engine.client.graphics.shader.utils.IProjectionView;
+import fr.onsiea.engine.client.graphics.shader.utils.IView;
+import fr.onsiea.engine.client.graphics.shader.utils.IViewWithoutTranslations;
 import fr.onsiea.engine.core.entity.ICamera;
 import lombok.AccessLevel;
 import lombok.Getter;

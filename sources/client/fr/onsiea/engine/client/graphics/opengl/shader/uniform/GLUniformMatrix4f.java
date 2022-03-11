@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
@@ -37,7 +37,7 @@ public class GLUniformMatrix4f implements IShaderUniform<Matrix4f>
 	private IShaderProgram	parent;
 	private int				location;
 
-	public GLUniformMatrix4f(Shader parentIn, String nameIn)
+	public GLUniformMatrix4f(GLShaderProgram parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 		this.location(parentIn.uniformLocation(nameIn));

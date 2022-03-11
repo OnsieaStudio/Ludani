@@ -1,6 +1,6 @@
 package fr.onsiea.engine.client.graphics.opengl.shader.effects;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector4f;
@@ -13,7 +13,7 @@ import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector4f;
  * @author Karl
  *
  */
-public class FlareShader extends Shader
+public class FlareShader extends GLShaderProgram
 {
 
 	private final static String	VERTEX_SHADER	= "resources/shaders/lensflare/flareVertex.glsl";

@@ -36,5 +36,9 @@ public interface IShaderProgram extends ICleanable
 {
 	IShaderProgram attach();
 
+	IShaderProgram attributes(String... nameIn);
+
+	<T> IShaderProgram uniform(String nameIn, IShaderUniform<T> uniformIn);
+
 	<T> IShaderUniform<?> get(String nameIn);
 }

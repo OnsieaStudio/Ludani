@@ -6,13 +6,13 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL20;
 
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
 public class GLUniformDirectionalLight implements IShaderUniform<DirectionalLight>
 {
-	public final static int[] create(Shader shaderIn, String nameIn)
+	public final static int[] create(GLShaderProgram shaderIn, String nameIn)
 	{
 		final var locations = new int[3];
 
@@ -49,7 +49,7 @@ public class GLUniformDirectionalLight implements IShaderUniform<DirectionalLigh
 	private IShaderProgram	parent;
 	private int[]			locations;
 
-	public GLUniformDirectionalLight(Shader parentIn, String nameIn)
+	public GLUniformDirectionalLight(GLShaderProgram parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 

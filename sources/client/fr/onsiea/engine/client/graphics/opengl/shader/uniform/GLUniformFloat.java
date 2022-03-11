@@ -2,7 +2,7 @@ package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 
 import org.lwjgl.opengl.GL20;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 import lombok.NonNull;
@@ -17,7 +17,7 @@ public class GLUniformFloat implements IShaderUniform<Float>
 	private IShaderProgram	parent;
 	private int				location;
 
-	public GLUniformFloat(Shader parentIn, String nameIn)
+	public GLUniformFloat(GLShaderProgram parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 

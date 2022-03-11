@@ -24,15 +24,36 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.shader;
+package fr.onsiea.engine.client.graphics.opengl.shaders;
 
-import org.joml.Matrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
+import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
+import fr.onsiea.engine.client.graphics.shader.utils.IViewWithoutTranslations;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Seynax
  *
  */
-public interface IView
+@Getter(AccessLevel.PUBLIC)
+public class ShaderSkybox extends GLShaderProgram implements IProjection, IViewWithoutTranslations
 {
-	IShaderUniform<Matrix4f> view();
+	private final GLUniformMatrix4f	projection;
+	private final GLUniformMatrix4f	view;
+	private final GLUniformVector3f	fogColour;
+
+	/**
+	 * @throws Exception
+	 */
+	public ShaderSkybox() throws Exception
+	{
+		super("resources/shaders/skyboxVertex.vs", "resources/shaders/skyboxFragment.fs", "position", "uvs");
+
+		this.projection	= this.matrix4fUniform("projection");
+		this.view		= this.matrix4fUniform("view");
+		this.fogColour	= this.vector3fUniform("fogColour");
+	}
 }

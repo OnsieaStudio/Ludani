@@ -43,7 +43,7 @@ import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
 import fr.onsiea.engine.client.graphics.mesh.OBJLoader;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMeshManager;
-import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
+import fr.onsiea.engine.client.graphics.opengl.shader.manager.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTextureCubeMap;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexturesManager;

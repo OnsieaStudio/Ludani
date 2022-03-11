@@ -8,8 +8,8 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.opengl.model.GLRawModel;
-import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderManager;
-import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderUtils;
+import fr.onsiea.engine.client.graphics.opengl.shader.manager.GLShaderManager;
+import fr.onsiea.engine.client.graphics.opengl.shader.utils.GLShaderUtils;
 import fr.onsiea.engine.utils.maths.normalization.Normalizer;
 import fr.onsiea.engine.utils.maths.transformations.Transformations2f;
 import fr.onsiea.engine.utils.maths.transformations.Transformations3f;

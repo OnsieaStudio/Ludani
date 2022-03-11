@@ -24,18 +24,17 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shader;
+package fr.onsiea.engine.client.graphics.shader.utils;
 
-import org.lwjgl.opengl.GL20;
+import org.joml.Matrix4f;
+
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
 /**
  * @author Seynax
  *
  */
-public class GLShaderUtils
+public interface IProjectionView
 {
-	public final static void detach()
-	{
-		GL20.glUseProgram(0);
-	}
+	IShaderUniform<Matrix4f> projectionView();
 }

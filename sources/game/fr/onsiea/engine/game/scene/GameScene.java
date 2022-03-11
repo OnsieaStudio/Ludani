@@ -44,7 +44,7 @@ import fr.onsiea.engine.client.graphics.light.PointLight.Attenuation;
 import fr.onsiea.engine.client.graphics.light.SpotLight;
 import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
-import fr.onsiea.engine.client.graphics.opengl.shader.ShaderBasic;
+import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderBasic;
 import fr.onsiea.engine.client.graphics.opengl.skybox.SkyboxRenderer;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;

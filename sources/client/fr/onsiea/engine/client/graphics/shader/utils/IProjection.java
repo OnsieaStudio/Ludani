@@ -24,15 +24,17 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.shader;
+package fr.onsiea.engine.client.graphics.shader.utils;
 
 import org.joml.Matrix4f;
+
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
 /**
  * @author Seynax
  *
  */
-public interface IViewWithoutTranslations
+public interface IProjection
 {
-	IShaderUniform<Matrix4f> view();
+	IShaderUniform<Matrix4f> projection();
 }

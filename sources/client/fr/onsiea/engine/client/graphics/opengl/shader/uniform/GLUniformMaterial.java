@@ -1,13 +1,13 @@
 package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 
 import fr.onsiea.engine.client.graphics.material.Material;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
 public class GLUniformMaterial implements IShaderUniform<Material>
 {
-	public final static int[] create(Shader shaderIn, String nameIn)
+	public final static int[] create(GLShaderProgram shaderIn, String nameIn)
 	{
 		final var locations = new int[6];
 
@@ -34,7 +34,7 @@ public class GLUniformMaterial implements IShaderUniform<Material>
 	private IShaderProgram	parent;
 	private int[]			locations;
 
-	public GLUniformMaterial(Shader parentIn, String nameIn)
+	public GLUniformMaterial(GLShaderProgram parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 

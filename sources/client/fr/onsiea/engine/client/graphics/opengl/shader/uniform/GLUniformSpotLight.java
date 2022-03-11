@@ -5,13 +5,13 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.light.SpotLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
 public class GLUniformSpotLight implements IShaderUniform<SpotLight>
 {
-	public final static int[] create(Shader shaderIn, String nameIn)
+	public final static int[] create(GLShaderProgram shaderIn, String nameIn)
 	{
 		final var locations = new int[8];
 
@@ -49,7 +49,7 @@ public class GLUniformSpotLight implements IShaderUniform<SpotLight>
 	private IShaderProgram	parent;
 	private int[]			locations;
 
-	public GLUniformSpotLight(Shader parentIn, String nameIn)
+	public GLUniformSpotLight(GLShaderProgram parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 

@@ -24,8 +24,9 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shader;
+package fr.onsiea.engine.client.graphics.opengl.shaders;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,7 +36,7 @@ import lombok.Getter;
  *
  */
 @Getter(AccessLevel.PUBLIC)
-public class Shader3DTo2D extends Shader
+public class Shader3DTo2D extends GLShaderProgram
 {
 	private final GLUniformMatrix4f transformations;
 

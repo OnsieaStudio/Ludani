@@ -9,7 +9,7 @@ import fr.onsiea.engine.client.graphics.opengl.postprocessing.effects.CombineFil
 import fr.onsiea.engine.client.graphics.opengl.postprocessing.effects.ContrastChanger;
 import fr.onsiea.engine.client.graphics.opengl.postprocessing.effects.HorizontalBlur;
 import fr.onsiea.engine.client.graphics.opengl.postprocessing.effects.VerticalBlur;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader2D;
+import fr.onsiea.engine.client.graphics.opengl.shaders.Shader2D;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;

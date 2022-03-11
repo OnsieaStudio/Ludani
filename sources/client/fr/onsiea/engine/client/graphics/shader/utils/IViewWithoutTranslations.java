@@ -24,29 +24,17 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shader;
+package fr.onsiea.engine.client.graphics.shader.utils;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector2f;
-import lombok.AccessLevel;
-import lombok.Getter;
+import org.joml.Matrix4f;
+
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
 /**
  * @author Seynax
  *
  */
-@Getter(AccessLevel.PUBLIC)
-public class InstancedShader extends Shader
+public interface IViewWithoutTranslations
 {
-	private final GLUniformVector2f rowsAndColumns;
-
-	/**
-	 * @throws Exception
-	 */
-	public InstancedShader() throws Exception
-	{
-		super("resources/shaders/instancedVertex.vs", "resources/shaders/instancedFragment.fs", "position", "uvs",
-				"m_transformations", "tex");
-
-		this.rowsAndColumns = this.vector2fUniform("rowsAndColumns");
-	}
+	IShaderUniform<Matrix4f> view();
 }

@@ -3,7 +3,7 @@ package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL20;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
@@ -22,7 +22,7 @@ public class GLUniformVector4f implements IShaderUniform<Vector4f>
 	private IShaderProgram	parent;
 	private int				location;
 
-	public GLUniformVector4f(Shader parentIn, String nameIn)
+	public GLUniformVector4f(GLShaderProgram parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 

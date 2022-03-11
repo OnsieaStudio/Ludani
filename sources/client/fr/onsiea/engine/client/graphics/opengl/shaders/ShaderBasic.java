@@ -24,8 +24,9 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shader;
+package fr.onsiea.engine.client.graphics.opengl.shaders;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformBoolean;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
@@ -35,8 +36,8 @@ import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformSpotLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
-import fr.onsiea.engine.client.graphics.shader.IProjection;
-import fr.onsiea.engine.client.graphics.shader.IView;
+import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
+import fr.onsiea.engine.client.graphics.shader.utils.IView;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -45,7 +46,7 @@ import lombok.Getter;
  *
  */
 @Getter(AccessLevel.PUBLIC)
-public class ShaderBasic extends Shader implements IProjection, IView
+public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 {
 	private final static int				LIGHTS	= 5;
 

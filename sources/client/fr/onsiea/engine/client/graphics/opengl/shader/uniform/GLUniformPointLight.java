@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.light.PointLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.Shader;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
@@ -15,7 +15,7 @@ public class GLUniformPointLight implements IShaderUniform<PointLight>
 	 * Return components locations in int array (int[])
 	 * @return
 	 */
-	public final static int[] create(Shader shaderIn, String nameIn)
+	public final static int[] create(GLShaderProgram shaderIn, String nameIn)
 	{
 		final var locations = new int[6];
 
@@ -33,7 +33,7 @@ public class GLUniformPointLight implements IShaderUniform<PointLight>
 	 * Return components locations in int array (int[])
 	 * @return
 	 */
-	public final static int[] create(final int[] locationsIn, Shader shaderIn, String nameIn)
+	public final static int[] create(final int[] locationsIn, GLShaderProgram shaderIn, String nameIn)
 	{
 		locationsIn[0]	= shaderIn.uniformLocation(nameIn + ".colour");
 		locationsIn[1]	= shaderIn.uniformLocation(nameIn + ".position");
@@ -77,7 +77,7 @@ public class GLUniformPointLight implements IShaderUniform<PointLight>
 	private IShaderProgram	parent;
 	private int[]			locations;
 
-	public GLUniformPointLight(Shader parentIn, String nameIn)
+	public GLUniformPointLight(GLShaderProgram parentIn, String nameIn)
 	{
 		this.parent(parentIn);
 

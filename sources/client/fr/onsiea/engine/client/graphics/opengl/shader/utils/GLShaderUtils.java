@@ -24,15 +24,64 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.shader;
+package fr.onsiea.engine.client.graphics.opengl.shader.utils;
 
-import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 
 /**
  * @author Seynax
  *
  */
-public interface IProjectionView
+public class GLShaderUtils
 {
-	IShaderUniform<Matrix4f> projectionView();
+	public final static int compile(final String scriptIn, final int typeIn) throws Exception
+	{
+		final var shaderId = GL20.glCreateShader(typeIn);
+
+		GL20.glShaderSource(shaderId, scriptIn);
+
+		GL20.glCompileShader(shaderId);
+
+		if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE)
+		{
+			throw new Exception("[ERROR] Could not compile shader !\n" + GL20.glGetShaderInfoLog(shaderId, 4096));
+		}
+
+		return shaderId;
+	}
+
+	public final static void link(int programIdIn, int vertexIdIn, int fragmentIdIn) throws Exception
+	{
+		GL20.glAttachShader(programIdIn, vertexIdIn);
+		GL20.glAttachShader(programIdIn, fragmentIdIn);
+
+		GL20.glLinkProgram(programIdIn);
+
+		if (GL20.glGetProgrami(programIdIn, GL20.GL_LINK_STATUS) == 0)
+		{
+			throw new Exception("Error linking Shader code: " + GL20.glGetProgramInfoLog(programIdIn, 1024));
+		}
+
+		if (vertexIdIn != 0)
+		{
+			GL20.glDetachShader(programIdIn, vertexIdIn);
+		}
+		if (fragmentIdIn != 0)
+		{
+			GL20.glDetachShader(programIdIn, fragmentIdIn);
+		}
+
+		GL20.glValidateProgram(programIdIn);
+
+		if (GL20.glGetProgrami(programIdIn, GL20.GL_VALIDATE_STATUS) == 0)
+		{
+			System.err.println("Warning validating Shader code: " + GL20.glGetProgramInfoLog(programIdIn, 1024));
+		}
+	}
+
+	public final static void detach()
+	{
+		GL20.glUseProgram(0);
+	}
 }

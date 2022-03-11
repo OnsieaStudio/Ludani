@@ -41,7 +41,7 @@ import fr.onsiea.engine.client.graphics.opengl.flare.FlareManager;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareTexture;
 import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
 import fr.onsiea.engine.client.graphics.opengl.postprocessing.PostProcessing;
-import fr.onsiea.engine.client.graphics.opengl.shader.InstancedShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.InstancedShader;
 import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.particles.IParticleSystem;
 import fr.onsiea.engine.client.graphics.particles.ParticleManager;

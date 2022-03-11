@@ -27,7 +27,7 @@
 package fr.onsiea.engine.client.graphics.opengl.skybox;
 
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
-import fr.onsiea.engine.client.graphics.opengl.shader.ShaderSkybox;
+import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderSkybox;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.resources.IResourcesPath;

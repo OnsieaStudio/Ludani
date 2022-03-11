@@ -24,26 +24,17 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shader;
+package fr.onsiea.engine.client.graphics.shader.utils;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
-import lombok.AccessLevel;
-import lombok.Getter;
+import org.joml.Matrix4f;
+
+import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
 
 /**
  * @author Seynax
  *
  */
-@Getter(AccessLevel.PUBLIC)
-public class Shader2D extends Shader
+public interface IView
 {
-	private GLUniformMatrix4f transformations;
-
-	/**
-	 * @throws Exception
-	 */
-	public Shader2D() throws Exception
-	{
-		super("resources/shaders/vertex2D.vs", "resources/shaders/fragment2D.fs", "position");
-	}
+	IShaderUniform<Matrix4f> view();
 }
