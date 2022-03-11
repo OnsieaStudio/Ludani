@@ -8,9 +8,14 @@ import org.lwjgl.opengl.GL20;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
-import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-public class GLUniformDirectionalLight implements IShaderUniform<DirectionalLight>
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
+public class GLUniformDirectionalLight implements IShaderTypedUniform<DirectionalLight>
 {
 	public final static int[] create(GLShaderProgram shaderIn, String nameIn)
 	{
@@ -69,25 +74,5 @@ public class GLUniformDirectionalLight implements IShaderUniform<DirectionalLigh
 		GLUniformDirectionalLight.load(this.locations(), directionalLightIn, viewMatrixIn);
 
 		return this.parent();
-	}
-
-	private final IShaderProgram parent()
-	{
-		return this.parent;
-	}
-
-	private final void parent(IShaderProgram parentIn)
-	{
-		this.parent = parentIn;
-	}
-
-	private final int[] locations()
-	{
-		return this.locations;
-	}
-
-	private final void locations(int[] locationsIn)
-	{
-		this.locations = locationsIn;
 	}
 }

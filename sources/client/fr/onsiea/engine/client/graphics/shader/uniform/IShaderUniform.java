@@ -24,17 +24,15 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.shader.utils;
+package fr.onsiea.engine.client.graphics.shader.uniform;
 
-import org.joml.Matrix4f;
-
-import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 
 /**
  * @author Seynax
  *
  */
-public interface IViewWithoutTranslations
+public interface IShaderUniform
 {
-	IShaderTypedUniform<Matrix4f> view();
+	IShaderProgram parent();
 }

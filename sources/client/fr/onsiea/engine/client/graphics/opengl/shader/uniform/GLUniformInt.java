@@ -4,10 +4,15 @@ import org.lwjgl.opengl.GL20;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
-import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
-public class GLUniformInt implements IShaderUniform<Integer>
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
+public class GLUniformInt implements IShaderTypedUniform<Integer>
 {
 	public final static void load(int locationIn, int valueIn)
 	{
@@ -30,25 +35,5 @@ public class GLUniformInt implements IShaderUniform<Integer>
 		GL20.glUniform1i(this.location(), valueIn);
 
 		return this.parent();
-	}
-
-	private final IShaderProgram parent()
-	{
-		return this.parent;
-	}
-
-	private final void parent(IShaderProgram parentIn)
-	{
-		this.parent = parentIn;
-	}
-
-	private final int location()
-	{
-		return this.location;
-	}
-
-	private final void location(int locationIn)
-	{
-		this.location = locationIn;
 	}
 }

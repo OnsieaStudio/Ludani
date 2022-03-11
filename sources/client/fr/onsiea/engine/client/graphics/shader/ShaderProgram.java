@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderUniform;
 import fr.onsiea.engine.client.resources.ResourcesPath;
 import fr.onsiea.engine.utils.file.FileUtils;
 
@@ -40,8 +42,8 @@ import fr.onsiea.engine.utils.file.FileUtils;
  */
 public abstract class ShaderProgram implements IShaderProgram
 {
-	private final List<String>						attributes;
-	private final Map<String, IShaderUniform<?>>	uniforms;
+	private final List<String>					attributes;
+	private final Map<String, IShaderUniform>	uniforms;
 
 	public ShaderProgram(String vertexScriptFilepathIn, String fragmentScriptFilepathIn, String... attributesIn)
 			throws Exception
@@ -167,7 +169,7 @@ public abstract class ShaderProgram implements IShaderProgram
 	protected abstract void createAttribute(String nameIn, int indexIn);
 
 	@Override
-	public <T> IShaderProgram uniform(String nameIn, IShaderUniform<T> uniformIn)
+	public IShaderProgram uniform(String nameIn, IShaderUniform uniformIn)
 	{
 		this.uniforms.put(nameIn, uniformIn);
 
@@ -175,7 +177,15 @@ public abstract class ShaderProgram implements IShaderProgram
 	}
 
 	@Override
-	public <T> IShaderUniform<?> get(String nameIn)
+	public <T> IShaderProgram uniform(String nameIn, IShaderTypedUniform<T> uniformIn)
+	{
+		this.uniforms.put(nameIn, uniformIn);
+
+		return this;
+	}
+
+	@Override
+	public IShaderUniform get(String nameIn)
 	{
 		return this.uniforms.get(nameIn);
 	}

@@ -7,9 +7,14 @@ import org.joml.Vector4f;
 import fr.onsiea.engine.client.graphics.light.SpotLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
-import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-public class GLUniformSpotLight implements IShaderUniform<SpotLight>
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
+public class GLUniformSpotLight implements IShaderTypedUniform<SpotLight>
 {
 	public final static int[] create(GLShaderProgram shaderIn, String nameIn)
 	{
@@ -69,25 +74,5 @@ public class GLUniformSpotLight implements IShaderUniform<SpotLight>
 		GLUniformSpotLight.load(this.locations(), spotLightIn, viewMatrixIn);
 
 		return this.parent();
-	}
-
-	private final IShaderProgram parent()
-	{
-		return this.parent;
-	}
-
-	private final void parent(IShaderProgram parentIn)
-	{
-		this.parent = parentIn;
-	}
-
-	private final int[] locations()
-	{
-		return this.locations;
-	}
-
-	private final void locations(int[] locationsIn)
-	{
-		this.locations = locationsIn;
 	}
 }

@@ -3,9 +3,14 @@ package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
-import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-public class GLUniformMaterial implements IShaderUniform<Material>
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
+public class GLUniformMaterial implements IShaderTypedUniform<Material>
 {
 	public final static int[] create(GLShaderProgram shaderIn, String nameIn)
 	{
@@ -47,25 +52,5 @@ public class GLUniformMaterial implements IShaderUniform<Material>
 		GLUniformMaterial.load(this.locations(), materialIn);
 
 		return this.parent();
-	}
-
-	private final IShaderProgram parent()
-	{
-		return this.parent;
-	}
-
-	private final void parent(IShaderProgram parentIn)
-	{
-		this.parent = parentIn;
-	}
-
-	private final int[] locations()
-	{
-		return this.locations;
-	}
-
-	private final void locations(int[] locationsIn)
-	{
-		this.locations = locationsIn;
 	}
 }

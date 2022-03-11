@@ -2,6 +2,7 @@ package fr.onsiea.engine.client.graphics.opengl.shader;
 
 import org.lwjgl.opengl.GL20;
 
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniform;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformBoolean;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
@@ -31,19 +32,19 @@ public class GLShaderProgram extends ShaderProgram
 
 	private int	programId;
 
-	protected GLShaderProgram(String vertexShaderScriptFilepathIn, String fragmentShaderScriptFilepathIn,
+	public GLShaderProgram(String vertexShaderScriptFilepathIn, String fragmentShaderScriptFilepathIn,
 			String... attributesIn) throws Exception
 	{
 		super(vertexShaderScriptFilepathIn, fragmentShaderScriptFilepathIn, attributesIn);
 	}
 
-	protected GLShaderProgram(String vertexShaderIn, String fragmentShaderIn, boolean isScriptIn,
-			String... attributesIn) throws Exception
+	public GLShaderProgram(String vertexShaderIn, String fragmentShaderIn, boolean isScriptIn, String... attributesIn)
+			throws Exception
 	{
 		super(vertexShaderIn, fragmentShaderIn, isScriptIn, attributesIn);
 	}
 
-	protected GLShaderProgram(ResourcesPath vertexShaderScriptResourcespathIn,
+	public GLShaderProgram(ResourcesPath vertexShaderScriptResourcespathIn,
 			ResourcesPath fragmentShaderScriptResourcespathIn, String... attributesIn) throws Exception
 	{
 		super(vertexShaderScriptResourcespathIn, fragmentShaderScriptResourcespathIn, attributesIn);
@@ -83,6 +84,18 @@ public class GLShaderProgram extends ShaderProgram
 		}
 
 		return locations;
+	}
+
+	/**
+	 * @param stringIn
+	 * @return
+	 */
+	public GLUniform uniform(String nameIn)
+	{
+		final var uniform = new GLUniform(this, nameIn);
+		this.uniform(nameIn, uniform);
+
+		return uniform;
 	}
 
 	public GLUniformInt intUniform(String nameIn)

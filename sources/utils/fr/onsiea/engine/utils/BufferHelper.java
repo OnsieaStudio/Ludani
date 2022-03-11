@@ -8,6 +8,8 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 
+import org.joml.Matrix2f;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.CLongBuffer;
@@ -17,6 +19,33 @@ import org.lwjgl.system.MemoryUtil;
 
 public class BufferHelper
 {
+	public final static FloatBuffer convertToBuffer(Matrix2f matrixIn)
+	{
+		// Dump the matrix into a float buffer
+
+		try (var stack = MemoryStack.stackPush())
+		{
+			final var fb = stack.mallocFloat(4);
+
+			matrixIn.get(fb);
+
+			return fb;
+		}
+	}
+
+	public final static FloatBuffer convertToBuffer(Matrix3f matrixIn)
+	{
+		// Dump the matrix into a float buffer
+
+		try (var stack = MemoryStack.stackPush())
+		{
+			final var fb = stack.mallocFloat(9);
+
+			matrixIn.get(fb);
+
+			return fb;
+		}
+	}
 
 	public final static FloatBuffer convertToBuffer(Matrix4f matrixIn)
 	{

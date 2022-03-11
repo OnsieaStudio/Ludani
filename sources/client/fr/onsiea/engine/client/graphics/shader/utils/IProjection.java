@@ -28,7 +28,7 @@ package fr.onsiea.engine.client.graphics.shader.utils;
 
 import org.joml.Matrix4f;
 
-import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 
 /**
  * @author Seynax
@@ -36,5 +36,5 @@ import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
  */
 public interface IProjection
 {
-	IShaderUniform<Matrix4f> projection();
+	IShaderTypedUniform<Matrix4f> projection();
 }

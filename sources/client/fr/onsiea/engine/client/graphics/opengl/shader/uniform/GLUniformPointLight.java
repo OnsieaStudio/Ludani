@@ -7,9 +7,14 @@ import org.joml.Vector4f;
 import fr.onsiea.engine.client.graphics.light.PointLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
-import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-public class GLUniformPointLight implements IShaderUniform<PointLight>
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
+public class GLUniformPointLight implements IShaderTypedUniform<PointLight>
 {
 	/**
 	 * Return components locations in int array (int[])
@@ -97,25 +102,5 @@ public class GLUniformPointLight implements IShaderUniform<PointLight>
 		GLUniformPointLight.load(this.locations(), pointLightIn, viewMatrixIn);
 
 		return this.parent();
-	}
-
-	private final IShaderProgram parent()
-	{
-		return this.parent;
-	}
-
-	private final void parent(IShaderProgram parentIn)
-	{
-		this.parent = parentIn;
-	}
-
-	private final int[] locations()
-	{
-		return this.locations;
-	}
-
-	private final void locations(int[] locationsIn)
-	{
-		this.locations = locationsIn;
 	}
 }

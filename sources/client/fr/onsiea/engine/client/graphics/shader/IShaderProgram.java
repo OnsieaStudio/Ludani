@@ -26,6 +26,8 @@
 */
 package fr.onsiea.engine.client.graphics.shader;
 
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderUniform;
 import fr.onsiea.engine.utils.ICleanable;
 
 /**
@@ -38,7 +40,9 @@ public interface IShaderProgram extends ICleanable
 
 	IShaderProgram attributes(String... nameIn);
 
-	<T> IShaderProgram uniform(String nameIn, IShaderUniform<T> uniformIn);
+	IShaderProgram uniform(String nameIn, IShaderUniform uniformIn);
 
-	<T> IShaderUniform<?> get(String nameIn);
+	<T> IShaderProgram uniform(String nameIn, IShaderTypedUniform<T> uniformIn);
+
+	IShaderUniform get(String nameIn);
 }

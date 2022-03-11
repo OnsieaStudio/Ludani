@@ -5,9 +5,14 @@ import org.lwjgl.opengl.GL20;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
-import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-public class GLUniformVector2f implements IShaderUniform<Vector2f>
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
+public class GLUniformVector2f implements IShaderTypedUniform<Vector2f>
 {
 	public final static void load(int locationIn, Vector2f valueIn)
 	{
@@ -41,25 +46,5 @@ public class GLUniformVector2f implements IShaderUniform<Vector2f>
 		GL20.glUniform2f(this.location(), xIn, yIn);
 
 		return this.parent();
-	}
-
-	private final IShaderProgram parent()
-	{
-		return this.parent;
-	}
-
-	private final void parent(IShaderProgram parentIn)
-	{
-		this.parent = parentIn;
-	}
-
-	private final int location()
-	{
-		return this.location;
-	}
-
-	private final void location(int locationIn)
-	{
-		this.location = locationIn;
 	}
 }

@@ -6,9 +6,14 @@ import org.lwjgl.system.MemoryStack;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
-import fr.onsiea.engine.client.graphics.shader.IShaderUniform;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-public class GLUniformMatrix4f implements IShaderUniform<Matrix4f>
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PRIVATE)
+public class GLUniformMatrix4f implements IShaderTypedUniform<Matrix4f>
 {
 	public final static void load(int locationIn, Matrix4f valueIn)
 	{
@@ -56,25 +61,5 @@ public class GLUniformMatrix4f implements IShaderUniform<Matrix4f>
 		GLUniformMatrix4f.loadTranspose(this.location(), valueIn);
 
 		return this.parent();
-	}
-
-	private final IShaderProgram parent()
-	{
-		return this.parent;
-	}
-
-	private final void parent(IShaderProgram parentIn)
-	{
-		this.parent = parentIn;
-	}
-
-	private final int location()
-	{
-		return this.location;
-	}
-
-	private final void location(int locationIn)
-	{
-		this.location = locationIn;
 	}
 }

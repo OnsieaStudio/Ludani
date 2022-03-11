@@ -24,13 +24,15 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.shader;
+package fr.onsiea.engine.client.graphics.shader.uniform;
+
+import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 
 /**
  * @author Seynax
  *
  */
-public interface IShaderUniform<T>
+public interface IShaderTypedUniform<T> extends IShaderUniform
 {
 	IShaderProgram load(T valueIn);
 }
