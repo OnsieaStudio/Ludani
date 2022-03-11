@@ -13,7 +13,7 @@
 | CODE_OF_CONDUCT.md                    | :white_check_mark:    |
 | CONVENTIONS.md                        | :white_check_mark:    |
 | TODO.md                               | :white_check_mark:    |
-| SECURITY.md                           | :white_check_mark     |
+| SECURITY.md                           | :white_check_mark:     |
 | Base sources, resources and folders   | :white_check_mark:    |
 | CodeQL setup                          | :white_check_mark:    |
 | pom.xml                               | :white_check_mark:    |
