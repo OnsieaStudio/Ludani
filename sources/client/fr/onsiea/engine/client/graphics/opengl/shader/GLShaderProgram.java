@@ -7,6 +7,7 @@ import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformBoolean;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloatArray;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFog;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMaterial;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
@@ -93,6 +94,18 @@ public class GLShaderProgram extends ShaderProgram
 	public GLUniform uniform(String nameIn)
 	{
 		final var uniform = new GLUniform(this, nameIn);
+		this.uniform(nameIn, uniform);
+
+		return uniform;
+	}
+
+	/**
+	 * @param stringIn
+	 * @return
+	 */
+	public GLUniformBoolean booleanUniform(String nameIn)
+	{
+		final var uniform = new GLUniformBoolean(this, nameIn);
 		this.uniform(nameIn, uniform);
 
 		return uniform;
@@ -190,13 +203,9 @@ public class GLShaderProgram extends ShaderProgram
 		return uniform;
 	}
 
-	/**
-	 * @param stringIn
-	 * @return
-	 */
-	public GLUniformBoolean booleanUniform(String nameIn)
+	public GLUniformFog fogUniform(String nameIn)
 	{
-		final var uniform = new GLUniformBoolean(this, nameIn);
+		final var uniform = new GLUniformFog(this, nameIn);
 		this.uniform(nameIn, uniform);
 
 		return uniform;

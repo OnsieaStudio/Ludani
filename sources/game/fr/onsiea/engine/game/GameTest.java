@@ -120,7 +120,7 @@ public class GameTest implements IGameLogic
 			this.scene				= new GameScene(renderAPIContextIn);
 			this.scene.add("barrel", "resources\\models\\barrel.obj",
 					new Material(new Vector4f(1.0f), new Vector4f(1.0f), new Vector4f(1.0f),
-							renderAPIContextIn.texturesManager().load("resources/textures/barrel.png"), 0.025f,
+							renderAPIContextIn.texturesManager().load("resources/textures/barrel.png"), 1.025f,
 							renderAPIContextIn.texturesManager().load("resources/textures/barrelNormal.png")),
 					MathInstances.simpleTransformationsMatrix3d());
 		}
@@ -388,6 +388,9 @@ public class GameTest implements IGameLogic
 	@Override
 	public void cleanup()
 	{
-		this.nanoVG.cleanup();
+		if (this.nanoVG != null)
+		{
+			this.nanoVG.cleanup();
+		}
 	}
 }

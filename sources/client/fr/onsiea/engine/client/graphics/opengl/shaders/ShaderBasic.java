@@ -29,6 +29,7 @@ package fr.onsiea.engine.client.graphics.opengl.shaders;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniform;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFog;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMaterial;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
@@ -57,9 +58,9 @@ public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 	private final GLUniformPointLight[]		pointLights;
 	private final GLUniformSpotLight[]		spotLights;
 	private final GLUniformDirectionalLight	directionalLight;
-	private final GLUniform					fogColour;
 	private final GLUniform					textureSampler;
 	private final GLUniform					normalMapSampler;
+	private final GLUniformFog				fog;
 
 	/**
 	 * @throws Exception
@@ -83,7 +84,7 @@ public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 			this.spotLights[i]	= this.spotLightUniform("spotLights[" + i + "]");
 		}
 		this.directionalLight	= this.directionalLightUniform("directionalLight");
-		this.fogColour			= this.uniform("fogColour");
+		this.fog				= this.fogUniform("fog");
 		this.attach();
 		this.textureSampler = this.uniform("texture_sampler");
 		this.textureSampler.load(0);

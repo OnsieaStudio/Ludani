@@ -24,15 +24,10 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shaders;
+package fr.onsiea.engine.client.graphics.fog;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFog;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
-import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
-import fr.onsiea.engine.client.graphics.shader.utils.IViewWithoutTranslations;
+import org.joml.Vector3f;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -41,25 +36,26 @@ import lombok.Getter;
  *
  */
 @Getter(AccessLevel.PUBLIC)
-public class ShaderSkybox extends GLShaderProgram implements IProjection, IViewWithoutTranslations
+public class Fog
 {
-	private final GLUniformMatrix4f			projection;
-	private final GLUniformMatrix4f			view;
-	private final GLUniformFog				fog;
-	private final GLUniformVector3f			ambientLight;
-	private final GLUniformDirectionalLight	dirLight;
+	private final boolean	active;
+	private final Vector3f	colour;
+	private final float		density;
+	private final float		gradient;
 
-	/**
-	 * @throws Exception
-	 */
-	public ShaderSkybox() throws Exception
+	public Fog()
 	{
-		super("resources/shaders/skyboxVertex.vs", "resources/shaders/skyboxFragment.fs", "position", "uvs");
+		this.active		= false;
+		this.colour		= new Vector3f(0.0f, 0.0f, 0.0f);
+		this.density	= 0.0f;
+		this.gradient	= 0.0f;
+	}
 
-		this.projection		= this.matrix4fUniform("projection");
-		this.view			= this.matrix4fUniform("view");
-		this.fog			= this.fogUniform("fog");
-		this.ambientLight	= this.vector3fUniform("ambientLight");
-		this.dirLight		= this.directionalLightUniform("dirLight");
+	public Fog(boolean activeIn, Vector3f colourIn, float densityIn, float gradientIn)
+	{
+		this.colour		= colourIn;
+		this.density	= densityIn;
+		this.gradient	= gradientIn;
+		this.active		= activeIn;
 	}
 }

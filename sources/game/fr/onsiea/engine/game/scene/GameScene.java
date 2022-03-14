@@ -38,6 +38,7 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL13;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
+import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.light.PointLight;
 import fr.onsiea.engine.client.graphics.light.PointLight.Attenuation;
@@ -81,6 +82,7 @@ public class GameScene
 	private final PointLight										pointLight;
 	private final SpotLight											spotLight;
 	private final DirectionalLight									directionalLight;
+	private final Fog												fog;
 	private final float												specularPower;
 
 	public GameScene(IRenderAPIContext renderAPIContextIn) throws Exception
@@ -95,8 +97,9 @@ public class GameScene
 		this.cameraTimer		= new Timer();
 		this.shadersManager.updateProjectionAndView(MathInstances.projectionMatrix(), this.camera);
 
+		this.fog = new Fog(true, new Vector3f(0.125f, 0.125f, 0.25f), 0.0075f, 5.0f);
 		this.shader.attach();
-		this.shader.fogColour().load(new Vector3f(0.125f, 0.125f, 0.25f));
+		this.shader.fog().load(this.fog);
 		renderAPIContextIn.shadersManager().detach();
 
 		this.skyboxRenderer		= new SkyboxRenderer(renderAPIContextIn.shadersManager(),
@@ -108,12 +111,12 @@ public class GameScene
 		this.pointLight			= new PointLight(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(0.0f, 2.0f, 0.0f), 1.0f,
 				new Attenuation(0.025f, 0.01f, 0.01f));
 		this.spotLight			= new SpotLight(new PointLight(new Vector3f(1.0f, 1.0f, 1.0f),
-				new Vector3f(0.0f, 2.0f, 0.0f), 1.0f, new Attenuation(0.025f, 0.01f, 0.01f)),
+				new Vector3f(0.0f, 2.0f, 0.0f), 1.5f, new Attenuation(0.025f, 0.01f, 0.01f)),
 				new Vector3f(-0.25f, -0.5f, -0.25f), 75.0f);
 		this.directionalLight	= new DirectionalLight(new Vector3f(1.0f, 1.0f, 1.0f),
-				new Vector3f(-0.125f, -0.25f, -0.125f), 1.0f);
+				new Vector3f(-0.125f, -0.25f, -0.125f), 1.5f);
 
-		this.specularPower		= 1.0f;
+		this.specularPower		= 10.0f;
 	}
 
 	public void add(String nameIn, String meshFilepathIn, Material materialIn, Matrix4f... transformationsIn)
@@ -195,9 +198,9 @@ public class GameScene
 	{
 		this.shader.attach();
 		this.shader.ambientLight().load(this.ambientLight);
-		this.shader.pointLights()[0].load(this.pointLight);
-		this.shader.spotLights()[0].load(this.spotLight);
-		this.shader.directionalLight().load(this.directionalLight);
+		this.shader.pointLights()[0].load(this.pointLight, this.camera.view());
+		this.shader.spotLights()[0].load(this.spotLight, this.camera.view());
+		this.shader.directionalLight().load(this.directionalLight, this.camera.view());
 		this.shader.specularPower().load(this.specularPower);
 
 		final var meshedObjectsIterator = this.objects.entrySet().iterator();
@@ -247,7 +250,7 @@ public class GameScene
 		}
 		this.shadersManager.detach();
 
-		this.skyboxRenderer.attach();
+		this.skyboxRenderer.attach(this.fog, this.ambientLight, this.directionalLight);
 		this.skyboxRenderer.draw();
 		this.skyboxRenderer.detach();
 	}
