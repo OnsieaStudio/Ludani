@@ -85,21 +85,30 @@ public class TextureData implements ITextureData
 			final var	h			= stack.mallocInt(1);
 			final var	channels	= stack.mallocInt(1);
 
-			STBImage.stbi_set_flip_vertically_on_load(flipIn);
+			if (w == null || h == null || channels == null)
+			{
+				throw new RuntimeException(
+						"Can't load metadata of file texture \"" + filepath + "\" " + STBImage.stbi_failure_reason());
+			}
 
-			final var textureBuffer = new TextureData();
-			textureBuffer.buffer(STBImage.stbi_load(filepath, w, h, channels, 4));
+			if (flipIn)
+			{
+				STBImage.stbi_set_flip_vertically_on_load(true);
+			}
 
-			if (textureBuffer.buffer() == null)
+			final var textureData = new TextureData();
+			textureData.buffer(STBImage.stbi_load(filepath, w, h, channels, 4));
+
+			if (textureData.buffer() == null)
 			{
 				throw new RuntimeException(
 						"Can't load buffer of file texture \"" + filepath + "\" " + STBImage.stbi_failure_reason());
 			}
 
-			textureBuffer.width(w.get());
-			textureBuffer.height(h.get());
+			textureData.width(w.get());
+			textureData.height(h.get());
 
-			return textureBuffer;
+			return textureData;
 		}
 		catch (final Exception e)
 		{
@@ -109,11 +118,15 @@ public class TextureData implements ITextureData
 		}
 	}
 
+	@Override
 	public boolean cleanup()
 	{
 		try
 		{
-			STBImage.stbi_image_free(this.buffer());
+			if (this.buffer() != null)
+			{
+				STBImage.stbi_image_free(this.buffer());
+			}
 		}
 		catch (final Exception e)
 		{

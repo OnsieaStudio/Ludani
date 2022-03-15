@@ -42,14 +42,18 @@ public interface ITexturesManager extends IRegistry<ITexture>, ILoadable<ITextur
 
 	/**
 	 * @param nameIn
-	 * @param glLinearIn
+	 * @param minIn
+	 * @param magIn
+	 * @param wrapSIn
+	 * @param wrapTIn
+	 * @param mipmappingIn
 	 * @return
 	 */
 	ITexture load(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn);
 
 	/**
 	 * @param nameIn
-	 * @param glLinearIn
+	 * @param resourcesPathIn
 	 * @return
 	 * @throws Exception
 	 */
@@ -57,8 +61,14 @@ public interface ITexturesManager extends IRegistry<ITexture>, ILoadable<ITextur
 
 	/**
 	 * @param nameIn
-	 * @param glLinearIn
+	 * @param minIn
+	 * @param magIn
+	 * @param wrapSIn
+	 * @param wrapTIn
+	 * @param mipmappingIn
+	 * @param resourcesPathIn
 	 * @return
+	 * @throws Exception
 	 */
 	ITexture loadCubeMapTextures(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn,
 			IResourcesPath... resourcesPathIn) throws Exception;
