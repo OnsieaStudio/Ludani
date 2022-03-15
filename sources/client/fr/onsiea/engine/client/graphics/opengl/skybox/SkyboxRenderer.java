@@ -27,6 +27,7 @@
 package fr.onsiea.engine.client.graphics.opengl.skybox;
 
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 
 import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
@@ -98,7 +99,7 @@ public class SkyboxRenderer
 
 	public SkyboxRenderer attach(Fog fogIn, Vector3f ambientLightIn, DirectionalLight directionalLightIn)
 	{
-		//GL11.glDepthMask(false);
+		GL11.glDepthMask(false);
 		//GL11.glDepthRange(1f, 1f);
 		this.shader.attach();
 		this.shader.fog().load(fogIn);
@@ -106,8 +107,6 @@ public class SkyboxRenderer
 		this.shader.dirLight().load(directionalLightIn);
 		this.mesh.attach();
 		this.texture.attach();
-		//GL11.glDepthRange(0f, 1f);
-		//GL11.glDepthMask(true);
 
 		return this;
 	}
@@ -124,6 +123,8 @@ public class SkyboxRenderer
 		this.texture.detach();
 		this.mesh.detach();
 		this.shadersManager.detach();
+		//GL11.glDepthRange(0f, 1f);
+		GL11.glDepthMask(true);
 
 		return this;
 	}
