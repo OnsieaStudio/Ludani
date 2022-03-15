@@ -31,7 +31,6 @@ import java.io.IOException;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
-import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
@@ -93,11 +92,13 @@ public class Window implements IWindow
 		return new Window(monitorsIn, settingsIn, windowContextIn, pointerIn);
 	}
 
+	private static GLFWImage.Buffer								icons;
+
 	private @Getter(value = AccessLevel.PROTECTED) long			handle;
 	private WindowSettings										settings;
 	private Monitors											monitors;
 	private @Getter(value = AccessLevel.PRIVATE) IWindowContext	windowContext;
-	private static GLFWImage.Buffer								icons;
+	private boolean												isResized;
 
 	public Window(Monitors monitorsIn, WindowSettings settingsIn, IWindowContext windowContextIn)
 			throws IllegalStateException, Exception
@@ -127,9 +128,9 @@ public class Window implements IWindow
 
 	private final void initialization() throws IllegalStateException, Exception
 	{
+		GLFW.glfwDefaultWindowHints();
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 
-		GLFW.glfwDefaultWindowHints();
 		this.settings().hints();
 
 		final var handle = this.createWindow();
@@ -146,17 +147,24 @@ public class Window implements IWindow
 			}
 		});
 
-		try (var stack = MemoryStack.stackPush())
+		if (this.settings.mustMaximized())
 		{
-			final var	pWidth	= stack.mallocInt(1);
-			final var	pHeight	= stack.mallocInt(1);
-
-			GLFW.glfwGetWindowSize(this.handle(), pWidth, pHeight);
-
+			GLFW.glfwMaximizeWindow(handle);
+		}
+		else
+		{
 			final var vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
 
-			GLFW.glfwSetWindowPos(this.handle(), (vidmode.width() - pWidth.get(0)) / 2,
-					(vidmode.height() - pHeight.get(0)) / 2);
+			/**try (var stack = MemoryStack.stackPush())
+			{
+				final var	pWidth	= stack.mallocInt(1);
+				final var	pHeight	= stack.mallocInt(1);
+
+				GLFW.glfwGetWindowSize(this.handle(), pWidth, pHeight);
+			}**/
+
+			GLFW.glfwSetWindowPos(this.handle(), (vidmode.width() - this.settings().width()) / 2,
+					(vidmode.height() - this.settings().height()) / 2);
 		}
 
 		this.windowContext().associate(this.handle, this);

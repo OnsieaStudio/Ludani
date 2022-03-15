@@ -47,8 +47,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Getter(value = AccessLevel.PUBLIC)
-@Setter(value = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE, buildMethodName = "create")
+@Setter(value = AccessLevel.PACKAGE)
+@Builder(access = AccessLevel.PUBLIC, buildMethodName = "create")
 public class WindowSettings
 {
 	private String			title;
@@ -134,7 +134,7 @@ public class WindowSettings
 		GLFW.glfwWindowHint(GLFW.GLFW_REFRESH_RATE, modeIn.refreshRate());
 	}
 
-	private static class WindowSettingsBuilder
+	public static class WindowSettingsBuilder
 	{
 	}
 
