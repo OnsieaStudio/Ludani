@@ -68,8 +68,9 @@ public class MathInstances
 		MathInstances.zNear(MathInstances.DEFAULT_NEAR_PLANE);
 		MathInstances.zFar(MathInstances.DEFAULT_FAR_PLANE);
 
-		Projections.of(windowIn.settings().width(), windowIn.settings().height(), MathInstances.fov(),
-				MathInstances.zNear(), MathInstances.zFar(), MathInstances.projectionMatrix());
+		Projections.of(windowIn.settings().width(), windowIn.settings().height(),
+				(float) Math.toRadians(MathInstances.DEFAULT_FOV), MathInstances.zNear(), MathInstances.zFar(),
+				MathInstances.projectionMatrix());
 	}
 
 	public final static void initialization(Window windowIn, float fovIn, float zNearIn, float zFarIn)
