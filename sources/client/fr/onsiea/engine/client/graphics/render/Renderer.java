@@ -75,7 +75,6 @@ public class Renderer
 		this.renderAPI().cleanup();
 	}
 
-	@SuppressWarnings("unused")
 	public IRenderAPIContext renderAPI()
 	{
 		return this.renderAPI;
