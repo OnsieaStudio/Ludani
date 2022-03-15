@@ -59,7 +59,7 @@ public class Timer
 	}
 
 	/**
-	 * @param textCursorBlinkingSpeedIn
+	 * @param timeIn
 	 * @return
 	 */
 	public boolean isTime(long timeIn)
