@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.onsiea.engine.utils.function.IIFunction;
+
 public class FileUtils
 {
 	public final static boolean copy(final File fromFileIn, final File toFileIn)
@@ -338,6 +340,56 @@ public class FileUtils
 		}
 
 		return true;
+	}
+
+	public static List<String> loadLines(final String filepathIn, IIFunction<String> functionIn)
+	{
+		final var file = new File(filepathIn);
+
+		if (!file.exists() || file.isDirectory())
+		{
+			System.err.println("[ERREUR] Le fichier \"" + filepathIn + "\" n'existe pas !");
+
+			return null;
+		}
+
+		final List<String>	lines			= new ArrayList<>();
+
+		BufferedReader		bufferedReader	= null;
+
+		try
+		{
+			bufferedReader = new BufferedReader(new FileReader(file));
+
+			String line;
+
+			while ((line = bufferedReader.readLine()) != null)
+			{
+				lines.add(line);
+
+				functionIn.execute(line);
+			}
+		}
+		catch (final IOException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				if (bufferedReader != null)
+				{
+					bufferedReader.close();
+				}
+			}
+			catch (final IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		return lines;
 	}
 
 	public static List<String> loadLines(final String filepathIn)
