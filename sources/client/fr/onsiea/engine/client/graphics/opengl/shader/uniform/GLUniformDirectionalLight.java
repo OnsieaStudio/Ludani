@@ -1,9 +1,6 @@
 package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.lwjgl.opengl.GL20;
 
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
@@ -45,10 +42,14 @@ public class GLUniformDirectionalLight implements IShaderTypedUniform<Directiona
 	{
 		GLUniformDirectionalLight.base(locationsIn, directionalLightIn);
 
-		final var	aux	= new Vector4f(directionalLightIn.direction(), 0.0f).mul(viewMatrixIn);
-		final var	vec	= new Vector3f();
-		vec.set(aux.x(), aux.y(), aux.z());
-		GL20.glUniform3f(locationsIn[1], vec.x(), vec.y(), vec.z());
+		GLUniformPointLight.TRANSPOSE_VEC.set(GLUniformPointLight.TRANSPOSE_MAT.set(viewMatrixIn)
+				.transform(GLUniformPointLight.TRANSPOSE_VEC.set(directionalLightIn.direction(), 0.0f)));
+
+		GLUniformVector3f.load(locationsIn[1], GLUniformPointLight.TRANSPOSE_VEC.x(),
+				GLUniformPointLight.TRANSPOSE_VEC.y(), GLUniformPointLight.TRANSPOSE_VEC.z());
+
+		GLUniformVector3f.load(locationsIn[1], GLUniformPointLight.TRANSPOSE_VEC.x(),
+				GLUniformPointLight.TRANSPOSE_VEC.y(), GLUniformPointLight.TRANSPOSE_VEC.z());
 	}
 
 	private IShaderProgram	parent;

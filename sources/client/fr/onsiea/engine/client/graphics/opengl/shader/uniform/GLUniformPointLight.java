@@ -1,13 +1,13 @@
 package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.light.PointLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
+import fr.onsiea.engine.utils.function.IIFunction;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +16,9 @@ import lombok.Setter;
 @Setter(AccessLevel.PRIVATE)
 public class GLUniformPointLight implements IShaderTypedUniform<PointLight>
 {
+	final static Matrix4f	TRANSPOSE_MAT	= new Matrix4f();
+	final static Vector4f	TRANSPOSE_VEC	= new Vector4f();
+
 	/**
 	 * Return components locations in int array (int[])
 	 * @return
@@ -62,12 +65,11 @@ public class GLUniformPointLight implements IShaderTypedUniform<PointLight>
 
 	public final static void load(int[] locationsIn, PointLight pointLightIn, Matrix4f viewMatrixIn)
 	{
-		final var	aux	= new Vector4f(pointLightIn.position(), 1.0f).mul(viewMatrixIn);
-		final var	vec	= new Vector3f();
-		vec.x	= aux.x();
-		vec.y	= aux.y();
-		vec.z	= aux.z();
-		GLUniformVector3f.load(locationsIn[1], vec);
+		GLUniformPointLight.TRANSPOSE_VEC.set(GLUniformPointLight.TRANSPOSE_MAT.set(viewMatrixIn)
+				.transform(GLUniformPointLight.TRANSPOSE_VEC.set(pointLightIn.position(), 1.0f)));
+
+		GLUniformVector3f.load(locationsIn[1], GLUniformPointLight.TRANSPOSE_VEC.x(),
+				GLUniformPointLight.TRANSPOSE_VEC.y(), GLUniformPointLight.TRANSPOSE_VEC.z());
 
 		GLUniformPointLight.base(locationsIn, pointLightIn);
 	}
@@ -100,6 +102,13 @@ public class GLUniformPointLight implements IShaderTypedUniform<PointLight>
 	public IShaderProgram load(PointLight pointLightIn, Matrix4f viewMatrixIn)
 	{
 		GLUniformPointLight.load(this.locations(), pointLightIn, viewMatrixIn);
+
+		return this.parent();
+	}
+
+	public IShaderProgram load(IIFunction<int[]> toLoadIn)
+	{
+		toLoadIn.execute(this.locations);
 
 		return this.parent();
 	}

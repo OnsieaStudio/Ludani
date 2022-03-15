@@ -1,8 +1,6 @@
 package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.light.SpotLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
@@ -37,7 +35,6 @@ public class GLUniformSpotLight implements IShaderTypedUniform<SpotLight>
 	public final static void load(int[] locationsIn, SpotLight spotLightIn)
 	{
 		GLUniformSpotLight.base(locationsIn, spotLightIn);
-
 		GLUniformVector3f.load(locationsIn[7], spotLightIn.coneDirection());
 	}
 
@@ -45,10 +42,14 @@ public class GLUniformSpotLight implements IShaderTypedUniform<SpotLight>
 	{
 		GLUniformSpotLight.base(locationsIn, spotLightIn);
 
-		final var	aux	= new Vector4f(spotLightIn.coneDirection(), 0.0f).mul(viewMatrixIn);
-		final var	vec	= new Vector3f();
-		vec.set(aux.x(), aux.y(), aux.z());
-		GLUniformVector3f.load(locationsIn[7], vec);
+		GLUniformPointLight.TRANSPOSE_VEC.set(GLUniformPointLight.TRANSPOSE_MAT.set(viewMatrixIn)
+				.transform(GLUniformPointLight.TRANSPOSE_VEC.set(spotLightIn.coneDirection(), 0.0f)));
+
+		GLUniformVector3f.load(locationsIn[1], GLUniformPointLight.TRANSPOSE_VEC.x(),
+				GLUniformPointLight.TRANSPOSE_VEC.y(), GLUniformPointLight.TRANSPOSE_VEC.z());
+
+		GLUniformVector3f.load(locationsIn[7], GLUniformPointLight.TRANSPOSE_VEC.x(),
+				GLUniformPointLight.TRANSPOSE_VEC.y(), GLUniformPointLight.TRANSPOSE_VEC.z());
 	}
 
 	private IShaderProgram	parent;
