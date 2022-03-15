@@ -91,7 +91,7 @@ public class OnsieaGearings
 		/**final var builder = new GLShaderBuilder(GLShaderBuilder.POSITIONS_NORMALS_3F, GLShaderBuilder.TEXTURECOORDS_2F,
 				GLShaderBuilder.VIEW, GLShaderBuilder.PROJECTION, GLShaderBuilder.TRANSFORMATIONS,
 				GLShaderBuilder.TEXTURE_SAMPLER);
-		
+
 		builder.build();
 		System.out.println(builder.vertexScript());
 		System.out.println();
@@ -127,7 +127,8 @@ public class OnsieaGearings
 				this.gameLogic().preInitialization();
 				final var windowContext = new GLWindowContext();
 				this.glfwManager(new GLFWManager().initialization(
-						WindowSettings.Builder.of("Onsiea Engine !", 400, 400, 60, WindowShowType.WINDOWED),
+						WindowSettings.Builder.base("Onsiea Engine !", 1920, 1080, 60, WindowShowType.WINDOWED)
+								.mustMaximized(true).mustFocusOnShow(true).create(),
 						windowContext));
 				this.window(this.glfwManager().window());
 				this.glfwManager().inputManager().cursor().blockedPosition(this.window().settings().width() / 2.0D,
@@ -144,8 +145,8 @@ public class OnsieaGearings
 				this.framerateCounterTimer(new Timer());
 
 				this.refreshRate(60.0D);
-				this.updateRate(50.0D);
-				this.inputRate(120.0D);
+				this.updateRate(60.0D);
+				this.inputRate(50.00D);
 				this.secsPerFrame(1.0d / this.refreshRate());
 				this.secsPerUpdate(1.0d / this.updateRate());
 				this.secsPerInput(1.0d / this.inputRate());
@@ -182,7 +183,8 @@ public class OnsieaGearings
 		this.window().pollEvents();
 		this.glfwManager().inputManager().update();
 		this.gameLogic().highRateInput();
-		if (this.inputTimer().isTime((long) this.secsPerInput()))
+
+		if (this.inputTimer().isTime((long) (this.secsPerInput() * 1_000_000_000L)))
 		{
 			this.gameLogic().input(this.window(), this.glfwManager().inputManager());
 		}
@@ -223,8 +225,6 @@ public class OnsieaGearings
 			e.printStackTrace();
 		}
 	}
-
-	private long lastTime;
 
 	public void sync(final double loopStartTimeIn, final double secsPerFrameIn)
 	{
