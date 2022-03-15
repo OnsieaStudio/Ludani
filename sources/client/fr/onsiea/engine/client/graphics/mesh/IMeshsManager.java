@@ -26,6 +26,7 @@
 */
 package fr.onsiea.engine.client.graphics.mesh;
 
+import fr.onsiea.engine.client.graphics.mesh.obj.IOBJLoader;
 import fr.onsiea.engine.utils.registry.ILoadable;
 import fr.onsiea.engine.utils.registry.IRegistry;
 
@@ -64,6 +65,19 @@ public interface IMeshsManager extends IRegistry<IMesh>, ILoadable<IMesh>
 	 * @throws Exception
 	 */
 	IMesh create(float[] positionsIn, int[] indicesIn, int dimensionSizeIn) throws Exception;
+
+	/**
+	 * @param positionsIn
+	 * @param texturesCoordinatesIn
+	 * @param normalsIn
+	 * @param tangentsArrayIn
+	 * @param indicesIn
+	 * @param dimensionSizeIn
+	 * @return
+	 * @throws Exception
+	 */
+	IMesh create(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn, float[] tangentsArrayIn,
+			int[] indicesIn, int dimensionSizeIn) throws Exception;
 
 	IOBJLoader objLoader();
 }
