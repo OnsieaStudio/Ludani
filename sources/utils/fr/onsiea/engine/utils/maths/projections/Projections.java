@@ -100,7 +100,7 @@ public class Projections
 	 * @param transposeIn
 	 * @return transposed projection matrix with parameters into transposeIn matrix4f
 	 */
-	public static Matrix4f of(final float widthIn, final float heightIn, final float fovIn, final float zNearIn,
+	public final static Matrix4f of(final float widthIn, final float heightIn, final float fovIn, final float zNearIn,
 			final float zFarIn, Matrix4f transposeIn)
 	{
 		final var aspectRatio = widthIn / heightIn;
@@ -121,7 +121,7 @@ public class Projections
 	 * @param zFarIn
 	 * @return new ortho projection matrix with parameters
 	 */
-	public Matrix4f updateOrthoProjectionMatrix(float leftIn, float rightIn, float bottomIn, float topIn, float zNearIn,
+	public final static Matrix4f ortho(float leftIn, float rightIn, float bottomIn, float topIn, float zNearIn,
 			float zFarIn)
 	{
 		return new Matrix4f().identity().setOrtho(leftIn, rightIn, bottomIn, topIn, zNearIn, zFarIn);
@@ -136,7 +136,7 @@ public class Projections
 	 * @param zFarIn
 	 * @return transposed ortho projection matrix with parameters into transposeIn matrix4f
 	 */
-	public Matrix4f updateOrthoProjectionMatrix(float leftIn, float rightIn, float bottomIn, float topIn, float zNearIn,
+	public final static Matrix4f ortho(float leftIn, float rightIn, float bottomIn, float topIn, float zNearIn,
 			float zFarIn, Matrix4f transposeIn)
 	{
 		return transposeIn.identity().setOrtho(leftIn, rightIn, bottomIn, topIn, zNearIn, zFarIn);
@@ -149,7 +149,7 @@ public class Projections
 	 * @param top
 	 * @return new 2D ortho projection matrix with parameters
 	 */
-	public final Matrix4f getOrtho2DProjectionMatrix(float left, float right, float bottom, float top)
+	public final static Matrix4f ortho2D(float left, float right, float bottom, float top)
 	{
 		return new Matrix4f().identity().setOrtho2D(left, right, bottom, top);
 	}
@@ -161,8 +161,7 @@ public class Projections
 	 * @param top
 	 * @return transposed 2D ortho projection matrix with parameters into transposeIn matrix4f
 	 */
-	public final Matrix4f getOrtho2DProjectionMatrix(float left, float right, float bottom, float top,
-			Matrix4f transposeIn)
+	public final Matrix4f ortho2D(float left, float right, float bottom, float top, Matrix4f transposeIn)
 	{
 		return transposeIn.identity().setOrtho2D(left, right, bottom, top);
 	}
