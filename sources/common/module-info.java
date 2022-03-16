@@ -37,6 +37,7 @@ module OnsieaEngine
 	exports fr.onsiea.engine.client.graphics.opengl.texture;
 	exports fr.onsiea.engine.client.graphics.drawable;
 	exports fr.onsiea.engine.client.graphics.mesh;
+	exports fr.onsiea.engine.client.graphics.mesh.obj;
 	exports fr.onsiea.engine.client.graphics.shader;
 	exports fr.onsiea.engine.client.graphics.shader.uniform;
 	exports fr.onsiea.engine.client.resources;
