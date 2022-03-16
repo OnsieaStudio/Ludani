@@ -31,7 +31,7 @@ import java.util.Map;
 
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
-import fr.onsiea.engine.client.graphics.mesh.IOBJLoader;
+import fr.onsiea.engine.client.graphics.mesh.obj.IOBJLoader;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh.Builder;
 import fr.onsiea.engine.client.graphics.opengl.vao.VaoManager;
 import fr.onsiea.engine.client.graphics.opengl.vbo.VboManager;
@@ -116,14 +116,6 @@ public class GLMeshManager implements IMeshsManager
 	}
 
 	@Override
-	public IMesh create(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn, int[] indicesIn,
-			int dimensionSizeIn) throws Exception
-	{
-		return this.meshBuilderWithVao(3).vbo(positionsIn, dimensionSizeIn).vbo(texturesCoordinatesIn, 2)
-				.vbo(normalsIn, dimensionSizeIn).ibo(indicesIn).unbindVao().build();
-	}
-
-	@Override
 	public IMesh create(float[] positionsIn, int dimensionSizeIn) throws Exception
 	{
 		return this.meshBuilderWithVao(1).vbo(positionsIn, dimensionSizeIn)
@@ -134,6 +126,23 @@ public class GLMeshManager implements IMeshsManager
 	public IMesh create(float[] positionsIn, int[] indicesIn, int dimensionSizeIn) throws Exception
 	{
 		return this.meshBuilderWithVao(1).vbo(positionsIn, dimensionSizeIn).ibo(indicesIn).unbindVao().build();
+	}
+
+	@Override
+	public IMesh create(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn, int[] indicesIn,
+			int dimensionSizeIn) throws Exception
+	{
+		return this.meshBuilderWithVao(3).vbo(positionsIn, dimensionSizeIn).vbo(texturesCoordinatesIn, 2)
+				.vbo(normalsIn, dimensionSizeIn).ibo(indicesIn).unbindVao().build();
+	}
+
+	@Override
+	public IMesh create(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn, float[] tangentsArrayIn,
+			int[] indicesIn, int dimensionSizeIn) throws Exception
+	{
+		return this.meshBuilderWithVao(4).vbo(positionsIn, dimensionSizeIn).vbo(texturesCoordinatesIn, 2)
+				.vbo(normalsIn, dimensionSizeIn).vbo(tangentsArrayIn, dimensionSizeIn).ibo(indicesIn).unbindVao()
+				.build();
 	}
 
 	@Override
