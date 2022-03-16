@@ -4,7 +4,7 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
-import fr.onsiea.engine.client.graphics.opengl.shader.effects.FlareShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.effects.FlareShader;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContextSettings;
 import fr.onsiea.engine.client.graphics.render.Renderer;

@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 import fr.onsiea.engine.client.graphics.opengl.fbo.ImageRenderer;
-import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.VerticalBlurShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.VerticalBlurShader;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 
