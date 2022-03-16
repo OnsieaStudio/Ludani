@@ -8,6 +8,7 @@ import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.utils.maths.MathInstances;
 import fr.onsiea.engine.utils.maths.vector.timed.TimedVector3f;
+import fr.onsiea.engine.utils.maths.view.View3f;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -204,11 +205,8 @@ public class Camera extends Entity implements ICamera
 
 	private void calcViewMatrix()
 	{
-		final var negativePosition = new Vector3f(-this.position().x(), -this.position().y(), -this.position().z());
+		View3f.view(this.position(), this.orientation(), this.view());
 
-		this.view().identity().rotateX((float) Math.toRadians(this.orientation().x()))
-				.rotateY((float) Math.toRadians(this.orientation().y()))
-				.rotateZ((float) Math.toRadians(this.orientation().z())).translate(negativePosition);
 		this.viewWithoutTranslations().set(this.view());
 		this.viewWithoutTranslations().m30(0.0f);
 		this.viewWithoutTranslations().m31(0.0f);
