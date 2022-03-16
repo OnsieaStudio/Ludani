@@ -1,4 +1,4 @@
-package fr.onsiea.engine.client.graphics.opengl.shader.postprocessing;
+package fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
