@@ -32,17 +32,18 @@ import java.util.Map;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL20;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.effects.FlareShader;
-import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.BrightFilterShader;
-import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.CombineShader;
-import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.ContrastShader;
-import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.HorizontalBlurShader;
-import fr.onsiea.engine.client.graphics.opengl.shader.postprocessing.VerticalBlurShader;
 import fr.onsiea.engine.client.graphics.opengl.shaders.InstancedShader;
 import fr.onsiea.engine.client.graphics.opengl.shaders.Shader2D;
 import fr.onsiea.engine.client.graphics.opengl.shaders.Shader3DTo2D;
 import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderBasic;
 import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderSkybox;
+import fr.onsiea.engine.client.graphics.opengl.shaders.effects.FlareShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.effects.ShadowShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.BrightFilterShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.CombineShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.ContrastShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.HorizontalBlurShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.VerticalBlurShader;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
@@ -66,7 +67,13 @@ public class GLShaderManager implements IShadersManager
 
 	// General
 
-	private ShaderBasic														shaderBasic;
+	private ShaderBasic														shaderBasicA;
+	private ShaderBasic														shaderBasicB;
+	private ShaderBasic														shaderBasicC;
+	private ShaderBasic														shaderBasicD;
+	private ShaderBasic														shaderBasicE;
+	private ShaderBasic														shaderBasicF;
+	private ShadowShader													shadowShader;
 	private Shader2D														shader2D;
 	private Shader3DTo2D													shader3DTo2D;
 	private InstancedShader													instancedShader;
@@ -90,7 +97,15 @@ public class GLShaderManager implements IShadersManager
 
 		try
 		{
-			this.add("basic", this.shaderBasic = new ShaderBasic());
+			this.add("basicNormalWithTangent",
+					this.shaderBasicA = new ShaderBasic(ShaderBasic.Normal.NORMAL_WITH_TANGENT));
+			this.add("basicExclusiveNormal", this.shaderBasicB = new ShaderBasic(ShaderBasic.Normal.EXCLUSIVE_NORMAL));
+			this.add("basicNormal", this.shaderBasicC = new ShaderBasic(ShaderBasic.Normal.NORMAL));
+			this.add("basicFakeNormal", this.shaderBasicD = new ShaderBasic(ShaderBasic.Normal.FAKE));
+			this.add("basicWithoutNormal", this.shaderBasicE = new ShaderBasic(ShaderBasic.Normal.WITHOUT));
+			this.add("scene", this.shaderBasicF = new ShaderBasic(ShaderBasic.Normal.SCENE));
+			this.add("shadow", this.shadowShader = new ShadowShader());
+
 			this.add("flare", this.flareShader = new FlareShader());
 			this.add("2D", this.shader2D = new Shader2D());
 			this.add("skybox", this.skybox = new ShaderSkybox());
