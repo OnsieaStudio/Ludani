@@ -46,6 +46,11 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 {
+	public enum Normal
+	{
+		FAKE, NORMAL, EXCLUSIVE_NORMAL, WITHOUT, NORMAL_WITH_TANGENT, SCENE;
+	}
+
 	private final static int				LIGHTS	= 5;
 
 	private final GLUniformMatrix4f			projection;
@@ -65,9 +70,36 @@ public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 	/**
 	 * @throws Exception
 	 */
-	public ShaderBasic() throws Exception
+	public ShaderBasic(Normal normalIn) throws Exception
 	{
-		super("resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position", "uvs");
+		super(Normal.FAKE.equals(normalIn) ? "resources/shaders/normalRendering/fakeNormalVertex.vs"
+				: Normal.WITHOUT.equals(normalIn) ? "resources/shaders/normalRendering/vertex.vs"
+						: Normal.NORMAL.equals(normalIn) || Normal.EXCLUSIVE_NORMAL.equals(normalIn)
+								? "resources/shaders/normalRendering/normalVertex.vs"
+								: Normal.SCENE.equals(normalIn) ? "resources/shaders/normalRendering/scene_vertex.vs"
+										: "resources/shaders/normalRendering/normalVertexWithTangent.vs",
+
+				Normal.WITHOUT.equals(normalIn) ? "resources/shaders/normalRendering/fragment.fs"
+						: Normal.FAKE.equals(normalIn) ? "resources/shaders/normalRendering/exclusiveNormalFragment.fs"
+								: Normal.NORMAL.equals(normalIn) ? "resources/shaders/normalRendering/normalFragment.fs"
+										: Normal.EXCLUSIVE_NORMAL.equals(normalIn)
+												? "resources/shaders/normalRendering/exclusiveNormalFragment.fs"
+												: Normal.SCENE.equals(normalIn)
+														? "resources/shaders/normalRendering/scene_fragment.fs"
+														: "resources/shaders/normalRendering/normalFragmentWithTangent.fs");
+
+		if (Normal.FAKE.equals(normalIn) || Normal.WITHOUT.equals(normalIn))
+		{
+			this.attributes("position", "texCoord");
+		}
+		else if (Normal.NORMAL.equals(normalIn))
+		{
+			this.attributes("position", "texCoord", "vertexNormal");
+		}
+		else if (Normal.NORMAL_WITH_TANGENT.equals(normalIn))
+		{
+			this.attributes("position", "texCoord", "vertexNormal", "tangent");
+		}
 
 		this.projection			= this.matrix4fUniform("projection");
 		this.view				= this.matrix4fUniform("view");
