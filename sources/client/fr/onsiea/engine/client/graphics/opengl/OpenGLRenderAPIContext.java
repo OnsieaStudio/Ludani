@@ -41,7 +41,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
-import fr.onsiea.engine.client.graphics.mesh.obj.OBJLoaderWorkInProgress;
+import fr.onsiea.engine.client.graphics.mesh.obj.normalMapped.NormalMappedObjLoader;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMeshManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.manager.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
@@ -105,7 +105,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 		this.shadersManager(new GLShaderManager());
 		this.texturesManager(new GLTexturesManager(this));
 
-		this.meshsManager(new GLMeshManager(new OBJLoaderWorkInProgress()));
+		this.meshsManager(new GLMeshManager(new NormalMappedObjLoader()));
 
 		OpenGLUtils.restoreState();
 	}
