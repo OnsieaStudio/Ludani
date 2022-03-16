@@ -29,7 +29,6 @@ package fr.onsiea.engine.game;
 import java.util.List;
 
 import org.joml.Matrix4f;
-import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -58,6 +57,7 @@ import fr.onsiea.engine.common.game.IGameLogic;
 import fr.onsiea.engine.game.scene.GameScene;
 import fr.onsiea.engine.utils.maths.MathInstances;
 import fr.onsiea.engine.utils.maths.MathUtils;
+import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
 
 /**
  * @author Seynax
@@ -77,21 +77,18 @@ public class GameTest implements IGameLogic
 		}
 	}
 
+	public static int								light_matrices_algo	= 0;
+
 	private NanoVGManager							nanoVG;
-
+	@SuppressWarnings("unused")
 	private ITexture								particleTexture;
-
 	private Matrix4f								projView;
-
 	private ParticleManager<ParticleWithLifeTime>	particleManager;
-
+	@SuppressWarnings("unused")
 	private FlareManager							flareManager;
 	private PostProcessing							postProcessing;
-
 	private FBO										fbo;
-
 	private GameScene								scene;
-
 	private InstancedShader							shader;
 	private IShadersManager							shadersManager;
 
@@ -118,11 +115,15 @@ public class GameTest implements IGameLogic
 		{
 			this.particleTexture	= renderAPIContextIn.texturesManager().load("resources/textures/particle.png");
 			this.scene				= new GameScene(renderAPIContextIn);
-			this.scene.add("barrel", "resources\\models\\barrel.obj",
-					new Material(new Vector4f(1.0f), new Vector4f(1.0f), new Vector4f(1.0f),
-							renderAPIContextIn.texturesManager().load("resources/textures/barrel.png"), 1.025f,
-							renderAPIContextIn.texturesManager().load("resources/textures/barrelNormal.png")),
-					MathInstances.simpleTransformationsMatrix3d());
+			final var reflectance = 0.65f;
+			this.scene.add("barrel", "resources\\models\\quad.obj",
+					new Material(renderAPIContextIn.texturesManager().load("resources/textures/rock.png"), reflectance)
+							.normalMap(
+									renderAPIContextIn.texturesManager().load("resources/textures/rock_normals.png")),
+					Transformations3f.transformations(-3.0f, 0.0f, 0.0f, -90.0f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f));
+			this.scene.add("barrel", "resources\\models\\quad.obj",
+					new Material(renderAPIContextIn.texturesManager().load("resources/textures/rock.png"), reflectance),
+					Transformations3f.transformations(3.0f, 0.0f, 0.0f, -90.0f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f));
 		}
 		catch (final Exception e)
 		{
@@ -304,7 +305,8 @@ public class GameTest implements IGameLogic
 	{
 	}
 
-	private static boolean e;
+	private static boolean	e;
+	private static boolean	e1;
 
 	@Override
 	public void input(IWindow windowIn, InputManager inputManagerIn)
@@ -320,6 +322,30 @@ public class GameTest implements IGameLogic
 		else if (GameTest.e && inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_0) == GLFW.GLFW_RELEASE)
 		{
 			GameTest.e = false;
+		}
+
+		if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_1) == GLFW.GLFW_PRESS && !GameTest.e1)
+		{
+			if (GameTest.light_matrices_algo == 0)
+			{
+				GameTest.light_matrices_algo = 1;
+			}
+			else if (GameTest.light_matrices_algo == 1)
+			{
+				GameTest.light_matrices_algo = 2;
+			}
+			else
+			{
+				GameTest.light_matrices_algo = 0;
+			}
+
+			System.out.println(GameTest.light_matrices_algo);
+
+			GameTest.e1 = true;
+		}
+		else if (GameTest.e1 && inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_1) == GLFW.GLFW_RELEASE)
+		{
+			GameTest.e1 = false;
 		}
 	}
 
@@ -359,14 +385,14 @@ public class GameTest implements IGameLogic
 
 		this.shader.rowsAndColumns().load(4.0f, 4.0f);
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		this.particleTexture.attach();
+		//GL11.glEnable(GL11.GL_BLEND);
+		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		//this.particleTexture.attach();
 
-		this.particleManager.draw();
+		//this.particleManager.draw();
 
-		this.particleTexture.detach();
-		GL11.glDisable(GL11.GL_BLEND);
+		//this.particleTexture.detach();
+		//GL11.glDisable(GL11.GL_BLEND);
 
 		this.shadersManager.detach();
 

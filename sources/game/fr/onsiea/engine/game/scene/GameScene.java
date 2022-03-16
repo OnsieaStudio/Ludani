@@ -35,17 +35,19 @@ import java.util.Objects;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
-import fr.onsiea.engine.client.graphics.light.PointLight;
-import fr.onsiea.engine.client.graphics.light.PointLight.Attenuation;
-import fr.onsiea.engine.client.graphics.light.SpotLight;
 import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderBasic;
+import fr.onsiea.engine.client.graphics.opengl.shaders.effects.ShadowShader;
+import fr.onsiea.engine.client.graphics.opengl.shadow.ShadowMap;
 import fr.onsiea.engine.client.graphics.opengl.skybox.SkyboxRenderer;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
@@ -55,6 +57,8 @@ import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.client.resources.ResourcesPath;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.utils.maths.MathInstances;
+import fr.onsiea.engine.utils.maths.projections.Projections;
+import fr.onsiea.engine.utils.maths.view.View3f;
 import fr.onsiea.engine.utils.time.Timer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -74,32 +78,59 @@ public class GameScene
 
 	private final IShadersManager									shadersManager;
 	private final IRenderAPIContext									renderAPIContext;
-	private final ShaderBasic										shader;
+	private final ShaderBasic[]										shadersBasic;
+	private final String[]											shadersBasicNames;
+	private int														selectedShader;
+	private final Timer												shaderTimer;
 
 	private final SkyboxRenderer									skyboxRenderer;
 
 	private final Vector3f											ambientLight;
-	private final PointLight										pointLight;
-	private final SpotLight											spotLight;
 	private final DirectionalLight									directionalLight;
 	private final Fog												fog;
 	private final float												specularPower;
+	private float													lightAngle;
+
+	private ShadowMap												shadowMap;
+	private final ShadowShader										shadowShader;
 
 	public GameScene(IRenderAPIContext renderAPIContextIn) throws Exception
 	{
-		this.renderAPIContext	= renderAPIContextIn;
-		this.shadersManager		= renderAPIContextIn.shadersManager();
-		this.shader				= (ShaderBasic) renderAPIContextIn.shadersManager().get("basic");
+		this.renderAPIContext		= renderAPIContextIn;
+		this.shadersManager			= renderAPIContextIn.shadersManager();
+		this.shadersBasic			= new ShaderBasic[6];
+		this.shadersBasicNames		= new String[6];
+		this.shadersBasic[0]		= (ShaderBasic) renderAPIContextIn.shadersManager().get("basicNormalWithTangent");
+		this.shadersBasicNames[0]	= "basicNormalWithTangent";
+		this.shadersBasic[1]		= (ShaderBasic) renderAPIContextIn.shadersManager().get("basicExclusiveNormal");
+		this.shadersBasicNames[1]	= "basicExclusiveNormal";
+		this.shadersBasic[2]		= (ShaderBasic) renderAPIContextIn.shadersManager().get("basicNormal");
+		this.shadersBasicNames[2]	= "basicNormal";
+		this.shadersBasic[3]		= (ShaderBasic) renderAPIContextIn.shadersManager().get("basicFakeNormal");
+		this.shadersBasicNames[3]	= "basicFakeNormal";
+		this.shadersBasic[4]		= (ShaderBasic) renderAPIContextIn.shadersManager().get("basicWithoutNormal");
+		this.shadersBasicNames[4]	= "basicWithoutNormal";
+		this.shadersBasic[5]		= (ShaderBasic) renderAPIContextIn.shadersManager().get("scene");
+		this.shadersBasicNames[5]	= "scene";
+		this.selectedShader			= 5;
+		this.shadowShader			= (ShadowShader) renderAPIContextIn.shadersManager().get("shadow");
 
-		this.objects			= new HashMap<>();
+		this.objects				= new HashMap<>();
 
-		this.camera				= new Camera();
-		this.cameraTimer		= new Timer();
+		this.camera					= new Camera();
+		this.camera.position().y	= 5.0f;
+		this.camera.orientation().x	= 90.0f;
+		this.cameraTimer			= new Timer();
+		this.shaderTimer			= new Timer();
 		this.shadersManager.updateProjectionAndView(MathInstances.projectionMatrix(), this.camera);
 
-		this.fog = new Fog(true, new Vector3f(0.125f, 0.125f, 0.25f), 0.0075f, 5.0f);
-		this.shader.attach();
-		this.shader.fog().load(this.fog);
+		this.fog = new Fog(false, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+
+		for (final var shader : this.shadersBasic)
+		{
+			shader.attach();
+			shader.fog().load(this.fog);
+		}
 		renderAPIContextIn.shadersManager().detach();
 
 		this.skyboxRenderer		= new SkyboxRenderer(renderAPIContextIn.shadersManager(),
@@ -107,16 +138,12 @@ public class GameScene
 				renderAPIContextIn.texturesManager().loadCubeMapTextures("skybox",
 						ResourcesPath.of(new ResourcesPath(GraphicsConstants.TEXTURES, "skybox"))));
 
-		this.ambientLight		= new Vector3f(0.125f, 0.125f, 0.125f);
-		this.pointLight			= new PointLight(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(0.0f, 2.0f, 0.0f), 1.0f,
-				new Attenuation(0.025f, 0.01f, 0.01f));
-		this.spotLight			= new SpotLight(new PointLight(new Vector3f(1.0f, 1.0f, 1.0f),
-				new Vector3f(0.0f, 2.0f, 0.0f), 1.5f, new Attenuation(0.025f, 0.01f, 0.01f)),
-				new Vector3f(-0.25f, -0.5f, -0.25f), 75.0f);
-		this.directionalLight	= new DirectionalLight(new Vector3f(1.0f, 1.0f, 1.0f),
-				new Vector3f(-0.125f, -0.25f, -0.125f), 1.5f);
+		this.ambientLight		= new Vector3f(0.3f, 0.3f, 0.3f);
+		this.directionalLight	= new DirectionalLight(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(1.0f, 1.0f, 0.0f),
+				1.0f);
 
-		this.specularPower		= 10.0f;
+		this.specularPower		= 10.00f;
+		this.lightAngle			= -35.0f;
 	}
 
 	public void add(String nameIn, String meshFilepathIn, Material materialIn, Matrix4f... transformationsIn)
@@ -186,22 +213,88 @@ public class GameScene
 		objects.add(gameItemIn);
 	}
 
+	private static boolean e = false;
+
 	public void input(IWindow windowIn, InputManager inputManagerIn)
 	{
 		if (this.cameraTimer.isTime(1_000_000_0L))
 		{
 			this.camera.input(windowIn, inputManagerIn);
 		}
+
+		if (this.shaderTimer.isTime(7_500_000_0L))
+		{
+			if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_ADD) == GLFW.GLFW_PRESS)
+			{
+				this.selectedShader++;
+
+				if (this.selectedShader >= this.shadersBasic.length)
+				{
+					this.selectedShader = 0;
+				}
+
+				System.out.println(this.selectedShader + " : " + this.shadersBasicNames[this.selectedShader]);
+			}
+			else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_SUBTRACT) == GLFW.GLFW_PRESS)
+			{
+				this.selectedShader--;
+
+				if (this.selectedShader < 0)
+				{
+					this.selectedShader = this.shadersBasic.length - 1;
+				}
+
+				System.out.println(this.selectedShader + " : " + this.shadersBasicNames[this.selectedShader]);
+			}
+			else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_MULTIPLY) == GLFW.GLFW_PRESS && !GameScene.e)
+			{
+				GameScene.e = true;
+
+				if (this.selectedShader != 2)
+				{
+					this.selectedShader = 2;
+				}
+				else
+				{
+					this.selectedShader = 0;
+				}
+
+				System.out.println(this.selectedShader + " : " + this.shadersBasicNames[this.selectedShader]);
+			}
+			else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_MULTIPLY) == GLFW.GLFW_RELEASE && GameScene.e)
+			{
+				GameScene.e = false;
+			}
+
+			if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_LEFT) == GLFW.GLFW_PRESS)
+			{
+				this.lightAngle -= 2.5f;
+				if (this.lightAngle < -90)
+				{
+					this.lightAngle = -90;
+				}
+			}
+			else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_RIGHT) == GLFW.GLFW_PRESS)
+			{
+				this.lightAngle += 2.5f;
+				if (this.lightAngle > 90)
+				{
+					this.lightAngle = 90;
+				}
+			}
+		}
 	}
 
 	public void draw()
 	{
-		this.shader.attach();
-		this.shader.ambientLight().load(this.ambientLight);
-		this.shader.pointLights()[0].load(this.pointLight, this.camera.view());
-		this.shader.spotLights()[0].load(this.spotLight, this.camera.view());
-		this.shader.directionalLight().load(this.directionalLight, this.camera.view());
-		this.shader.specularPower().load(this.specularPower);
+		final var shader = this.shadersBasic[this.selectedShader];
+		shader.attach();
+		shader.ambientLight().load(this.ambientLight);
+		final var angRad = Math.toRadians(this.lightAngle);
+		this.directionalLight.direction().x	= (float) Math.sin(angRad);
+		this.directionalLight.direction().y	= (float) Math.cos(angRad);
+		shader.directionalLight().load(this.directionalLight, this.camera.view());
+		shader.specularPower().load(this.specularPower);
 
 		final var meshedObjectsIterator = this.objects.entrySet().iterator();
 
@@ -219,7 +312,7 @@ public class GameScene
 				final var	texturedObjectsEntry	= texturedObjectsIterator.next();
 				final var	material				= texturedObjectsEntry.getKey();
 
-				this.shader.material().load(material);
+				shader.material().load(material);
 
 				GL13.glActiveTexture(GL13.GL_TEXTURE0);
 				material.texture().attach();
@@ -234,7 +327,7 @@ public class GameScene
 
 				for (final GameItem gameItem : objects)
 				{
-					this.shader.transformations().load(gameItem.transformations());
+					shader.transformations().load(gameItem.transformations());
 
 					mesh.mesh().draw();
 				}
@@ -253,6 +346,31 @@ public class GameScene
 		this.skyboxRenderer.attach(this.fog, this.ambientLight, this.directionalLight);
 		this.skyboxRenderer.draw();
 		this.skyboxRenderer.detach();
+	}
+
+	final Matrix4f	lightViewMatrix	= new Matrix4f();
+	final Matrix4f	orthoProjMatrix	= new Matrix4f();
+
+	private final void renderDepthMap()
+	{
+		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.shadowMap.getDepthMapFBO());
+		GL11.glViewport(0, 0, ShadowMap.SHADOW_MAP_WIDTH, ShadowMap.SHADOW_MAP_HEIGHT);
+		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+
+		this.shadowShader.attach();
+
+		// var directionalLight = this.directionalLight;
+		final var	lightDirection	= this.directionalLight.direction();
+
+		final var	lightAngleX		= (float) Math.toDegrees(Math.acos(lightDirection.z()));
+		final var	lightAngleY		= (float) Math.toDegrees(Math.asin(lightDirection.x()));
+		final var	lightAngleZ		= 0F;
+		View3f.view(new Vector3f(lightDirection).mul(this.directionalLight.shadowPosMult()),
+				new Vector3f(lightAngleX, lightAngleY, lightAngleZ), this.lightViewMatrix);
+		final var orthCoords = this.directionalLight.orthoCoords();
+		Projections.ortho(orthCoords.left, orthCoords.right, orthCoords.bottom, orthCoords.top, orthCoords.near,
+				orthCoords.far, this.orthoProjMatrix);
+
 	}
 
 	public final Map<IdentifiableMesh, Map<Material, List<GameItem>>> objects()
