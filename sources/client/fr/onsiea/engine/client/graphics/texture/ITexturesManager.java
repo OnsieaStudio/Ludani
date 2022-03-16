@@ -47,14 +47,14 @@ public interface ITexturesManager extends IRegistry<ITexture>, ILoadable<ITextur
 	 * @param wrapSIn
 	 * @param wrapTIn
 	 * @param mipmappingIn
-	 * @return
+	 * @return Texture
 	 */
 	ITexture load(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn);
 
 	/**
 	 * @param nameIn
 	 * @param resourcesPathIn
-	 * @return
+	 * @return Texture
 	 * @throws Exception
 	 */
 	ITexture loadCubeMapTextures(String nameIn, IResourcesPath... resourcesPathIn) throws Exception;
@@ -67,9 +67,35 @@ public interface ITexturesManager extends IRegistry<ITexture>, ILoadable<ITextur
 	 * @param wrapTIn
 	 * @param mipmappingIn
 	 * @param resourcesPathIn
-	 * @return
+	 * @return Texture
 	 * @throws Exception
 	 */
 	ITexture loadCubeMapTextures(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn,
 			IResourcesPath... resourcesPathIn) throws Exception;
+
+	/**
+	 *
+	 * @param nameIn
+	 * @param widthIn
+	 * @param heightIn
+	 * @param pixelFormatIn
+	 * @return Texture
+	 */
+	ITexture createEmpty(String nameIn, int widthIn, int heightIn, int pixelFormatIn);
+
+	/**
+	 *
+	 * @param nameIn
+	 * @param widthIn
+	 * @param heightIn
+	 * @param pixelFormatIn
+	 * @param minIn
+	 * @param magIn
+	 * @param wrapSIn
+	 * @param wrapTIn
+	 * @param mipmappingIn
+	 * @return Texture
+	 */
+	ITexture createEmpty(String nameIn, int widthIn, int heightIn, int pixelFormatIn, int minIn, int magIn, int wrapSIn,
+			int wrapTIn, boolean mipmappingIn);
 }

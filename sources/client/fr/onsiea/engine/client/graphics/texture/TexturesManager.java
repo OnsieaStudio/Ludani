@@ -97,6 +97,20 @@ public class TexturesManager implements ITexturesManager
 	}
 
 	@Override
+	public ITexture createEmpty(String nameIn, int widthIn, int heightIn, int pixelFormatIn)
+	{
+		return this.renderAPIContext().createTexture(widthIn, heightIn, pixelFormatIn);
+	}
+
+	@Override
+	public ITexture createEmpty(String nameIn, int widthIn, int heightIn, int pixelFormatIn, int minIn, int magIn,
+			int wrapSIn, int wrapTIn, boolean mipmappingIn)
+	{
+		return this.renderAPIContext().createTexture(widthIn, heightIn, pixelFormatIn, minIn, magIn, wrapSIn, wrapTIn,
+				mipmappingIn);
+	}
+
+	@Override
 	public ITexture loadCubeMapTextures(String nameIn, IResourcesPath... resourcesPathIn) throws Exception
 	{
 		var texture = this.textures().get(nameIn);

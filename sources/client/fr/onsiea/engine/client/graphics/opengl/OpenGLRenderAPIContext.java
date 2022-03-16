@@ -41,7 +41,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
-import fr.onsiea.engine.client.graphics.mesh.OBJLoader;
+import fr.onsiea.engine.client.graphics.mesh.obj.OBJLoaderWorkInProgress;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMeshManager;
 import fr.onsiea.engine.client.graphics.opengl.shader.manager.GLShaderManager;
 import fr.onsiea.engine.client.graphics.opengl.texture.GLTexture;
@@ -105,7 +105,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 		this.shadersManager(new GLShaderManager());
 		this.texturesManager(new GLTexturesManager(this));
 
-		this.meshsManager(new GLMeshManager(new OBJLoader()));
+		this.meshsManager(new GLMeshManager(new OBJLoaderWorkInProgress()));
 
 		OpenGLUtils.restoreState();
 	}
@@ -121,6 +121,19 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 			boolean mipmappingIn)
 	{
 		return new GLTexture(textureDataIn, this, minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
+	}
+
+	@Override
+	public ITexture createTexture(int widthIn, int heightIn, int pixelFormatIn)
+	{
+		return new GLTexture(widthIn, heightIn, pixelFormatIn, this);
+	}
+
+	@Override
+	public ITexture createTexture(int widthIn, int heightIn, int pixelFormatIn, int minIn, int magIn, int wrapSIn,
+			int wrapTIn, boolean mipmappingIn)
+	{
+		return new GLTexture(widthIn, heightIn, pixelFormatIn, this, minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
 	}
 
 	@Override

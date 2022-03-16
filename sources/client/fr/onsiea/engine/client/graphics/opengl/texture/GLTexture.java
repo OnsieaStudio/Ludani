@@ -111,14 +111,12 @@ public class GLTexture implements ITexture
 		this.id(GLTexture.gen());
 
 		this.width(textureDataIn.width());
-		this.height(textureDataIn.width());
+		this.height(textureDataIn.height());
 
 		this.context(contextIn);
 
-		this.context(contextIn);
-
-		this.load(textureDataIn.buffer(), GL11.GL_LINEAR_MIPMAP_LINEAR, GL11.GL_NEAREST, GL11.GL_REPEAT, GL11.GL_REPEAT,
-				true);
+		this.load(textureDataIn.buffer(), GL11.GL_NEAREST, GL11.GL_NEAREST, GL12.GL_CLAMP_TO_EDGE,
+				GL12.GL_CLAMP_TO_EDGE, true);
 	}
 
 	/**
@@ -138,11 +136,52 @@ public class GLTexture implements ITexture
 		this.id(GLTexture.gen());
 
 		this.width(textureDataIn.width());
-		this.height(textureDataIn.width());
+		this.height(textureDataIn.height());
 
 		this.context(contextIn);
 
 		this.load(textureDataIn.buffer(), minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
+	}
+
+	/**
+	 * @param widthIn
+	 * @param heightIn
+	 * @param pixelFormatIn
+	 */
+	public GLTexture(int widthIn, int heightIn, int pixelFormatIn, OpenGLRenderAPIContext contextIn)
+	{
+		this.id(GLTexture.gen());
+
+		this.width	= widthIn;
+		this.height	= heightIn;
+
+		this.context(contextIn);
+
+		this.load(GL11.GL_NEAREST, GL11.GL_NEAREST, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true,
+				GL11.GL_DEPTH_COMPONENT, pixelFormatIn);
+	}
+
+	/**
+	 * @param widthIn
+	 * @param heightIn
+	 * @param pixelFormatIn
+	 * @param minIn
+	 * @param magIn
+	 * @param wrapSIn
+	 * @param wrapTIn
+	 * @param mipmappingIn
+	 */
+	public GLTexture(int widthIn, int heightIn, int pixelFormatIn, OpenGLRenderAPIContext contextIn, int minIn,
+			int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn)
+	{
+		this.id(GLTexture.gen());
+
+		this.width	= widthIn;
+		this.height	= heightIn;
+
+		this.context(contextIn);
+
+		this.load(minIn, magIn, wrapSIn, wrapTIn, true, GL11.GL_DEPTH_COMPONENT, pixelFormatIn);
 	}
 
 	private void initialization(int minIn, int magIn, int wrapSIn, int wrapTIn)
@@ -185,6 +224,32 @@ public class GLTexture implements ITexture
 		}
 
 		GLTexture.unbind();
+	}
+
+	/**
+	 * @param glNearestIn
+	 * @param glNearest2In
+	 * @param glClampToEdgeIn
+	 * @param glClampToEdge2In
+	 * @param bIn
+	 * @param glDepthComponentIn
+	 * @param pixelFormatIn
+	 */
+	private void load(int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn, int typeIn,
+			int pixelFormatIn)
+	{
+		this.initialization(minIn, magIn, wrapSIn, wrapTIn);
+
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, typeIn, this.width(), this.height(), 0, pixelFormatIn, GL11.GL_FLOAT,
+				(ByteBuffer) null);
+
+		if (mipmappingIn)
+		{
+			this.mipmap();
+		}
+
+		GLTexture.unbind();
+
 	}
 
 	@Override

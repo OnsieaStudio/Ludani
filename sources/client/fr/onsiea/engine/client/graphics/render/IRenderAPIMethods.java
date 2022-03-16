@@ -82,4 +82,26 @@ public interface IRenderAPIMethods
 	 * @param valuesIn
 	 */
 	void deleteTextures(Collection<ITexture> valuesIn);
+
+	/**
+	 * @param widthIn
+	 * @param heightIn
+	 * @param pixelFormatIn
+	 * @return
+	 */
+	ITexture createTexture(int widthIn, int heightIn, int pixelFormatIn);
+
+	/**
+	 * @param widthIn
+	 * @param heightIn
+	 * @param pixelFormatIn
+	 * @param minIn
+	 * @param magIn
+	 * @param wrapSIn
+	 * @param wrapTIn
+	 * @param mipmappingIn
+	 * @return
+	 */
+	ITexture createTexture(int widthIn, int heightIn, int pixelFormatIn, int minIn, int magIn, int wrapSIn, int wrapTIn,
+			boolean mipmappingIn);
 }
