@@ -38,6 +38,8 @@ import fr.onsiea.engine.client.resources.ResourcesRootPath;
 public class GraphicsConstants
 {
 	public final static boolean			DEBUG					= false;
+	public static final boolean			SHADER_UNIFORM_DEBUG	= false;
+
 	public final static int				DEFAULT_WIDTH			= 1920;
 	public final static int				DEFAULT_HEIGHT			= 1080;
 
@@ -53,7 +55,7 @@ public class GraphicsConstants
 	 */
 
 	public final static float			FOV						= 70.0f;
-	public final static float			ZNEAR					= 0.1f;
+	public final static float			ZNEAR					= 0.01f;
 	public final static float			ZFAR					= 1200.0f;
 
 	public final static EnumRenderAPI	RENDER_API				= EnumRenderAPI.OpenGL;
