@@ -47,7 +47,7 @@ public class MathInstances
 			.transformations(MathInstances.zero3f(), MathInstances.zero3f(), MathInstances.one3f());
 
 	private final static float		DEFAULT_FOV							= 70.0f;
-	private final static float		DEFAULT_NEAR_PLANE					= 0.1f;
+	private final static float		DEFAULT_NEAR_PLANE					= 0.01f;
 	private final static float		DEFAULT_FAR_PLANE					= 1000.0f;
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------------
