@@ -80,4 +80,59 @@ public interface IMeshsManager extends IRegistry<IMesh>, ILoadable<IMesh>
 			int[] indicesIn, int dimensionSizeIn) throws Exception;
 
 	IOBJLoader objLoader();
+
+	/**
+	 * @param positionsIn
+	 * @param texturesCoordinatesIn
+	 * @param normalsIn
+	 * @param indicesArrIn
+	 * @param indicesIn
+	 * @return
+	 * @throws Exception
+	 */
+	IMaterialMesh createMeshWithMaterial(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn,
+			int[] indicesIn, int dimensionIn) throws Exception;
+
+	/**
+	 * @param positionsIn
+	 * @param texturesCoordinatesIn
+	 * @param normalsIn
+	 * @param tangentsArrayIn
+	 * @param indicesIn
+	 * @param dimensionIn
+	 * @return
+	 * @throws Exception
+	 */
+	IMaterialMesh createMeshWithMaterial(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn,
+			float[] tangentsArrayIn, int[] indicesIn, int dimensionIn) throws Exception;
+
+	/**
+	 * @param positionsIn
+	 * @param texturesCoordinatesIn
+	 * @param normalsIn
+	 * @param indicesIn
+	 * @param jointIndicesIn
+	 * @param weightsIn
+	 * @param dimensionIn
+	 * @return
+	 * @throws Exception
+	 */
+	IMaterialMesh createMeshWithMaterial(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn,
+			int[] indicesIn, int[] jointIndicesIn, float[] weightsIn, int dimensionIn) throws Exception;
+
+	/**
+	 * @param positionsIn
+	 * @param texturesCoordinatesIn
+	 * @param normalsIn
+	 * @param tangentsArrayIn
+	 * @param indicesIn
+	 * @param jointIndicesIn
+	 * @param weightsIn
+	 * @param dimensionIn
+	 * @return
+	 * @throws Exception
+	 */
+	IMaterialMesh createMeshWithMaterial(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn,
+			float[] tangentsArrayIn, int[] indicesIn, int[] jointIndicesIn, float[] weightsIn, int dimensionIn)
+			throws Exception;
 }

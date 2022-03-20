@@ -24,48 +24,20 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.game.scene.item;
-
-import java.util.Objects;
+package fr.onsiea.engine.client.graphics.mesh;
 
 import fr.onsiea.engine.client.graphics.material.Material;
-import fr.onsiea.engine.client.graphics.mesh.IMesh;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 
 /**
  * @author Seynax
  *
  */
-@AllArgsConstructor
-@Builder
-@Getter(AccessLevel.PUBLIC)
-public class GameItemProperties
+public interface IMaterialMesh extends IMesh
 {
-	private final String	name;
-	private final Material	material;
-	private final IMesh		mesh;
+	Material material();
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(this.name);
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj == null || this.getClass() != obj.getClass())
-		{
-			return false;
-		}
-		final var other = (GameItemProperties) obj;
-		return Objects.equals(this.name, other.name);
-	}
+	/**
+	 * @param materialIn
+	 */
+	IMaterialMesh material(Material materialIn);
 }

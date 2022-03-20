@@ -655,4 +655,13 @@ public class FileUtils
 
 		return filespath;
 	}
+
+	/**
+	 * @param normalMapFileNameIn
+	 * @return
+	 */
+	public static boolean exists(String filepathIn)
+	{
+		return new File(filepathIn).exists();
+	}
 }

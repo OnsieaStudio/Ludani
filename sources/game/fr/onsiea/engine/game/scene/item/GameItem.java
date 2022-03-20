@@ -45,4 +45,42 @@ public class GameItem
 	private final Vector3f	position;
 	private final Vector3f	orientation;
 	private final Vector3f	scale;
+
+	public void move(float xIn, float yIn, float zIn)
+	{
+		this.position.x	+= xIn;
+		this.position.y	+= yIn;
+		this.position.z	+= zIn;
+	}
+
+	public void rotate(float xIn, float yIn, float zIn)
+	{
+		this.orientation.x	+= xIn;
+		this.orientation.y	+= yIn;
+		this.orientation.z	+= zIn;
+	}
+
+	public void position(float xIn, float yIn, float zIn)
+	{
+		this.position.x	= xIn;
+		this.position.y	= yIn;
+		this.position.z	= zIn;
+	}
+
+	public void scale(float scaleIn)
+	{
+		this.scale.set(scaleIn);
+	}
+
+	public void scale(float xIn, float yIn, float zIn)
+	{
+		this.scale.set(xIn, yIn, zIn);
+	}
+
+	public void orientation(float xIn, float yIn, float zIn)
+	{
+		this.orientation.x	= xIn;
+		this.orientation.y	= yIn;
+		this.orientation.z	= zIn;
+	}
 }

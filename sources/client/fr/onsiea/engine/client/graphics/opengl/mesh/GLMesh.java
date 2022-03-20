@@ -107,7 +107,7 @@ public class GLMesh implements IMesh
 		return this;
 	}
 
-	public final static class Builder
+	public static class Builder
 	{
 		public static Builder withVao(VaoManager vaoManagerIn, VboManager vboManagerIn)
 		{
@@ -253,6 +253,21 @@ public class GLMesh implements IMesh
 			return this;
 		}
 
+		public Builder vbo(FloatBuffer bufferIn, int... sizesIn)
+		{
+			this.add(new GLMeshVboComponent(this.dataBuilder.newVboAndBind()));
+
+			for (final int size : sizesIn)
+			{
+				this.dataBuilder.createVertexAttribPointer(size);
+			}
+			this.dataBuilder.data(bufferIn);
+
+			this.dataBuilder.unbind();
+
+			return this;
+		}
+
 		public Builder vbo(float[] arrayIn, int... sizesIn)
 		{
 			this.add(new GLMeshVboComponent(this.dataBuilder.newVboAndBind()));
@@ -294,17 +309,71 @@ public class GLMesh implements IMesh
 			return this;
 		}
 
-		public Builder vbo(FloatBuffer bufferIn, int... sizes)
+		public Builder vbo(IntBuffer bufferIn)
 		{
 			this.add(new GLMeshVboComponent(this.dataBuilder.newVboAndBind()));
 
-			for (final int size : sizes)
+			this.data(bufferIn);
+
+			this.unbind();
+
+			this.elementsRunning = false;
+
+			return this;
+		}
+
+		public Builder vbo(IntBuffer bufferIn, int... sizesIn)
+		{
+			this.add(new GLMeshVboComponent(this.dataBuilder.newVboAndBind()));
+
+			for (final int size : sizesIn)
 			{
 				this.dataBuilder.createVertexAttribPointer(size);
 			}
 			this.dataBuilder.data(bufferIn);
 
 			this.dataBuilder.unbind();
+
+			return this;
+		}
+
+		public Builder vbo(int[] arrayIn, int... sizesIn)
+		{
+			this.add(new GLMeshVboComponent(this.dataBuilder.newVboAndBind()));
+
+			for (final int size : sizesIn)
+			{
+				this.dataBuilder.createVertexAttribPointer(size);
+			}
+			this.dataBuilder.data(arrayIn);
+
+			this.dataBuilder.unbind();
+
+			this.elementsRunning = false;
+
+			return this;
+		}
+
+		/**
+		 * @param glStreamDrawIn
+		 * @param positionsandtexturecoordinatesIn
+		 * @param iIn
+		 * @param i2In
+		 * @return
+		 */
+		public Builder vbo(int drawTypeIn, int[] arrayIn, int... sizesIn)
+		{
+			this.add(new GLMeshVboComponent(this.dataBuilder.newVboAndBind(drawTypeIn)));
+
+			for (final int size : sizesIn)
+			{
+				this.dataBuilder.createVertexAttribPointer(size);
+			}
+			this.dataBuilder.data(arrayIn);
+
+			this.dataBuilder.unbind();
+
+			this.elementsRunning = false;
 
 			return this;
 		}
@@ -765,191 +834,191 @@ public class GLMesh implements IMesh
 		/**public Builder bindVbo()
 		{
 			this.lastVbo.bind();
-		
+
 			return this;
 		}
-		
+
 		public Builder unbindVbo()
 		{
 			this.lastVbo.unbind();
-		
+
 			this.elementsRunning = false;
-		
+
 			return this;
 		}
-		
+
 		public Builder drawType(int drawTypeIn)
 		{
 			this.lastVbo.drawType(drawTypeIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(ByteBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(short[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(ShortBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(int[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(IntBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(float[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(FloatBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(double[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(DoubleBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(long[] arrayIn)
 		{
 			this.lastVbo.updateData(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(LongBuffer bufferIn)
 		{
 			this.lastVbo.updateData(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder updateData(long sizeIn)
 		{
 			this.lastVbo.updateData(sizeIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(ByteBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(short[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(ShortBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(int[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(IntBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(float[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(FloatBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(double[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(DoubleBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(long[] arrayIn)
 		{
 			this.lastVbo.data(arrayIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(LongBuffer bufferIn)
 		{
 			this.lastVbo.data(bufferIn);
-		
+
 			return this;
 		}
-		
+
 		public Builder data(long sizeIn)
 		{
 			this.lastVbo.data(sizeIn);
-		
+
 			return this;
 		}**/
 

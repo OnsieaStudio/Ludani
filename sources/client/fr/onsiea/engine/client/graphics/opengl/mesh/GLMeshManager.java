@@ -29,6 +29,7 @@ package fr.onsiea.engine.client.graphics.opengl.mesh;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.onsiea.engine.client.graphics.mesh.IMaterialMesh;
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
 import fr.onsiea.engine.client.graphics.mesh.obj.IOBJLoader;
@@ -143,6 +144,41 @@ public class GLMeshManager implements IMeshsManager
 		return this.meshBuilderWithVao(4).vbo(positionsIn, dimensionSizeIn).vbo(texturesCoordinatesIn, 2)
 				.vbo(normalsIn, dimensionSizeIn).vbo(tangentsArrayIn, dimensionSizeIn).ibo(indicesIn).unbindVao()
 				.build();
+	}
+
+	@Override
+	public IMaterialMesh createMeshWithMaterial(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn,
+			int[] indicesIn, int dimensionIn) throws Exception
+	{
+		return new GLMaterialMesh(this.meshBuilderWithVao(3).vbo(positionsIn, dimensionIn).vbo(texturesCoordinatesIn, 2)
+				.vbo(normalsIn, dimensionIn).ibo(indicesIn).unbindVao().build());
+	}
+
+	@Override
+	public IMaterialMesh createMeshWithMaterial(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn,
+			float[] tangentsArrayIn, int[] indicesIn, int dimensionIn) throws Exception
+	{
+		return new GLMaterialMesh(this.meshBuilderWithVao(4).vbo(positionsIn, dimensionIn).vbo(texturesCoordinatesIn, 2)
+				.vbo(normalsIn, dimensionIn).vbo(tangentsArrayIn, dimensionIn).ibo(indicesIn).unbindVao().build());
+	}
+
+	@Override
+	public IMaterialMesh createMeshWithMaterial(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn,
+			int[] indicesIn, int[] jointIndicesIn, float[] weightsIn, int dimensionIn) throws Exception
+	{
+		return new GLMaterialMesh(this.meshBuilderWithVao(5).vbo(positionsIn, dimensionIn).vbo(texturesCoordinatesIn, 2)
+				.vbo(normalsIn, dimensionIn).vbo(weightsIn, 4).vbo(jointIndicesIn, 4).ibo(indicesIn).unbindVao()
+				.build());
+	}
+
+	@Override
+	public IMaterialMesh createMeshWithMaterial(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn,
+			float[] tangentsArrayIn, int[] indicesIn, int[] jointIndicesIn, float[] weightsIn, int dimensionIn)
+			throws Exception
+	{
+		return new GLMaterialMesh(this.meshBuilderWithVao(6).vbo(positionsIn, dimensionIn).vbo(texturesCoordinatesIn, 2)
+				.vbo(normalsIn, dimensionIn).vbo(weightsIn, 4).vbo(jointIndicesIn, 4).vbo(tangentsArrayIn, dimensionIn)
+				.ibo(indicesIn).unbindVao().build());
 	}
 
 	@Override

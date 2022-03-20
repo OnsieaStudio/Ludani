@@ -24,48 +24,29 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.game.scene.item;
+package fr.onsiea.engine.utils;
 
-import java.util.Objects;
-
-import fr.onsiea.engine.client.graphics.material.Material;
-import fr.onsiea.engine.client.graphics.mesh.IMesh;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import java.util.List;
 
 /**
  * @author Seynax
  *
  */
-@AllArgsConstructor
-@Builder
-@Getter(AccessLevel.PUBLIC)
-public class GameItemProperties
+public class ArrayUtils
 {
-	private final String	name;
-	private final Material	material;
-	private final IMesh		mesh;
-
-	@Override
-	public int hashCode()
+	public static int[] listIntToArray(List<Integer> listIn)
 	{
-		return Objects.hash(this.name);
+		return listIn.stream().mapToInt((Integer v) -> v).toArray();
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	public static float[] listToArray(List<Float> listIn)
 	{
-		if (this == obj)
+		final var		size		= listIn != null ? listIn.size() : 0;
+		final var	floatArr	= new float[size];
+		for (var i = 0; i < size; i++)
 		{
-			return true;
+			floatArr[i] = listIn.get(i);
 		}
-		if (obj == null || this.getClass() != obj.getClass())
-		{
-			return false;
-		}
-		final var other = (GameItemProperties) obj;
-		return Objects.equals(this.name, other.name);
+		return floatArr;
 	}
 }
