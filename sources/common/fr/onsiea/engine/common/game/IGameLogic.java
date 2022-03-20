@@ -44,8 +44,9 @@ public interface IGameLogic
 	 * @param windowIn
 	 * @param renderAPIContextIn
 	 * @return
+	 * @throws Exception
 	 */
-	boolean initialization(IWindow windowIn, IRenderAPIContext renderAPIContextIn);
+	boolean initialization(IWindow windowIn, IRenderAPIContext renderAPIContextIn) throws Exception;
 
 	void highRateInput();
 

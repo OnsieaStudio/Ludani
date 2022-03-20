@@ -88,20 +88,6 @@ public class OnsieaGearings
 
 	private OnsieaGearings(IGameLogic gameLogicIn, GameOptions optionsIn, String[] argsIn) throws Exception
 	{
-		/**final var builder = new GLShaderBuilder(GLShaderBuilder.POSITIONS_NORMALS_3F, GLShaderBuilder.TEXTURECOORDS_2F,
-				GLShaderBuilder.VIEW, GLShaderBuilder.PROJECTION, GLShaderBuilder.TRANSFORMATIONS,
-				GLShaderBuilder.TEXTURE_SAMPLER);
-
-		builder.build();
-		System.out.println(builder.vertexScript());
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println(builder.fragmentScript());
-		
-		System.exit(-1);**/
-
 		if (gameLogicIn == null)
 		{
 			throw new Exception("[ERROR] GameLogic is null !");
@@ -146,7 +132,7 @@ public class OnsieaGearings
 
 				this.refreshRate(60.0D);
 				this.updateRate(60.0D);
-				this.inputRate(50.00D);
+				this.inputRate(60.00D);
 				this.secsPerFrame(1.0d / this.refreshRate());
 				this.secsPerUpdate(1.0d / this.updateRate());
 				this.secsPerInput(1.0d / this.inputRate());
