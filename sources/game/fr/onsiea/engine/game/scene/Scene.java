@@ -35,6 +35,7 @@ import org.lwjgl.glfw.GLFW;
 import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareManager;
+import fr.onsiea.engine.client.graphics.opengl.skybox.SkyboxRenderer;
 import fr.onsiea.engine.client.graphics.particles.ParticlesManager;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
@@ -79,7 +80,7 @@ public class Scene
 
 	public Scene(IRenderAPIContext contextIn, IWindow windowIn, float clearColorRIn, float clearColorGIn,
 			float clearColorBIn, DirectionalLight directionalLightIn, float specularPowerIn, Vector3f ambientLightIn,
-			Fog fogIn, FlareManager flareManagerIn) throws Exception
+			Fog fogIn, FlareManager flareManagerIn, SkyboxRenderer skyboxRendererIn) throws Exception
 	{
 		this.sceneLights			= new SceneLights(directionalLightIn, specularPowerIn, ambientLightIn);
 		this.sceneItems				= new SceneItems();
@@ -91,7 +92,7 @@ public class Scene
 		this.angleInc				= 0.0f;
 
 		this.sceneRenderer			= new SceneRenderer(contextIn, windowIn, clearColorRIn, clearColorGIn,
-				clearColorBIn, fogIn, this.camera, flareManagerIn);
+				clearColorBIn, fogIn, this.camera, flareManagerIn, skyboxRendererIn);
 
 		// Sun
 

@@ -1,3 +1,4 @@
+
 /**
 * Copyright 2021 Onsiea All rights reserved.<br><br>
 *
@@ -29,15 +30,19 @@ package fr.onsiea.engine.game;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareManager;
+import fr.onsiea.engine.client.graphics.opengl.skybox.SkyboxRenderer;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.Renderer;
+import fr.onsiea.engine.client.graphics.shapes.ShapeCube;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
+import fr.onsiea.engine.client.resources.ResourcesPath;
 import fr.onsiea.engine.common.OnsieaGearings;
 import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
@@ -77,11 +82,17 @@ public class GameTest implements IGameLogic
 	{
 		((Window) windowIn).icon("resources/textures/aeison.png");
 
+		final var skyboxRenderer = new SkyboxRenderer(renderAPIContextIn.shadersManager(),
+				renderAPIContextIn.meshsManager().create(ShapeCube.withSize(100.0f), ShapeCube.INDICES, 3),
+				renderAPIContextIn.texturesManager().loadCubeMapTextures("skybox",
+						ResourcesPath.of(new ResourcesPath(GraphicsConstants.TEXTURES, "skybox"))));
+
 		this.scene		= new Scene(renderAPIContextIn, windowIn, 0.125f, 0.125f, 0.125f,
 				new DirectionalLight(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(0.0f, 1.0f, 1.0f), 1.0f)
 						.shadowPosMult(5).orthoCords(-10.0f, 10.0f, -10.0f, 10.0f, -1.0f, 20.0f),
-				10.0f, new Vector3f(0.3f, 0.3f, 0.3f), Fog.NO_FOG, new FlareManager(0.125f, renderAPIContextIn,
-						i -> 0.75f / (3.0f * i), i -> "tex" + (i + 1) + ".png", 9));
+				10.0f, new Vector3f(0.3f, 0.3f, 0.3f), Fog.NO_FOG,
+				new FlareManager(0.125f, renderAPIContextIn, i -> 0.75f / (3.0f * i), i -> "tex" + (i + 1) + ".png", 9),
+				skyboxRenderer);
 
 		this.gameItem	= new GameItem(new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f),
 				new Vector3f(0.5f, 0.5f, 0.5f));

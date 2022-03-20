@@ -33,7 +33,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
-import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.fbo.FBO;
@@ -50,9 +49,7 @@ import fr.onsiea.engine.client.graphics.opengl.utils.OpenGLUtils;
 import fr.onsiea.engine.client.graphics.particles.ParticlesManager;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
-import fr.onsiea.engine.client.graphics.shapes.ShapeCube;
 import fr.onsiea.engine.client.graphics.window.IWindow;
-import fr.onsiea.engine.client.resources.ResourcesPath;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.game.scene.item.GameItem;
 import fr.onsiea.engine.utils.maths.MathInstances;
@@ -117,8 +114,8 @@ public class SceneRenderer
 	private final FlareManager		flareManager;
 
 	public SceneRenderer(IRenderAPIContext renderAPIContextIn, IWindow windowIn, float clearColorRIn,
-			float clearColorGIn, float clearColorBIn, Fog fogIn, Camera cameraIn, FlareManager flareManagerIn)
-			throws Exception
+			float clearColorGIn, float clearColorBIn, Fog fogIn, Camera cameraIn, FlareManager flareManagerIn,
+			SkyboxRenderer skyboxRendererIn) throws Exception
 	{
 		// Base instances
 
@@ -155,10 +152,7 @@ public class SceneRenderer
 
 		// Skybox
 
-		this.skyboxRenderer		= new SkyboxRenderer(renderAPIContextIn.shadersManager(),
-				renderAPIContextIn.meshsManager().create(ShapeCube.withSize(400.0f), ShapeCube.INDICES, 3),
-				renderAPIContextIn.texturesManager().loadCubeMapTextures("skybox",
-						ResourcesPath.of(new ResourcesPath(GraphicsConstants.TEXTURES, "skybox"))));
+		this.skyboxRenderer		= skyboxRendererIn;
 
 		// PostProcessing
 
