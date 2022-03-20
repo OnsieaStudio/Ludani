@@ -94,33 +94,6 @@ public class GLShaderManager implements IShadersManager
 	public GLShaderManager()
 	{
 		this.shaders = new HashMap<>();
-
-		try
-		{
-			this.add("basicNormalWithTangent",
-					this.shaderBasicA = new ShaderBasic(ShaderBasic.Normal.NORMAL_WITH_TANGENT));
-			this.add("basicExclusiveNormal", this.shaderBasicB = new ShaderBasic(ShaderBasic.Normal.EXCLUSIVE_NORMAL));
-			this.add("basicNormal", this.shaderBasicC = new ShaderBasic(ShaderBasic.Normal.NORMAL));
-			this.add("basicFakeNormal", this.shaderBasicD = new ShaderBasic(ShaderBasic.Normal.FAKE));
-			this.add("basicWithoutNormal", this.shaderBasicE = new ShaderBasic(ShaderBasic.Normal.WITHOUT));
-			this.add("scene", this.shaderBasicF = new ShaderBasic(ShaderBasic.Normal.SCENE));
-			this.add("shadow", this.shadowShader = new ShadowShader());
-
-			this.add("flare", this.flareShader = new FlareShader());
-			this.add("2D", this.shader2D = new Shader2D());
-			this.add("skybox", this.skybox = new ShaderSkybox());
-			//this.add("3dto2d", this.shader3DTo2D = new Shader3DTo2D());
-			this.add("brightFilter", this.brightFilter = new BrightFilterShader());
-			this.add("combineFilter", this.combine = new CombineShader());
-			this.add("contrastChanger", this.contrast = new ContrastShader());
-			this.add("horizontalBlur", this.horizontalBlur = new HorizontalBlurShader());
-			this.add("verticalBlur", this.verticalBlur = new VerticalBlurShader());
-			this.add("instanced", this.instancedShader = new InstancedShader());
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	@Override

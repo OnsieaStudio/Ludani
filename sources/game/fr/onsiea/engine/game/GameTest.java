@@ -32,10 +32,20 @@ import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.fog.Fog;
-import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareManager;
+import fr.onsiea.engine.client.graphics.opengl.shaders.InstancedShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.Shader2D;
+import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderBasic;
+import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderSkybox;
+import fr.onsiea.engine.client.graphics.opengl.shaders.effects.FlareShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.effects.ShadowShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.BrightFilterShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.CombineShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.ContrastShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.HorizontalBlurShader;
+import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.VerticalBlurShader;
 import fr.onsiea.engine.client.graphics.opengl.skybox.SkyboxRenderer;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.Renderer;
@@ -80,7 +90,17 @@ public class GameTest implements IGameLogic
 	@Override
 	public boolean initialization(IWindow windowIn, IRenderAPIContext renderAPIContextIn) throws Exception
 	{
-		((Window) windowIn).icon("resources/textures/aeison.png");
+		renderAPIContextIn.shadersManager().add("scene", new ShaderBasic(ShaderBasic.Normal.SCENE));
+		renderAPIContextIn.shadersManager().add("shadow", new ShadowShader());
+		renderAPIContextIn.shadersManager().add("flare", new FlareShader());
+		renderAPIContextIn.shadersManager().add("2D", new Shader2D());
+		renderAPIContextIn.shadersManager().add("skybox", new ShaderSkybox());
+		renderAPIContextIn.shadersManager().add("brightFilter", new BrightFilterShader());
+		renderAPIContextIn.shadersManager().add("combineFilter", new CombineShader());
+		renderAPIContextIn.shadersManager().add("contrastChanger", new ContrastShader());
+		renderAPIContextIn.shadersManager().add("horizontalBlur", new HorizontalBlurShader());
+		renderAPIContextIn.shadersManager().add("verticalBlur", new VerticalBlurShader());
+		renderAPIContextIn.shadersManager().add("instanced", new InstancedShader());
 
 		final var skyboxRenderer = new SkyboxRenderer(renderAPIContextIn.shadersManager(),
 				renderAPIContextIn.meshsManager().create(ShapeCube.withSize(100.0f), ShapeCube.INDICES, 3),
