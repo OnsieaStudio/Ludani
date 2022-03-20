@@ -62,10 +62,8 @@ public class GLWindowContext implements IWindowContext
 	@Override
 	public IRenderAPIContext associate(long handleIn, IWindow windowIn) throws IllegalStateException, Exception
 	{
-		GLFW.glfwMakeContextCurrent(handleIn);
-
 		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_OPENGL_API);
-		//GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_CREATION_API , GLFW.GLFW_NATIVE_CONTEXT_API);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_CREATION_API, GLFW.GLFW_NATIVE_CONTEXT_API);
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
 		// GLFW.glfwWindowHint(GLFW.GLFW_VERSION_MAJOR, 0);
@@ -77,6 +75,8 @@ public class GLWindowContext implements IWindowContext
 		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 		GLFWUtils.boolHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GraphicsConstants.DEBUG);
 		GLFWUtils.boolHint(GLFW.GLFW_CONTEXT_NO_ERROR, !GraphicsConstants.DEBUG);
+
+		GLFW.glfwMakeContextCurrent(handleIn);
 
 		return this.context = OpenGLRenderAPIContext.create();
 	}

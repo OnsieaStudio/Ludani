@@ -159,7 +159,7 @@ public class Window implements IWindow
 			{
 				final var	pWidth	= stack.mallocInt(1);
 				final var	pHeight	= stack.mallocInt(1);
-
+			
 				GLFW.glfwGetWindowSize(this.handle(), pWidth, pHeight);
 			}**/
 
@@ -301,7 +301,10 @@ public class Window implements IWindow
 	@Override
 	public void cleanup()
 	{
-		Window.icons.free();
+		if (Window.icons != null)
+		{
+			Window.icons.free();
+		}
 		// Free the window callbacks and destroy the window
 		Callbacks.glfwFreeCallbacks(this.handle());
 

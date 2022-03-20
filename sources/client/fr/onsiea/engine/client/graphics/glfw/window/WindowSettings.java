@@ -103,9 +103,9 @@ public class WindowSettings
 
 	final void defaultFramebufferHints()
 	{
-		//GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, modeIn.redBits());
-		//GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, modeIn.greenBits());
-		//GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, modeIn.blueBits());
+		//GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 0);
+		//GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 0);
+		//GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 0);
 		//GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, 0);
 		//GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, 0);
 		//GLFW.glfwWindowHint(GLFW.GLFW_STENCIL_BITS, 0);
