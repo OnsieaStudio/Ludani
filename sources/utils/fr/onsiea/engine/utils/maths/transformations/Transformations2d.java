@@ -19,14 +19,14 @@ public class Transformations2d
 	public final static Matrix4d transformations(Vector2d positionIn, Vector2d rotationIn, Vector2d scaleIn)
 	{
 		return new Matrix4d().identity().translate(positionIn.x(), positionIn.y(), 0.0D)
-				.rotateX(Math.toRadians(rotationIn.x())).rotateY(Math.toRadians(rotationIn.y()))
+				.rotateX(Math.toRadians(-rotationIn.x())).rotateY(Math.toRadians(-rotationIn.y()))
 				.scale(scaleIn.x(), scaleIn.y(), 1.0D);
 	}
 
 	public final static Matrix4d transformations(Vector2d positionIn, Vector2d rotationIn, double scaleIn)
 	{
 		return new Matrix4d().identity().translate(positionIn.x(), positionIn.y(), 0.0D)
-				.rotateX(Math.toRadians(rotationIn.x())).rotateY(Math.toRadians(rotationIn.y())).scale(scaleIn);
+				.rotateX(Math.toRadians(-rotationIn.x())).rotateY(Math.toRadians(-rotationIn.y())).scale(scaleIn);
 	}
 
 	public static Matrix4d transformations(double xIn, double yIn, double rxIn, double ryIn, double sxIn, double syIn)

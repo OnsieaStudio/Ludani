@@ -20,15 +20,15 @@ public class Transformations3d
 	public final static Matrix4d transformations(Vector3d positionIn, Vector3d rotationIn, Vector3d scaleIn)
 	{
 		return new Matrix4d().identity().translate(positionIn.x(), positionIn.y(), positionIn.z())
-				.rotateX(Math.toRadians(rotationIn.x())).rotateY(Math.toRadians(rotationIn.y()))
-				.rotateZ(Math.toRadians(rotationIn.z())).scale(scaleIn.x(), scaleIn.y(), scaleIn.z());
+				.rotateX(Math.toRadians(-rotationIn.x())).rotateY(Math.toRadians(-rotationIn.y()))
+				.rotateZ(Math.toRadians(-rotationIn.z())).scale(scaleIn.x(), scaleIn.y(), scaleIn.z());
 	}
 
 	public final static Matrix4d transformations(Vector3d positionIn, Vector3d rotationIn, double scaleIn)
 	{
 		return new Matrix4d().identity().translate(positionIn.x(), positionIn.y(), positionIn.z())
-				.rotateX(Math.toRadians(rotationIn.x())).rotateY(Math.toRadians(rotationIn.y()))
-				.rotateZ(Math.toRadians(rotationIn.z())).scale(scaleIn);
+				.rotateX(Math.toRadians(-rotationIn.x())).rotateY(Math.toRadians(-rotationIn.y()))
+				.rotateZ(Math.toRadians(-rotationIn.z())).scale(scaleIn);
 	}
 
 	public static Matrix4d transformations(double xIn, double yIn, double zIn, double rxIn, double ryIn, double rzIn,
@@ -54,16 +54,16 @@ public class Transformations3d
 			Matrix4d transformationsIn)
 	{
 		return transformationsIn.identity().translate(positionIn.x(), positionIn.y(), positionIn.z())
-				.rotateX(Math.toRadians(rotationIn.x())).rotateY(Math.toRadians(rotationIn.y()))
-				.rotateZ(Math.toRadians(rotationIn.z())).scale(scaleIn.x(), scaleIn.y(), scaleIn.z());
+				.rotateX(Math.toRadians(-rotationIn.x())).rotateY(Math.toRadians(-rotationIn.y()))
+				.rotateZ(Math.toRadians(-rotationIn.z())).scale(scaleIn.x(), scaleIn.y(), scaleIn.z());
 	}
 
 	public final static Matrix4d transformations(Vector3d positionIn, Vector3d rotationIn, double scaleIn,
 			Matrix4d transformationsIn)
 	{
 		return transformationsIn.identity().translate(positionIn.x(), positionIn.y(), positionIn.z())
-				.rotateX(Math.toRadians(rotationIn.x())).rotateY(Math.toRadians(rotationIn.y()))
-				.rotateZ(Math.toRadians(rotationIn.z())).scale(scaleIn);
+				.rotateX(Math.toRadians(-rotationIn.x())).rotateY(Math.toRadians(-rotationIn.y()))
+				.rotateZ(Math.toRadians(-rotationIn.z())).scale(scaleIn);
 	}
 
 	public static Matrix4d transformations(double xIn, double yIn, double zIn, double rxIn, double ryIn, double rzIn,

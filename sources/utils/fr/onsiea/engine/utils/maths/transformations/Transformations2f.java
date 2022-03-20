@@ -19,14 +19,14 @@ public class Transformations2f
 	public final static Matrix4f transformations(Vector2f positionIn, Vector2f rotationIn, Vector2f scaleIn)
 	{
 		return new Matrix4f().identity().translate(positionIn.x(), positionIn.y(), 0.0f)
-				.rotateX((float) Math.toRadians(rotationIn.x())).rotateY((float) Math.toRadians(rotationIn.y()))
+				.rotateX((float) Math.toRadians(-rotationIn.x())).rotateY((float) Math.toRadians(-rotationIn.y()))
 				.scale(scaleIn.x(), scaleIn.y(), 1.0f);
 	}
 
 	public final static Matrix4f transformations(Vector2f positionIn, Vector2f rotationIn, float scaleIn)
 	{
 		return new Matrix4f().identity().translate(positionIn.x(), positionIn.y(), 0.0f)
-				.rotateX((float) Math.toRadians(rotationIn.x())).rotateY((float) Math.toRadians(rotationIn.y()))
+				.rotateX((float) Math.toRadians(-rotationIn.x())).rotateY((float) Math.toRadians(-rotationIn.y()))
 				.scale(scaleIn);
 	}
 
