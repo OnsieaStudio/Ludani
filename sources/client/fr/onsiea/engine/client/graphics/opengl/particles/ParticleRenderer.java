@@ -31,16 +31,22 @@ import java.util.List;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMesh;
 import fr.onsiea.engine.client.graphics.opengl.mesh.GLMeshManager;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector2f;
+import fr.onsiea.engine.client.graphics.opengl.shaders.InstancedShader;
 import fr.onsiea.engine.client.graphics.opengl.vbo.BaseVbo;
 import fr.onsiea.engine.client.graphics.opengl.vbo.Vbo;
 import fr.onsiea.engine.client.graphics.particles.IParticle;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.shapes.ShapeRectangle;
+import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.utils.Pair;
 import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
 import lombok.AccessLevel;
@@ -120,17 +126,29 @@ public class ParticleRenderer
 	private @Getter(AccessLevel.PUBLIC) final IMesh	mesh;
 	private final Vbo								vbo;
 	private boolean									somethingToShow;
+	private final ITexture							texture;
+	private final IShadersManager					shadersManager;
+	private final InstancedShader					instancedShader;
+	private final int								textureRows;
+	private final int								textureColumns;
 
-	public ParticleRenderer(int particlesIn, IMeshsManager meshManagerIn) throws Exception
+	public ParticleRenderer(int particlesCountIn, IRenderAPIContext contextIn, ITexture particlesTextureIn,
+			int textureRowsIn, int textureColumnsIn) throws Exception
 	{
-		this.instances = BufferUtils.createFloatBuffer(4 * 4 * 2 * particlesIn);
+		this.instances = BufferUtils.createFloatBuffer(4 * 4 * 2 * particlesCountIn);
 
-		final var builder = ((GLMeshManager) meshManagerIn).meshBuilderWithVao(6)
+		final var builder = ((GLMeshManager) contextIn.meshsManager()).meshBuilderWithVao(6)
 				.vbo(GL15.GL_STREAM_DRAW, ShapeRectangle.positions, 2).ibo(GL15.GL_STREAM_DRAW, ShapeRectangle.indices)
 				.newInstancesVboAndBind().multipleVertexAttribPointerAndDivisor(4, 4)
-				.createVertexAttribPointerAndDivisor(2).data(4L * 4L * 2L * particlesIn).primCount(particlesIn);
-		this.vbo	= (Vbo) builder.instancesVbo();
-		this.mesh	= builder.build();
+				.createVertexAttribPointerAndDivisor(2).data(4L * 4L * 2L * particlesCountIn)
+				.primCount(particlesCountIn);
+		this.vbo				= (Vbo) builder.instancesVbo();
+		this.mesh				= builder.build();
+		this.texture			= particlesTextureIn;
+		this.shadersManager		= contextIn.shadersManager();
+		this.instancedShader	= (InstancedShader) this.shadersManager.get("instanced");
+		this.textureRows		= textureRowsIn;
+		this.textureColumns		= textureColumnsIn;
 	}
 
 	/**
@@ -140,9 +158,17 @@ public class ParticleRenderer
 	{
 		if (this.somethingToShow)
 		{
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			this.instancedShader.attach();
+			((GLUniformVector2f) this.instancedShader.rowsAndColumns()).load(this.textureRows, this.textureColumns);
+			this.texture.attach();
 			this.mesh.attach();
 			this.mesh.draw();
 			this.mesh.detach();
+			this.texture.detach();
+			this.shadersManager.detach();
+			GL11.glDisable(GL11.GL_BLEND);
 		}
 	}
 
