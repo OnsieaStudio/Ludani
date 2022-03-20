@@ -24,28 +24,61 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.game.scene;
+package fr.onsiea.engine.game.scene.light;
 
-import org.joml.Matrix4f;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import fr.onsiea.engine.client.graphics.material.Material;
-import fr.onsiea.engine.client.graphics.mesh.IMesh;
+import org.joml.Vector3f;
+
+import fr.onsiea.engine.client.graphics.light.DirectionalLight;
+import fr.onsiea.engine.client.graphics.light.PointLight;
+import fr.onsiea.engine.client.graphics.light.SpotLight;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Seynax
  *
  */
-@AllArgsConstructor
-@Builder
-@Getter(AccessLevel.PUBLIC)
-public class GameItem
+public class SceneLights
 {
-	private final String	name;
-	private final IMesh		mesh;
-	private final Material	material;
-	private final Matrix4f	transformations;
+	private final List<PointLight>											pointLights;
+	private final List<SpotLight>											spotLights;
+	private final @Getter(AccessLevel.PUBLIC) DirectionalLight				directionalLight;
+	private @Getter(AccessLevel.PUBLIC) @Setter(AccessLevel.PUBLIC) float	specularPower;
+	private final @Getter(AccessLevel.PUBLIC) Vector3f						ambientLight;
+
+	public SceneLights(DirectionalLight directionalLightIn, float specularPowerIn, Vector3f ambientLightIn)
+	{
+		this.pointLights		= new ArrayList<>();
+		this.spotLights			= new ArrayList<>();
+
+		this.directionalLight	= directionalLightIn;
+		this.specularPower		= specularPowerIn;
+		this.ambientLight		= ambientLightIn;
+	}
+
+	public SceneLights add(PointLight... pointLightsIn)
+	{
+		Collections.addAll(this.pointLights, pointLightsIn);
+
+		return this;
+	}
+
+	public SceneLights add(SpotLight... spotLightsIn)
+	{
+		Collections.addAll(this.spotLights, spotLightsIn);
+
+		return this;
+	}
+
+	public SceneLights ambientLight(float rIn, float gIn, float bIn)
+	{
+		this.ambientLight.set(rIn, gIn, bIn);
+
+		return this;
+	}
 }
