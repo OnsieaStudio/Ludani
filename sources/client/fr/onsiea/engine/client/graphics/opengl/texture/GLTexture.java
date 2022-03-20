@@ -96,10 +96,24 @@ public class GLTexture implements ITexture
 		GL11.glDeleteTextures(texturesBufferIn);
 	}
 
+	public final static GLTexture withId(int widthIn, int heightIn, int textureIdIn, OpenGLRenderAPIContext contextIn)
+	{
+		return new GLTexture(textureIdIn, contextIn).width(widthIn).height(heightIn);
+	}
+
 	private int						id;
 	private int						width;
 	private int						height;
 	private OpenGLRenderAPIContext	context;
+
+	/**
+	 * @param depthTextureIn
+	 */
+	public GLTexture(int textureIdIn, OpenGLRenderAPIContext contextIn)
+	{
+		this.id			= textureIdIn;
+		this.context	= contextIn;
+	}
 
 	/**
 	 * @param widthIn
@@ -181,7 +195,7 @@ public class GLTexture implements ITexture
 
 		this.context(contextIn);
 
-		this.load(minIn, magIn, wrapSIn, wrapTIn, true, GL11.GL_DEPTH_COMPONENT, pixelFormatIn);
+		this.load(minIn, magIn, wrapSIn, wrapTIn, mipmappingIn, GL11.GL_DEPTH_COMPONENT, pixelFormatIn);
 	}
 
 	private void initialization(int minIn, int magIn, int wrapSIn, int wrapTIn)
@@ -227,18 +241,21 @@ public class GLTexture implements ITexture
 	}
 
 	/**
-	 * @param glNearestIn
-	 * @param glNearest2In
-	 * @param glClampToEdgeIn
-	 * @param glClampToEdge2In
-	 * @param bIn
-	 * @param glDepthComponentIn
+	 * @param minIn
+	 * @param magIn
+	 * @param wrapSIn
+	 * @param wrapTIn
+	 * @param mipmappingIn
+	 * @param typeIn
 	 * @param pixelFormatIn
 	 */
 	private void load(int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn, int typeIn,
 			int pixelFormatIn)
 	{
 		this.initialization(minIn, magIn, wrapSIn, wrapTIn);
+
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_COMPARE_FUNC, GL11.GL_LEQUAL);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_COMPARE_MODE, GL11.GL_NONE);
 
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, typeIn, this.width(), this.height(), 0, pixelFormatIn, GL11.GL_FLOAT,
 				(ByteBuffer) null);
