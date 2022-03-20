@@ -77,7 +77,7 @@ public class GL2D
 		GL2D.POSITION.x	= (float) (Normalizer.percentToNormalizedX(xIn) + GL2D.SCALE.x);
 		GL2D.POSITION.y	= (float) (Normalizer.percentToNormalizedY(yIn) - GL2D.SCALE.y);
 		Transformations2f.transformations(GL2D.POSITION, 0.0f, 0.0f, GL2D.SCALE, GL2D.TRANSFORMATIONS_MATRIX);
-		GL2D.shaderManager.shader2D().transformations().load(GL2D.TRANSFORMATIONS_MATRIX);
+		// GL2D.shaderManager.shader2D().transformations().load(GL2D.TRANSFORMATIONS_MATRIX);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 		//GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, rawModel.getVertexCount());
 	}

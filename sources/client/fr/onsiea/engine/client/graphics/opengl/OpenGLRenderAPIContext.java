@@ -107,7 +107,17 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 
 		this.meshsManager(new GLMeshManager(new NormalMappedObjLoader()));
 
-		OpenGLUtils.restoreState();
+		// Set the clear color
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+		// Support for transparencies
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
 	}
 
 	@Override
@@ -139,7 +149,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 	@Override
 	public ITexture createCubeMapTextures(ITextureData... texturesDataIn) throws Exception
 	{
-		return this.createCubeMapTextures(GL11.GL_LINEAR, GL11.GL_LINEAR_MIPMAP_LINEAR, GL12.GL_CLAMP_TO_EDGE,
+		return this.createCubeMapTextures(GL11.GL_LINEAR_MIPMAP_LINEAR, GL11.GL_LINEAR, GL12.GL_CLAMP_TO_EDGE,
 				GL12.GL_CLAMP_TO_EDGE, true, texturesDataIn);
 	}
 
@@ -192,7 +202,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext, IRenderAPIMeth
 
 		GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
 		GL11.glEnable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		GL11.glEnable(KHRDebug.GL_DEBUG_OUTPUT);
+		// GL11.glEnable(KHRDebug.GL_DEBUG_OUTPUT);
 	}
 
 	public void disableDebugging()

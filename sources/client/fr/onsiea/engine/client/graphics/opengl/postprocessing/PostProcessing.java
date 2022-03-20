@@ -1,7 +1,6 @@
 package fr.onsiea.engine.client.graphics.opengl.postprocessing;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.postprocessing.effects.BrightFilter;
@@ -135,7 +134,7 @@ public class PostProcessing
 		this.combineFilter().render(windowIn, colourTextureIn, this.verticalBlur2().outputTexture(),
 				this.verticalBlur4().outputTexture(), this.verticalBlur8().outputTexture());
 
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		//GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		//this.contrastChanger().render(colourTextureIn, windowIn, 0.5f);
 
 		/**this.shader.attach();

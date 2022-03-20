@@ -93,7 +93,6 @@ public class SkyboxRenderer
 		this.shadersManager	= shadersManagerIn;
 		this.shader			= (ShaderSkybox) shadersManagerIn.get("skybox");
 		this.mesh			= meshIn;
-
 		this.texture		= textureIn;
 	}
 
