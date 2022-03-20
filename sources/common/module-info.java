@@ -40,6 +40,9 @@ module OnsieaEngine
 	exports fr.onsiea.engine.client.graphics.mesh.obj;
 	exports fr.onsiea.engine.client.graphics.shader;
 	exports fr.onsiea.engine.client.graphics.shader.uniform;
+	exports fr.onsiea.engine.client.graphics.light;
+	exports fr.onsiea.engine.client.graphics.material;
+	exports fr.onsiea.engine.client.graphics.fog;
 	exports fr.onsiea.engine.client.resources;
 	exports fr.onsiea.engine.utils;
 	exports fr.onsiea.engine.utils.time;
