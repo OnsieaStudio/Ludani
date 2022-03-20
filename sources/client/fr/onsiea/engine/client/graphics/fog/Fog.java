@@ -38,6 +38,8 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class Fog
 {
+	public final static Fog	NO_FOG	= new Fog(false, new Vector3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+
 	private final boolean	active;
 	private final Vector3f	colour;
 	private final float		density;
