@@ -135,7 +135,9 @@ public class TextureLoader
 		for (final IResourcesPath resourcePath : resourcesPathIn)
 		{
 			final var realFilepath = resourcePath.path();
+			System.out.println("Skybox !");
 			textureData[i] = TextureData.load(new File(realFilepath), false);
+			System.out.println("Skybox -");
 
 			i++;
 		}

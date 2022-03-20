@@ -91,8 +91,10 @@ public class TextureData implements ITextureData
 						"Can't load metadata of file texture \"" + filepath + "\" " + STBImage.stbi_failure_reason());
 			}
 
+			STBImage.stbi_set_flip_vertically_on_load(false);
 			if (flipIn)
 			{
+				System.out.println("Flip !");
 				STBImage.stbi_set_flip_vertically_on_load(true);
 			}
 
