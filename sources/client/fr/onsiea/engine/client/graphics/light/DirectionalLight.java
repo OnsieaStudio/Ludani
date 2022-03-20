@@ -26,6 +26,7 @@ public class DirectionalLight
 		this.direction(directionIn);
 		this.intensity(intensityIn);
 		this.orthoCoords(new OrthoCoords());
+		this.shadowPosMult = 1;
 	}
 
 	public DirectionalLight(DirectionalLight lightIn)
@@ -33,7 +34,7 @@ public class DirectionalLight
 		this(new Vector3f(lightIn.color()), new Vector3f(lightIn.direction()), lightIn.intensity());
 	}
 
-	public void setOrthoCords(float left, float right, float bottom, float top, float near, float far)
+	public DirectionalLight orthoCords(float left, float right, float bottom, float top, float near, float far)
 	{
 		this.orthoCoords.left	= left;
 		this.orthoCoords.right	= right;
@@ -41,11 +42,12 @@ public class DirectionalLight
 		this.orthoCoords.top	= top;
 		this.orthoCoords.near	= near;
 		this.orthoCoords.far	= far;
+
+		return this;
 	}
 
 	public static class OrthoCoords
 	{
-
 		public float	left;
 
 		public float	right;

@@ -26,11 +26,13 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shadow;
 
+import java.nio.ByteBuffer;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
-import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.texture.ITexturesManager;
 
 /**
@@ -45,7 +47,7 @@ public class ShadowMap
 
 	private final int		depthMapFBO;
 
-	private final ITexture	depthMap;
+	private final int		depthMap;
 
 	public ShadowMap(ITexturesManager texturesManagerIn) throws Exception
 	{
@@ -53,14 +55,22 @@ public class ShadowMap
 		this.depthMapFBO	= GL30.glGenFramebuffers();
 
 		// Create the depth map texture
-		this.depthMap		= texturesManagerIn.createEmpty("shadowMap", ShadowMap.SHADOW_MAP_WIDTH,
-				ShadowMap.SHADOW_MAP_HEIGHT, GL11.GL_DEPTH_COMPONENT, GL11.GL_NEAREST, GL11.GL_NEAREST,
-				GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true);
+		//this.depthMap		= texturesManagerIn.createEmpty("shadowMap", ShadowMap.SHADOW_MAP_WIDTH,
+		//		ShadowMap.SHADOW_MAP_HEIGHT, GL11.GL_DEPTH_COMPONENT, GL11.GL_NEAREST, GL11.GL_NEAREST,
+		//		GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, false);
+		this.depthMap		= GL11.glGenTextures();
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.depthMap);
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, ShadowMap.SHADOW_MAP_WIDTH,
+				ShadowMap.SHADOW_MAP_HEIGHT, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
 
 		// Attach the the depth map texture to the FBO
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.depthMapFBO);
-		GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D,
-				this.depthMap.id(), 0);
+		GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, this.depthMap,
+				0);
 		// Set only depth
 		GL11.glDrawBuffer(GL11.GL_NONE);
 		GL11.glReadBuffer(GL11.GL_NONE);
@@ -74,12 +84,12 @@ public class ShadowMap
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 	}
 
-	public ITexture getDepthMapTexture()
+	public int depthMapTexture()
 	{
 		return this.depthMap;
 	}
 
-	public int getDepthMapFBO()
+	public int depthMapFBO()
 	{
 		return this.depthMapFBO;
 	}
