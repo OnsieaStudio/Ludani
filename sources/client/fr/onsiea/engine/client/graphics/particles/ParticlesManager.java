@@ -31,31 +31,40 @@ import java.util.List;
 
 import org.joml.Matrix4f;
 
-import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
 import fr.onsiea.engine.client.graphics.opengl.particles.ParticleRenderer;
+import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.texture.ITexture;
 
 /**
  * @author Seynax
  *
  */
-public class ParticleManager<T extends IParticle>
+public class ParticlesManager<T extends IParticle>
 {
 	private final List<T>				particles;
 	private final IParticleSystem<T>	particleSystem;
 	private final ParticleRenderer		particleRenderer;
 
-	public ParticleManager(IParticleSystem<T> particleSystemIn, int particlesIn, IMeshsManager meshManagerIn)
-			throws Exception
+	public ParticlesManager(IParticleSystem<T> particleSystemIn, int particlesCountIn, IRenderAPIContext contextIn,
+			ITexture particlesTextureIn, int textureRowsIn, int textureColumnsIn) throws Exception
 	{
 		this.particles			= new ArrayList<>();
 
 		this.particleSystem		= particleSystemIn;
-		this.particleRenderer	= new ParticleRenderer(particlesIn, meshManagerIn);
+		this.particleRenderer	= new ParticleRenderer(particlesCountIn, contextIn, particlesTextureIn, textureRowsIn,
+				textureColumnsIn);
 
 		this.particleSystem.initialization(this.particles, this);
 	}
 
-	public ParticleManager<T> remove(int indexIn)
+	public ParticlesManager<T> render()
+	{
+		this.particleRenderer.draw();
+
+		return this;
+	}
+
+	public ParticlesManager<T> remove(int indexIn)
 	{
 		this.particles.remove(indexIn);
 
@@ -64,7 +73,7 @@ public class ParticleManager<T extends IParticle>
 		return this;
 	}
 
-	public ParticleManager<T> add(T particleIn)
+	public ParticlesManager<T> add(T particleIn)
 	{
 		this.particles.add(particleIn);
 
@@ -73,7 +82,7 @@ public class ParticleManager<T extends IParticle>
 		return this;
 	}
 
-	public ParticleManager<T> update(Matrix4f projViewMatrixIn) throws Exception
+	public ParticlesManager<T> update(Matrix4f projViewMatrixIn) throws Exception
 	{
 		final var	size		= this.particles.size();
 
