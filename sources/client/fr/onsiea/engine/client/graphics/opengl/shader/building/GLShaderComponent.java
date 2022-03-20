@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import fr.onsiea.engine.client.graphics.shader.EnumShaderComponentType;
-import fr.onsiea.engine.client.graphics.shader.IShaderComponent;
+import fr.onsiea.engine.client.graphics.shader.building.EnumShaderComponentType;
+import fr.onsiea.engine.client.graphics.shader.building.IShaderComponent;
 import lombok.AccessLevel;
 import lombok.Getter;
 

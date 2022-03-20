@@ -26,7 +26,7 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader.building;
 
-import fr.onsiea.engine.client.graphics.shader.EnumShaderVariableType;
+import fr.onsiea.engine.client.graphics.shader.building.EnumShaderVariableType;
 import lombok.AccessLevel;
 import lombok.Getter;
 
