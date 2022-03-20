@@ -7,7 +7,6 @@ import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.shaders.effects.FlareShader;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContextSettings;
-import fr.onsiea.engine.client.graphics.render.Renderer;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 
@@ -64,14 +63,14 @@ public class FlareRenderer
 	 *            - The brightness that all the FlareTextures should be rendered
 	 *            at.
 	 */
-	public void render(FlareTexture[] flaresIn, float brightnessIn, IWindow windowIn, Renderer rendererIn)
+	public void render(FlareTexture[] flaresIn, float brightnessIn, IWindow windowIn)
 	{
-		this.prepare(brightnessIn, rendererIn);
+		this.prepare(brightnessIn);
 		for (final FlareTexture flare : flaresIn)
 		{
 			this.renderFlare(flare, windowIn);
 		}
-		this.endRendering(rendererIn);
+		this.endRendering();
 	}
 
 	/**
@@ -92,7 +91,7 @@ public class FlareRenderer
 	 * @param brightnessIn
 	 *            - the brightness at which the flares are going to be rendered.
 	 */
-	private void prepare(float brightnessIn, Renderer rendererIn)
+	private void prepare(float brightnessIn)
 	{
 		this.settings.user().disable("antialias");
 		this.settings.user().enable("blend");
@@ -137,7 +136,7 @@ public class FlareRenderer
 	 * Unbind the quad VAO, stop the shader program, and undo any settings that
 	 * were changed before rendering.
 	 */
-	private void endRendering(Renderer rendererIn)
+	private void endRendering()
 	{
 		this.mesh().detach();
 		this.shadersManager.detach();

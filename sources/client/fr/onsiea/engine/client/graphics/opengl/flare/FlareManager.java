@@ -6,20 +6,51 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
-import fr.onsiea.engine.client.graphics.render.Renderer;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.utils.maths.MathInstances;
 
 public class FlareManager
 {
-
 	private static final Vector2f	CENTER_SCREEN	= new Vector2f(0.5f, 0.5f);
 
 	private final FlareTexture[]	flareTextures;
 	private final float				spacing;
 
 	private final FlareRenderer		renderer;
+
+	public FlareManager(float spacing, IRenderAPIContext renderAPIContextIn, IScaleRamp scalingRampIn,
+			ITexturesFilepathsRamp texturesFilepathsRampIn, int texturesCountIn) throws Exception
+	{
+		this.spacing		= spacing;
+		this.flareTextures	= new FlareTexture[texturesCountIn];
+
+		for (var i = 0; i < texturesCountIn; i++)
+		{
+			this.flareTextures[i] = new FlareTexture(
+					renderAPIContextIn.texturesManager().load(texturesFilepathsRampIn.filepath(i)),
+					scalingRampIn.scale(i));
+		}
+
+		this.renderer = new FlareRenderer(renderAPIContextIn);
+	}
+
+	public FlareManager(float spacing, IRenderAPIContext renderAPIContextIn, IScaleRamp scalingRampIn,
+			String... texturesFilepathsIn) throws Exception
+	{
+		this.spacing		= spacing;
+		this.flareTextures	= new FlareTexture[texturesFilepathsIn.length];
+		var i = 0;
+		for (final String filepath : texturesFilepathsIn)
+		{
+			this.flareTextures[i] = new FlareTexture(renderAPIContextIn.texturesManager().load(filepath),
+					scalingRampIn.scale(i));
+
+			i++;
+		}
+
+		this.renderer = new FlareRenderer(renderAPIContextIn);
+	}
 
 	public FlareManager(float spacing, IRenderAPIContext renderAPIContextIn, FlareTexture... textures)
 	{
@@ -28,7 +59,7 @@ public class FlareManager
 		this.renderer		= new FlareRenderer(renderAPIContextIn);
 	}
 
-	public void render(Camera camera, Vector3f sunWorldPos, IWindow windowIn, Renderer rendererIn)
+	public void render(Camera camera, Vector3f sunWorldPos, IWindow windowIn)
 	{
 		final var sunCoords = this.convertToScreenSpace(sunWorldPos, camera.view(), MathInstances.projectionMatrix());
 		if (sunCoords == null)
@@ -40,7 +71,7 @@ public class FlareManager
 		if (brightness > 0)
 		{
 			this.calcFlarePositions(sunToCenter, sunCoords);
-			this.renderer().render(this.flareTextures(), brightness, windowIn, rendererIn);
+			this.renderer().render(this.flareTextures(), brightness, windowIn);
 		}
 	}
 
@@ -88,5 +119,15 @@ public class FlareManager
 	private final FlareRenderer renderer()
 	{
 		return this.renderer;
+	}
+
+	public interface IScaleRamp
+	{
+		float scale(int indexIn);
+	}
+
+	public interface ITexturesFilepathsRamp
+	{
+		String filepath(int indexIn);
 	}
 }
