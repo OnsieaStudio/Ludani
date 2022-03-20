@@ -143,7 +143,7 @@ public class FBO
 	}
 
 	/**
-	 * Binds the current FBO to be read from (not used in tutorial 43).
+	 * Binds the current FBO to be read from
 	 */
 	public void bindToRead()
 	{
@@ -161,7 +161,7 @@ public class FBO
 		this.stop(windowIn);
 	}
 
-	public void resolveToScreen(Window windowIn)
+	public void resolveToScreen(IWindow windowIn)
 	{
 		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
 		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.frameBuffer());
@@ -321,7 +321,7 @@ public class FBO
 		GL30.glDeleteRenderbuffers(this.colourBuffer());
 	}
 
-	private final int frameBuffer()
+	public final int frameBuffer()
 	{
 		return this.frameBuffer;
 	}
@@ -351,7 +351,7 @@ public class FBO
 		this.colourBuffer = colourBufferIn;
 	}
 
-	private final int width()
+	public final int width()
 	{
 		return this.width;
 	}
@@ -361,7 +361,7 @@ public class FBO
 		this.width = widthIn;
 	}
 
-	private final int height()
+	public final int height()
 	{
 		return this.height;
 	}
