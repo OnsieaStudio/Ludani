@@ -26,8 +26,10 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shaders;
 
+import org.joml.Matrix4f;
+
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -38,14 +40,14 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class Shader3DTo2D extends GLShaderProgram
 {
-	private final GLUniformMatrix4f transformations;
+	private final IShaderTypedUniform<Matrix4f> transformations;
 
 	/**
 	 * @throws Exception
 	 */
 	public Shader3DTo2D() throws Exception
 	{
-		super("resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position");
+		super("3DTo2D", "resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position");
 
 		this.transformations = this.matrix4fUniform("transformations");
 	}

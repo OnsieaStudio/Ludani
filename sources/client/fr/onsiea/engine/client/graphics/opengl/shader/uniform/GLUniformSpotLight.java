@@ -32,6 +32,12 @@ public class GLUniformSpotLight implements IShaderTypedUniform<SpotLight>
 		GLUniformFloat.load(locationsIn[6], spotLightIn.cutOff());
 	}
 
+	private final static void base(int[] locationsIn, SpotLight spotLightIn, Matrix4f viewMatrixIn)
+	{
+		GLUniformPointLight.load(locationsIn, spotLightIn.pointLight(), viewMatrixIn);
+		GLUniformFloat.load(locationsIn[6], spotLightIn.cutOff());
+	}
+
 	public final static void load(int[] locationsIn, SpotLight spotLightIn)
 	{
 		GLUniformSpotLight.base(locationsIn, spotLightIn);
@@ -40,13 +46,10 @@ public class GLUniformSpotLight implements IShaderTypedUniform<SpotLight>
 
 	public final static void load(int[] locationsIn, SpotLight spotLightIn, Matrix4f viewMatrixIn)
 	{
-		GLUniformSpotLight.base(locationsIn, spotLightIn);
+		GLUniformSpotLight.base(locationsIn, spotLightIn, viewMatrixIn);
 
 		GLUniformPointLight.TRANSPOSE_VEC.set(GLUniformPointLight.TRANSPOSE_MAT.set(viewMatrixIn)
 				.transform(GLUniformPointLight.TRANSPOSE_VEC.set(spotLightIn.coneDirection(), 0.0f)));
-
-		GLUniformVector3f.load(locationsIn[1], GLUniformPointLight.TRANSPOSE_VEC.x(),
-				GLUniformPointLight.TRANSPOSE_VEC.y(), GLUniformPointLight.TRANSPOSE_VEC.z());
 
 		GLUniformVector3f.load(locationsIn[7], GLUniformPointLight.TRANSPOSE_VEC.x(),
 				GLUniformPointLight.TRANSPOSE_VEC.y(), GLUniformPointLight.TRANSPOSE_VEC.z());

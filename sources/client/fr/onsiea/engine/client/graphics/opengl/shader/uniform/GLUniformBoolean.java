@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter(AccessLevel.PRIVATE)
 public class GLUniformBoolean implements IShaderTypedUniform<Boolean>
 {
-	public final static void load(int locationIn, boolean valueIn)
+	public static void load(int locationIn, boolean valueIn)
 	{
 		GL20.glUniform1f(locationIn, valueIn ? 1.0f : 0.0f);
 	}

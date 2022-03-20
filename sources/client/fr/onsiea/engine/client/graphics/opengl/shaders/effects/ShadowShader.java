@@ -26,8 +26,10 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shaders.effects;
 
+import org.joml.Matrix4f;
+
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -38,18 +40,15 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class ShadowShader extends GLShaderProgram
 {
-	private final GLUniformMatrix4f	orthoProjection;
-	private final GLUniformMatrix4f	modelLightView;
+	private final IShaderTypedUniform<Matrix4f>	orthoProjection;
+	private final IShaderTypedUniform<Matrix4f>	modelLightView;
 
 	/**
-	 * @param vertexShaderScriptFilepathIn
-	 * @param fragmentShaderScriptFilepathIn
-	 * @param attributesIn
 	 * @throws Exception
 	 */
 	public ShadowShader() throws Exception
 	{
-		super("resources\\shaders\\shadow\\depthVertex.vs", "resources\\shaders\\shadow\\depthFragment.fs",
+		super("shadow", "resources\\shaders\\shadow\\depthVertex.vs", "resources\\shaders\\shadow\\depthFragment.fs",
 				"in_position");
 
 		this.orthoProjection	= this.matrix4fUniform("orthoProjection");

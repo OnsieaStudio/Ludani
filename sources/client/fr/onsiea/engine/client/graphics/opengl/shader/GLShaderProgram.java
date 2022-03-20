@@ -2,24 +2,12 @@ package fr.onsiea.engine.client.graphics.opengl.shader;
 
 import org.lwjgl.opengl.GL20;
 
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniform;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformBoolean;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloat;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFloatArray;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFog;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMaterial;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformSpotLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector2f;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector4f;
+import fr.onsiea.engine.client.graphics.GraphicsConstants;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformBuilder;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.debug.GLDebugUniformBuilder;
 import fr.onsiea.engine.client.graphics.opengl.shader.utils.GLShaderUtils;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.ShaderProgram;
-import fr.onsiea.engine.client.resources.ResourcesPath;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,22 +21,36 @@ public class GLShaderProgram extends ShaderProgram
 
 	private int	programId;
 
-	public GLShaderProgram(String vertexShaderScriptFilepathIn, String fragmentShaderScriptFilepathIn,
+	public GLShaderProgram(ShaderProgram.Builder builderIn) throws Exception
+	{
+		if (builderIn.uniformBuilder() == null)
+		{
+			builderIn.uniformBuilder(new GLUniformBuilder(this));
+		}
+
+		this.build(builderIn);
+	}
+
+	/**
+	 * @param stringIn
+	 * @param vertexFileIn
+	 * @param fragmentFileIn
+	 * @param string2In
+	 * @throws Exception
+	 */
+	public GLShaderProgram(String nameIn, String fragmentScriptFilepathIn, String vertexScriptFilepathIn,
 			String... attributesIn) throws Exception
 	{
-		super(vertexShaderScriptFilepathIn, fragmentShaderScriptFilepathIn, attributesIn);
-	}
+		this.build(nameIn, fragmentScriptFilepathIn, vertexScriptFilepathIn, attributesIn);
+		if (GraphicsConstants.SHADER_UNIFORM_DEBUG)
+		{
+			this.uniformBuilder = new GLDebugUniformBuilder(this);
+		}
+		else
+		{
+			this.uniformBuilder = new GLUniformBuilder(this);
+		}
 
-	public GLShaderProgram(String vertexShaderIn, String fragmentShaderIn, boolean isScriptIn, String... attributesIn)
-			throws Exception
-	{
-		super(vertexShaderIn, fragmentShaderIn, isScriptIn, attributesIn);
-	}
-
-	public GLShaderProgram(ResourcesPath vertexShaderScriptResourcespathIn,
-			ResourcesPath fragmentShaderScriptResourcespathIn, String... attributesIn) throws Exception
-	{
-		super(vertexShaderScriptResourcespathIn, fragmentShaderScriptResourcespathIn, attributesIn);
 	}
 
 	@Override
@@ -85,130 +87,6 @@ public class GLShaderProgram extends ShaderProgram
 		}
 
 		return locations;
-	}
-
-	/**
-	 * @param stringIn
-	 * @return
-	 */
-	public GLUniform uniform(String nameIn)
-	{
-		final var uniform = new GLUniform(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	/**
-	 * @param stringIn
-	 * @return
-	 */
-	public GLUniformBoolean booleanUniform(String nameIn)
-	{
-		final var uniform = new GLUniformBoolean(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformInt intUniform(String nameIn)
-	{
-		final var uniform = new GLUniformInt(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformFloat floatUniform(String nameIn)
-	{
-		final var uniform = new GLUniformFloat(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	/**
-	 * @param nameIn
-	 * @return
-	 */
-	public GLUniformFloatArray floatArrayUniform(String nameIn)
-	{
-		final var uniform = new GLUniformFloatArray(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformVector2f vector2fUniform(String nameIn)
-	{
-		final var uniform = new GLUniformVector2f(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformVector3f vector3fUniform(String nameIn)
-	{
-		final var uniform = new GLUniformVector3f(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformVector4f vector4fUniform(String nameIn)
-	{
-		final var uniform = new GLUniformVector4f(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformMatrix4f matrix4fUniform(String nameIn)
-	{
-		final var uniform = new GLUniformMatrix4f(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformMaterial materialUniform(String nameIn)
-	{
-		final var uniform = new GLUniformMaterial(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformPointLight pointLightUniform(String nameIn)
-	{
-		final var uniform = new GLUniformPointLight(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformSpotLight spotLightUniform(String nameIn)
-	{
-		final var uniform = new GLUniformSpotLight(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformDirectionalLight directionalLightUniform(String nameIn)
-	{
-		final var uniform = new GLUniformDirectionalLight(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
-	}
-
-	public GLUniformFog fogUniform(String nameIn)
-	{
-		final var uniform = new GLUniformFog(this, nameIn);
-		this.uniform(nameIn, uniform);
-
-		return uniform;
 	}
 
 	@Override

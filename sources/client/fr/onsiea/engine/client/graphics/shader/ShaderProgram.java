@@ -26,15 +26,31 @@
 */
 package fr.onsiea.engine.client.graphics.shader;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
+import fr.onsiea.engine.client.graphics.fog.Fog;
+import fr.onsiea.engine.client.graphics.light.DirectionalLight;
+import fr.onsiea.engine.client.graphics.light.PointLight;
+import fr.onsiea.engine.client.graphics.light.SpotLight;
+import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderUniform;
-import fr.onsiea.engine.client.resources.ResourcesPath;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderUniformBuilder;
 import fr.onsiea.engine.utils.file.FileUtils;
+import fr.onsiea.engine.utils.function.IIFunction;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Seynax
@@ -42,113 +58,70 @@ import fr.onsiea.engine.utils.file.FileUtils;
  */
 public abstract class ShaderProgram implements IShaderProgram
 {
-	private final List<String>					attributes;
-	private final Map<String, IShaderUniform>	uniforms;
+	protected final List<String>				attributes;
+	protected final Map<String, IShaderUniform>	uniforms;
 
-	public ShaderProgram(String vertexScriptFilepathIn, String fragmentScriptFilepathIn, String... attributesIn)
-			throws Exception
+	protected IShaderUniformBuilder				uniformBuilder;
+
+	private @Getter(AccessLevel.PUBLIC) String	name;
+
+	protected ShaderProgram()
 	{
-		final var vertexScript = FileUtils.loadResource(vertexScriptFilepathIn);
-		if (vertexScript == null)
-		{
-			throw new Exception("[ERROR]-GLShaderProgramWithFiles : unable to load \"" + vertexScriptFilepathIn
-					+ "\" vertex shader script file ! ");
-		}
-
-		final var fragmentScript = FileUtils.loadResource(fragmentScriptFilepathIn);
-		if (fragmentScript == null)
-		{
-			throw new Exception("[ERROR]-GLShaderProgramWithFiles : unable to load \"" + fragmentScriptFilepathIn
-					+ "\" fragment shader script file ! ");
-		}
-
-		if (!this.load(vertexScript, fragmentScript))
-		{
-			throw new Exception("[ERROR]-ShaderProgram : failed to load shader !\nVertex script : \"" + vertexScript
-					+ "\"\nFragment script : \"" + fragmentScript + "\"");
-		}
-
-		this.attributes	= new ArrayList<>();
-		this.uniforms	= new HashMap<>();
-
-		this.attributes(attributesIn);
+		this.attributes	= new LinkedList<>();
+		this.uniforms	= new LinkedHashMap<>();
 	}
 
 	/**
-	 * @param vertexShaderScriptIn (script or file path, according to isScriptIn)
-	 * @param fragmentShaderScriptIn (script or file path, according to isScriptIn)
-	 * @param isPathIn
-	 * @param attributesIn
+	 * @param builderIn
 	 * @throws Exception
 	 */
-	public ShaderProgram(String vertexShaderIn, String fragmentShaderIn, boolean isScriptIn, String... attributesIn)
-			throws Exception
+	public ShaderProgram(ShaderProgram.Builder builderIn) throws Exception
 	{
-		var	vertexScript	= vertexShaderIn;
-		var	fragmentScript	= fragmentShaderIn;
-
-		if (!isScriptIn)
-		{
-			vertexScript = FileUtils.loadResource(vertexShaderIn);
-			if (vertexScript == null)
-			{
-				throw new Exception("[ERROR]-GLShaderProgramWithFiles : unable to load \"" + vertexShaderIn
-						+ "\" vertex shader script file ! ");
-			}
-
-			fragmentScript = FileUtils.loadResource(fragmentShaderIn);
-			if (fragmentScript == null)
-			{
-				throw new Exception("[ERROR]-GLShaderProgramWithFiles : unable to load \"" + fragmentShaderIn
-						+ "\" fragment shader script file ! ");
-			}
-		}
-
-		if (!this.load(vertexScript, fragmentScript))
-		{
-			throw new Exception("[ERROR]-ShaderProgram : failed to load shader !\nVertex script : \"" + vertexScript
-					+ "\"\nFragment script : \"" + fragmentScript + "\"");
-		}
-
-		this.attributes	= new ArrayList<>();
-		this.uniforms	= new HashMap<>();
-
-		this.attributes(attributesIn);
+		this.attributes	= new LinkedList<>();
+		this.uniforms	= new LinkedHashMap<>();
+		this.build(builderIn);
 	}
 
 	/**
-	 * @param vertexShaderScriptResourcespathIn
-	 * @param fragmentShaderScriptResourcespathIn
+	 * @param builderIn
+	 * @throws Exception
+	 */
+	protected void build(ShaderProgram.Builder builderIn) throws Exception
+	{
+		this.name = builderIn.name();
+
+		if (!this.load(builderIn.vertex().script(), builderIn.fragment().script()))
+		{
+			throw new Exception("[ERROR]-ShaderProgram : failed to load shader !\nVertex script : \""
+					+ builderIn.vertex().script() + "\"\nFragment script : \"" + builderIn.fragment().script() + "\"");
+		}
+
+		this.attributes.addAll(builderIn.attributes);
+
+		this.uniforms.putAll(builderIn.uniforms);
+	}
+
+	/**
+	 * @param nameIn
+	 * @param fragmentScriptFilepathIn
+	 * @param vertexScriptFilepathIn
 	 * @param attributesIn
 	 * @throws Exception
 	 */
-	public ShaderProgram(ResourcesPath vertexShaderScriptResourcespathIn,
-			ResourcesPath fragmentShaderScriptResourcespathIn, String... attributesIn) throws Exception
+	protected void build(String nameIn, String vertexScriptFilepathIn, String fragmentScriptFilepathIn,
+			String[] attributesIn) throws Exception
 	{
-		final var vertexScript = FileUtils.loadResource(vertexShaderScriptResourcespathIn.path());
-		if (vertexScript == null)
+		final var builder = new Builder(nameIn).vertexScriptFilepath(vertexScriptFilepathIn)
+				.fragmentScriptFilepath(fragmentScriptFilepathIn).build(attributesIn);
+		this.name = nameIn;
+
+		if (!this.load(builder.vertex().script(), builder.fragment().script()))
 		{
-			throw new Exception("[ERROR]-GLShaderProgramWithFiles : unable to load \""
-					+ vertexShaderScriptResourcespathIn.path() + "\" vertex shader script file ! ");
+			throw new Exception("[ERROR]-ShaderProgram : failed to load shader !\nVertex script : \""
+					+ builder.vertex().script() + "\"\nFragment script : \"" + builder.fragment().script() + "\"");
 		}
 
-		final var fragmentScript = FileUtils.loadResource(fragmentShaderScriptResourcespathIn.path());
-		if (fragmentScript == null)
-		{
-			throw new Exception("[ERROR]-GLShaderProgramWithFiles : unable to load \""
-					+ fragmentShaderScriptResourcespathIn.path() + "\" fragment shader script file ! ");
-		}
-
-		if (!this.load(vertexScript, fragmentScript))
-		{
-			throw new Exception("[ERROR]-ShaderProgram : failed to load shader !\nVertex script : \"" + vertexScript
-					+ "\"\nFragment script : \"" + fragmentScript + "\"");
-		}
-
-		this.attributes	= new ArrayList<>();
-		this.uniforms	= new HashMap<>();
-
-		this.attributes(attributesIn);
+		this.attributes.addAll(builder.attributes);
 	}
 
 	protected abstract boolean load(String vertexScriptIn, String fragmentScriptIn) throws Exception;
@@ -184,9 +157,271 @@ public abstract class ShaderProgram implements IShaderProgram
 		return this;
 	}
 
+	public IShaderUniform uniform(String nameIn)
+	{
+		return this.uniformBuilder.uniform(nameIn);
+	}
+
+	public IShaderUniform[] uniforms(String... namesIn)
+	{
+		final var	uniforms	= new IShaderUniform[namesIn.length];
+		var			i			= 0;
+		for (final String name : namesIn)
+		{
+			final var shaderUniform = this.uniformBuilder.uniform(name);
+			this.uniforms.put(name, shaderUniform);
+			uniforms[i] = shaderUniform;
+			i++;
+		}
+		return uniforms;
+	}
+
+	public IShaderTypedUniform<Boolean> booleanUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.booleanUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<Integer> intUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.intUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<Float> floatUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.floatUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<float[]> floatArrayUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.floatArrayUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<Vector2f> vector2fUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.vector2fUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<Vector3f> vector3fUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.vector3fUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<Vector4f> vector4fUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.vector4fUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<Matrix4f> matrix4fUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.matrix4fUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<DirectionalLight> directionalLightUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.directionalLightUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<PointLight> pointLightUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.pointLightUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<SpotLight> spotLightUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.spotLightUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<Fog> fogUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.fogUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<Material> materialUniform(String nameIn)
+	{
+		final var uniform = this.uniformBuilder.materialUniform(nameIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
 	@Override
 	public IShaderUniform get(String nameIn)
 	{
 		return this.uniforms.get(nameIn);
+	}
+
+	@Getter(AccessLevel.PUBLIC)
+	public static class Builder
+	{
+		private final String										name;
+		private final ShaderScript									vertex;
+		private final ShaderScript									fragment;
+		private @Setter(AccessLevel.PUBLIC) IShaderUniformBuilder	uniformBuilder;
+		private final List<String>									attributes;
+		private final Map<String, IShaderUniform>					uniforms;
+
+		public Builder(String nameIn)
+		{
+			this.name		= nameIn;
+			this.vertex		= new ShaderScript();
+			this.fragment	= new ShaderScript();
+			this.attributes	= new LinkedList<>();
+			this.uniforms	= new LinkedHashMap<>();
+		}
+
+		public Builder(String nameIn, IShaderUniformBuilder uniformBuilderIn)
+		{
+			this.name			= nameIn;
+			this.uniformBuilder	= uniformBuilderIn;
+			this.vertex			= new ShaderScript();
+			this.fragment		= new ShaderScript();
+			this.attributes		= new LinkedList<>();
+			this.uniforms		= new LinkedHashMap<>();
+		}
+
+		public final Builder build(String... attributesIn) throws Exception
+		{
+			Builder.load("vertex", this.vertex);
+			Builder.load("fragment", this.fragment);
+
+			if (attributesIn != null && attributesIn.length > 0)
+			{
+				Collections.addAll(this.attributes, attributesIn);
+			}
+
+			return this;
+		}
+
+		public final Builder build(IIFunction<Builder> buildMethodIn, String... attributesIn) throws Exception
+		{
+			Builder.load("vertex", this.vertex);
+			Builder.load("fragment", this.fragment);
+
+			if (attributesIn != null && attributesIn.length > 0)
+			{
+				Collections.addAll(this.attributes, attributesIn);
+			}
+
+			buildMethodIn.execute(this);
+
+			return this;
+		}
+
+		public Builder uniform(String nameIn, IShaderUniform uniformIn)
+		{
+			this.uniforms.put(nameIn, uniformIn);
+
+			return this;
+		}
+
+		private final static void load(String scriptTypeIn, ShaderScript scriptIn) throws Exception
+		{
+			if (scriptIn.script() == null)
+			{
+				if (scriptIn.filepath() == null)
+				{
+					throw new Exception(
+							"[ERROR]-GLShaderProgram : " + scriptTypeIn + " script and filepath are null pointer !");
+				}
+
+				scriptIn.script(FileUtils.loadResource(scriptIn.filepath()));
+				if (scriptIn.script() == null)
+				{
+					throw new Exception("[ERROR]-GLShaderProgram : unable to load \"" + scriptIn.filepath() + "\""
+							+ scriptTypeIn + " shader script file ! ");
+				}
+			}
+		}
+
+		public final Builder vertexScriptFilepath(String scriptFilepathIn)
+		{
+			this.vertex.filepath(scriptFilepathIn);
+
+			return this;
+		}
+
+		public final Builder vertexScript(String scriptIn)
+		{
+			this.vertex.script(scriptIn);
+
+			return this;
+		}
+
+		public final Builder fragmentScript(String scriptIn)
+		{
+			this.fragment.script(scriptIn);
+
+			return this;
+		}
+
+		public final Builder fragmentScriptFilepath(String scriptFilepathIn)
+		{
+			this.fragment.filepath(scriptFilepathIn);
+
+			return this;
+		}
+	}
+
+	@AllArgsConstructor
+	@Getter(AccessLevel.PUBLIC)
+	@Setter(AccessLevel.PUBLIC)
+	public final static class ShaderScript
+	{
+		private String	filepath;
+		private String	script;
+
+		private ShaderScript()
+		{
+
+		}
 	}
 }

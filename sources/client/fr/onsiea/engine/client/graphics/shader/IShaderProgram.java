@@ -36,6 +36,8 @@ import fr.onsiea.engine.utils.ICleanable;
  */
 public interface IShaderProgram extends ICleanable
 {
+	String name();
+
 	IShaderProgram attach();
 
 	IShaderProgram attributes(String... nameIn);

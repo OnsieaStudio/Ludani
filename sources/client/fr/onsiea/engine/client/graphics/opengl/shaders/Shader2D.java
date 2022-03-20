@@ -27,7 +27,6 @@
 package fr.onsiea.engine.client.graphics.opengl.shaders;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -38,13 +37,11 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class Shader2D extends GLShaderProgram
 {
-	private GLUniformMatrix4f transformations;
-
 	/**
 	 * @throws Exception
 	 */
 	public Shader2D() throws Exception
 	{
-		super("resources/shaders/vertex2D.vs", "resources/shaders/fragment2D.fs", "position");
+		super("2D", "resources/shaders/vertex2D.vs", "resources/shaders/fragment2D.fs", "position");
 	}
 }

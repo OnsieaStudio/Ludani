@@ -26,8 +26,10 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shaders;
 
+import org.joml.Vector2f;
+
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector2f;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -38,15 +40,15 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class InstancedShader extends GLShaderProgram
 {
-	private final GLUniformVector2f rowsAndColumns;
+	private final IShaderTypedUniform<Vector2f> rowsAndColumns;
 
 	/**
 	 * @throws Exception
 	 */
 	public InstancedShader() throws Exception
 	{
-		super("resources/shaders/instancedVertex.vs", "resources/shaders/instancedFragment.fs", "position", "uvs",
-				"m_transformations", "tex");
+		super("instanced", "resources/shaders/instancedVertex.vs", "resources/shaders/instancedFragment.fs", "position",
+				"uvs", "m_transformations", "tex");
 
 		this.rowsAndColumns = this.vector2fUniform("rowsAndColumns");
 	}

@@ -47,13 +47,10 @@ public class GLUniformDirectionalLight implements IShaderTypedUniform<Directiona
 
 		GLUniformVector3f.load(locationsIn[1], GLUniformPointLight.TRANSPOSE_VEC.x(),
 				GLUniformPointLight.TRANSPOSE_VEC.y(), GLUniformPointLight.TRANSPOSE_VEC.z());
-
-		GLUniformVector3f.load(locationsIn[1], GLUniformPointLight.TRANSPOSE_VEC.x(),
-				GLUniformPointLight.TRANSPOSE_VEC.y(), GLUniformPointLight.TRANSPOSE_VEC.z());
 	}
 
-	private IShaderProgram	parent;
-	private int[]			locations;
+	protected IShaderProgram	parent;
+	private int[]				locations;
 
 	public GLUniformDirectionalLight(GLShaderProgram parentIn, String nameIn)
 	{

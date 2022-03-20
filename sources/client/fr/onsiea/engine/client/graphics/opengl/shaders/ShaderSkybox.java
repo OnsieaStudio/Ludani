@@ -26,11 +26,13 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shaders;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
+import fr.onsiea.engine.client.graphics.fog.Fog;
+import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformFog;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformVector3f;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
 import fr.onsiea.engine.client.graphics.shader.utils.IViewWithoutTranslations;
 import lombok.AccessLevel;
@@ -43,18 +45,18 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class ShaderSkybox extends GLShaderProgram implements IProjection, IViewWithoutTranslations
 {
-	private final GLUniformMatrix4f			projection;
-	private final GLUniformMatrix4f			view;
-	private final GLUniformFog				fog;
-	private final GLUniformVector3f			ambientLight;
-	private final GLUniformDirectionalLight	dirLight;
+	private final IShaderTypedUniform<Matrix4f>			projection;
+	private final IShaderTypedUniform<Matrix4f>			view;
+	private final IShaderTypedUniform<Fog>				fog;
+	private final IShaderTypedUniform<Vector3f>			ambientLight;
+	private final IShaderTypedUniform<DirectionalLight>	dirLight;
 
 	/**
 	 * @throws Exception
 	 */
 	public ShaderSkybox() throws Exception
 	{
-		super("resources/shaders/skyboxVertex.vs", "resources/shaders/skyboxFragment.fs", "position", "uvs");
+		super("skybox", "resources/shaders/skyboxVertex.vs", "resources/shaders/skyboxFragment.fs", "position", "uvs");
 
 		this.projection		= this.matrix4fUniform("projection");
 		this.view			= this.matrix4fUniform("view");

@@ -24,13 +24,52 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.shader;
+package fr.onsiea.engine.client.graphics.shader.uniform;
+
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
+import fr.onsiea.engine.client.graphics.fog.Fog;
+import fr.onsiea.engine.client.graphics.light.DirectionalLight;
+import fr.onsiea.engine.client.graphics.light.PointLight;
+import fr.onsiea.engine.client.graphics.light.SpotLight;
+import fr.onsiea.engine.client.graphics.material.Material;
 
 /**
  * @author Seynax
  *
  */
-public enum EnumShaderBuilding
+public interface IShaderUniformBuilder
 {
+	IShaderUniform uniform(String nameIn);
 
+	IShaderUniform[] uniforms(String... namesIn);
+
+	IShaderTypedUniform<Boolean> booleanUniform(String nameIn);
+
+	IShaderTypedUniform<Integer> intUniform(String nameIn);
+
+	IShaderTypedUniform<Float> floatUniform(String nameIn);
+
+	IShaderTypedUniform<float[]> floatArrayUniform(String nameIn);
+
+	IShaderTypedUniform<Vector2f> vector2fUniform(String nameIn);
+
+	IShaderTypedUniform<Vector3f> vector3fUniform(String nameIn);
+
+	IShaderTypedUniform<Vector4f> vector4fUniform(String nameIn);
+
+	IShaderTypedUniform<Matrix4f> matrix4fUniform(String nameIn);
+
+	IShaderTypedUniform<DirectionalLight> directionalLightUniform(String nameIn);
+
+	IShaderTypedUniform<PointLight> pointLightUniform(String nameIn);
+
+	IShaderTypedUniform<SpotLight> spotLightUniform(String nameIn);
+
+	IShaderTypedUniform<Fog> fogUniform(String nameIn);
+
+	IShaderTypedUniform<Material> materialUniform(String nameIn);
 }

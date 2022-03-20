@@ -9,6 +9,6 @@ public class BrightFilterShader extends GLShaderProgram
 
 	public BrightFilterShader() throws Exception
 	{
-		super(BrightFilterShader.VERTEX_FILE, BrightFilterShader.FRAGMENT_FILE, "position");
+		super("brightFilter", BrightFilterShader.VERTEX_FILE, BrightFilterShader.FRAGMENT_FILE, "position");
 	}
 }
