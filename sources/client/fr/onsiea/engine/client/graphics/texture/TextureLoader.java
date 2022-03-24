@@ -25,8 +25,7 @@ public class TextureLoader
 			buffer.put(textureBytesIn.bytes());
 			buffer.flip();
 
-			final var texture = renderAPIContextIn
-					.createTexture(new TextureData(buffer, textureData.width(), textureData.height()));
+			final var texture = renderAPIContextIn.createTexture(textureData);
 
 			if (!textureData.cleanup())
 			{

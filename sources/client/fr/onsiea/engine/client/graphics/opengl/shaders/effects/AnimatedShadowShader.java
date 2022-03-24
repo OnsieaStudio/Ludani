@@ -24,61 +24,43 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.game.scene.light;
+package fr.onsiea.engine.client.graphics.opengl.shaders.effects;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.joml.Matrix4f;
 
-import org.joml.Vector3f;
-
-import fr.onsiea.engine.client.graphics.light.DirectionalLight;
-import fr.onsiea.engine.client.graphics.light.PointLight;
-import fr.onsiea.engine.client.graphics.light.SpotLight;
+import fr.onsiea.engine.client.graphics.mesh.anim.AnimatedFrame;
+import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author Seynax
  *
  */
-public class SceneLights
+@Getter(AccessLevel.PUBLIC)
+public class AnimatedShadowShader extends GLShaderProgram
 {
-	private final @Getter(AccessLevel.PUBLIC) List<PointLight>				pointLights;
-	private final @Getter(AccessLevel.PUBLIC) List<SpotLight>				spotLights;
-	private final @Getter(AccessLevel.PUBLIC) DirectionalLight				directionalLight;
-	private @Getter(AccessLevel.PUBLIC) @Setter(AccessLevel.PUBLIC) float	specularPower;
-	private final @Getter(AccessLevel.PUBLIC) Vector3f						ambientLight;
+	private final IShaderTypedUniform<Matrix4f>		orthoProjection;
+	private final IShaderTypedUniform<Matrix4f>		modelLightView;
+	private final IShaderTypedUniform<Matrix4f>[]	jointsMatrix;
 
-	public SceneLights(DirectionalLight directionalLightIn, float specularPowerIn, Vector3f ambientLightIn)
+	/**
+	 * @throws Exception
+	 */
+	public AnimatedShadowShader() throws Exception
 	{
-		this.pointLights		= new ArrayList<>();
-		this.spotLights			= new ArrayList<>();
+		super("shadow", "resources\\shaders\\shadow\\animatedDepthVertex.vs",
+				"resources\\shaders\\shadow\\depthFragment.fs", "in_position", "texCoord", "vertexNormal",
+				"jointWeights", "jointIndices");
 
-		this.directionalLight	= directionalLightIn;
-		this.specularPower		= specularPowerIn;
-		this.ambientLight		= ambientLightIn;
-	}
-
-	public SceneLights add(PointLight... pointLightsIn)
-	{
-		Collections.addAll(this.pointLights, pointLightsIn);
-
-		return this;
-	}
-
-	public SceneLights add(SpotLight... spotLightsIn)
-	{
-		Collections.addAll(this.spotLights, spotLightsIn);
-
-		return this;
-	}
-
-	public SceneLights ambientLight(float rIn, float gIn, float bIn)
-	{
-		this.ambientLight.set(rIn, gIn, bIn);
-
-		return this;
+		this.orthoProjection	= this.matrix4fUniform("orthoProjection");
+		this.modelLightView		= this.matrix4fUniform("modelLightView");
+		this.jointsMatrix		= new GLUniformMatrix4f[AnimatedFrame.MAX_JOINTS];
+		for (var i = 0; i < AnimatedFrame.MAX_JOINTS; i++)
+		{
+			this.jointsMatrix[i] = this.matrix4fUniform("jointsMatrix[" + i + "]");
+		}
 	}
 }

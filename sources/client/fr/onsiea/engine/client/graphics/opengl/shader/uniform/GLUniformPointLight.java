@@ -27,12 +27,12 @@ public class GLUniformPointLight implements IShaderTypedUniform<PointLight>
 	{
 		final var locations = new int[6];
 
-		locations[0]	= shaderIn.uniformLocation(nameIn + ".colour");
 		locations[1]	= shaderIn.uniformLocation(nameIn + ".position");
+		locations[0]	= shaderIn.uniformLocation(nameIn + ".colour");
 		locations[2]	= shaderIn.uniformLocation(nameIn + ".intensity");
-		locations[3]	= shaderIn.uniformLocation(nameIn + ".att.constant");
-		locations[4]	= shaderIn.uniformLocation(nameIn + ".att.linear");
-		locations[5]	= shaderIn.uniformLocation(nameIn + ".att.exponent");
+		locations[3]	= shaderIn.uniformLocation(nameIn + ".attenuation.constant");
+		locations[4]	= shaderIn.uniformLocation(nameIn + ".attenuation.linear");
+		locations[5]	= shaderIn.uniformLocation(nameIn + ".attenuation.exponent");
 
 		return locations;
 	}
@@ -43,12 +43,12 @@ public class GLUniformPointLight implements IShaderTypedUniform<PointLight>
 	 */
 	public final static int[] create(final int[] locationsIn, GLShaderProgram shaderIn, String nameIn)
 	{
-		locationsIn[0]	= shaderIn.uniformLocation(nameIn + ".colour");
 		locationsIn[1]	= shaderIn.uniformLocation(nameIn + ".position");
+		locationsIn[0]	= shaderIn.uniformLocation(nameIn + ".colour");
 		locationsIn[2]	= shaderIn.uniformLocation(nameIn + ".intensity");
-		locationsIn[3]	= shaderIn.uniformLocation(nameIn + ".att.constant");
-		locationsIn[4]	= shaderIn.uniformLocation(nameIn + ".att.linear");
-		locationsIn[5]	= shaderIn.uniformLocation(nameIn + ".att.exponent");
+		locationsIn[3]	= shaderIn.uniformLocation(nameIn + ".attenuation.constant");
+		locationsIn[4]	= shaderIn.uniformLocation(nameIn + ".attenuation.linear");
+		locationsIn[5]	= shaderIn.uniformLocation(nameIn + ".attenuation.exponent");
 
 		return locationsIn;
 	}

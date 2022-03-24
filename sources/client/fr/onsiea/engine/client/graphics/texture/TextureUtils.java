@@ -32,15 +32,16 @@ package fr.onsiea.engine.client.graphics.texture;
  */
 public class TextureUtils
 {
-	private final static String DEFAULT_PATH = "resources/textures/";
+	private final static String	DEFAULT_PATH0	= "resources\\textures\\";
+	private final static String	DEFAULT_PATH1	= "resources/textures/";
 
 	public final static String filepath(final String filePathIn)
 	{
 		var filePath = filePathIn;
 
-		if (!filePathIn.startsWith(TextureUtils.DEFAULT_PATH))
+		if (!filePathIn.startsWith(TextureUtils.DEFAULT_PATH0) && !filePathIn.startsWith(TextureUtils.DEFAULT_PATH1))
 		{
-			filePath = TextureUtils.DEFAULT_PATH + filePath;
+			filePath = TextureUtils.DEFAULT_PATH0 + filePath;
 		}
 
 		if (!filePathIn.endsWith(".png"))

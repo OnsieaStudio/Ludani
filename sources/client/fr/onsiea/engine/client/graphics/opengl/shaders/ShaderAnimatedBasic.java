@@ -34,7 +34,9 @@ import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.light.PointLight;
 import fr.onsiea.engine.client.graphics.light.SpotLight;
 import fr.onsiea.engine.client.graphics.material.Material;
+import fr.onsiea.engine.client.graphics.mesh.anim.AnimatedFrame;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformSpotLight;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
@@ -48,13 +50,8 @@ import lombok.Getter;
  *
  */
 @Getter(AccessLevel.PUBLIC)
-public class ShaderBasic extends GLShaderProgram implements IProjection, IView
+public class ShaderAnimatedBasic extends GLShaderProgram implements IProjection, IView
 {
-	public enum Normal
-	{
-		FAKE, NORMAL, EXCLUSIVE_NORMAL, WITHOUT, NORMAL_WITH_TANGENT, SCENE;
-	}
-
 	private final static int							LIGHTS	= 5;
 
 	private final IShaderTypedUniform<Matrix4f>			projection;
@@ -73,17 +70,17 @@ public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 	private final IShaderTypedUniform<Fog>				fog;
 	private final IShaderTypedUniform<Matrix4f>			orthoProjection;
 	private final IShaderTypedUniform<Matrix4f>			modelLightView;
-	private final IShaderTypedUniform<Vector3f>			rotation;
+	private final IShaderTypedUniform<Matrix4f>[]		jointsMatrix;
+	private final IShaderTypedUniform<Float>			selectedJointMatrix;
 
 	/**
 	 * @throws Exception
 	 */
-	public ShaderBasic(Normal normalIn) throws Exception
+	public ShaderAnimatedBasic() throws Exception
 	{
-		super("shaderBasic", "resources/shaders/normalRendering/scene_vertex.vs",
-				"resources/shaders/normalRendering/scene_fragment.fs");
-
-		this.attributes("position", "texCoord", "vertexNormal", "vertexTangent");
+		super("shaderAnimatedBasic", "resources/shaders/normalRendering/scene_animated_vertex.vs",
+				"resources/shaders/normalRendering/scene_animated_fragment.fs");
+		this.attributes("position", "texCoord", "vertexNormal", "tangent", "jointWeights", "jointIndices");
 
 		this.projection			= this.matrix4fUniform("projection");
 		this.view				= this.matrix4fUniform("view");
@@ -92,15 +89,23 @@ public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 		this.specularPower		= this.floatUniform("specularPower");
 		this.material			= this.materialUniform("material");
 		this.hasNormalMap		= this.intUniform("hasNormalMap");
-		this.pointLights		= new GLUniformPointLight[ShaderBasic.LIGHTS];
-		this.spotLights			= new GLUniformSpotLight[ShaderBasic.LIGHTS];
-		for (var i = 0; i < ShaderBasic.LIGHTS; i++)
+		this.pointLights		= new GLUniformPointLight[ShaderAnimatedBasic.LIGHTS];
+		this.spotLights			= new GLUniformSpotLight[ShaderAnimatedBasic.LIGHTS];
+		for (var i = 0; i < ShaderAnimatedBasic.LIGHTS; i++)
 		{
 			this.pointLights[i]	= this.pointLightUniform("pointLights[" + i + "]");
 			this.spotLights[i]	= this.spotLightUniform("spotLights[" + i + "]");
 		}
 		this.directionalLight	= this.directionalLightUniform("directionalLight");
 		this.fog				= this.fogUniform("fog");
+
+		this.jointsMatrix		= new GLUniformMatrix4f[AnimatedFrame.MAX_JOINTS];
+		for (var i = 0; i < AnimatedFrame.MAX_JOINTS; i++)
+		{
+			this.jointsMatrix[i] = this.matrix4fUniform("jointsMatrix[" + i + "]");
+		}
+		this.selectedJointMatrix = this.floatUniform("selectedJointMatrix");
+
 		this.attach();
 		this.textureSampler = this.intUniform("texture_sampler");
 		this.textureSampler.load(0);
@@ -111,6 +116,5 @@ public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 
 		this.orthoProjection	= this.matrix4fUniform("orthoProjection");
 		this.modelLightView		= this.matrix4fUniform("modelLightView");
-		this.rotation			= this.vector3fUniform("rotation");
 	}
 }

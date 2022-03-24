@@ -43,12 +43,14 @@ import fr.onsiea.engine.client.graphics.mesh.IMesh;
  */
 public class SceneItems
 {
-	private final Map<GameItemProperties, List<GameItem>>	items;
-	private GameItemProperties								currentItemProperties;
+	private final Map<GameItemProperties, List<GameItem>>			items;
+	private final Map<GameAnimatedItemProperties, List<GameItem>>	animatedItems;
+	private GameItemProperties										currentItemProperties;
 
 	public SceneItems()
 	{
-		this.items = new LinkedHashMap<>();
+		this.items			= new LinkedHashMap<>();
+		this.animatedItems	= new LinkedHashMap<>();
 	}
 
 	/**
@@ -162,6 +164,26 @@ public class SceneItems
 		return this;
 	}
 
+	/**
+	 * @param gameAnimatedItemPropertiesIn
+	 * @param gameItemIn
+	 * @return
+	 */
+	public SceneItems add(GameAnimatedItemProperties gameAnimatedItemPropertiesIn, GameItem gameItemIn)
+	{
+		var animatedGameItems = this.animatedItems.get(gameAnimatedItemPropertiesIn);
+
+		if (animatedGameItems == null)
+		{
+			animatedGameItems = new ArrayList<>();
+			this.animatedItems.put(gameAnimatedItemPropertiesIn, animatedGameItems);
+		}
+
+		animatedGameItems.add(gameItemIn);
+
+		return this;
+	}
+
 	public SceneItems execute(ISceneItemsFunction functionIn)
 	{
 		final var iterator = this.items.entrySet().iterator();
@@ -175,8 +197,26 @@ public class SceneItems
 		return this;
 	}
 
+	public SceneItems executeAnimated(ISceneAnimatedItemsFunction functionIn)
+	{
+		final var iterator = this.animatedItems.entrySet().iterator();
+		while (iterator.hasNext())
+		{
+			final var entry = iterator.next();
+
+			functionIn.execute(entry.getKey(), entry.getValue());
+		}
+
+		return this;
+	}
+
 	public interface ISceneItemsFunction
 	{
 		void execute(GameItemProperties gameItemPropertiesIn, List<GameItem> gameItemsIn);
+	}
+
+	public interface ISceneAnimatedItemsFunction
+	{
+		void execute(GameAnimatedItemProperties gameAnimatedItemPropertiesIn, List<GameItem> gameItemsIn);
 	}
 }

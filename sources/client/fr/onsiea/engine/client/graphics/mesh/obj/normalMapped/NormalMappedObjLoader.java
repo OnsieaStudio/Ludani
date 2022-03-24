@@ -73,7 +73,7 @@ public class NormalMappedObjLoader implements IOBJLoader
 		}
 		catch (final FileNotFoundException e)
 		{
-			System.err.println("File not found in res; don't use any extention");
+			System.err.println("File not found in res; don't use any extension");
 		}
 		final var				reader		= new BufferedReader(isr);
 		String					line;

@@ -54,6 +54,8 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class Scene
 {
+	public final static int							MAX_LIGHTS	= 4;
+
 	private final SceneLights						sceneLights;
 	private final SceneItems						sceneItems;
 	private final Fog								fog;
@@ -76,7 +78,6 @@ public class Scene
 	// Timers
 
 	private final Timer								inputTimer;
-	private final Timer								updateTimer;
 
 	public Scene(IRenderAPIContext contextIn, IWindow windowIn, float clearColorRIn, float clearColorGIn,
 			float clearColorBIn, DirectionalLight directionalLightIn, float specularPowerIn, Vector3f ambientLightIn,
@@ -92,7 +93,7 @@ public class Scene
 		this.angleInc				= 0.0f;
 
 		this.sceneRenderer			= new SceneRenderer(contextIn, windowIn, clearColorRIn, clearColorGIn,
-				clearColorBIn, fogIn, this.camera, flareManagerIn, skyboxRendererIn);
+				clearColorBIn, fogIn, this.camera, flareManagerIn, skyboxRendererIn, ambientLightIn);
 
 		// Sun
 
@@ -106,7 +107,6 @@ public class Scene
 		// Timers
 
 		this.inputTimer				= new Timer();
-		this.updateTimer			= new Timer();
 	}
 
 	public final Scene input(IWindow windowIn, InputManager inputManagerIn)
@@ -128,6 +128,11 @@ public class Scene
 			}
 		}
 
+		return this;
+	}
+
+	public final Scene update()
+	{
 		return this;
 	}
 

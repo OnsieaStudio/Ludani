@@ -38,7 +38,7 @@ public class TextureData implements ITextureData
 	 * @param filepathIn
 	 * @return TextureBuffer
 	 */
-	public TextureData load(String filepathIn)
+	public final static TextureData load(String filepathIn)
 	{
 		return TextureData.load(new File(filepathIn), true);
 	}
@@ -49,7 +49,7 @@ public class TextureData implements ITextureData
 	 * @param flipIn
 	 * @return TextureBuffer
 	 */
-	public TextureData load(String filepathIn, boolean flipIn)
+	public final static TextureData load(String filepathIn, boolean flipIn)
 	{
 		return TextureData.load(new File(filepathIn), flipIn);
 	}

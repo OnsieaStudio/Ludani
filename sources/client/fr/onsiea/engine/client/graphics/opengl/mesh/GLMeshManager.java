@@ -162,10 +162,27 @@ public class GLMeshManager implements IMeshsManager
 				.vbo(normalsIn, dimensionIn).vbo(tangentsArrayIn, dimensionIn).ibo(indicesIn).unbindVao().build());
 	}
 
+	public static float[]	weights;
+	public static int[]		jointIndices;
+
 	@Override
 	public IMaterialMesh createMeshWithMaterial(float[] positionsIn, float[] texturesCoordinatesIn, float[] normalsIn,
 			int[] indicesIn, int[] jointIndicesIn, float[] weightsIn, int dimensionIn) throws Exception
 	{
+		GLMeshManager.weights = new float[weightsIn.length];
+		var i = 0;
+		for (final float weight : weightsIn)
+		{
+			GLMeshManager.weights[i] = weight;
+			i++;
+		}
+		GLMeshManager.jointIndices	= new int[jointIndicesIn.length];
+		i								= 0;
+		for (final int jointIndice : jointIndicesIn)
+		{
+			GLMeshManager.jointIndices[i] = jointIndice;
+			i++;
+		}
 		return new GLMaterialMesh(this.meshBuilderWithVao(5).vbo(positionsIn, dimensionIn).vbo(texturesCoordinatesIn, 2)
 				.vbo(normalsIn, dimensionIn).vbo(weightsIn, 4).vbo(jointIndicesIn, 4).ibo(indicesIn).unbindVao()
 				.build());

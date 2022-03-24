@@ -9,7 +9,7 @@ public class AnimatedFrame
 
 	public static final int			MAX_JOINTS		= 150;
 
-	private static final Matrix4f	IDENTITY_MATRIX	= new Matrix4f();
+	private static final Matrix4f	IDENTITY_MATRIX	= new Matrix4f().identity();
 
 	private final Matrix4f[]		localJointMatrices;
 

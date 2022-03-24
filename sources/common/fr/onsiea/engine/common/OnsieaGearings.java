@@ -26,6 +26,8 @@
 */
 package fr.onsiea.engine.common;
 
+import org.joml.Quaternionf;
+
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
@@ -53,32 +55,52 @@ import lombok.Setter;
 @Setter(value = AccessLevel.PRIVATE)
 public class OnsieaGearings
 {
-	private IGameLogic			gameLogic;
-	private GameOptions			options;
-	private String[]			args;
+	private IGameLogic					gameLogic;
+	private GameOptions					options;
+	private String[]					args;
 
-	private boolean				running;
+	private boolean						running;
 
-	private GLFWManager			glfwManager;
-	private SoundManager		soundManager;
-	private IWindow				window;
-	private Timer				timer;
-	private Timer				inputTimer;
-	private Timer				framerateCounterTimer;
-	private IRenderAPIContext	renderAPIContext;
-	private Renderer			renderer;
+	private GLFWManager					glfwManager;
+	private SoundManager				soundManager;
+	private IWindow						window;
+	private Timer						timer;
+	private Timer						inputTimer;
+	private Timer						framerateCounterTimer;
+	private IRenderAPIContext			renderAPIContext;
+	private Renderer					renderer;
 
-	private double				refreshRate;
-	private double				updateRate;
-	private double				inputRate;
-	private double				secsPerFrame;
-	private double				secsPerUpdate;
-	private double				secsPerInput;
-	private double				elapsedTime;
-	private double				accumulator			= 0.0D;
-	private int					framerateCounter	= 0;
-	private int					framerateValue		= 0;
-	private double				loopStartTime;
+	private double						refreshRate;
+	private double						updateRate;
+	private double						inputRate;
+	private double						secsPerFrame;
+	private double						secsPerUpdate;
+	private double						secsPerInput;
+	private double						elapsedTime;
+	private double						accumulator			= 0.0D;
+	private int							framerateCounter	= 0;
+	private int							framerateValue		= 0;
+	private double						loopStartTime;
+
+	private final static Quaternionf	rotationQ			= new Quaternionf();
+
+	public final static void rotate(float x, float y, float z)
+	{
+		//Use modulus to fix values to below 360 then convert values to radians
+		final var	newX			= (float) Math.toRadians(x % 360);
+		final var	newY			= (float) Math.toRadians(y % 360);
+		final var	newZ			= (float) Math.toRadians(z % 360);
+
+		//Create a quaternion with the delta rotation values
+		final var	rotationDelta	= new Quaternionf();
+		rotationDelta.rotationXYZ(newX, newY, newZ);
+
+		//Calculate the inverse of the delta quaternion
+		final var conjugate = rotationDelta.conjugate();
+
+		//Multiply this transform by the rotation delta quaternion and its inverse
+		OnsieaGearings.rotationQ.mul(rotationDelta).mul(conjugate);
+	}
 
 	public final static OnsieaGearings start(IGameLogic gameLogicIn, GameOptions optionsIn, String[] argsIn)
 			throws Exception

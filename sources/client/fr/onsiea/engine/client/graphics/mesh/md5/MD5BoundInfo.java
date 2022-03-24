@@ -8,7 +8,6 @@ import org.joml.Vector3f;
 
 public class MD5BoundInfo
 {
-
 	private List<MD5Bound> bounds;
 
 	public List<MD5Bound> getBounds()

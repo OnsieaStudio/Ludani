@@ -20,7 +20,6 @@ import fr.onsiea.engine.utils.file.FileUtils;
 
 public class MD5Loader
 {
-
 	private IMeshsManager		meshsManager;
 	private ITexturesManager	texturesManager;
 
@@ -39,6 +38,7 @@ public class MD5Loader
 
 	/**
 	 * Constructs and GameAnimatedItemProperties instace based on a MD5 Model an MD5 Animation
+	 * @param nameIn
 	 *
 	 * @param md5Model The MD5 Model
 	 * @param animModel The MD5 Animation
@@ -46,8 +46,8 @@ public class MD5Loader
 	 * @return
 	 * @throws Exception
 	 */
-	public GameAnimatedItemProperties process(MD5Model md5Model, MD5AnimModel animModel, Vector4f defaultColour)
-			throws Exception
+	public GameAnimatedItemProperties process(String nameIn, MD5Model md5Model, MD5AnimModel animModel,
+			Vector4f defaultColour) throws Exception
 	{
 		final var					invJointMatrices	= MD5Loader.calcInJointMatrices(md5Model);
 		final var					animatedFrames		= MD5Loader.processAnimationFrames(md5Model, animModel,
@@ -60,11 +60,10 @@ public class MD5Loader
 			this.handleTexture(mesh, md5Mesh, defaultColour);
 			list.add(mesh);
 		}
-
 		var meshes = new IMaterialMesh[list.size()];
 		meshes = list.toArray(meshes);
 
-		return new GameAnimatedItemProperties(meshes, animatedFrames, invJointMatrices);
+		return new GameAnimatedItemProperties(nameIn, meshes, animatedFrames, invJointMatrices);
 	}
 
 	private static List<Matrix4f> calcInJointMatrices(MD5Model md5Model)

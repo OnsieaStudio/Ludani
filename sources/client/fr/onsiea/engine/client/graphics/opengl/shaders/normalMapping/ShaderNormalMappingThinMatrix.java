@@ -24,10 +24,11 @@
 * @Author : Seynax (https://github.com/seynax)<br>
 * @Organization : Onsiea Studio (https://github.com/Onsiea)
 */
-package fr.onsiea.engine.client.graphics.opengl.shaders;
+package fr.onsiea.engine.client.graphics.opengl.shaders.normalMapping;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
@@ -40,77 +41,74 @@ import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformSpotLight
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
 import fr.onsiea.engine.client.graphics.shader.utils.IView;
+import fr.onsiea.engine.game.scene.Scene;
 import lombok.AccessLevel;
 import lombok.Getter;
 
 /**
+ * @author ThinMatrix
  * @author Seynax
- *
  */
 @Getter(AccessLevel.PUBLIC)
-public class ShaderBasic extends GLShaderProgram implements IProjection, IView
+public class ShaderNormalMappingThinMatrix extends GLShaderProgram implements IProjection, IView
 {
-	public enum Normal
-	{
-		FAKE, NORMAL, EXCLUSIVE_NORMAL, WITHOUT, NORMAL_WITH_TANGENT, SCENE;
-	}
-
-	private final static int							LIGHTS	= 5;
-
+	private final IShaderTypedUniform<Matrix4f>			transformations;
 	private final IShaderTypedUniform<Matrix4f>			projection;
 	private final IShaderTypedUniform<Matrix4f>			view;
-	private final IShaderTypedUniform<Matrix4f>			transformations;
+	private final IShaderTypedUniform<Vector4f>			plane;
+	private final IShaderTypedUniform<Matrix4f>			orthoProjection;
+	private final IShaderTypedUniform<Matrix4f>			modelLightView;
+
+	private final IShaderTypedUniform<Integer>			texture;
+	private final IShaderTypedUniform<Integer>			normalMap;
+	private final IShaderTypedUniform<Integer>			shadowMap;
 	private final IShaderTypedUniform<Vector3f>			ambientLight;
 	private final IShaderTypedUniform<Float>			specularPower;
 	private final IShaderTypedUniform<Material>			material;
-	private final IShaderTypedUniform<Integer>			hasNormalMap;
-	private final IShaderTypedUniform<PointLight>[]		pointLights;
-	private final IShaderTypedUniform<SpotLight>[]		spotLights;
-	private final IShaderTypedUniform<DirectionalLight>	directionalLight;
-	private final IShaderTypedUniform<Integer>			textureSampler;
-	private final IShaderTypedUniform<Integer>			normalMapSampler;
-	private final IShaderTypedUniform<Integer>			shadowMapSampler;
 	private final IShaderTypedUniform<Fog>				fog;
-	private final IShaderTypedUniform<Matrix4f>			orthoProjection;
-	private final IShaderTypedUniform<Matrix4f>			modelLightView;
-	private final IShaderTypedUniform<Vector3f>			rotation;
+	private final IShaderTypedUniform<PointLight>		pointLights[];
+	private final IShaderTypedUniform<SpotLight>		spotLights[];
+	private final IShaderTypedUniform<DirectionalLight>	directionalLight;
 
 	/**
 	 * @throws Exception
 	 */
-	public ShaderBasic(Normal normalIn) throws Exception
+	public ShaderNormalMappingThinMatrix() throws Exception
 	{
-		super("shaderBasic", "resources/shaders/normalRendering/scene_vertex.vs",
-				"resources/shaders/normalRendering/scene_fragment.fs");
+		super("shaderBasic", "resources/shaders/normalRendering/thinmatrix/normalMapVShader.txt",
+				"resources/shaders/normalRendering/thinmatrix/normalMapFShader.txt");
 
-		this.attributes("position", "texCoord", "vertexNormal", "vertexTangent");
+		this.attributes("position", "textureCoordinates", "normal", "tangent");
 
+		this.transformations	= this.matrix4fUniform("transformation");
 		this.projection			= this.matrix4fUniform("projection");
 		this.view				= this.matrix4fUniform("view");
-		this.transformations	= this.matrix4fUniform("transformations");
+		this.plane				= this.vector4fUniform("plane");
+		this.orthoProjection	= this.matrix4fUniform("orthoProjection");
+		this.modelLightView		= this.matrix4fUniform("modelLightView");
+
+		this.texture			= this.intUniform("textureSampler");
+		this.normalMap			= this.intUniform("normalMapSampler");
+		this.shadowMap			= this.intUniform("shadowMapSampler");
 		this.ambientLight		= this.vector3fUniform("ambientLight");
 		this.specularPower		= this.floatUniform("specularPower");
 		this.material			= this.materialUniform("material");
-		this.hasNormalMap		= this.intUniform("hasNormalMap");
-		this.pointLights		= new GLUniformPointLight[ShaderBasic.LIGHTS];
-		this.spotLights			= new GLUniformSpotLight[ShaderBasic.LIGHTS];
-		for (var i = 0; i < ShaderBasic.LIGHTS; i++)
+		this.fog				= this.fogUniform("fog");
+
+		this.pointLights		= new GLUniformPointLight[Scene.MAX_LIGHTS];
+		this.spotLights			= new GLUniformSpotLight[Scene.MAX_LIGHTS];
+
+		for (var i = 0; i < Scene.MAX_LIGHTS; i++)
 		{
 			this.pointLights[i]	= this.pointLightUniform("pointLights[" + i + "]");
 			this.spotLights[i]	= this.spotLightUniform("spotLights[" + i + "]");
 		}
-		this.directionalLight	= this.directionalLightUniform("directionalLight");
-		this.fog				= this.fogUniform("fog");
-		this.attach();
-		this.textureSampler = this.intUniform("texture_sampler");
-		this.textureSampler.load(0);
-		this.normalMapSampler = this.intUniform("normalMap_sampler");
-		this.normalMapSampler.load(1);
-		this.shadowMapSampler = this.intUniform("shadowMap_sampler");
-		this.shadowMapSampler.load(2);
 
-		this.orthoProjection	= this.matrix4fUniform("orthoProjection");
-		this.modelLightView		= this.matrix4fUniform("modelLightView");
-		this.rotation			= this.vector3fUniform("rotation");
+		this.directionalLight = this.directionalLightUniform("directionalLight");
+
+		this.attach();
+		this.texture.load(0);
+		this.normalMap.load(1);
+		this.shadowMap.load(2);
 	}
 }

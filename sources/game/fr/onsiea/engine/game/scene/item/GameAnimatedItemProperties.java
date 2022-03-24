@@ -31,8 +31,7 @@ import java.util.Objects;
 
 import org.joml.Matrix4f;
 
-import fr.onsiea.engine.client.graphics.material.Material;
-import fr.onsiea.engine.client.graphics.mesh.IMesh;
+import fr.onsiea.engine.client.graphics.mesh.IMaterialMesh;
 import fr.onsiea.engine.client.graphics.mesh.anim.AnimatedFrame;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,50 +45,38 @@ public class GameAnimatedItemProperties
 {
 	public static final int		MAX_WEIGHTS	= 4;
 
-	private String				name;
-	private Material			material;
-	private IMesh[]				meshes;
+	private final String		name;
+	private IMaterialMesh[]		meshes;
 	private int					currentFrame;
 
 	private List<AnimatedFrame>	frames;
 
 	private List<Matrix4f>		invJointMatrices;
 
-	public GameAnimatedItemProperties(IMesh[] meshesIn, List<AnimatedFrame> framesIn, List<Matrix4f> invJointMatricesIn)
+	public GameAnimatedItemProperties(String nameIn, IMaterialMesh[] meshesIn, List<AnimatedFrame> framesIn,
+			List<Matrix4f> invJointMatricesIn)
 	{
+		this.name				= nameIn;
 		this.meshes				= meshesIn;
 		this.frames				= framesIn;
 		this.invJointMatrices	= invJointMatricesIn;
 		this.currentFrame		= 0;
 	}
 
-	public GameAnimatedItemProperties(String nameIn, Material materialIn)
+	public GameAnimatedItemProperties(String nameIn, IMaterialMesh meshIn)
 	{
-		this.name		= nameIn;
-		this.material	= materialIn;
-	}
-
-	public GameAnimatedItemProperties(String nameIn, Material materialIn, IMesh meshIn)
-	{
-		this.name		= nameIn;
-		this.material	= materialIn;
-		this.meshes		= new IMesh[]
+		this.name	= nameIn;
+		this.meshes	= new IMaterialMesh[]
 		{ meshIn };
-	}
-
-	public GameAnimatedItemProperties(String nameIn, Material materialIn, IMesh[] meshesIn)
-	{
-		this.name		= nameIn;
-		this.material	= materialIn;
-		this.meshes		= meshesIn;
 	}
 
 	/**
 	 * @param meshesIn
 	 */
-	public GameAnimatedItemProperties(IMesh[] meshesIn)
+	public GameAnimatedItemProperties(String nameIn, IMaterialMesh[] meshesIn)
 	{
-		this.meshes = meshesIn;
+		this.name	= nameIn;
+		this.meshes	= meshesIn;
 	}
 
 	public AnimatedFrame getCurrentFrame()
@@ -141,24 +128,24 @@ public class GameAnimatedItemProperties
 		return Objects.equals(this.name, other.name);
 	}
 
-	public IMesh getMesh()
+	public IMaterialMesh mesh()
 	{
 		return this.meshes[0];
 	}
 
-	public void meshes(IMesh[] meshesIn)
+	public void meshes(IMaterialMesh[] meshesIn)
 	{
 		this.meshes = meshesIn;
 	}
 
-	public void meshes(IMesh meshIn)
+	public void meshes(IMaterialMesh meshIn)
 	{
 		/**if (this.meshes != null) {
 		    for (IMesh currMesh : meshes) {
 		        currMesh.cleanup();
 		    }
 		}**/
-		this.meshes = new IMesh[]
+		this.meshes = new IMaterialMesh[]
 		{ meshIn };
 	}
 }
