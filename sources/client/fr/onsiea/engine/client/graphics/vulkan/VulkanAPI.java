@@ -20,7 +20,7 @@ public class VulkanAPI implements IRenderAPIContext
 	}
 
 	@Override
-	public ITexturesManager texturesManager()
+	public ITexturesManager<?> texturesManager()
 	{
 		return null;
 	}

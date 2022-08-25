@@ -34,7 +34,7 @@ import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderSkybox;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
-import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.texture.Texture;
 import fr.onsiea.engine.client.resources.IResourcesPath;
 
 /**
@@ -82,13 +82,13 @@ public class SkyboxRenderer
 		return resourcesPath;
 	}
 
-	private final ITexture			texture;
+	private final Texture<?>		texture;
 	private final IMesh				mesh;
 
 	private final IShadersManager	shadersManager;
 	private final ShaderSkybox		shader;
 
-	public SkyboxRenderer(IShadersManager shadersManagerIn, IMesh meshIn, ITexture textureIn)
+	public SkyboxRenderer(IShadersManager shadersManagerIn, IMesh meshIn, Texture<?> textureIn)
 	{
 		this.shadersManager	= shadersManagerIn;
 		this.shader			= (ShaderSkybox) shadersManagerIn.get("skybox");

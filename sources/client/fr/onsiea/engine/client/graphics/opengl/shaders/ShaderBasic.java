@@ -63,7 +63,6 @@ public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 	private final IShaderTypedUniform<Vector3f>			ambientLight;
 	private final IShaderTypedUniform<Float>			specularPower;
 	private final IShaderTypedUniform<Material>			material;
-	private final IShaderTypedUniform<Integer>			hasNormalMap;
 	private final IShaderTypedUniform<PointLight>[]		pointLights;
 	private final IShaderTypedUniform<SpotLight>[]		spotLights;
 	private final IShaderTypedUniform<DirectionalLight>	directionalLight;
@@ -91,7 +90,6 @@ public class ShaderBasic extends GLShaderProgram implements IProjection, IView
 		this.ambientLight		= this.vector3fUniform("ambientLight");
 		this.specularPower		= this.floatUniform("specularPower");
 		this.material			= this.materialUniform("material");
-		this.hasNormalMap		= this.intUniform("hasNormalMap");
 		this.pointLights		= new GLUniformPointLight[ShaderBasic.LIGHTS];
 		this.spotLights			= new GLUniformSpotLight[ShaderBasic.LIGHTS];
 		for (var i = 0; i < ShaderBasic.LIGHTS; i++)

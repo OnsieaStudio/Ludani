@@ -42,8 +42,9 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class AnimatedShadowShader extends GLShaderProgram
 {
-	private final IShaderTypedUniform<Matrix4f>		orthoProjection;
-	private final IShaderTypedUniform<Matrix4f>		modelLightView;
+	private final IShaderTypedUniform<Matrix4f>		lightProjection;
+	private final IShaderTypedUniform<Matrix4f>		lightView;
+	private final IShaderTypedUniform<Matrix4f>		bias;
 	private final IShaderTypedUniform<Matrix4f>[]	jointsMatrix;
 
 	/**
@@ -55,8 +56,9 @@ public class AnimatedShadowShader extends GLShaderProgram
 				"resources\\shaders\\shadow\\depthFragment.fs", "in_position", "texCoord", "vertexNormal",
 				"jointWeights", "jointIndices");
 
-		this.orthoProjection	= this.matrix4fUniform("orthoProjection");
-		this.modelLightView		= this.matrix4fUniform("modelLightView");
+		this.lightProjection	= this.matrix4fUniform("lightProjection");
+		this.lightView			= this.matrix4fUniform("lightView");
+		this.bias				= this.matrix4fUniform("bias");
 		this.jointsMatrix		= new GLUniformMatrix4f[AnimatedFrame.MAX_JOINTS];
 		for (var i = 0; i < AnimatedFrame.MAX_JOINTS; i++)
 		{

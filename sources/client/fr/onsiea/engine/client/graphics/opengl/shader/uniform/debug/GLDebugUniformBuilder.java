@@ -26,7 +26,10 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader.uniform.debug;
 
+import fr.onsiea.engine.client.graphics.light.PointLight;
+import fr.onsiea.engine.client.graphics.light.SpotLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderUniform;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderUniformBuilder;
 
@@ -131,6 +134,18 @@ public class GLDebugUniformBuilder implements IShaderUniformBuilder
 	public GLDebugUniformDirectionalLight directionalLightUniform(String nameIn)
 	{
 		return new GLDebugUniformDirectionalLight(this.parent, nameIn);
+	}
+
+	@Override
+	public IShaderTypedUniform<PointLight[]> pointLightsUniform(String nameIn, int sizeIn)
+	{
+		return new GLDebugUniformPointLights(this.parent, nameIn, sizeIn);
+	}
+
+	@Override
+	public IShaderTypedUniform<SpotLight[]> spotLightsUniform(String nameIn, int sizeIn)
+	{
+		return new GLDebugUniformSpotLights(this.parent, nameIn, sizeIn);
 	}
 
 	@Override

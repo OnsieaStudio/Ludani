@@ -27,7 +27,6 @@
 package fr.onsiea.engine.client.graphics.opengl.texture;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.Objects;
 
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
@@ -37,9 +36,12 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
-import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
-import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.opengl.texture.utils.GLTextureUtils;
 import fr.onsiea.engine.client.graphics.texture.ITextureData;
+import fr.onsiea.engine.client.graphics.texture.ITextureSettings;
+import fr.onsiea.engine.client.graphics.texture.Texture;
+import fr.onsiea.engine.client.graphics.texture.data.TextureData;
+import fr.onsiea.engine.utils.function.IFunction;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,234 +52,132 @@ import lombok.Setter;
  */
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PRIVATE)
-public class GLTexture implements ITexture
+public class GLTexture extends Texture<GLTextureSettings>
 {
-	public final static int gen()
-	{
-		return GL11.glGenTextures();
-	}
-
-	public final static int[] gen(int[] texturesIn)
-	{
-		GL11.glGenTextures(texturesIn);
-
-		return texturesIn;
-	}
-
-	public final static IntBuffer gen(IntBuffer texturesIn)
-	{
-		GL11.glGenTextures(texturesIn);
-
-		return texturesIn;
-	}
-
-	public final static void bind(final int textureIdIn)
-	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
-	}
-
-	public final static void active(final int idIn)
-	{
-		GL13.glActiveTexture(idIn);
-	}
-
-	public final static void unbind()
-	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-	}
-
-	public final static void delete(final int textureIdIn)
-	{
-		GL11.glDeleteTextures(textureIdIn);
-	}
-
-	public final static void deletes(IntBuffer texturesBufferIn)
-	{
-		GL11.glDeleteTextures(texturesBufferIn);
-	}
-
-	public final static GLTexture withId(int widthIn, int heightIn, int textureIdIn, OpenGLRenderAPIContext contextIn)
-	{
-		return new GLTexture(textureIdIn, contextIn).width(widthIn).height(heightIn);
-	}
-
-	private int						id;
-	private int						width;
-	private int						height;
-	private OpenGLRenderAPIContext	context;
-
 	/**
-	 * @param depthTextureIn
+	 * @param settingsIn
 	 */
-	public GLTexture(int textureIdIn, OpenGLRenderAPIContext contextIn)
+	protected GLTexture(ITextureSettings<GLTextureSettings> settingsIn, ITextureData... texturesIn)
 	{
-		this.id			= textureIdIn;
-		this.context	= contextIn;
+		super(settingsIn, texturesIn);
 	}
 
 	/**
-	 * @param widthIn
-	 * @param heightIn
-	 * @param bufferIn
+	 * @param textureIdIn
+	 * @param settingsIn
 	 */
-	public GLTexture(ITextureData textureDataIn, OpenGLRenderAPIContext contextIn)
+	protected GLTexture(int textureIdIn, int widthIn, int heightIn, ITextureSettings<GLTextureSettings> settingsIn)
 	{
-		this.id(GLTexture.gen());
-
-		this.width(textureDataIn.width());
-		this.height(textureDataIn.height());
-
-		this.context(contextIn);
-
-		this.load(textureDataIn.buffer(), GL11.GL_NEAREST, GL11.GL_NEAREST, GL12.GL_CLAMP_TO_EDGE,
-				GL12.GL_CLAMP_TO_EDGE, true);
-	}
-
-	/**
-	 * @param widthIn
-	 * @param heightIn
-	 * @param bufferIn
-	 * @param contextIn
-	 * @param minIn
-	 * @param magIn
-	 * @param wrapXIn
-	 * @param wrapTIn
-	 * @param mipmappingIn
-	 */
-	public GLTexture(ITextureData textureDataIn, OpenGLRenderAPIContext contextIn, int minIn, int magIn, int wrapSIn,
-			int wrapTIn, boolean mipmappingIn)
-	{
-		this.id(GLTexture.gen());
-
-		this.width(textureDataIn.width());
-		this.height(textureDataIn.height());
-
-		this.context(contextIn);
-
-		this.load(textureDataIn.buffer(), minIn, magIn, wrapSIn, wrapTIn, mipmappingIn);
-	}
-
-	/**
-	 * @param widthIn
-	 * @param heightIn
-	 * @param pixelFormatIn
-	 */
-	public GLTexture(int widthIn, int heightIn, int pixelFormatIn, OpenGLRenderAPIContext contextIn)
-	{
-		this.id(GLTexture.gen());
-
-		this.width	= widthIn;
-		this.height	= heightIn;
-
-		this.context(contextIn);
-
-		this.load(GL11.GL_NEAREST, GL11.GL_NEAREST, GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, true,
-				GL11.GL_DEPTH_COMPONENT, pixelFormatIn);
-	}
-
-	/**
-	 * @param widthIn
-	 * @param heightIn
-	 * @param pixelFormatIn
-	 * @param minIn
-	 * @param magIn
-	 * @param wrapSIn
-	 * @param wrapTIn
-	 * @param mipmappingIn
-	 */
-	public GLTexture(int widthIn, int heightIn, int pixelFormatIn, OpenGLRenderAPIContext contextIn, int minIn,
-			int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn)
-	{
-		this.id(GLTexture.gen());
-
-		this.width	= widthIn;
-		this.height	= heightIn;
-
-		this.context(contextIn);
-
-		this.load(minIn, magIn, wrapSIn, wrapTIn, mipmappingIn, GL11.GL_DEPTH_COMPONENT, pixelFormatIn);
-	}
-
-	private void initialization(int minIn, int magIn, int wrapSIn, int wrapTIn)
-	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id());
-		GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
-
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minIn);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, magIn);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, wrapSIn);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, wrapTIn);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -0.4f);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MIN_LOD, -1000);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LOD, 1000);
-
-		if (this.context().settings().user().isEnabled("mustAnisotropyTextureFiltering"))
-		{
-			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
-					(float) this.context().settings().user().get("anisotropyTextureFilteringAmount").value());
-		}
-	}
-
-	private void mipmap()
-	{
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, 1000);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_BASE_LEVEL, 0);
-		GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-	}
-
-	private void load(ByteBuffer bufferIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn)
-	{
-		this.initialization(minIn, magIn, wrapSIn, wrapTIn);
-
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, this.width(), this.height(), 0, GL11.GL_RGBA,
-				GL11.GL_UNSIGNED_BYTE, bufferIn);
-
-		if (mipmappingIn)
-		{
-			this.mipmap();
-		}
-
-		GLTexture.unbind();
-	}
-
-	/**
-	 * @param minIn
-	 * @param magIn
-	 * @param wrapSIn
-	 * @param wrapTIn
-	 * @param mipmappingIn
-	 * @param typeIn
-	 * @param pixelFormatIn
-	 */
-	private void load(int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn, int typeIn,
-			int pixelFormatIn)
-	{
-		this.initialization(minIn, magIn, wrapSIn, wrapTIn);
-
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_COMPARE_FUNC, GL11.GL_LEQUAL);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_COMPARE_MODE, GL11.GL_NONE);
-
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, typeIn, this.width(), this.height(), 0, pixelFormatIn, GL11.GL_FLOAT,
-				(ByteBuffer) null);
-
-		if (mipmappingIn)
-		{
-			this.mipmap();
-		}
-
-		GLTexture.unbind();
-
+		super(textureIdIn, widthIn, heightIn, settingsIn);
 	}
 
 	@Override
-	public ITexture attach()
+	protected int genId()
 	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.id);
+		return GLTextureUtils.gen();
+	}
+
+	@Override
+	protected void load()
+	{
+		if (this.hasNotTexture())
+		{
+			throw new RuntimeException("[ERROR] GLTexture : has not texture defined !");
+		}
+
+		if (this.textures.length > 1)
+		{
+			if (this.settings.target() < 0)
+			{
+				this.settings.target(GL13.GL_TEXTURE_CUBE_MAP);
+			}
+
+			this.load(() ->
+			{
+				for (var i = 0; i < this.textures.length; i++)
+				{
+					final var textureData = this.textures[i];
+					GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, textureData.width(),
+							textureData.height(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textureData.buffer());
+
+					if (!textureData.cleanup())
+					{
+						throw new RuntimeException("[ERROR] Unable to unload buffer of textures cube map data !");
+					}
+				}
+			});
+		}
+		else
+		{
+			if (this.settings.target() < 0)
+			{
+				this.settings.target(GL11.GL_TEXTURE_2D);
+			}
+
+			if (((TextureData) this.textures[0]).isEmpty())
+			{
+				this.load((ByteBuffer) null); // Empty texture
+			}
+			else
+			{
+				this.load(this.textures[0].buffer());
+			}
+		}
+	}
+
+	private void load(ByteBuffer bufferIn)
+	{
+		this.load(() -> GL11.glTexImage2D(this.settings.target(), this.settings.level(), this.settings.internalFormat(),
+				this.textures[0].width(), this.textures[0].height(), this.settings.border(), this.settings.format(),
+				this.settings.type(), bufferIn));
+	}
+
+	private void load(IFunction toLoadIn)
+	{
+		GL11.glBindTexture(this.settings.target(), this.id());
+		GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, this.settings.pixelStoreAlignement());
+
+		GL11.glTexParameteri(this.settings.target(), GL11.GL_TEXTURE_MIN_FILTER, this.settings.min());
+		GL11.glTexParameteri(this.settings.target(), GL11.GL_TEXTURE_MAG_FILTER, this.settings.mag());
+		GL11.glTexParameteri(this.settings.target(), GL11.GL_TEXTURE_WRAP_S, this.settings.wrapS());
+		GL11.glTexParameteri(this.settings.target(), GL11.GL_TEXTURE_WRAP_T, this.settings.wrapT());
+		GL11.glTexParameterf(this.settings.target(), GL14.GL_TEXTURE_LOD_BIAS, this.settings.lodBias());
+		GL11.glTexParameteri(this.settings.target(), GL12.GL_TEXTURE_MIN_LOD, this.settings.lodMin());
+		GL11.glTexParameteri(this.settings.target(), GL12.GL_TEXTURE_MAX_LOD, this.settings.lodMax());
+
+		GL11.glTexParameteri(this.settings.target(), GL14.GL_TEXTURE_COMPARE_FUNC, this.settings.textureCompareFunc());
+		GL11.glTexParameteri(this.settings.target(), GL14.GL_TEXTURE_COMPARE_MODE, this.settings.textureCompareMode());
+
+		if (this.settings.context().settings().user().isEnabled("mustAnisotropyTextureFiltering")
+				&& this.settings.mustAnisotropyTextureFiltering())
+		{
+			GL11.glTexParameterf(this.settings.target(), EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
+					this.settings.anisotropyTextureFiltering() >= 0 ? this.settings.anisotropyTextureFiltering()
+							: (float) this.settings.context().settings().user().get("anisotropyTextureFilteringAmount")
+									.value());
+		}
+
+		toLoadIn.execute();
+
+		if (this.settings.mipmapping())
+		{
+			GL11.glTexParameteri(this.settings.target(), GL12.GL_TEXTURE_BASE_LEVEL, this.settings.textureBaseLevel());
+			GL11.glTexParameteri(this.settings.target(), GL12.GL_TEXTURE_MAX_LEVEL, this.settings.textureMaxLevel());
+			GL30.glGenerateMipmap(this.settings.target());
+		}
+
+		GLTextureUtils.unbind();
+	}
+
+	@Override
+	public GLTexture attach()
+	{
+		GL11.glBindTexture(this.settings.target(), this.id);
 
 		return this;
 	}
 
-	public ITexture attach(int typeIn)
+	public GLTexture attach(int typeIn)
 	{
 		GL11.glBindTexture(typeIn, this.id);
 
@@ -285,26 +185,28 @@ public class GLTexture implements ITexture
 	}
 
 	@Override
-	public void send(ByteBuffer bufferIn)
+	public GLTexture send(ByteBuffer bufferIn)
 	{
 		this.attach();
 
-		GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, this.width(), this.height(), GL11.GL_RGBA,
-				GL11.GL_UNSIGNED_BYTE, bufferIn);
+		GL11.glTexSubImage2D(this.settings.target(), this.settings.level(), 0, 0, this.textures[0].width(),
+				this.textures[0].height(), this.settings.format(), this.settings.type(), bufferIn);
 
-		GLTexture.unbind();
-	}
-
-	@Override
-	public ITexture detach()
-	{
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+		GLTextureUtils.unbind();
 
 		return this;
 	}
 
 	@Override
-	public ITexture delete()
+	public GLTexture detach()
+	{
+		GL11.glBindTexture(this.settings.target(), 0);
+
+		return this;
+	}
+
+	@Override
+	public GLTexture delete()
 	{
 		this.detach();
 

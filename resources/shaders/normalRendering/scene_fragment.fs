@@ -9,11 +9,10 @@ struct Attenuation
 
 struct PointLight
 {
-    vec3 colour;
-    // Light position is assumed to be in view coordinates
-    vec3 position;
-    float intensity;
-    Attenuation att;
+	vec3 position;
+	vec3 colour;
+	float intensity;
+	Attenuation attenuation;
 };
 
 struct SpotLight
@@ -89,14 +88,14 @@ void setupColours(Material material, vec2 textCoord)
     }
 }
 
-vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal)
-{
-    vec4 diffuseColour = vec4(0, 0, 0, 0);
-    vec4 specColour = vec4(0, 0, 0, 0);
+vec4 diffuse;
+vec4 specular;
 
+void calcLightColour(vec3 light_colour, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal)
+{
     // Diffuse Light
     float diffuseFactor = max(dot(normal, to_light_dir), 0.0);
-    diffuseColour = diffuseC * vec4(light_colour, 1.0) * light_intensity * diffuseFactor;
+    diffuse = diffuseC * vec4(light_colour, 1.0) * light_intensity * diffuseFactor;
 
     // Specular Light
     vec3 camera_direction = normalize(-position);
@@ -104,44 +103,43 @@ vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, ve
     vec3 reflected_light = normalize(reflect(from_light_dir , normal));
     float specularFactor = max( dot(camera_direction, reflected_light), 0.0);
     specularFactor = pow(specularFactor, specularPower);
-    specColour = speculrC * light_intensity  * specularFactor * material.reflectance * vec4(light_colour, 1.0);
-
-    return (diffuseColour + specColour);
+    specular = speculrC * light_intensity  * specularFactor * material.reflectance * vec4(light_colour, 1.0);
 }
 
-vec4 calcPointLight(PointLight light, vec3 position, vec3 normal)
+void calcPointLight(PointLight light, vec3 position, vec3 normal)
 {
     vec3 light_direction = light.position - position;
     vec3 to_light_dir  = normalize(light_direction);
-    vec4 light_colour = calcLightColour(light.colour, light.intensity, position, to_light_dir, normal);
+    calcLightColour(light.colour, light.intensity, position, to_light_dir, normal);
 
     // Apply Attenuation
     float distance = length(light_direction);
-    float attenuationInv = light.att.constant + light.att.linear * distance +
-        light.att.exponent * distance * distance;
-    return light_colour / attenuationInv;
+    float attenuationInv = light.attenuation.constant + light.attenuation.linear * distance +
+        light.attenuation.exponent * distance * distance;
+
+	diffuse /= attenuationInv;
+	specular /= attenuationInv;
 }
 
-vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal)
+void calcSpotLight(SpotLight light, vec3 position, vec3 normal)
 {
     vec3 light_direction = light.pl.position - position;
     vec3 to_light_dir  = normalize(light_direction);
     vec3 from_light_dir  = -to_light_dir;
     float spot_alfa = dot(from_light_dir, normalize(light.conedir));
-    
-    vec4 colour = vec4(0, 0, 0, 0);
-    
+
     if ( spot_alfa > light.cutoff ) 
     {
-        colour = calcPointLight(light.pl, position, normal);
-        colour *= (1.0 - (1.0 - spot_alfa)/(1.0 - light.cutoff));
+        calcPointLight(light.pl, position, normal);
+        float factor = (1.0 - (1.0 - spot_alfa)/(1.0 - light.cutoff));
+		diffuse *= factor;
+		specular *= factor;
     }
-    return colour;    
 }
 
-vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
+void calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
 {
-    return calcLightColour(light.colour, light.intensity, position, normalize(light.direction), normal);
+    calcLightColour(light.colour, light.intensity, position, normalize(light.direction), normal);
 }
 
 vec4 calcFog(vec3 pos, vec4 colour, Fog fog, vec3 ambientLight, DirectionalLight dirLight)
@@ -160,70 +158,100 @@ vec3 calcNormal(Material material, vec3 normal, vec2 text_coord, mat4 modelViewM
     vec3 newNormal = normal;
     if ( material.hasNormalMap == 1 )
     {
-        newNormal = texture(normalMap_sampler, text_coord).rgb;
-        newNormal = normalize(newNormal * 2 - 1);
+        newNormal = normalize(texture(normalMap_sampler, text_coord, -1.0f).rgb * 2.0f - 1.0f);
         newNormal = normalize(modelViewMatrix * vec4(newNormal, 0.0)).xyz;
     }
     return newNormal;
 }
 
-float calcShadow(vec4 position)
+float calcShadow(vec4 positionIn, vec3 normalIn, DirectionalLight lightIn)
 {
-    vec3 projCoords = position.xyz;
-    // Transform from screen coordinates to texture coordinates
+    // (vv all done from dir light's perspective)
+
+    // perform perspective divide (used later w/perspective projection; not needed w/orthographic proj)
+    vec3 projCoords = positionIn.xyz / positionIn.w;
+    // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
-    float bias = 0.05f;
-   
-    float shadowFactor = 0.0;
-	vec2 inc = 1.0 / textureSize(shadowMap_sampler, 0);
-	for(int row = -1; row <= 1; ++row)
-	{
-	    for(int col = -1; col <= 1; ++col)
-	    {
-	        float textDepth = texture(shadowMap_sampler, projCoords.xy + vec2(row, col) * inc).r; 
-	        shadowFactor += projCoords.z - bias > textDepth ? 1.0 : 0.0;
-	    }
-	}
-	shadowFactor /= 9.0;
+  	//projCoords = clamp(projCoords, 0.0f, 1.0f);
 
-    if(projCoords.z > 1.0)
-    {
-        shadowFactor = 1.0;
-    }
+    float shadow = 1.0f;
+   	/**if(projCoords.z <= 1.00f)
+   	{
+   		return 0.0f;
+   	}**/
 
-    return 1 - shadowFactor;
-} 
+    	vec3 L = normalize(-lightIn.direction); // calc to light vector
+        /*
+        float bias = max(0.005 * (1.0 - dot(normalIn, L)), 0.0015);  // calc bias (to avoid 'shadow acne' // moiré pattern aliasing)
+         */
+        // impl PCF (percentage-closer filtering) to produce softer shadows
+        float currentDepth = projCoords.z;  // get depth of current frag
+        float closestDepth = texture(shadowMap_sampler, projCoords.xy).r;   // get closest depth value
+        float bias = max(0.05 * (1.0 - dot(normalIn, L)), 0.005);  // calc bias (to avoid 'shadow acne' // moiré pattern aliasing)
+		shadow = (currentDepth - bias) / positionIn.w >= closestDepth  ? 1.0 : 0.0; // check whether current frag pos is in shadow
+
+		float cosTheta = clamp( dot( normalIn,L ), 0.0f ,1.0f );
+		bias = max(0.0020f * (tan(acos(cosTheta))), 0.0025f);  // calc bias (to avoid 'shadow acne' // moiré pattern aliasing)
+
+        vec2 texelSize = 1.0 / textureSize(shadowMap_sampler, 0);
+
+        int pcfLength = 2;
+        for(int x = -pcfLength; x <= pcfLength; ++x)
+        {
+            for(int y = -pcfLength; y <= pcfLength; ++y)
+            {
+                float pcfDepth = texture(shadowMap_sampler, projCoords.xy + vec2(x, y) * texelSize).r;
+                shadow += (currentDepth - bias) / positionIn.w >= pcfDepth ? 1.0 : 0.0;
+            }
+        }
+        shadow /= (pcfLength * 2.0f + 1.0f) * (pcfLength * 2.0f + 1.0f);
+	
+    return shadow;
+}
 
 void main()
 {
-    setupColours(material, pass_textureCoords);
+	    setupColours(material, pass_textureCoords);
+	
+	    vec3 currNomal = calcNormal(material, pass_mvVertexNormal, pass_textureCoords, pass_modelView);
+	
+	    vec4 totalDiffuse = vec4(0.0f);
+	    vec4 totalSpecular = vec4(0.0f);
 
-    vec3 currNomal = calcNormal(material, pass_mvVertexNormal, pass_textureCoords, pass_modelView);
+	    calcDirectionalLight(directionalLight, pass_mvVertexPos, currNomal);
 
-    vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, pass_mvVertexPos, currNomal);
-
-    for (int i=0; i<MAX_POINT_LIGHTS; i++)
-    {
-        if ( pointLights[i].intensity > 0 )
-        {
-            diffuseSpecularComp += calcPointLight(pointLights[i], pass_mvVertexPos, currNomal); 
-        }
-    }
-
-    for (int i=0; i<MAX_SPOT_LIGHTS; i++)
-    {
-        if ( spotLights[i].pl.intensity > 0 )
-        {
-            diffuseSpecularComp += calcSpotLight(spotLights[i], pass_mvVertexPos, currNomal);
-        }
-    }
-    
-    float shadow = calcShadow(pass_mlightviewVertexPos);
-    
-    fragColor = clamp(ambientC * vec4(ambientLight, 1) + diffuseSpecularComp * shadow, 0, 1);
-
-    if ( fog.activeFog == 1 ) 
-    {
-        fragColor = calcFog(pass_mvVertexPos, fragColor, fog, ambientLight, directionalLight);
-    }
+	    totalDiffuse += diffuse;
+	    totalDiffuse += totalSpecular;
+	
+	   /** for (int i=0; i<MAX_POINT_LIGHTS; i++)
+	    {
+	        if ( pointLights[i].intensity > 0 )
+	        {
+	            calcPointLight(pointLights[i], pass_mvVertexPos, currNomal); 
+			    totalDiffuse += diffuse;
+			    totalDiffuse += totalSpecular;
+	        }
+	    }
+	
+	    for (int i=0; i<MAX_SPOT_LIGHTS; i++)
+	    {
+	        if ( spotLights[i].pl.intensity > 0 )
+	        {
+	            calcSpotLight(spotLights[i], pass_mvVertexPos, currNomal);
+			    totalDiffuse += diffuse;
+			    totalDiffuse += totalSpecular;
+	        }
+	    }**/
+		totalDiffuse = max(totalDiffuse, 0.2);
+	    
+	    float shadowFactor = calcShadow(pass_mlightviewVertexPos, currNomal, directionalLight);
+	    
+	    totalDiffuse.w = 1.0f;
+	    totalSpecular.w = 1.0f;
+		fragColor =  clamp(ambientC * vec4(ambientLight, 1) + ambientC * totalDiffuse * shadowFactor + totalSpecular * shadowFactor, 0.0f, 1.0f);
+	
+	    if ( fog.activeFog == 1 ) 
+	    {
+	        fragColor = calcFog(pass_mvVertexPos, fragColor, fog, ambientLight, directionalLight);
+	    }
 }

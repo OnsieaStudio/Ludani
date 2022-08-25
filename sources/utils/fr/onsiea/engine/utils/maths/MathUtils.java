@@ -5,22 +5,22 @@ import org.joml.Vector3f;
 
 public class MathUtils
 {
-	public final static double round(double valueIn, double aroundDegreesIn)
+	public final static double round(final double valueIn, final double aroundDegreesIn)
 	{
 		return Math.round(valueIn * aroundDegreesIn) / aroundDegreesIn;
 	}
 
-	public static double round(double value)
+	public static double round(final double value)
 	{
 		return Math.round(value * 100.0d) / 100.0d;
 	}
 
-	public static Vector2d round(Vector2d vec)
+	public static Vector2d round(final Vector2d vec)
 	{
 		return new Vector2d(MathUtils.round(vec.x()), MathUtils.round(vec.y()));
 	}
 
-	public static Vector3f round(Vector3f convertToVector3f, int pos)
+	public static Vector3f round(final Vector3f convertToVector3f, final int pos)
 	{
 		convertToVector3f.x	= (float) MathUtils.round(convertToVector3f.x(), pos);
 		convertToVector3f.y	= (float) MathUtils.round(convertToVector3f.y(), pos);
@@ -28,12 +28,12 @@ public class MathUtils
 		return convertToVector3f;
 	}
 
-	public final static float coTangent(float angleIn)
+	public final static float coTangent(final float angleIn)
 	{
 		return (float) (1f / Math.tan(angleIn));
 	}
 
-	public final static float degreesToRadians(float degreesIn)
+	public final static float degreesToRadians(final float degreesIn)
 	{
 		return degreesIn * (float) MathInstances.pi180();
 	}
@@ -48,12 +48,14 @@ public class MathUtils
 		return MathInstances.random().nextFloat();
 	}
 
-	public final static long randomLong(long minIn, long maxIn)
+	/** Work in progress **/
+	public final static long randomLong(final long minIn, final long maxIn)
 	{
-		return MathInstances.random().nextLong(minIn, maxIn);
+		// maxIn - minIn + 1
+		return MathInstances.random().nextLong() + minIn;
 	}
 
-	public final static Vector3f generateRandomUnitVector(Vector3f transposeIn)
+	public final static Vector3f generateRandomUnitVector(final Vector3f transposeIn)
 	{
 		final var theta = (float) (MathUtils.randomFloat() * 2f * Math.PI);
 		transposeIn.z = MathUtils.randomFloat() * 2 - 1;
@@ -73,7 +75,7 @@ public class MathUtils
 		return new Vector3f(x, y, z);
 	}
 
-	public final static float generateValue(float averageIn, float offsetIn)
+	public final static float generateValue(final float averageIn, final float offsetIn)
 	{
 		return averageIn + offsetIn * MathUtils.randomFloat();
 	}

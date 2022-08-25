@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
-import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.texture.Texture;
 import fr.onsiea.engine.client.graphics.texture.TexturesManager;
 import fr.onsiea.engine.utils.time.DateUtils;
 
@@ -27,12 +27,12 @@ import fr.onsiea.engine.utils.time.DateUtils;
  */
 public class OpenGLScreenshot
 {
-	private static ByteBuffer		pixels;
-	private static BufferedImage	bufferedImage;
-	private final static int		BPP	= 4;
-	private static TexturesManager	texturesManager;
+	private static ByteBuffer			pixels;
+	private static BufferedImage		bufferedImage;
+	private final static int			BPP	= 4;
+	private static TexturesManager<?>	texturesManager;
 
-	public final static void initialize(TexturesManager texturesManagerIn)
+	public final static void initialize(TexturesManager<?> texturesManagerIn)
 	{
 		OpenGLScreenshot.texturesManager = texturesManagerIn;
 	}
@@ -101,16 +101,16 @@ public class OpenGLScreenshot
 		return OpenGLScreenshot.pixels();
 	}
 
-	public final static ITexture intoTexture(final Window windowIn)
+	public final static Texture<?> intoTexture(final Window windowIn)
 	{
 		return OpenGLScreenshot.texturesManager.load(DateUtils.getDate(), OpenGLScreenshot.pixels(windowIn),
-				windowIn.settings().width(), windowIn.settings().height());
+				windowIn.settings().width(), windowIn.settings().height(), null);
 	}
 
-	public final static ITexture intoTexture(final ByteBuffer pixelsIn, final Window windowIn)
+	public final static Texture<?> intoTexture(final ByteBuffer pixelsIn, final Window windowIn)
 	{
 		return OpenGLScreenshot.texturesManager.load(DateUtils.getDate(), pixelsIn, windowIn.settings().width(),
-				windowIn.settings().height());
+				windowIn.settings().height(), null);
 	}
 
 	public static boolean write(final BufferedImage bufferedImageIn)

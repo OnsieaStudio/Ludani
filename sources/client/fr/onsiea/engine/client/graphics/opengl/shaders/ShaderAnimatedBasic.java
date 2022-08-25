@@ -37,11 +37,10 @@ import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.mesh.anim.AnimatedFrame;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformMatrix4f;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformSpotLight;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
 import fr.onsiea.engine.client.graphics.shader.utils.IView;
+import fr.onsiea.engine.game.scene.Scene;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -52,17 +51,16 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class ShaderAnimatedBasic extends GLShaderProgram implements IProjection, IView
 {
-	private final static int							LIGHTS	= 5;
-
 	private final IShaderTypedUniform<Matrix4f>			projection;
 	private final IShaderTypedUniform<Matrix4f>			view;
 	private final IShaderTypedUniform<Matrix4f>			transformations;
+	private final IShaderTypedUniform<Matrix4f>			bias;
 	private final IShaderTypedUniform<Vector3f>			ambientLight;
 	private final IShaderTypedUniform<Float>			specularPower;
 	private final IShaderTypedUniform<Material>			material;
 	private final IShaderTypedUniform<Integer>			hasNormalMap;
-	private final IShaderTypedUniform<PointLight>[]		pointLights;
-	private final IShaderTypedUniform<SpotLight>[]		spotLights;
+	private final IShaderTypedUniform<PointLight[]>		pointLights;
+	private final IShaderTypedUniform<SpotLight[]>		spotLights;
 	private final IShaderTypedUniform<DirectionalLight>	directionalLight;
 	private final IShaderTypedUniform<Integer>			textureSampler;
 	private final IShaderTypedUniform<Integer>			normalMapSampler;
@@ -85,17 +83,13 @@ public class ShaderAnimatedBasic extends GLShaderProgram implements IProjection,
 		this.projection			= this.matrix4fUniform("projection");
 		this.view				= this.matrix4fUniform("view");
 		this.transformations	= this.matrix4fUniform("transformations");
+		this.bias				= this.matrix4fUniform("bias");
 		this.ambientLight		= this.vector3fUniform("ambientLight");
 		this.specularPower		= this.floatUniform("specularPower");
 		this.material			= this.materialUniform("material");
 		this.hasNormalMap		= this.intUniform("hasNormalMap");
-		this.pointLights		= new GLUniformPointLight[ShaderAnimatedBasic.LIGHTS];
-		this.spotLights			= new GLUniformSpotLight[ShaderAnimatedBasic.LIGHTS];
-		for (var i = 0; i < ShaderAnimatedBasic.LIGHTS; i++)
-		{
-			this.pointLights[i]	= this.pointLightUniform("pointLights[" + i + "]");
-			this.spotLights[i]	= this.spotLightUniform("spotLights[" + i + "]");
-		}
+		this.pointLights		= this.pointLightsUniform("pointLights", Scene.MAX_LIGHTS);
+		this.spotLights			= this.spotLightsUniform("spotLights", Scene.MAX_LIGHTS);
 		this.directionalLight	= this.directionalLightUniform("directionalLight");
 		this.fog				= this.fogUniform("fog");
 

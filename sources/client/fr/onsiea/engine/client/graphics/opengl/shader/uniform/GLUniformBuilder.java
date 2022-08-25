@@ -26,7 +26,10 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.shader.uniform;
 
+import fr.onsiea.engine.client.graphics.light.PointLight;
+import fr.onsiea.engine.client.graphics.light.SpotLight;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
+import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderUniform;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderUniformBuilder;
 
@@ -125,6 +128,18 @@ public class GLUniformBuilder implements IShaderUniformBuilder
 	public GLUniformSpotLight spotLightUniform(String nameIn)
 	{
 		return new GLUniformSpotLight(this.parent, nameIn);
+	}
+
+	@Override
+	public IShaderTypedUniform<PointLight[]> pointLightsUniform(String nameIn, int sizeIn)
+	{
+		return new GLUniformPointLights(this.parent, nameIn, sizeIn);
+	}
+
+	@Override
+	public IShaderTypedUniform<SpotLight[]> spotLightsUniform(String nameIn, int sizeIn)
+	{
+		return new GLUniformSpotLights(this.parent, nameIn, sizeIn);
 	}
 
 	@Override

@@ -36,8 +36,6 @@ import fr.onsiea.engine.client.graphics.light.PointLight;
 import fr.onsiea.engine.client.graphics.light.SpotLight;
 import fr.onsiea.engine.client.graphics.material.Material;
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformPointLight;
-import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformSpotLight;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
 import fr.onsiea.engine.client.graphics.shader.utils.IView;
@@ -56,8 +54,9 @@ public class ShaderNormalMappingThinMatrix extends GLShaderProgram implements IP
 	private final IShaderTypedUniform<Matrix4f>			projection;
 	private final IShaderTypedUniform<Matrix4f>			view;
 	private final IShaderTypedUniform<Vector4f>			plane;
-	private final IShaderTypedUniform<Matrix4f>			orthoProjection;
-	private final IShaderTypedUniform<Matrix4f>			modelLightView;
+	private final IShaderTypedUniform<Matrix4f>			lightProjection;
+	private final IShaderTypedUniform<Matrix4f>			lightView;
+	private final IShaderTypedUniform<Matrix4f>			bias;
 
 	private final IShaderTypedUniform<Integer>			texture;
 	private final IShaderTypedUniform<Integer>			normalMap;
@@ -66,8 +65,8 @@ public class ShaderNormalMappingThinMatrix extends GLShaderProgram implements IP
 	private final IShaderTypedUniform<Float>			specularPower;
 	private final IShaderTypedUniform<Material>			material;
 	private final IShaderTypedUniform<Fog>				fog;
-	private final IShaderTypedUniform<PointLight>		pointLights[];
-	private final IShaderTypedUniform<SpotLight>		spotLights[];
+	private final IShaderTypedUniform<PointLight[]>		pointLights;
+	private final IShaderTypedUniform<SpotLight[]>		spotLights;
 	private final IShaderTypedUniform<DirectionalLight>	directionalLight;
 
 	/**
@@ -84,8 +83,9 @@ public class ShaderNormalMappingThinMatrix extends GLShaderProgram implements IP
 		this.projection			= this.matrix4fUniform("projection");
 		this.view				= this.matrix4fUniform("view");
 		this.plane				= this.vector4fUniform("plane");
-		this.orthoProjection	= this.matrix4fUniform("orthoProjection");
-		this.modelLightView		= this.matrix4fUniform("modelLightView");
+		this.lightProjection	= this.matrix4fUniform("lightProjection");
+		this.lightView			= this.matrix4fUniform("lightView");
+		this.bias				= this.matrix4fUniform("bias");
 
 		this.texture			= this.intUniform("textureSampler");
 		this.normalMap			= this.intUniform("normalMapSampler");
@@ -95,16 +95,10 @@ public class ShaderNormalMappingThinMatrix extends GLShaderProgram implements IP
 		this.material			= this.materialUniform("material");
 		this.fog				= this.fogUniform("fog");
 
-		this.pointLights		= new GLUniformPointLight[Scene.MAX_LIGHTS];
-		this.spotLights			= new GLUniformSpotLight[Scene.MAX_LIGHTS];
+		this.pointLights		= this.pointLightsUniform("pointLights", Scene.MAX_LIGHTS);
+		this.spotLights			= this.spotLightsUniform("spotLights", Scene.MAX_LIGHTS);
 
-		for (var i = 0; i < Scene.MAX_LIGHTS; i++)
-		{
-			this.pointLights[i]	= this.pointLightUniform("pointLights[" + i + "]");
-			this.spotLights[i]	= this.spotLightUniform("spotLights[" + i + "]");
-		}
-
-		this.directionalLight = this.directionalLightUniform("directionalLight");
+		this.directionalLight	= this.directionalLightUniform("directionalLight");
 
 		this.attach();
 		this.texture.load(0);

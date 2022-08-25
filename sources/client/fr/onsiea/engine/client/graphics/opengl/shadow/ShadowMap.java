@@ -49,7 +49,7 @@ public class ShadowMap
 
 	private final int		depthMap;
 
-	public ShadowMap(ITexturesManager texturesManagerIn) throws Exception
+	public ShadowMap(ITexturesManager<?> texturesManagerIn) throws Exception
 	{
 		// Create a FBO to render the depth map
 		this.depthMapFBO	= GL30.glGenFramebuffers();
@@ -60,7 +60,7 @@ public class ShadowMap
 		//		GL12.GL_CLAMP_TO_EDGE, GL12.GL_CLAMP_TO_EDGE, false);
 		this.depthMap		= GL11.glGenTextures();
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.depthMap);
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, ShadowMap.SHADOW_MAP_WIDTH,
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_DEPTH24_STENCIL8, ShadowMap.SHADOW_MAP_WIDTH,
 				ShadowMap.SHADOW_MAP_HEIGHT, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);

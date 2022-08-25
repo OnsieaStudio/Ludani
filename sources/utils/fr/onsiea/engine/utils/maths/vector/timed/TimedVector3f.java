@@ -16,17 +16,22 @@ public class TimedVector3f
 		this.last(new Vector3f());
 	}
 
-	public TimedVector3f(Vector3f baseIn)
+	public TimedVector3f(final Vector3f baseIn)
 	{
 		this.base(baseIn);
 		this.variation(new Vector3f());
 		this.last(new Vector3f());
 	}
 
-	public void add(float xIn, float yIn, float zIn)
+	public void reset()
 	{
-		this.variation().set(xIn - (this.base().x() + xIn), yIn - (this.base().y() + yIn),
-				zIn - (this.base().z() + zIn));
+		this.hasChanged(false);
+	}
+
+	public void add(final float xIn, final float yIn, final float zIn)
+	{
+		this.variation().set(this.base().x() + xIn - this.base().x(), this.base().y() + yIn - this.base().y(),
+				this.base().z() + zIn - this.base().z());
 
 		if (this.variation().x() != 0 || this.variation().y() != 0 || this.variation().z() != 0)
 		{
@@ -37,7 +42,7 @@ public class TimedVector3f
 		this.base().add(xIn, yIn, zIn);
 	}
 
-	public void set(float xIn, float yIn, float zIn)
+	public void set(final float xIn, final float yIn, final float zIn)
 	{
 		this.variation().set(xIn - this.base().x(), yIn - this.base().y(), zIn - this.base().z());
 
@@ -70,7 +75,7 @@ public class TimedVector3f
 		return this.base;
 	}
 
-	protected final void base(Vector3f baseIn)
+	protected final void base(final Vector3f baseIn)
 	{
 		this.base = baseIn;
 	}
@@ -80,7 +85,7 @@ public class TimedVector3f
 		return this.variation;
 	}
 
-	protected final void variation(Vector3f variationIn)
+	protected final void variation(final Vector3f variationIn)
 	{
 		this.variation = variationIn;
 	}
@@ -90,7 +95,7 @@ public class TimedVector3f
 		return this.last;
 	}
 
-	protected final void last(Vector3f lastIn)
+	protected final void last(final Vector3f lastIn)
 	{
 		this.last = lastIn;
 	}
@@ -100,7 +105,7 @@ public class TimedVector3f
 		return this.hasChanged;
 	}
 
-	protected final void hasChanged(boolean hasChangedIn)
+	protected final void hasChanged(final boolean hasChangedIn)
 	{
 		this.hasChanged = hasChangedIn;
 	}

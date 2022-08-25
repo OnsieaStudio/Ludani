@@ -1,29 +1,42 @@
 /**
-* Copyright 2021 Onsiea All rights reserved.<br><br>
-*
-* This file is part of Onsiea Engine project. (https://github.com/Onsiea/OnsieaEngine)<br><br>
-*
-* Onsiea Engine is [licensed] (https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE) under the terms of the "GNU General Public Lesser License v3.0" (GPL-3.0).
-* https://github.com/Onsiea/OnsieaEngine/wiki/License#license-and-copyright<br><br>
-*
-* Onsiea Engine is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3.0 of the License, or
-* (at your option) any later version.<br><br>
-*
-* Onsiea Engine is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.<br><br>
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with Onsiea Engine.  If not, see <https://www.gnu.org/licenses/>.<br><br>
-*
-* Neither the name "Onsiea", "Onsiea Engine", or any derivative name or the names of its authors / contributors may be used to endorse or promote products derived from this software and even less to name another project or other work without clear and precise permissions written in advance.<br><br>
-*
-* @Author : Seynax (https://github.com/seynax)<br>
-* @Organization : Onsiea Studio (https://github.com/Onsiea)
-*/
+ * Copyright 2021 Onsiea All rights reserved.<br>
+ * <br>
+ *
+ * This file is part of Onsiea Engine project.
+ * (https://github.com/Onsiea/OnsieaEngine)<br>
+ * <br>
+ *
+ * Onsiea Engine is [licensed]
+ * (https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE) under the terms of
+ * the "GNU General Public Lesser License v3.0" (GPL-3.0).
+ * https://github.com/Onsiea/OnsieaEngine/wiki/License#license-and-copyright<br>
+ * <br>
+ *
+ * Onsiea Engine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3.0 of the License, or
+ * (at your option) any later version.<br>
+ * <br>
+ *
+ * Onsiea Engine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.<br>
+ * <br>
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Onsiea Engine. If not, see <https://www.gnu.org/licenses/>.<br>
+ * <br>
+ *
+ * Neither the name "Onsiea", "Onsiea Engine", or any derivative name or the
+ * names of its authors / contributors may be used to endorse or promote
+ * products derived from this software and even less to name another project or
+ * other work without clear and precise permissions written in advance.<br>
+ * <br>
+ *
+ * @Author : Seynax (https://github.com/seynax)<br>
+ * @Organization : Onsiea Studio (https://github.com/Onsiea)
+ */
 package fr.onsiea.engine.client.graphics.opengl.utils;
 
 import java.nio.FloatBuffer;
@@ -42,6 +55,7 @@ import fr.onsiea.engine.client.graphics.opengl.model.GLTexturedModel;
 import fr.onsiea.engine.client.graphics.opengl.vao.Vao;
 import fr.onsiea.engine.client.graphics.opengl.vbo.BaseVbo;
 import fr.onsiea.engine.client.graphics.opengl.vbo.Vbo;
+import fr.onsiea.engine.client.graphics.texture.Texture;
 
 /**
  * @author Seynax
@@ -49,7 +63,87 @@ import fr.onsiea.engine.client.graphics.opengl.vbo.Vbo;
  */
 public class OpenGLUtils
 {
-	public final static void clearColor(float rIn, float gIn, float bIn, float aIn)
+	public final static void unbindTexture(final int textureIndexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + textureIndexIn);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+	}
+
+	public final static void unbindTexture(final Texture<?> textureIn, final int textureIndexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + textureIndexIn);
+		textureIn.detach();
+	}
+
+	public final static void bindTexture(final int textureIdIn, final int textureIndexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + textureIndexIn);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
+	}
+
+	public final static void bindTexture(final Texture<?> textureIn, final int textureIndexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + textureIndexIn);
+		textureIn.attach();
+	}
+
+	public final static void cullFace(final int cullFaceIn)
+	{
+		if (cullFaceIn >= 0)
+		{
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glCullFace(cullFaceIn);
+			GL11.glFrontFace(GL11.GL_CCW);
+		}
+		else
+		{
+			GL11.glDisable(GL11.GL_CULL_FACE);
+		}
+	}
+
+	public final static void cullFace(final boolean cullFaceisEnabledIn, final int cullFaceIn)
+	{
+		if (cullFaceisEnabledIn)
+		{
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glCullFace(cullFaceIn);
+			GL11.glFrontFace(GL11.GL_CCW);
+		}
+		else
+		{
+			GL11.glDisable(GL11.GL_CULL_FACE);
+		}
+	}
+
+	public final static void cullFace(final int cullFaceIn, final int frontFaceIn)
+	{
+		if (cullFaceIn >= 0)
+		{
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glCullFace(cullFaceIn);
+			GL11.glFrontFace(frontFaceIn);
+		}
+		else
+		{
+			GL11.glDisable(GL11.GL_CULL_FACE);
+		}
+	}
+
+	public final static void cullFace(final boolean cullFaceisEnabledIn, final int cullFaceIn, final int frontFaceIn)
+	{
+		if (cullFaceisEnabledIn)
+		{
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glCullFace(cullFaceIn);
+			GL11.glFrontFace(frontFaceIn);
+		}
+		else
+		{
+			GL11.glDisable(GL11.GL_CULL_FACE);
+		}
+	}
+
+	public final static void clearColor(final float rIn, final float gIn, final float bIn, final float aIn)
 	{
 		GL11.glClearColor(rIn, bIn, gIn, aIn);
 	}
@@ -59,7 +153,7 @@ public class OpenGLUtils
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 	}
 
-	public final static void clear(int flagsIn)
+	public final static void clear(final int flagsIn)
 	{
 		GL11.glClear(flagsIn);
 	}
@@ -152,7 +246,7 @@ public class OpenGLUtils
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 
-	public final static GLRawModel makeModel(float[] vertexIn, float[] uvIn)
+	public final static GLRawModel makeModel(final float[] vertexIn, final float[] uvIn)
 	{
 		final var vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
@@ -174,7 +268,7 @@ public class OpenGLUtils
 		return new GLRawModel(vao, vbo, vertexIn.length, ubo);
 	}
 
-	public final static GLRawModel makeModel(FloatBuffer vertexBufferIn, FloatBuffer uvBufferIn)
+	public final static GLRawModel makeModel(final FloatBuffer vertexBufferIn, final FloatBuffer uvBufferIn)
 	{
 		final var vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
@@ -196,7 +290,7 @@ public class OpenGLUtils
 		return new GLRawModel(vao, vbo, vertexBufferIn.capacity(), ubo);
 	}
 
-	public final static GLRawModel makeModel(float[] vertexIn, float[] uvIn, int[] indicesIn)
+	public final static GLRawModel makeModel(final float[] vertexIn, final float[] uvIn, final int[] indicesIn)
 	{
 		final var vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
@@ -223,8 +317,8 @@ public class OpenGLUtils
 		return new GLRawModel(vao, vbo, vertexIn.length, ubo, ibo);
 	}
 
-	public final static GLRawModel makeVao(FloatBuffer vertexBufferIn, FloatBuffer uvBufferIn,
-			IntBuffer indicesBufferIn)
+	public final static GLRawModel makeVao(final FloatBuffer vertexBufferIn, final FloatBuffer uvBufferIn,
+			final IntBuffer indicesBufferIn)
 	{
 		final var vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
@@ -251,7 +345,7 @@ public class OpenGLUtils
 		return new GLRawModel(vao, vbo, vertexBufferIn.capacity(), ubo, ibo);
 	}
 
-	public final static void drawArray(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawArray(final int textureIdIn, final int vaoIn, final int vertexCountIn)
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 
@@ -266,7 +360,7 @@ public class OpenGLUtils
 		GL30.glBindVertexArray(0);
 	}
 
-	public final static void drawArrayLines(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawArrayLines(final int textureIdIn, final int vaoIn, final int vertexCountIn)
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 
@@ -281,7 +375,7 @@ public class OpenGLUtils
 		GL30.glBindVertexArray(0);
 	}
 
-	public final static void drawElements(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawElements(final int textureIdIn, final int vaoIn, final int vertexCountIn)
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 
@@ -296,7 +390,7 @@ public class OpenGLUtils
 		GL30.glBindVertexArray(0);
 	}
 
-	public final static void drawElementsLines(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawElementsLines(final int textureIdIn, final int vaoIn, final int vertexCountIn)
 	{
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureIdIn);
 		GL30.glBindVertexArray(vaoIn);
@@ -310,32 +404,32 @@ public class OpenGLUtils
 		GL30.glBindVertexArray(0);
 	}
 
-	public final static void drawElements(GLTexturedModel modelIn)
+	public final static void drawElements(final GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawElements(modelIn.texture().id(), modelIn.rawModel().vao(), modelIn.rawModel().vertexCount());
 	}
 
-	public final static void drawElementsLines(GLTexturedModel modelIn)
+	public final static void drawElementsLines(final GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawElementsLines(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());
 	}
 
-	public final static void drawElementsCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawElementsCubeMap(final int textureIdIn, final int vaoIn, final int vertexCountIn)
 	{
 		GL11.glDepthMask(false);
 		GL11.glDepthRange(1f, 1f);
 
 		GL30.glBindVertexArray(vaoIn);
 		GL20.glEnableVertexAttribArray(0);
-		//GL20.glEnableVertexAttribArray(1);
+		// GL20.glEnableVertexAttribArray(1);
 
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureIdIn);
 
 		GL11.glDrawElements(GL11.GL_TRIANGLES, vertexCountIn, GL11.GL_UNSIGNED_INT, 0);
 
-		//GL20.glDisableVertexAttribArray(1);
+		// GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 
@@ -343,7 +437,7 @@ public class OpenGLUtils
 		GL11.glDepthMask(true);
 	}
 
-	public final static void drawElementsLinesCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawElementsLinesCubeMap(final int textureIdIn, final int vaoIn, final int vertexCountIn)
 	{
 		GL11.glDepthMask(false);
 		GL11.glDepthRange(1f, 1f);
@@ -351,11 +445,11 @@ public class OpenGLUtils
 		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureIdIn);
 		GL30.glBindVertexArray(vaoIn);
 		GL20.glEnableVertexAttribArray(0);
-		//GL20.glEnableVertexAttribArray(1);
+		// GL20.glEnableVertexAttribArray(1);
 
 		GL11.glDrawElements(GL11.GL_LINES, vertexCountIn, GL11.GL_UNSIGNED_INT, 0);
 
-		//GL20.glDisableVertexAttribArray(1);
+		// GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 
@@ -363,21 +457,21 @@ public class OpenGLUtils
 		GL11.glDepthMask(true);
 	}
 
-	public final static void drawArraysCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawArraysCubeMap(final int textureIdIn, final int vaoIn, final int vertexCountIn)
 	{
 		GL11.glDepthMask(false);
 		GL11.glDepthRange(1f, 1f);
 
 		GL30.glBindVertexArray(vaoIn);
 		GL20.glEnableVertexAttribArray(0);
-		//GL20.glEnableVertexAttribArray(1);
+		// GL20.glEnableVertexAttribArray(1);
 
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureIdIn);
 
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexCountIn);
 
-		//GL20.glDisableVertexAttribArray(1);
+		// GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 
@@ -385,7 +479,7 @@ public class OpenGLUtils
 		GL11.glDepthMask(true);
 	}
 
-	public final static void drawArraysLinesCubeMap(int textureIdIn, int vaoIn, int vertexCountIn)
+	public final static void drawArraysLinesCubeMap(final int textureIdIn, final int vaoIn, final int vertexCountIn)
 	{
 		GL11.glDepthMask(false);
 		GL11.glDepthRange(1f, 1f);
@@ -393,11 +487,11 @@ public class OpenGLUtils
 		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureIdIn);
 		GL30.glBindVertexArray(vaoIn);
 		GL20.glEnableVertexAttribArray(0);
-		//GL20.glEnableVertexAttribArray(1);
+		// GL20.glEnableVertexAttribArray(1);
 
 		GL11.glDrawArrays(GL11.GL_LINES, 0, vertexCountIn);
 
-		//GL20.glDisableVertexAttribArray(1);
+		// GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
 
@@ -405,25 +499,25 @@ public class OpenGLUtils
 		GL11.glDepthMask(true);
 	}
 
-	public final static void drawElementsCubeMap(GLTexturedModel modelIn)
+	public final static void drawElementsCubeMap(final GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawElementsCubeMap(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());
 	}
 
-	public final static void drawElementsLinesCubeMap(GLTexturedModel modelIn)
+	public final static void drawElementsLinesCubeMap(final GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawElementsLinesCubeMap(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());
 	}
 
-	public final static void drawArraysCubeMap(GLTexturedModel modelIn)
+	public final static void drawArraysCubeMap(final GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawArraysCubeMap(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());
 	}
 
-	public final static void drawArraysLinesCubeMap(GLTexturedModel modelIn)
+	public final static void drawArraysLinesCubeMap(final GLTexturedModel modelIn)
 	{
 		OpenGLUtils.drawArraysLinesCubeMap(modelIn.texture().id(), modelIn.rawModel().vao(),
 				modelIn.rawModel().vertexCount());

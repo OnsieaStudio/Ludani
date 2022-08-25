@@ -1,29 +1,42 @@
 /**
-* Copyright 2021 Onsiea All rights reserved.<br><br>
-*
-* This file is part of Onsiea Engine project. (https://github.com/Onsiea/OnsieaEngine)<br><br>
-*
-* Onsiea Engine is [licensed] (https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE) under the terms of the "GNU General Public Lesser License v3.0" (GPL-3.0).
-* https://github.com/Onsiea/OnsieaEngine/wiki/License#license-and-copyright<br><br>
-*
-* Onsiea Engine is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3.0 of the License, or
-* (at your option) any later version.<br><br>
-*
-* Onsiea Engine is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.<br><br>
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with Onsiea Engine.  If not, see <https://www.gnu.org/licenses/>.<br><br>
-*
-* Neither the name "Onsiea", "Onsiea Engine", or any derivative name or the names of its authors / contributors may be used to endorse or promote products derived from this software and even less to name another project or other work without clear and precise permissions written in advance.<br><br>
-*
-* @Author : Seynax (https://github.com/seynax)<br>
-* @Organization : Onsiea Studio (https://github.com/Onsiea)
-*/
+ * Copyright 2021 Onsiea All rights reserved.<br>
+ * <br>
+ *
+ * This file is part of Onsiea Engine project.
+ * (https://github.com/Onsiea/OnsieaEngine)<br>
+ * <br>
+ *
+ * Onsiea Engine is [licensed]
+ * (https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE) under the terms of
+ * the "GNU General Public Lesser License v3.0" (GPL-3.0).
+ * https://github.com/Onsiea/OnsieaEngine/wiki/License#license-and-copyright<br>
+ * <br>
+ *
+ * Onsiea Engine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3.0 of the License, or
+ * (at your option) any later version.<br>
+ * <br>
+ *
+ * Onsiea Engine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.<br>
+ * <br>
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Onsiea Engine. If not, see <https://www.gnu.org/licenses/>.<br>
+ * <br>
+ *
+ * Neither the name "Onsiea", "Onsiea Engine", or any derivative name or the
+ * names of its authors / contributors may be used to endorse or promote
+ * products derived from this software and even less to name another project or
+ * other work without clear and precise permissions written in advance.<br>
+ * <br>
+ *
+ * @Author : Seynax (https://github.com/seynax)<br>
+ * @Organization : Onsiea Studio (https://github.com/Onsiea)
+ */
 package fr.onsiea.engine.client.graphics.opengl.shader.manager;
 
 import java.util.HashMap;
@@ -32,18 +45,6 @@ import java.util.Map;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL20;
 
-import fr.onsiea.engine.client.graphics.opengl.shaders.InstancedShader;
-import fr.onsiea.engine.client.graphics.opengl.shaders.Shader2D;
-import fr.onsiea.engine.client.graphics.opengl.shaders.Shader3DTo2D;
-import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderBasic;
-import fr.onsiea.engine.client.graphics.opengl.shaders.ShaderSkybox;
-import fr.onsiea.engine.client.graphics.opengl.shaders.effects.FlareShader;
-import fr.onsiea.engine.client.graphics.opengl.shaders.effects.ShadowShader;
-import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.BrightFilterShader;
-import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.CombineShader;
-import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.ContrastShader;
-import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.HorizontalBlurShader;
-import fr.onsiea.engine.client.graphics.opengl.shaders.postprocessing.VerticalBlurShader;
 import fr.onsiea.engine.client.graphics.shader.IShaderProgram;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
@@ -63,33 +64,7 @@ import lombok.Setter;
 @Setter(AccessLevel.PRIVATE)
 public class GLShaderManager implements IShadersManager
 {
-	private @Getter(AccessLevel.PRIVATE) final Map<String, IShaderProgram>	shaders;
-
-	// General
-
-	private ShaderBasic														shaderBasicA;
-	private ShaderBasic														shaderBasicB;
-	private ShaderBasic														shaderBasicC;
-	private ShaderBasic														shaderBasicD;
-	private ShaderBasic														shaderBasicE;
-	private ShaderBasic														shaderBasicF;
-	private ShadowShader													shadowShader;
-	private Shader2D														shader2D;
-	private Shader3DTo2D													shader3DTo2D;
-	private InstancedShader													instancedShader;
-	private ShaderSkybox													skybox;
-
-	// Effects
-
-	private FlareShader														flareShader;
-
-	// PostProcessing
-
-	private BrightFilterShader												brightFilter;
-	private CombineShader													combine;
-	private ContrastShader													contrast;
-	private HorizontalBlurShader											horizontalBlur;
-	private VerticalBlurShader												verticalBlur;
+	private @Getter(AccessLevel.PRIVATE) final Map<String, IShaderProgram> shaders;
 
 	public GLShaderManager()
 	{
@@ -97,7 +72,7 @@ public class GLShaderManager implements IShadersManager
 	}
 
 	@Override
-	public IShadersManager updateView(ICamera cameraIn)
+	public IShadersManager updateView(final ICamera cameraIn)
 	{
 		for (final IShaderProgram shader : this.shaders().values())
 		{
@@ -119,7 +94,7 @@ public class GLShaderManager implements IShadersManager
 	}
 
 	@Override
-	public IShadersManager updateProjection(Matrix4f projectionIn)
+	public IShadersManager updateProjection(final Matrix4f projectionIn)
 	{
 		for (final IShaderProgram shader : this.shaders().values())
 		{
@@ -137,7 +112,7 @@ public class GLShaderManager implements IShadersManager
 	}
 
 	@Override
-	public IShadersManager updateProjectionAndView(Matrix4f projectionIn, ICamera cameraIn)
+	public IShadersManager updateProjectionAndView(final Matrix4f projectionIn, final ICamera cameraIn)
 	{
 		for (final IShaderProgram shader : this.shaders().values())
 		{
@@ -163,7 +138,7 @@ public class GLShaderManager implements IShadersManager
 	}
 
 	@Override
-	public IShadersManager updateAttachedProjectionAndView(Matrix4f projectionViewIn)
+	public IShadersManager updateAttachedProjectionAndView(final Matrix4f projectionViewIn)
 	{
 		for (final IShaderProgram shader : this.shaders().values())
 		{
@@ -181,7 +156,7 @@ public class GLShaderManager implements IShadersManager
 	}
 
 	@Override
-	public IShadersManager add(String nameIn, IShaderProgram shaderProgramIn)
+	public IShadersManager add(final String nameIn, final IShaderProgram shaderProgramIn)
 	{
 		this.shaders.put(nameIn.toLowerCase(), shaderProgramIn);
 
@@ -189,19 +164,19 @@ public class GLShaderManager implements IShadersManager
 	}
 
 	@Override
-	public boolean has(String nameIn)
+	public boolean has(final String nameIn)
 	{
 		return this.shaders.containsKey(nameIn.toLowerCase());
 	}
 
 	@Override
-	public IShaderProgram get(String nameIn)
+	public IShaderProgram get(final String nameIn)
 	{
 		return this.shaders.get(nameIn.toLowerCase());
 	}
 
 	@Override
-	public IShadersManager remove(String nameIn)
+	public IShadersManager remove(final String nameIn)
 	{
 		this.shaders.remove(nameIn.toLowerCase());
 

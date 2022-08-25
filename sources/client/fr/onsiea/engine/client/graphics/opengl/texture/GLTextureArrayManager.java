@@ -9,9 +9,9 @@ public class GLTextureArrayManager
 	private List<String>	layers;
 	private int				layer;
 
-	public GLTextureArrayManager()
+	public GLTextureArrayManager(int levelsIn, int sizeXIn, int sizeYIn, int depthIn)
 	{
-		this.textureArray(new GLTextureArray());
+		this.textureArray(new GLTextureArray(levelsIn, sizeXIn, sizeYIn, depthIn));
 		this.layers(new ArrayList<>());
 		this.layer(0);
 	}

@@ -1,6 +1,7 @@
 package fr.onsiea.engine.client.lwjgl;
 
 import org.lwjgl.Version;
+import org.lwjgl.Version.BuildType;
 import org.lwjgl.system.Configuration;
 
 public final class LWJGLContext
@@ -36,7 +37,7 @@ public final class LWJGLContext
 	// Fonction
 	//	Configuration.DEBUG_STACK.set(true);
 
-	/**public static String version()
+	public static String version()
 	{
 		return Version.getVersion();
 	}
@@ -69,7 +70,7 @@ public final class LWJGLContext
 	public static String buildTypePostFix()
 	{
 		return Version.BUILD_TYPE.postfix;
-	}**/
+	}
 
 	public static void enableDebugging()
 	{

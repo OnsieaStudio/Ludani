@@ -37,7 +37,7 @@ import fr.onsiea.engine.client.resources.ResourcesRootPath;
 
 public class GraphicsConstants
 {
-	public final static boolean			DEBUG					= false;
+	public final static boolean			DEBUG					= true;
 	public static final boolean			SHADER_UNIFORM_DEBUG	= false;
 
 	public final static int				DEFAULT_WIDTH			= 1920;

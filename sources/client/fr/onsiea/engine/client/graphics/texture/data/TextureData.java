@@ -8,69 +8,59 @@ import org.lwjgl.system.MemoryStack;
 
 import fr.onsiea.engine.client.graphics.texture.ITextureData;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 
+@Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PRIVATE)
 public class TextureData implements ITextureData
 {
-	private ByteBuffer	buffer;
-	private int			width;
-	private int			height;
-
-	public TextureData()
-	{
-	}
-
 	/**
-	 * @param bufferIn
-	 * @param widthIn
-	 * @param heightIn
-	 */
-	public TextureData(ByteBuffer bufferIn, int widthIn, int heightIn)
-	{
-		this.buffer	= bufferIn;
-		this.width	= widthIn;
-		this.height	= heightIn;
-	}
-
-	/**
-	 * Load texture buffer, if the return from texturebuffer is not zero, it worked fine !
+	 * Load texture buffer, if the return from texturebuffer is not zero, it worked
+	 * fine !
+	 *
 	 * @param filepathIn
 	 * @return TextureBuffer
 	 */
-	public final static TextureData load(String filepathIn)
+	public final static ITextureData load(final String filepathIn)
 	{
 		return TextureData.load(new File(filepathIn), true);
 	}
 
 	/**
-	 * Load texture buffer, if the return from texturebuffer is not zero, it worked fine !
+	 * Load texture buffer, if the return from texturebuffer is not zero, it worked
+	 * fine !
+	 *
 	 * @param filepathIn
 	 * @param flipIn
 	 * @return TextureBuffer
 	 */
-	public final static TextureData load(String filepathIn, boolean flipIn)
+	public final static ITextureData load(final String filepathIn, final boolean flipIn)
 	{
 		return TextureData.load(new File(filepathIn), flipIn);
 	}
 
 	/**
-	 * Load texture buffer, if the return from texturebuffer is not zero, it worked fine !
+	 * Load texture buffer, if the return from texturebuffer is not zero, it worked
+	 * fine !
+	 *
 	 * @param fileIn
 	 * @return TextureBuffer
 	 */
-	public final static TextureData load(File fileIn)
+	public final static ITextureData load(final File fileIn)
 	{
 		return TextureData.load(fileIn, true);
 	}
 
 	/**
-	 * Load texture buffer, if the return from texturebuffer is not zero, it worked fine !
+	 * Load texture buffer, if the return from texturebuffer is not zero, it worked
+	 * fine !
+	 *
 	 * @param fileIn
 	 * @param flipIn
 	 * @return TextureBuffer
 	 */
-	public final static TextureData load(File fileIn, boolean flipIn)
+	public final static ITextureData load(final File fileIn, final boolean flipIn)
 	{
 		if (!fileIn.exists())
 		{
@@ -94,12 +84,12 @@ public class TextureData implements ITextureData
 			STBImage.stbi_set_flip_vertically_on_load(false);
 			if (flipIn)
 			{
-				System.out.println("Flip !");
 				STBImage.stbi_set_flip_vertically_on_load(true);
 			}
 
-			final var textureData = new TextureData();
-			textureData.buffer(STBImage.stbi_load(filepath, w, h, channels, 4));
+			final var	textureData	= new TextureData();
+			final var	buffer		= STBImage.stbi_load(filepath, w, h, channels, 4);
+			textureData.buffer(buffer);
 
 			if (textureData.buffer() == null)
 			{
@@ -120,14 +110,50 @@ public class TextureData implements ITextureData
 		}
 	}
 
+	private ByteBuffer	buffer;
+	private int			width;
+	private int			height;
+
+	public TextureData()
+	{
+	}
+
+	/**
+	 * @param bufferIn
+	 * @param widthIn
+	 * @param heightIn
+	 */
+	public TextureData(final int widthIn, final int heightIn)
+	{
+		this.width	= widthIn;
+		this.height	= heightIn;
+	}
+
+	/**
+	 * @param bufferIn
+	 * @param widthIn
+	 * @param heightIn
+	 */
+	public TextureData(final ByteBuffer bufferIn, final int widthIn, final int heightIn)
+	{
+		this.buffer	= bufferIn;
+		this.width	= widthIn;
+		this.height	= heightIn;
+	}
+
+	public boolean isEmpty()
+	{
+		return this.buffer == null || this.buffer.capacity() <= 0;
+	}
+
 	@Override
 	public boolean cleanup()
 	{
 		try
 		{
-			if (this.buffer() != null)
+			if (this.buffer != null)
 			{
-				STBImage.stbi_image_free(this.buffer());
+				STBImage.stbi_image_free(this.buffer);
 			}
 		}
 		catch (final Exception e)
@@ -138,23 +164,5 @@ public class TextureData implements ITextureData
 		}
 
 		return true;
-	}
-
-	@Override
-	public final ByteBuffer buffer()
-	{
-		return this.buffer;
-	}
-
-	@Override
-	public final int width()
-	{
-		return this.width;
-	}
-
-	@Override
-	public final int height()
-	{
-		return this.height;
 	}
 }

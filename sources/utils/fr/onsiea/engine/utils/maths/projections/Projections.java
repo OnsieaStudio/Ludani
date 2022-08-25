@@ -8,7 +8,9 @@ public class Projections
 {
 	/**
 	 * Alternative method, more artisanal, of calculation of matrix projection,
-	 * different from the method of which uses the "perspective(fov, aspectRatio, zNear, zFar)" method of JOML
+	 * different from the method of which uses the "perspective(fov, aspectRatio,
+	 * zNear, zFar)" method of JOML
+	 *
 	 * @param fovIn
 	 * @param widthIn
 	 * @param heightIn
@@ -16,11 +18,13 @@ public class Projections
 	 * @param zFarIn
 	 * @return new projection matrix with parameters
 	 */
-	public final Matrix4f ofAlternative(float fovIn, float widthIn, float heightIn, float zNearIn, float zFarIn)
+	public final Matrix4f ofAlternative(final float fovIn, final float widthIn, final float heightIn,
+			final float zNearIn, final float zFarIn)
 	{
 		final var	aspectRatio			= widthIn / heightIn;
 		final var	y_scale				= MathUtils.coTangent(MathUtils.degreesToRadians(fovIn / 2f));
-		//float y_scale = (float) ((1f / Math.tan(Math.toRadians(fieldOfView / 2f))) * aspectRatio);
+		// float y_scale = (float) ((1f / Math.tan(Math.toRadians(fieldOfView / 2f))) *
+		// aspectRatio);
 		final var	x_scale				= y_scale / aspectRatio;
 		final var	frustum_length		= zFarIn - zNearIn;
 
@@ -39,21 +43,25 @@ public class Projections
 
 	/**
 	 * Alternative method, more artisanal, of calculation of matrix projection,
-	 * different from the method of which uses the "perspective(fov, aspectRatio, zNear, zFar)" method of JOML
+	 * different from the method of which uses the "perspective(fov, aspectRatio,
+	 * zNear, zFar)" method of JOML
+	 *
 	 * @param fovIn
 	 * @param widthIn
 	 * @param heightIn
 	 * @param zNearIn
 	 * @param zFarIn
 	 * @param transposeIn
-	 * @return transposed projection matrix with parameters into transposeIn matrix4f
+	 * @return transposed projection matrix with parameters into transposeIn
+	 *         matrix4f
 	 */
-	public final Matrix4f ofAlternative(float fovIn, float widthIn, float heightIn, float zNearIn, float zFarIn,
-			Matrix4f transposeIn)
+	public final Matrix4f ofAlternative(final float fovIn, final float widthIn, final float heightIn,
+			final float zNearIn, final float zFarIn, final Matrix4f transposeIn)
 	{
 		final var	aspectRatio		= widthIn / heightIn;
 		final var	y_scale			= MathUtils.coTangent(MathUtils.degreesToRadians(fovIn / 2f));
-		//float y_scale = (float) ((1f / Math.tan(Math.toRadians(fieldOfView / 2f))) * aspectRatio);
+		// float y_scale = (float) ((1f / Math.tan(Math.toRadians(fieldOfView / 2f))) *
+		// aspectRatio);
 		final var	x_scale			= y_scale / aspectRatio;
 		final var	frustum_length	= zFarIn - zNearIn;
 
@@ -98,10 +106,11 @@ public class Projections
 	 * @param zNearIn
 	 * @param zFarIn
 	 * @param transposeIn
-	 * @return transposed projection matrix with parameters into transposeIn matrix4f
+	 * @return transposed projection matrix with parameters into transposeIn
+	 *         matrix4f
 	 */
 	public final static Matrix4f of(final float widthIn, final float heightIn, final float fovIn, final float zNearIn,
-			final float zFarIn, Matrix4f transposeIn)
+			final float zFarIn, final Matrix4f transposeIn)
 	{
 		final var aspectRatio = widthIn / heightIn;
 
@@ -121,8 +130,8 @@ public class Projections
 	 * @param zFarIn
 	 * @return new ortho projection matrix with parameters
 	 */
-	public final static Matrix4f ortho(float leftIn, float rightIn, float bottomIn, float topIn, float zNearIn,
-			float zFarIn)
+	public final static Matrix4f ortho(final float leftIn, final float rightIn, final float bottomIn, final float topIn,
+			final float zNearIn, final float zFarIn)
 	{
 		return new Matrix4f().identity().setOrtho(leftIn, rightIn, bottomIn, topIn, zNearIn, zFarIn);
 	}
@@ -134,10 +143,11 @@ public class Projections
 	 * @param topIn
 	 * @param zNearIn
 	 * @param zFarIn
-	 * @return transposed ortho projection matrix with parameters into transposeIn matrix4f
+	 * @return transposed ortho projection matrix with parameters into transposeIn
+	 *         matrix4f
 	 */
-	public final static Matrix4f ortho(float leftIn, float rightIn, float bottomIn, float topIn, float zNearIn,
-			float zFarIn, Matrix4f transposeIn)
+	public final static Matrix4f ortho(final float leftIn, final float rightIn, final float bottomIn, final float topIn,
+			final float zNearIn, final float zFarIn, final Matrix4f transposeIn)
 	{
 		return transposeIn.identity().setOrtho(leftIn, rightIn, bottomIn, topIn, zNearIn, zFarIn);
 	}
@@ -149,7 +159,7 @@ public class Projections
 	 * @param top
 	 * @return new 2D ortho projection matrix with parameters
 	 */
-	public final static Matrix4f ortho2D(float left, float right, float bottom, float top)
+	public final static Matrix4f ortho2D(final float left, final float right, final float bottom, final float top)
 	{
 		return new Matrix4f().identity().setOrtho2D(left, right, bottom, top);
 	}
@@ -159,9 +169,11 @@ public class Projections
 	 * @param right
 	 * @param bottom
 	 * @param top
-	 * @return transposed 2D ortho projection matrix with parameters into transposeIn matrix4f
+	 * @return transposed 2D ortho projection matrix with parameters into
+	 *         transposeIn matrix4f
 	 */
-	public final Matrix4f ortho2D(float left, float right, float bottom, float top, Matrix4f transposeIn)
+	public final Matrix4f ortho2D(final float left, final float right, final float bottom, final float top,
+			final Matrix4f transposeIn)
 	{
 		return transposeIn.identity().setOrtho2D(left, right, bottom, top);
 	}

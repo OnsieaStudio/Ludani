@@ -13,22 +13,23 @@ import fr.onsiea.engine.client.graphics.mesh.IMaterialMesh;
 import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
 import fr.onsiea.engine.client.graphics.mesh.anim.AnimVertex;
 import fr.onsiea.engine.client.graphics.mesh.anim.AnimatedFrame;
+import fr.onsiea.engine.client.graphics.texture.ITextureSettings;
 import fr.onsiea.engine.client.graphics.texture.ITexturesManager;
 import fr.onsiea.engine.game.scene.item.GameAnimatedItemProperties;
 import fr.onsiea.engine.utils.ArrayUtils;
 import fr.onsiea.engine.utils.file.FileUtils;
 
-public class MD5Loader
+public class MD5Loader<T extends ITextureSettings<T>>
 {
 	private IMeshsManager		meshsManager;
-	private ITexturesManager	texturesManager;
+	private ITexturesManager<T>	texturesManager;
 
 	public MD5Loader()
 	{
 
 	}
 
-	public MD5Loader link(IMeshsManager meshsManagerIn, ITexturesManager texturesManagerIn)
+	public MD5Loader<T> link(IMeshsManager meshsManagerIn, ITexturesManager<T> texturesManagerIn)
 	{
 		this.meshsManager		= meshsManagerIn;
 		this.texturesManager	= texturesManagerIn;
@@ -47,7 +48,7 @@ public class MD5Loader
 	 * @throws Exception
 	 */
 	public GameAnimatedItemProperties process(String nameIn, MD5Model md5Model, MD5AnimModel animModel,
-			Vector4f defaultColour) throws Exception
+			Vector4f defaultColour, ITextureSettings<T> textureSettingsIn) throws Exception
 	{
 		final var					invJointMatrices	= MD5Loader.calcInJointMatrices(md5Model);
 		final var					animatedFrames		= MD5Loader.processAnimationFrames(md5Model, animModel,
@@ -57,7 +58,7 @@ public class MD5Loader
 		for (final MD5Mesh md5Mesh : md5Model.getMeshes())
 		{
 			final var mesh = this.generateMesh(md5Model, md5Mesh);
-			this.handleTexture(mesh, md5Mesh, defaultColour);
+			this.handleTexture(mesh, md5Mesh, defaultColour, textureSettingsIn);
 			list.add(mesh);
 		}
 		var meshes = new IMaterialMesh[list.size()];
@@ -284,12 +285,13 @@ public class MD5Loader
 				jointIndicesArr, weightsArr, 3);
 	}
 
-	private void handleTexture(IMaterialMesh mesh, MD5Mesh md5Mesh, Vector4f defaultColour) throws Exception
+	private void handleTexture(IMaterialMesh mesh, MD5Mesh md5Mesh, Vector4f defaultColour,
+			ITextureSettings<T> textureSettingsIn) throws Exception
 	{
 		final var texturePath = md5Mesh.getTexture();
 		if (texturePath != null && texturePath.length() > 0)
 		{
-			final var	texture		= this.texturesManager.load(texturePath);
+			final var	texture		= this.texturesManager.load(texturePath, textureSettingsIn);
 			final var	material	= new Material(texture);
 
 			// Handle normal Maps;
@@ -301,8 +303,8 @@ public class MD5Loader
 				final var	normalMapFileName	= basePath + "_local" + extension;
 				if (FileUtils.exists(normalMapFileName))
 				{
-					final var normalMap = this.texturesManager.load(normalMapFileName);
-					material.normalMap(normalMap);
+					final var normalMap = this.texturesManager.load(normalMapFileName, textureSettingsIn);
+					material.textures().add(normalMap);
 				}
 			}
 			mesh.material(material);

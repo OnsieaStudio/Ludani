@@ -26,7 +26,7 @@
 */
 package fr.onsiea.engine.client.graphics.opengl.model;
 
-import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.texture.Texture;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -38,10 +38,10 @@ import lombok.Getter;
 public class GLTexturedModel
 {
 	private final GLRawModel	rawModel;
-	private final ITexture		texture;
+	private final Texture<?>	texture;
 	private final int			ubo;
 
-	public GLTexturedModel(GLRawModel rawModelIn, ITexture textureIn, int uboIn)
+	public GLTexturedModel(GLRawModel rawModelIn, Texture<?> textureIn, int uboIn)
 	{
 		this.rawModel	= rawModelIn;
 		this.texture	= textureIn;

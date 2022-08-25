@@ -29,7 +29,7 @@ public class Camera extends Entity implements ICamera
 		this.calcViewMatrix();
 	}
 
-	public Camera(Vector3f positionIn)
+	public Camera(final Vector3f positionIn)
 	{
 		super(positionIn);
 		this.view(new Matrix4f().identity());
@@ -37,7 +37,7 @@ public class Camera extends Entity implements ICamera
 		this.calcViewMatrix();
 	}
 
-	public Camera(Vector3f positionIn, Vector3f orientationIn)
+	public Camera(final Vector3f positionIn, final Vector3f orientationIn)
 	{
 		super(positionIn, orientationIn);
 		this.view(new Matrix4f().identity());
@@ -45,7 +45,7 @@ public class Camera extends Entity implements ICamera
 		this.calcViewMatrix();
 	}
 
-	public void input(IWindow windowIn, InputManager inputManagerIn)
+	public void input(final IWindow windowIn, final InputManager inputManagerIn)
 	{
 		var			speed		= 0.5f;
 		final var	rotateSpeed	= 0.25f;
@@ -60,6 +60,7 @@ public class Camera extends Entity implements ICamera
 			speed /= 2.0f;
 		}
 
+		this.timedOrientation().reset();
 		this.timedOrientation().add((float) inputManagerIn.cursor().translationY() * rotateSpeed,
 				(float) inputManagerIn.cursor().translationX() * rotateSpeed, 0);
 
@@ -129,79 +130,103 @@ public class Camera extends Entity implements ICamera
 			y += speed;
 		}
 
-		/**this.velocityManager().accelerate(x, y, z);
-		this.velocityManager().runtime();
+		/**
+		 * this.velocityManager().accelerate(x, y, z);
+		 * this.velocityManager().runtime();
+		 *
+		 * this.position().add((float) this.velocityManager().speed().x(), (float)
+		 * this.velocityManager().speed().y(),
+		 * (float) this.velocityManager().speed().z());
+		 **/
 
-		this.position().add((float) this.velocityManager().speed().x(), (float) this.velocityManager().speed().y(),
-				(float) this.velocityManager().speed().z());**/
-
+		this.timedPosition().reset();
 		this.timedPosition().add(x, y, z);
 
 		this.calcViewMatrix();
 
-		/**xa += xDir * Mathf.cos(Mathf.toRadians(rot.y)) - zDir * Mathf.sin(Mathf.toRadians(rot.y));
-			za += zDir * Mathf.cos(Mathf.toRadians(rot.y)) + xDir * Mathf.sin(Mathf.toRadians(rot.y));
-			ya += yDir;
-		
-		
-		public Vec3 getForward()
-		{
-			Vec3 r = new Vec3();
-			float cosY = (float) Mathf.cos(Mathf.toRadians(rot.y + 90));
-			float sinY = (float) Math.sin(Math.toRadians(rot.y + 90));
-			float cosP = (float) Math.cos(Math.toRadians(rot.x));
-			float sinP = (float) Math.sin(Math.toRadians(rot.x));
-		
-			r.x = cosY * cosP;
-			r.y = -sinP;
-			r.z = sinY * cosP;
-		
-			return r;
-		}
-		
-		public Vec3 getLookAt()
-		{
-			Vec3 forward = getForward();
-			return new Vec3(pos.x + forward.x, pos.y + forward.y, pos.z + forward.z);
-		}**/
-		/**this.getAt().setX(this.getViewMatrix().m02);
-		this.getAt().setY(this.getViewMatrix().m12);
-		this.getAt().setZ(this.getViewMatrix().m22);
-		this.getUp().setX(this.getViewMatrix().m01);
-		this.getUp().setY(this.getViewMatrix().m11);
-		this.getUp().setZ(this.getViewMatrix().m21);**/
+		/**
+		 * xa += xDir * Mathf.cos(Mathf.toRadians(rot.y)) - zDir *
+		 * Mathf.sin(Mathf.toRadians(rot.y));
+		 * za += zDir * Mathf.cos(Mathf.toRadians(rot.y)) + xDir *
+		 * Mathf.sin(Mathf.toRadians(rot.y));
+		 * ya += yDir;
+		 *
+		 *
+		 * public Vec3 getForward()
+		 * {
+		 * Vec3 r = new Vec3();
+		 * float cosY = (float) Mathf.cos(Mathf.toRadians(rot.y + 90));
+		 * float sinY = (float) Math.sin(Math.toRadians(rot.y + 90));
+		 * float cosP = (float) Math.cos(Math.toRadians(rot.x));
+		 * float sinP = (float) Math.sin(Math.toRadians(rot.x));
+		 *
+		 * r.x = cosY * cosP;
+		 * r.y = -sinP;
+		 * r.z = sinY * cosP;
+		 *
+		 * return r;
+		 * }
+		 *
+		 * public Vec3 getLookAt()
+		 * {
+		 * Vec3 forward = getForward();
+		 * return new Vec3(pos.x + forward.x, pos.y + forward.y, pos.z + forward.z);
+		 * }
+		 **/
+		/**
+		 * this.getAt().setX(this.getViewMatrix().m02);
+		 * this.getAt().setY(this.getViewMatrix().m12);
+		 * this.getAt().setZ(this.getViewMatrix().m22);
+		 * this.getUp().setX(this.getViewMatrix().m01);
+		 * this.getUp().setY(this.getViewMatrix().m11);
+		 * this.getUp().setZ(this.getViewMatrix().m21);
+		 **/
 	}
 
-	/**private void loadInformations()
-	{
-		this.linkedInformations().reset().add(MathUtils.round(this.position().x(), 100) + ", "
-				+ MathUtils.round(this.position().y(), 100) + ", " + MathUtils.round(this.position().z(), 100));
-		final var totalVelocity = MathUtils
-				.round(Math.sqrt(this.timedPosition().variation().x() * this.timedPosition().variation().x()
-						+ this.timedPosition().variation().y() * this.timedPosition().variation().y()
-						+ this.timedPosition().variation().z() * this.timedPosition().variation().z()), 100);
-		if (totalVelocity != 0)
-		{
-			this.linkedInformations().add(MathUtils.round(this.timedPosition().variation().x(), 100) + ", "
-					+ MathUtils.round(this.timedPosition().variation().y(), 100) + ", "
-					+ MathUtils.round(this.timedPosition().variation().z(), 100) + "[" + totalVelocity + " m/s]");
-		}
-		this.linkedInformations().add(MathUtils.round(this.orientation().x(), 100) + ", "
-				+ MathUtils.round(this.orientation().y(), 100) + ", " + MathUtils.round(this.orientation().z(), 100));
-	
-		final var totalRotationSpeed = MathUtils
-				.round(Math.sqrt(this.timedOrientation().variation().x() * this.timedOrientation().variation().x()
-						+ this.timedOrientation().variation().y() * this.timedOrientation().variation().y()
-						+ this.timedOrientation().variation().z() * this.timedOrientation().variation().z()), 100);
-		if (totalRotationSpeed != 0)
-		{
-			this.linkedInformations()
-					.add(MathUtils.round(this.timedOrientation().variation().x(), 100) + ", "
-							+ MathUtils.round(this.timedOrientation().variation().y(), 100) + ", "
-							+ MathUtils.round(this.timedOrientation().variation().z(), 100) + "[" + totalRotationSpeed
-							+ " m/s]");
-		}
-	}**/
+	/**
+	 * private void loadInformations()
+	 * {
+	 * this.linkedInformations().reset().add(MathUtils.round(this.position().x(),
+	 * 100) + ", "
+	 * + MathUtils.round(this.position().y(), 100) + ", " +
+	 * MathUtils.round(this.position().z(), 100));
+	 * final var totalVelocity = MathUtils
+	 * .round(Math.sqrt(this.timedPosition().variation().x() *
+	 * this.timedPosition().variation().x()
+	 * + this.timedPosition().variation().y() * this.timedPosition().variation().y()
+	 * + this.timedPosition().variation().z() *
+	 * this.timedPosition().variation().z()), 100);
+	 * if (totalVelocity != 0)
+	 * {
+	 * this.linkedInformations().add(MathUtils.round(this.timedPosition().variation().x(),
+	 * 100) + ", "
+	 * + MathUtils.round(this.timedPosition().variation().y(), 100) + ", "
+	 * + MathUtils.round(this.timedPosition().variation().z(), 100) + "[" +
+	 * totalVelocity + " m/s]");
+	 * }
+	 * this.linkedInformations().add(MathUtils.round(this.orientation().x(), 100) +
+	 * ", "
+	 * + MathUtils.round(this.orientation().y(), 100) + ", " +
+	 * MathUtils.round(this.orientation().z(), 100));
+	 *
+	 * final var totalRotationSpeed = MathUtils
+	 * .round(Math.sqrt(this.timedOrientation().variation().x() *
+	 * this.timedOrientation().variation().x()
+	 * + this.timedOrientation().variation().y() *
+	 * this.timedOrientation().variation().y()
+	 * + this.timedOrientation().variation().z() *
+	 * this.timedOrientation().variation().z()), 100);
+	 * if (totalRotationSpeed != 0)
+	 * {
+	 * this.linkedInformations()
+	 * .add(MathUtils.round(this.timedOrientation().variation().x(), 100) + ", "
+	 * + MathUtils.round(this.timedOrientation().variation().y(), 100) + ", "
+	 * + MathUtils.round(this.timedOrientation().variation().z(), 100) + "[" +
+	 * totalRotationSpeed
+	 * + " m/s]");
+	 * }
+	 * }
+	 **/
 
 	private void calcViewMatrix()
 	{

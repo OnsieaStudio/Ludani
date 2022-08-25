@@ -47,6 +47,7 @@ public class GameItemProperties
 	private final String	name;
 	private final Material	material;
 	private final IMesh		mesh;
+	private final int		faceCulling;
 
 	@Override
 	public int hashCode()

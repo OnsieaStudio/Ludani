@@ -16,17 +16,17 @@ public class VectorUtils2d
 		return fromPositionIn.x() == toPositionIn.x() && fromPositionIn.y() == toPositionIn.y();
 	}
 
-	public final static Vector2d min(Vector2d oneIn, Vector2d twoIn)
+	public final static Vector2d min(final Vector2d oneIn, final Vector2d twoIn)
 	{
 		return Distance2d.weight(oneIn) < Distance2d.weight(twoIn) ? oneIn : twoIn;
 	}
 
-	public final static Vector2d max(Vector2d oneIn, Vector2d twoIn)
+	public final static Vector2d max(final Vector2d oneIn, final Vector2d twoIn)
 	{
 		return Distance2d.weight(oneIn) > Distance2d.weight(twoIn) ? oneIn : twoIn;
 	}
 
-	public final static Vector2d minimize(Vector2d oneIn, Vector2d twoIn)
+	public final static Vector2d minimize(final Vector2d oneIn, final Vector2d twoIn)
 	{
 		var x = oneIn.x();
 		if (x > twoIn.x())
@@ -43,7 +43,7 @@ public class VectorUtils2d
 		return new Vector2d(x, y);
 	}
 
-	public final static Vector2d minimize(Vector2d oneIn, Vector2d twoIn, Vector2d transposeIn)
+	public final static Vector2d minimize(final Vector2d oneIn, final Vector2d twoIn, final Vector2d transposeIn)
 	{
 		var x = oneIn.x();
 		if (x > twoIn.x())
@@ -60,7 +60,7 @@ public class VectorUtils2d
 		return transposeIn.set(x, y);
 	}
 
-	public final static Vector2d maximize(Vector2d oneIn, Vector2d twoIn)
+	public final static Vector2d maximize(final Vector2d oneIn, final Vector2d twoIn)
 	{
 		var x = oneIn.x();
 		if (x < twoIn.x())
@@ -77,7 +77,7 @@ public class VectorUtils2d
 		return new Vector2d(x, y);
 	}
 
-	public final static Vector2d maximize(Vector2d oneIn, Vector2d twoIn, Vector2d transposeIn)
+	public final static Vector2d maximize(final Vector2d oneIn, final Vector2d twoIn, final Vector2d transposeIn)
 	{
 		var x = oneIn.x();
 		if (x < twoIn.x())

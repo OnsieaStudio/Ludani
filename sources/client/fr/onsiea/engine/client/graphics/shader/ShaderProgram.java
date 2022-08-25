@@ -1,29 +1,42 @@
 /**
-* Copyright 2021 Onsiea All rights reserved.<br><br>
-*
-* This file is part of Onsiea Engine project. (https://github.com/Onsiea/OnsieaEngine)<br><br>
-*
-* Onsiea Engine is [licensed] (https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE) under the terms of the "GNU General Public Lesser License v3.0" (GPL-3.0).
-* https://github.com/Onsiea/OnsieaEngine/wiki/License#license-and-copyright<br><br>
-*
-* Onsiea Engine is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3.0 of the License, or
-* (at your option) any later version.<br><br>
-*
-* Onsiea Engine is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.<br><br>
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with Onsiea Engine.  If not, see <https://www.gnu.org/licenses/>.<br><br>
-*
-* Neither the name "Onsiea", "Onsiea Engine", or any derivative name or the names of its authors / contributors may be used to endorse or promote products derived from this software and even less to name another project or other work without clear and precise permissions written in advance.<br><br>
-*
-* @Author : Seynax (https://github.com/seynax)<br>
-* @Organization : Onsiea Studio (https://github.com/Onsiea)
-*/
+ * Copyright 2021 Onsiea All rights reserved.<br>
+ * <br>
+ *
+ * This file is part of Onsiea Engine project.
+ * (https://github.com/Onsiea/OnsieaEngine)<br>
+ * <br>
+ *
+ * Onsiea Engine is [licensed]
+ * (https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE) under the terms of
+ * the "GNU General Public Lesser License v3.0" (GPL-3.0).
+ * https://github.com/Onsiea/OnsieaEngine/wiki/License#license-and-copyright<br>
+ * <br>
+ *
+ * Onsiea Engine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3.0 of the License, or
+ * (at your option) any later version.<br>
+ * <br>
+ *
+ * Onsiea Engine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.<br>
+ * <br>
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Onsiea Engine. If not, see <https://www.gnu.org/licenses/>.<br>
+ * <br>
+ *
+ * Neither the name "Onsiea", "Onsiea Engine", or any derivative name or the
+ * names of its authors / contributors may be used to endorse or promote
+ * products derived from this software and even less to name another project or
+ * other work without clear and precise permissions written in advance.<br>
+ * <br>
+ *
+ * @Author : Seynax (https://github.com/seynax)<br>
+ * @Organization : Onsiea Studio (https://github.com/Onsiea)
+ */
 package fr.onsiea.engine.client.graphics.shader;
 
 import java.util.Collections;
@@ -75,7 +88,7 @@ public abstract class ShaderProgram implements IShaderProgram
 	 * @param builderIn
 	 * @throws Exception
 	 */
-	public ShaderProgram(ShaderProgram.Builder builderIn) throws Exception
+	public ShaderProgram(final ShaderProgram.Builder builderIn) throws Exception
 	{
 		this.attributes	= new LinkedList<>();
 		this.uniforms	= new LinkedHashMap<>();
@@ -86,7 +99,7 @@ public abstract class ShaderProgram implements IShaderProgram
 	 * @param builderIn
 	 * @throws Exception
 	 */
-	protected void build(ShaderProgram.Builder builderIn) throws Exception
+	protected void build(final ShaderProgram.Builder builderIn) throws Exception
 	{
 		this.name = builderIn.name();
 
@@ -108,8 +121,8 @@ public abstract class ShaderProgram implements IShaderProgram
 	 * @param attributesIn
 	 * @throws Exception
 	 */
-	protected void build(String nameIn, String vertexScriptFilepathIn, String fragmentScriptFilepathIn,
-			String[] attributesIn) throws Exception
+	protected void build(final String nameIn, final String vertexScriptFilepathIn,
+			final String fragmentScriptFilepathIn, final String[] attributesIn) throws Exception
 	{
 		final var builder = new Builder(nameIn).vertexScriptFilepath(vertexScriptFilepathIn)
 				.fragmentScriptFilepath(fragmentScriptFilepathIn).build(attributesIn);
@@ -127,12 +140,11 @@ public abstract class ShaderProgram implements IShaderProgram
 	protected abstract boolean load(String vertexScriptIn, String fragmentScriptIn) throws Exception;
 
 	@Override
-	public IShaderProgram attributes(String... namesIn)
+	public IShaderProgram attributes(final String... namesIn)
 	{
 		for (final String name : namesIn)
 		{
 			this.attributes.add(name);
-
 			this.createAttribute(name, this.attributes.size() - 1);
 		}
 
@@ -142,7 +154,7 @@ public abstract class ShaderProgram implements IShaderProgram
 	protected abstract void createAttribute(String nameIn, int indexIn);
 
 	@Override
-	public IShaderProgram uniform(String nameIn, IShaderUniform uniformIn)
+	public IShaderProgram uniform(final String nameIn, final IShaderUniform uniformIn)
 	{
 		this.uniforms.put(nameIn, uniformIn);
 
@@ -150,19 +162,19 @@ public abstract class ShaderProgram implements IShaderProgram
 	}
 
 	@Override
-	public <T> IShaderProgram uniform(String nameIn, IShaderTypedUniform<T> uniformIn)
+	public <T> IShaderProgram uniform(final String nameIn, final IShaderTypedUniform<T> uniformIn)
 	{
 		this.uniforms.put(nameIn, uniformIn);
 
 		return this;
 	}
 
-	public IShaderUniform uniform(String nameIn)
+	public IShaderUniform uniform(final String nameIn)
 	{
 		return this.uniformBuilder.uniform(nameIn);
 	}
 
-	public IShaderUniform[] uniforms(String... namesIn)
+	public IShaderUniform[] uniforms(final String... namesIn)
 	{
 		final var	uniforms	= new IShaderUniform[namesIn.length];
 		var			i			= 0;
@@ -176,7 +188,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniforms;
 	}
 
-	public IShaderTypedUniform<Boolean> booleanUniform(String nameIn)
+	public IShaderTypedUniform<Boolean> booleanUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.booleanUniform(nameIn);
 
@@ -185,7 +197,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<Integer> intUniform(String nameIn)
+	public IShaderTypedUniform<Integer> intUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.intUniform(nameIn);
 
@@ -194,7 +206,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<Float> floatUniform(String nameIn)
+	public IShaderTypedUniform<Float> floatUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.floatUniform(nameIn);
 
@@ -203,7 +215,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<float[]> floatArrayUniform(String nameIn)
+	public IShaderTypedUniform<float[]> floatArrayUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.floatArrayUniform(nameIn);
 
@@ -212,7 +224,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<Vector2f> vector2fUniform(String nameIn)
+	public IShaderTypedUniform<Vector2f> vector2fUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.vector2fUniform(nameIn);
 
@@ -221,7 +233,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<Vector3f> vector3fUniform(String nameIn)
+	public IShaderTypedUniform<Vector3f> vector3fUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.vector3fUniform(nameIn);
 
@@ -230,7 +242,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<Vector4f> vector4fUniform(String nameIn)
+	public IShaderTypedUniform<Vector4f> vector4fUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.vector4fUniform(nameIn);
 
@@ -239,7 +251,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<Matrix4f> matrix4fUniform(String nameIn)
+	public IShaderTypedUniform<Matrix4f> matrix4fUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.matrix4fUniform(nameIn);
 
@@ -248,7 +260,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<DirectionalLight> directionalLightUniform(String nameIn)
+	public IShaderTypedUniform<DirectionalLight> directionalLightUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.directionalLightUniform(nameIn);
 
@@ -257,7 +269,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<PointLight> pointLightUniform(String nameIn)
+	public IShaderTypedUniform<PointLight> pointLightUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.pointLightUniform(nameIn);
 
@@ -266,7 +278,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<SpotLight> spotLightUniform(String nameIn)
+	public IShaderTypedUniform<SpotLight> spotLightUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.spotLightUniform(nameIn);
 
@@ -275,7 +287,33 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<Fog> fogUniform(String nameIn)
+	/**
+	 * @param nameIn
+	 * @return
+	 */
+	public IShaderTypedUniform<PointLight[]> pointLightsUniform(final String nameIn, final int sizeIn)
+	{
+		final var uniform = this.uniformBuilder.pointLightsUniform(nameIn, sizeIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	/**
+	 * @param nameIn
+	 * @return
+	 */
+	public IShaderTypedUniform<SpotLight[]> spotLightsUniform(final String nameIn, final int sizeIn)
+	{
+		final var uniform = this.uniformBuilder.spotLightsUniform(nameIn, sizeIn);
+
+		this.uniforms.put(nameIn, uniform);
+
+		return uniform;
+	}
+
+	public IShaderTypedUniform<Fog> fogUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.fogUniform(nameIn);
 
@@ -284,7 +322,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		return uniform;
 	}
 
-	public IShaderTypedUniform<Material> materialUniform(String nameIn)
+	public IShaderTypedUniform<Material> materialUniform(final String nameIn)
 	{
 		final var uniform = this.uniformBuilder.materialUniform(nameIn);
 
@@ -294,7 +332,7 @@ public abstract class ShaderProgram implements IShaderProgram
 	}
 
 	@Override
-	public IShaderUniform get(String nameIn)
+	public IShaderUniform get(final String nameIn)
 	{
 		return this.uniforms.get(nameIn);
 	}
@@ -309,7 +347,7 @@ public abstract class ShaderProgram implements IShaderProgram
 		private final List<String>									attributes;
 		private final Map<String, IShaderUniform>					uniforms;
 
-		public Builder(String nameIn)
+		public Builder(final String nameIn)
 		{
 			this.name		= nameIn;
 			this.vertex		= new ShaderScript();
@@ -318,7 +356,7 @@ public abstract class ShaderProgram implements IShaderProgram
 			this.uniforms	= new LinkedHashMap<>();
 		}
 
-		public Builder(String nameIn, IShaderUniformBuilder uniformBuilderIn)
+		public Builder(final String nameIn, final IShaderUniformBuilder uniformBuilderIn)
 		{
 			this.name			= nameIn;
 			this.uniformBuilder	= uniformBuilderIn;
@@ -328,7 +366,7 @@ public abstract class ShaderProgram implements IShaderProgram
 			this.uniforms		= new LinkedHashMap<>();
 		}
 
-		public final Builder build(String... attributesIn) throws Exception
+		public final Builder build(final String... attributesIn) throws Exception
 		{
 			Builder.load("vertex", this.vertex);
 			Builder.load("fragment", this.fragment);
@@ -341,7 +379,8 @@ public abstract class ShaderProgram implements IShaderProgram
 			return this;
 		}
 
-		public final Builder build(IIFunction<Builder> buildMethodIn, String... attributesIn) throws Exception
+		public final Builder build(final IIFunction<Builder> buildMethodIn, final String... attributesIn)
+				throws Exception
 		{
 			Builder.load("vertex", this.vertex);
 			Builder.load("fragment", this.fragment);
@@ -356,14 +395,14 @@ public abstract class ShaderProgram implements IShaderProgram
 			return this;
 		}
 
-		public Builder uniform(String nameIn, IShaderUniform uniformIn)
+		public Builder uniform(final String nameIn, final IShaderUniform uniformIn)
 		{
 			this.uniforms.put(nameIn, uniformIn);
 
 			return this;
 		}
 
-		private final static void load(String scriptTypeIn, ShaderScript scriptIn) throws Exception
+		private final static void load(final String scriptTypeIn, final ShaderScript scriptIn) throws Exception
 		{
 			if (scriptIn.script() == null)
 			{
@@ -382,28 +421,28 @@ public abstract class ShaderProgram implements IShaderProgram
 			}
 		}
 
-		public final Builder vertexScriptFilepath(String scriptFilepathIn)
+		public final Builder vertexScriptFilepath(final String scriptFilepathIn)
 		{
 			this.vertex.filepath(scriptFilepathIn);
 
 			return this;
 		}
 
-		public final Builder vertexScript(String scriptIn)
+		public final Builder vertexScript(final String scriptIn)
 		{
 			this.vertex.script(scriptIn);
 
 			return this;
 		}
 
-		public final Builder fragmentScript(String scriptIn)
+		public final Builder fragmentScript(final String scriptIn)
 		{
 			this.fragment.script(scriptIn);
 
 			return this;
 		}
 
-		public final Builder fragmentScriptFilepath(String scriptFilepathIn)
+		public final Builder fragmentScriptFilepath(final String scriptFilepathIn)
 		{
 			this.fragment.filepath(scriptFilepathIn);
 

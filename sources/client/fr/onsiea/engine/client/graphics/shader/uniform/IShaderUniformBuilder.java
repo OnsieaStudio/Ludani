@@ -69,6 +69,10 @@ public interface IShaderUniformBuilder
 
 	IShaderTypedUniform<SpotLight> spotLightUniform(String nameIn);
 
+	IShaderTypedUniform<PointLight[]> pointLightsUniform(String nameIn, int sizeIn);
+
+	IShaderTypedUniform<SpotLight[]> spotLightsUniform(String nameIn, int sizeIn);
+
 	IShaderTypedUniform<Fog> fogUniform(String nameIn);
 
 	IShaderTypedUniform<Material> materialUniform(String nameIn);

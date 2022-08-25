@@ -26,6 +26,8 @@
 */
 package fr.onsiea.engine.client.graphics.texture;
 
+import org.lwjgl.BufferUtils;
+
 /**
  * @author Seynax
  *
@@ -50,5 +52,16 @@ public class TextureUtils
 		}
 
 		return filePath;
+	}
+
+	public final static void send(final Texture<?> textureIn, final byte[] dataIn)
+	{
+		final var byteBuffer = BufferUtils.createByteBuffer(dataIn.length);
+
+		byteBuffer.put(dataIn);
+
+		byteBuffer.flip();
+
+		textureIn.send(byteBuffer);
 	}
 }

@@ -40,6 +40,7 @@ import org.joml.Vector3f;
 import fr.onsiea.engine.client.graphics.mesh.IMesh;
 import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
 import fr.onsiea.engine.client.graphics.mesh.obj.IOBJLoader;
+import fr.onsiea.engine.client.graphics.mesh.obj.MeshData;
 
 /**
  * @author ThinMatrix (https://www.youtube.com/user/thinmatrix, https://github.com/TheThinMatrix)
@@ -62,6 +63,89 @@ public class NormalMappedObjLoader implements IOBJLoader
 		return this;
 	}
 
+	public MeshData loadData(String fileName) throws Exception
+	{
+		FileReader	isr		= null;
+		final var	objFile	= new File(fileName);
+		try
+		{
+			isr = new FileReader(objFile);
+		}
+		catch (final FileNotFoundException e)
+		{
+			System.err.println("File not found in res; don't use any extension");
+		}
+		final var				reader		= new BufferedReader(isr);
+		String					line;
+		final List<VertexNM>	vertices	= new ArrayList<>();
+		final List<Vector2f>	textures	= new ArrayList<>();
+		final List<Vector3f>	normals		= new ArrayList<>();
+		final List<Integer>		indices		= new ArrayList<>();
+		try
+		{
+			while (true)
+			{
+				line = reader.readLine();
+				if (line.startsWith("v "))
+				{
+					final var	currentLine	= line.split("\\s+");
+					final var	vertex		= new Vector3f(Float.parseFloat(currentLine[1]),
+							Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
+					final var	newVertex	= new VertexNM(vertices.size(), vertex);
+					vertices.add(newVertex);
+
+				}
+				else if (line.startsWith("vt "))
+				{
+					final var	currentLine	= line.split("\\s+");
+					final var	texture		= new Vector2f(Float.parseFloat(currentLine[1]),
+							Float.parseFloat(currentLine[2]));
+					textures.add(texture);
+				}
+				else if (line.startsWith("vn "))
+				{
+					final var	currentLine	= line.split("\\s+");
+					final var	normal		= new Vector3f(Float.parseFloat(currentLine[1]),
+							Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
+					normals.add(normal);
+				}
+				else if (line.startsWith("f "))
+				{
+					break;
+				}
+			}
+			while (line != null && line.startsWith("f "))
+			{
+				final var	currentLine	= line.split("\\s+");
+				final var	vertex1		= currentLine[1].split("/");
+				final var	vertex2		= currentLine[2].split("/");
+				final var	vertex3		= currentLine[3].split("/");
+
+				final var	v0			= NormalMappedObjLoader.processVertex(vertex1, vertices, indices);
+				final var	v1			= NormalMappedObjLoader.processVertex(vertex2, vertices, indices);
+				final var	v2			= NormalMappedObjLoader.processVertex(vertex3, vertices, indices);
+				NormalMappedObjLoader.calculateTangents(v0, v1, v2, textures);
+				line = reader.readLine();
+			}
+			reader.close();
+		}
+		catch (final IOException e)
+		{
+			System.err.println("Error reading the file");
+		}
+		NormalMappedObjLoader.removeUnusedVertices(vertices);
+		final var	verticesArray	= new float[vertices.size() * 3];
+		final var	texturesArray	= new float[vertices.size() * 2];
+		final var	normalsArray	= new float[vertices.size() * 3];
+		final var	tangentsArray	= new float[vertices.size() * 3];
+		/**final var	furthest		=**/
+		NormalMappedObjLoader.convertDataToArrays(vertices, textures, normals, verticesArray, texturesArray,
+				normalsArray, tangentsArray);
+		final var indicesArray = NormalMappedObjLoader.convertIndicesListToArray(indices);
+		
+		return new MeshData(verticesArray, texturesArray, normalsArray, tangentsArray, indicesArray);
+	}
+	
 	@Override
 	public IMesh load(String objFileName) throws Exception
 	{

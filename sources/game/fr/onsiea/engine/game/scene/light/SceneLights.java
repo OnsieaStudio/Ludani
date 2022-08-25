@@ -26,15 +26,12 @@
 */
 package fr.onsiea.engine.game.scene.light;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.joml.Vector3f;
 
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.light.PointLight;
 import fr.onsiea.engine.client.graphics.light.SpotLight;
+import fr.onsiea.engine.game.scene.Scene;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,16 +42,16 @@ import lombok.Setter;
  */
 public class SceneLights
 {
-	private final @Getter(AccessLevel.PUBLIC) List<PointLight>				pointLights;
-	private final @Getter(AccessLevel.PUBLIC) List<SpotLight>				spotLights;
+	private final @Getter(AccessLevel.PUBLIC) PointLight[]					pointLights;
+	private final @Getter(AccessLevel.PUBLIC) SpotLight[]					spotLights;
 	private final @Getter(AccessLevel.PUBLIC) DirectionalLight				directionalLight;
 	private @Getter(AccessLevel.PUBLIC) @Setter(AccessLevel.PUBLIC) float	specularPower;
 	private final @Getter(AccessLevel.PUBLIC) Vector3f						ambientLight;
 
 	public SceneLights(DirectionalLight directionalLightIn, float specularPowerIn, Vector3f ambientLightIn)
 	{
-		this.pointLights		= new ArrayList<>();
-		this.spotLights			= new ArrayList<>();
+		this.pointLights		= new PointLight[Scene.MAX_LIGHTS];
+		this.spotLights			= new SpotLight[Scene.MAX_LIGHTS];
 
 		this.directionalLight	= directionalLightIn;
 		this.specularPower		= specularPowerIn;
@@ -63,14 +60,35 @@ public class SceneLights
 
 	public SceneLights add(PointLight... pointLightsIn)
 	{
-		Collections.addAll(this.pointLights, pointLightsIn);
+		if (pointLightsIn.length >= this.pointLights.length)
+		{
+			throw new RuntimeException("[ERROR] SceneLights : max point lights is \"" + this.spotLights.length
+					+ "\" and parameters point lights length is \"" + this.spotLights.length + "\"");
+		}
+
+		var i = 0;
+		for (final var pointLight : pointLightsIn)
+		{
+			this.pointLights[i] = pointLight;
+			i++;
+		}
 
 		return this;
 	}
 
 	public SceneLights add(SpotLight... spotLightsIn)
 	{
-		Collections.addAll(this.spotLights, spotLightsIn);
+		if (spotLightsIn.length >= this.spotLights.length)
+		{
+			throw new RuntimeException("[ERROR] SceneLights : max spot lights is \"" + this.spotLights.length
+					+ "\" and parameters spot lights length is \"" + this.spotLights.length + "\"");
+		}
+		var i = 0;
+		for (final var spotLight : spotLightsIn)
+		{
+			this.spotLights[i] = spotLight;
+			i++;
+		}
 
 		return this;
 	}

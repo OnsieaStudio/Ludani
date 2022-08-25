@@ -2,7 +2,7 @@
  *
  */
 /**
- * @author seyro
+ * @author Onsiea
  *
  */
 module OnsieaEngine
@@ -62,4 +62,5 @@ module OnsieaEngine
 	requires org.lwjgl.shaderc;
 	requires org.lwjgl.openal;
 	requires java.desktop;
+	requires fr.onsiea.logger;
 }

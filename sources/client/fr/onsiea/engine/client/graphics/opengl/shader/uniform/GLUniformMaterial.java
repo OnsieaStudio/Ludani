@@ -32,7 +32,7 @@ public class GLUniformMaterial implements IShaderTypedUniform<Material>
 		GLUniformVector4f.load(locationsIn[1], materialIn.diffuseColour());
 		GLUniformVector4f.load(locationsIn[2], materialIn.specularColour());
 		GLUniformInt.load(locationsIn[3], materialIn.isTextured() ? 1 : 0);
-		GLUniformInt.load(locationsIn[4], materialIn.hasNormalMap() ? 1 : 0);
+		GLUniformInt.load(locationsIn[4], materialIn.textures().size() > 1 ? 1 : 0);
 		GLUniformFloat.load(locationsIn[5], materialIn.reflectance());
 	}
 

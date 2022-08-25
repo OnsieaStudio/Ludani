@@ -46,7 +46,7 @@ import fr.onsiea.engine.client.graphics.particles.IParticle;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.shapes.ShapeRectangle;
-import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.texture.Texture;
 import fr.onsiea.engine.utils.Pair;
 import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
 import lombok.AccessLevel;
@@ -126,13 +126,13 @@ public class ParticleRenderer
 	private @Getter(AccessLevel.PUBLIC) final IMesh	mesh;
 	private final Vbo								vbo;
 	private boolean									somethingToShow;
-	private final ITexture							texture;
+	private final Texture<?>						texture;
 	private final IShadersManager					shadersManager;
 	private final InstancedShader					instancedShader;
 	private final int								textureRows;
 	private final int								textureColumns;
 
-	public ParticleRenderer(int particlesCountIn, IRenderAPIContext contextIn, ITexture particlesTextureIn,
+	public ParticleRenderer(int particlesCountIn, IRenderAPIContext contextIn, Texture<?> particlesTextureIn,
 			int textureRowsIn, int textureColumnsIn) throws Exception
 	{
 		this.instances = BufferUtils.createFloatBuffer(4 * 4 * 2 * particlesCountIn);

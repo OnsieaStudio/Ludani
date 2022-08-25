@@ -43,6 +43,7 @@ import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.game.scene.item.SceneItems;
 import fr.onsiea.engine.game.scene.light.SceneLights;
+import fr.onsiea.engine.game.world.World;
 import fr.onsiea.engine.utils.time.Timer;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -63,6 +64,10 @@ public class Scene
 
 	private float									lightAngle;
 	private float									angleInc;
+
+	// World
+
+	private final World								world;
 
 	private final SceneRenderer						sceneRenderer;
 
@@ -92,8 +97,12 @@ public class Scene
 		this.lightAngle				= 45.0f;
 		this.angleInc				= 0.0f;
 
+		// World
+
+		this.world					= new World(contextIn.shadersManager(), contextIn, this.camera());
+
 		this.sceneRenderer			= new SceneRenderer(contextIn, windowIn, clearColorRIn, clearColorGIn,
-				clearColorBIn, fogIn, this.camera, flareManagerIn, skyboxRendererIn, ambientLightIn);
+				clearColorBIn, fogIn, this.camera, flareManagerIn, skyboxRendererIn, ambientLightIn, this.world);
 
 		// Sun
 
@@ -108,6 +117,10 @@ public class Scene
 
 		this.inputTimer				= new Timer();
 	}
+
+	// Tests
+
+	public static boolean depthMode = false;
 
 	public final Scene input(IWindow windowIn, InputManager inputManagerIn)
 	{
@@ -126,6 +139,19 @@ public class Scene
 			{
 				this.angleInc = 0;
 			}
+
+			// Tests
+
+			if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_0) == GLFW.GLFW_PRESS)
+			{
+				System.out.println("DEPTH MODE !");
+				Scene.depthMode = true;
+			}
+			else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_1) == GLFW.GLFW_PRESS)
+			{
+				System.out.println("COLOR MODE !");
+				Scene.depthMode = false;
+			}
 		}
 
 		return this;
@@ -139,16 +165,18 @@ public class Scene
 	public final Scene render(IWindow windowIn)
 	{
 		this.lightAngle += this.angleInc;
-		if (this.lightAngle < 0)
+		if (this.lightAngle < -90)
 		{
-			this.lightAngle = 0;
+			this.lightAngle = -90;
 		}
-		else if (this.lightAngle > 180)
+		else if (this.lightAngle > 90)
 		{
-			this.lightAngle = 180;
+			this.lightAngle = 90;
 		}
+
 		final var	zValue			= (float) Math.cos(Math.toRadians(this.lightAngle));
 		final var	yValue			= (float) Math.sin(Math.toRadians(this.lightAngle));
+
 		final var	lightDirection	= this.sceneLights.directionalLight().direction();
 		lightDirection.x	= 0;
 		lightDirection.y	= yValue;

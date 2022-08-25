@@ -10,13 +10,14 @@ layout (location=3) in vec4 jointWeights;
 layout (location=4) in ivec4 jointIndices;
 
 uniform mat4 jointsMatrix[MAX_JOINTS];
-uniform mat4 orthoProjection;
-uniform mat4 modelLightView;
+uniform mat4 lightProjection;
+uniform mat4 lightView;
 
 void main()
 {
 	vec4 initPos = vec4(0, 0, 0, 0);
     int count = 0;
+
     for(int i = 0; i < MAX_WEIGHTS; i++)
     {
         float weight = jointWeights[i];
@@ -31,5 +32,6 @@ void main()
     {
         initPos = vec4(in_position, 1.0);
     }
-    gl_Position = orthoProjection * modelLightView * initPos;
+
+    gl_Position = lightProjection * lightView * initPos;
 }

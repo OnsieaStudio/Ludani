@@ -89,7 +89,21 @@ public class SceneItems
 	 */
 	public final SceneItems add(String nameIn, Material materialIn, IMesh meshIn, GameItem... gameItemsIn)
 	{
-		return this.add(new GameItemProperties(nameIn, materialIn, meshIn), gameItemsIn);
+		return this.add(new GameItemProperties(nameIn, materialIn, meshIn, -1), gameItemsIn);
+	}
+
+	/**
+	 * @param nameIn
+	 * @param materialIn
+	 * @param meshIn
+	 * @param faceCullingIn
+	 * @param gameItemsIn
+	 * @return
+	 */
+	public final SceneItems add(String nameIn, Material materialIn, IMesh meshIn, int faceCullingIn,
+			GameItem... gameItemsIn)
+	{
+		return this.add(new GameItemProperties(nameIn, materialIn, meshIn, faceCullingIn), gameItemsIn);
 	}
 
 	/**
@@ -138,7 +152,24 @@ public class SceneItems
 	public final SceneItems add(String nameIn, Material materialIn, IMesh meshIn, Vector3f positionIn,
 			Vector3f orientationIn, Vector3f scaleIn)
 	{
-		return this.add(new GameItemProperties(nameIn, materialIn, meshIn), positionIn, orientationIn, scaleIn);
+		return this.add(new GameItemProperties(nameIn, materialIn, meshIn, -1), positionIn, orientationIn, scaleIn);
+	}
+
+	/**
+	 * @param nameIn
+	 * @param materialIn
+	 * @param meshIn
+	 * @param faceCullingIn
+	 * @param positionIn
+	 * @param orientationIn
+	 * @param scaleIn
+	 * @return
+	 */
+	public final SceneItems add(String nameIn, Material materialIn, IMesh meshIn, int faceCullingIn,
+			Vector3f positionIn, Vector3f orientationIn, Vector3f scaleIn)
+	{
+		return this.add(new GameItemProperties(nameIn, materialIn, meshIn, faceCullingIn), positionIn, orientationIn,
+				scaleIn);
 	}
 
 	/**

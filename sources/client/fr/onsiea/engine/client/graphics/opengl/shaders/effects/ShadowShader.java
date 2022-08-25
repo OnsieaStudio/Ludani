@@ -40,8 +40,9 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class ShadowShader extends GLShaderProgram
 {
-	private final IShaderTypedUniform<Matrix4f>	orthoProjection;
-	private final IShaderTypedUniform<Matrix4f>	modelLightView;
+	private final IShaderTypedUniform<Matrix4f>	lightProjection;
+	private final IShaderTypedUniform<Matrix4f>	lightView;
+	private final IShaderTypedUniform<Matrix4f>	bias;
 
 	/**
 	 * @throws Exception
@@ -51,7 +52,8 @@ public class ShadowShader extends GLShaderProgram
 		super("shadow", "resources\\shaders\\shadow\\depthVertex.vs", "resources\\shaders\\shadow\\depthFragment.fs",
 				"in_position");
 
-		this.orthoProjection	= this.matrix4fUniform("orthoProjection");
-		this.modelLightView		= this.matrix4fUniform("modelLightView");
+		this.lightProjection	= this.matrix4fUniform("lightProjection");
+		this.lightView			= this.matrix4fUniform("lightView");
+		this.bias				= this.matrix4fUniform("bias");
 	}
 }

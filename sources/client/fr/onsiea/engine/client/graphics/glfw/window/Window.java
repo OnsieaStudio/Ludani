@@ -37,6 +37,7 @@ import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
 import fr.onsiea.engine.client.graphics.glfw.GLFWUtils;
 import fr.onsiea.engine.client.graphics.glfw.monitor.Monitors;
+import fr.onsiea.engine.client.graphics.texture.ITextureData;
 import fr.onsiea.engine.client.graphics.texture.data.TextureData;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.graphics.window.context.IWindowContext;
@@ -159,7 +160,7 @@ public class Window implements IWindow
 			{
 				final var	pWidth	= stack.mallocInt(1);
 				final var	pHeight	= stack.mallocInt(1);
-			
+
 				GLFW.glfwGetWindowSize(this.handle(), pWidth, pHeight);
 			}**/
 
@@ -241,10 +242,10 @@ public class Window implements IWindow
 	public void icon(String filepathIn) throws IOException
 	{
 		final var	image		= GLFWImage.malloc();
-		TextureData	textureData	= null;
+		ITextureData	textureData	= null;
 		try
 		{
-			textureData = new TextureData().load(filepathIn);
+			textureData = TextureData.load(filepathIn);
 
 			image.set(textureData.width(), textureData.height(), textureData.buffer());
 			Window.icons = GLFWImage.malloc(1);

@@ -5,7 +5,10 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
+import fr.onsiea.engine.client.graphics.opengl.texture.GLTextureSettings;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
+import fr.onsiea.engine.client.graphics.texture.ITexturesManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.core.entity.Camera;
 import fr.onsiea.engine.utils.maths.MathInstances;
@@ -19,6 +22,7 @@ public class FlareManager
 
 	private final FlareRenderer		renderer;
 
+	@SuppressWarnings("unchecked")
 	public FlareManager(float spacing, IRenderAPIContext renderAPIContextIn, IScaleRamp scalingRampIn,
 			ITexturesFilepathsRamp texturesFilepathsRampIn, int texturesCountIn) throws Exception
 	{
@@ -28,13 +32,16 @@ public class FlareManager
 		for (var i = 0; i < texturesCountIn; i++)
 		{
 			this.flareTextures[i] = new FlareTexture(
-					renderAPIContextIn.texturesManager().load(texturesFilepathsRampIn.filepath(i)),
+					((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager()).load(
+							texturesFilepathsRampIn.filepath(i),
+							GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn)),
 					scalingRampIn.scale(i));
 		}
 
 		this.renderer = new FlareRenderer(renderAPIContextIn);
 	}
 
+	@SuppressWarnings("unchecked")
 	public FlareManager(float spacing, IRenderAPIContext renderAPIContextIn, IScaleRamp scalingRampIn,
 			String... texturesFilepathsIn) throws Exception
 	{
@@ -43,7 +50,9 @@ public class FlareManager
 		var i = 0;
 		for (final String filepath : texturesFilepathsIn)
 		{
-			this.flareTextures[i] = new FlareTexture(renderAPIContextIn.texturesManager().load(filepath),
+			this.flareTextures[i] = new FlareTexture(
+					((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager()).load(filepath,
+							GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn)),
 					scalingRampIn.scale(i));
 
 			i++;

@@ -1,35 +1,19 @@
 package fr.onsiea.engine.client.graphics.texture.data;
 
-import fr.onsiea.engine.client.graphics.texture.TextureComponents;
+import lombok.AccessLevel;
+import lombok.Getter;
 
+@Getter(AccessLevel.PUBLIC)
 public class TextureBytes
 {
-	private byte[]				bytes;
-	private TextureComponents	components;
+	private final byte[]	bytes;
+	private final int		width;
+	private final int		height;
 
 	public TextureBytes(final byte[] bytesIn, int widthIn, int heightIn)
 	{
-		this.bytes(bytesIn);
-		this.components(new TextureComponents(widthIn, heightIn));
-	}
-
-	public byte[] bytes()
-	{
-		return this.bytes;
-	}
-
-	public void bytes(final byte[] bytesIn)
-	{
-		this.bytes = bytesIn;
-	}
-
-	public TextureComponents components()
-	{
-		return this.components;
-	}
-
-	private void components(TextureComponents componentsIn)
-	{
-		this.components = componentsIn;
+		this.bytes	= bytesIn;
+		this.width	= widthIn;
+		this.height	= heightIn;
 	}
 }

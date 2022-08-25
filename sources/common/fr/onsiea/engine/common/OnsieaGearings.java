@@ -1,29 +1,42 @@
 /**
-* Copyright 2021 Onsiea All rights reserved.<br><br>
-*
-* This file is part of Onsiea Engine project. (https://github.com/Onsiea/OnsieaEngine)<br><br>
-*
-* Onsiea Engine is [licensed] (https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE) under the terms of the "GNU General Public Lesser License v2.1" (LGPL-2.1).
-* https://github.com/Onsiea/OnsieaEngine/wiki/License#license-and-copyright<br><br>
-*
-* Onsiea Engine is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 2.1 of the License, or
-* (at your option) any later version.<br><br>
-*
-* Onsiea Engine is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.<br><br>
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with Onsiea Engine.  If not, see <https://www.gnu.org/licenses/>.<br><br>
-*
-* Neither the name "Onsiea", "Onsiea Engine", or any derivative name or the names of its authors / contributors may be used to endorse or promote products derived from this software and even less to name another project or other work without clear and precise permissions written in advance.<br><br>
-*
-* @Author : Seynax (https://github.com/seynax)<br>
-* @Organization : Onsiea Studio (https://github.com/Onsiea)
-*/
+ * Copyright 2021 Onsiea All rights reserved.<br>
+ * <br>
+ *
+ * This file is part of Onsiea Engine project.
+ * (https://github.com/Onsiea/OnsieaEngine)<br>
+ * <br>
+ *
+ * Onsiea Engine is [licensed]
+ * (https://github.com/Onsiea/OnsieaEngine/blob/main/LICENSE) under the terms of
+ * the "GNU General Public Lesser License v2.1" (LGPL-2.1).
+ * https://github.com/Onsiea/OnsieaEngine/wiki/License#license-and-copyright<br>
+ * <br>
+ *
+ * Onsiea Engine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 2.1 of the License, or
+ * (at your option) any later version.<br>
+ * <br>
+ *
+ * Onsiea Engine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.<br>
+ * <br>
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Onsiea Engine. If not, see <https://www.gnu.org/licenses/>.<br>
+ * <br>
+ *
+ * Neither the name "Onsiea", "Onsiea Engine", or any derivative name or the
+ * names of its authors / contributors may be used to endorse or promote
+ * products derived from this software and even less to name another project or
+ * other work without clear and precise permissions written in advance.<br>
+ * <br>
+ *
+ * @Author : Seynax (https://github.com/seynax)<br>
+ * @Organization : Onsiea Studio (https://github.com/Onsiea)
+ */
 package fr.onsiea.engine.common;
 
 import org.joml.Quaternionf;
@@ -84,31 +97,32 @@ public class OnsieaGearings
 
 	private final static Quaternionf	rotationQ			= new Quaternionf();
 
-	public final static void rotate(float x, float y, float z)
+	public final static void rotate(final float x, final float y, final float z)
 	{
-		//Use modulus to fix values to below 360 then convert values to radians
+		// Use modulus to fix values to below 360 then convert values to radians
 		final var	newX			= (float) Math.toRadians(x % 360);
 		final var	newY			= (float) Math.toRadians(y % 360);
 		final var	newZ			= (float) Math.toRadians(z % 360);
 
-		//Create a quaternion with the delta rotation values
+		// Create a quaternion with the delta rotation values
 		final var	rotationDelta	= new Quaternionf();
 		rotationDelta.rotationXYZ(newX, newY, newZ);
 
-		//Calculate the inverse of the delta quaternion
+		// Calculate the inverse of the delta quaternion
 		final var conjugate = rotationDelta.conjugate();
 
-		//Multiply this transform by the rotation delta quaternion and its inverse
+		// Multiply this transform by the rotation delta quaternion and its inverse
 		OnsieaGearings.rotationQ.mul(rotationDelta).mul(conjugate);
 	}
 
-	public final static OnsieaGearings start(IGameLogic gameLogicIn, GameOptions optionsIn, String[] argsIn)
-			throws Exception
+	public final static OnsieaGearings start(final IGameLogic gameLogicIn, final GameOptions optionsIn,
+			final String[] argsIn) throws Exception
 	{
 		return new OnsieaGearings(gameLogicIn, optionsIn, argsIn);
 	}
 
-	private OnsieaGearings(IGameLogic gameLogicIn, GameOptions optionsIn, String[] argsIn) throws Exception
+	private OnsieaGearings(final IGameLogic gameLogicIn, final GameOptions optionsIn, final String[] argsIn)
+			throws Exception
 	{
 		if (gameLogicIn == null)
 		{
@@ -165,8 +179,7 @@ public class OnsieaGearings
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-		}
-		finally
+		} finally
 		{
 			this.cleanup();
 		}

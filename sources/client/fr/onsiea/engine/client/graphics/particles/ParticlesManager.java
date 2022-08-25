@@ -33,7 +33,7 @@ import org.joml.Matrix4f;
 
 import fr.onsiea.engine.client.graphics.opengl.particles.ParticleRenderer;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
-import fr.onsiea.engine.client.graphics.texture.ITexture;
+import fr.onsiea.engine.client.graphics.texture.Texture;
 
 /**
  * @author Seynax
@@ -46,7 +46,7 @@ public class ParticlesManager<T extends IParticle>
 	private final ParticleRenderer		particleRenderer;
 
 	public ParticlesManager(IParticleSystem<T> particleSystemIn, int particlesCountIn, IRenderAPIContext contextIn,
-			ITexture particlesTextureIn, int textureRowsIn, int textureColumnsIn) throws Exception
+			Texture<?> particlesTextureIn, int textureRowsIn, int textureColumnsIn) throws Exception
 	{
 		this.particles			= new ArrayList<>();
 

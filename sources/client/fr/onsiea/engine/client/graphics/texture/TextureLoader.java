@@ -162,7 +162,7 @@ public class TextureLoader
 		for (final IResourcesPath resourcePath : resourcesPathIn)
 		{
 			final var realFilepath = resourcePath.path();
-			textureData[i] = TextureData.load(new File(realFilepath), false);
+			textureData[i] = (ITextureData) TextureData.load(new File(realFilepath), false);
 
 			i++;
 		}

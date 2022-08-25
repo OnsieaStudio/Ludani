@@ -42,7 +42,7 @@ public interface IRenderAPIContext
 	 */
 	void cleanup();
 
-	ITexturesManager texturesManager();
+	ITexturesManager<?> texturesManager();
 
 	IMeshsManager meshsManager();
 

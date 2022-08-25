@@ -29,8 +29,11 @@ package fr.onsiea.engine.client.graphics.opengl.texture;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.onsiea.engine.client.graphics.render.IRenderAPIMethods;
-import fr.onsiea.engine.client.graphics.texture.ITexturesManager;
+import org.lwjgl.opengl.GL11;
+
+import fr.onsiea.engine.client.graphics.texture.ITextureData;
+import fr.onsiea.engine.client.graphics.texture.ITextureSettings;
+import fr.onsiea.engine.client.graphics.texture.Texture;
 import fr.onsiea.engine.client.graphics.texture.TexturesManager;
 import fr.onsiea.engine.utils.ICleanable;
 
@@ -40,20 +43,48 @@ import fr.onsiea.engine.utils.ICleanable;
  *
  * Specialized texture manager for opengl, managing texture tables and using the generic texture manager.
  */
-public class GLTexturesManager extends TexturesManager implements ITexturesManager
+public class GLTexturesManager extends TexturesManager<GLTextureSettings>
 {
 	private Map<String, GLTextureArrayManager> texturesArrayManager;
 
-	public GLTexturesManager(IRenderAPIMethods renderAPIMethodsIn)
+	public GLTexturesManager()
 	{
-		super(renderAPIMethodsIn);
-
 		this.texturesArrayManager(new HashMap<>());
 	}
 
-	public GLTextureArrayManager newTextureArray(String nameIn)
+	@Override
+	protected Texture<GLTextureSettings> create(ITextureSettings<GLTextureSettings> settingsIn,
+			ITextureData... texturesIn)
 	{
-		final var textureArrayManager = new GLTextureArrayManager();
+		return new GLTexture(settingsIn, texturesIn);
+	}
+
+	@Override
+	protected Texture<GLTextureSettings> create(int textureIdIn, int heightIn, int widthIn,
+			ITextureSettings<GLTextureSettings> settingsIn)
+	{
+		return new GLTexture(textureIdIn, widthIn, heightIn, settingsIn);
+	}
+
+	@Override
+	protected TexturesManager<GLTextureSettings> deleteTextures()
+	{
+		final var	textures	= new int[this.textures.size()];
+		var			i			= 0;
+		for (final var texture : this.textures.values())
+		{
+			textures[i] = texture.id();
+			i++;
+		}
+
+		GL11.glDeleteTextures(textures);
+
+		return this;
+	}
+
+	public GLTextureArrayManager newTextureArray(String nameIn, int levelsIn, int sizeXIn, int sizeYIn, int depthIn)
+	{
+		final var textureArrayManager = new GLTextureArrayManager(levelsIn, sizeXIn, sizeYIn, depthIn);
 
 		this.texturesArrayManager().put(nameIn, textureArrayManager);
 

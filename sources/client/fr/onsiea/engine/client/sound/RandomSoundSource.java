@@ -83,7 +83,7 @@ public class RandomSoundSource extends SoundSource
 
 	public RandomSoundSource setRandomBuffer()
 	{
-		final var i = this.random().nextInt(0, this.sourceBuffersId().size());
+		final var i = this.random().nextInt(this.sourceBuffersId().size());
 
 		this.buffer(this.sourceBuffersId().get(i));
 

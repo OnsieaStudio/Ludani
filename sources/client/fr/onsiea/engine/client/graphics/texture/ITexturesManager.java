@@ -29,73 +29,26 @@ package fr.onsiea.engine.client.graphics.texture;
 import java.nio.ByteBuffer;
 
 import fr.onsiea.engine.client.resources.IResourcesPath;
-import fr.onsiea.engine.utils.registry.ILoadable;
 import fr.onsiea.engine.utils.registry.IRegistry;
 
 /**
  * @author Seynax
  *
  */
-public interface ITexturesManager extends IRegistry<ITexture>, ILoadable<ITexture>
+public interface ITexturesManager<T extends ITextureSettings<T>> extends IRegistry<Texture<T>>
 {
-	ITexture load(String nameIn, ByteBuffer pixelsIn, int widthIn, int heightIn);
 
-	/**
-	 * @param nameIn
-	 * @param minIn
-	 * @param magIn
-	 * @param wrapSIn
-	 * @param wrapTIn
-	 * @param mipmappingIn
-	 * @return Texture
-	 */
-	ITexture load(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn);
+	Texture<T> load(String filepathIn, ITextureSettings<T> settingsIn);
 
-	/**
-	 * @param nameIn
-	 * @param resourcesPathIn
-	 * @return Texture
-	 * @throws Exception
-	 */
-	ITexture loadCubeMapTextures(String nameIn, IResourcesPath... resourcesPathIn) throws Exception;
+	Texture<T> load(IResourcesPath resourcepathIn, ITextureSettings<T> settingsIn);
 
-	/**
-	 * @param nameIn
-	 * @param minIn
-	 * @param magIn
-	 * @param wrapSIn
-	 * @param wrapTIn
-	 * @param mipmappingIn
-	 * @param resourcesPathIn
-	 * @return Texture
-	 * @throws Exception
-	 */
-	ITexture loadCubeMapTextures(String nameIn, int minIn, int magIn, int wrapSIn, int wrapTIn, boolean mipmappingIn,
-			IResourcesPath... resourcesPathIn) throws Exception;
+	Texture<T> load(String nameIn, IResourcesPath resourcepathIn, ITextureSettings<T> settingsIn);
 
-	/**
-	 *
-	 * @param nameIn
-	 * @param widthIn
-	 * @param heightIn
-	 * @param pixelFormatIn
-	 * @return Texture
-	 */
-	ITexture createEmpty(String nameIn, int widthIn, int heightIn, int pixelFormatIn);
+	Texture<T> load(String nameIn, String filepathIn, ITextureSettings<T> settingsIn);
 
-	/**
-	 *
-	 * @param nameIn
-	 * @param widthIn
-	 * @param heightIn
-	 * @param pixelFormatIn
-	 * @param minIn
-	 * @param magIn
-	 * @param wrapSIn
-	 * @param wrapTIn
-	 * @param mipmappingIn
-	 * @return Texture
-	 */
-	ITexture createEmpty(String nameIn, int widthIn, int heightIn, int pixelFormatIn, int minIn, int magIn, int wrapSIn,
-			int wrapTIn, boolean mipmappingIn);
+	Texture<T> load(String nameIn, ITextureSettings<T> settingsIn, String... filepathsIn);
+
+	Texture<T> load(String nameIn, ITextureSettings<T> settingsIn, IResourcesPath... resourcespathsIn);
+
+	Texture<T> load(String nameIn, ByteBuffer pixelsIn, int widthIn, int heightIn, ITextureSettings<T> settingsIn);
 }
