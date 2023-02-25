@@ -7,7 +7,7 @@
  */
 module OnsieaEngine
 {
-	requires transitive static lombok;
+	requires lombok;
 	exports fr.onsiea.engine.core.entity;
 	exports fr.onsiea.engine.common.game;
 	exports fr.onsiea.engine.common;
@@ -51,11 +51,11 @@ module OnsieaEngine
 	exports fr.onsiea.engine.utils.maths.vector;
 	exports fr.onsiea.engine.utils.maths.vector.timed;
 
-	requires static mslinks;
+	requires mslinks;
 	requires transitive org.joml;
 	requires org.lwjgl;
-	requires transitive org.lwjgl.glfw;
-	requires transitive org.lwjgl.opengl;
+	requires org.lwjgl.glfw;
+	requires org.lwjgl.opengl;
 	requires org.lwjgl.nanovg;
 	requires org.lwjgl.stb;
 	requires org.lwjgl.vulkan;
