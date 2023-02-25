@@ -29,9 +29,9 @@ package fr.onsiea.engine.client.graphics.particles.system;
 import java.util.List;
 
 import fr.onsiea.engine.client.graphics.particles.IParticleSystem;
-import fr.onsiea.engine.client.graphics.particles.ParticlesManager;
 import fr.onsiea.engine.client.graphics.particles.ParticleWithLifeTime;
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.client.graphics.particles.ParticlesManager;
+import fr.onsiea.engine.core.entity.PlayerEntity;
 import fr.onsiea.engine.utils.maths.MathUtils;
 
 /**
@@ -40,24 +40,24 @@ import fr.onsiea.engine.utils.maths.MathUtils;
  */
 public class SimpleParticleSystem implements IParticleSystem<ParticleWithLifeTime>
 {
-	private final Camera	camera;
+	private final PlayerEntity	playerEntity;
 
-	private long			last;
+	private long				last;
 
-	public SimpleParticleSystem(Camera cameraIn)
+	public SimpleParticleSystem(final PlayerEntity playerEntityIn)
 	{
-		this.camera	= cameraIn;
+		this.playerEntity	= playerEntityIn;
 
-		this.last	= System.nanoTime();
+		this.last			= System.nanoTime();
 	}
 
 	@Override
-	public IParticleSystem<ParticleWithLifeTime> initialization(List<ParticleWithLifeTime> particlesIn,
-			ParticlesManager<ParticleWithLifeTime> particleManagerIn)
+	public IParticleSystem<ParticleWithLifeTime> initialization(final List<ParticleWithLifeTime> particlesIn,
+			final ParticlesManager<ParticleWithLifeTime> particleManagerIn)
 	{
 		for (var i = 0; i < 10; i++)
 		{
-			final var particle = new ParticleWithLifeTime(this.camera,
+			final var particle = new ParticleWithLifeTime(this.playerEntity,
 					MathUtils.randomLong(2_500_000L, 24_000_000_000L), MathUtils.randomInt(0, 1),
 					MathUtils.randomInt(0, 2), MathUtils.randomInt(0, 1));
 
@@ -78,8 +78,8 @@ public class SimpleParticleSystem implements IParticleSystem<ParticleWithLifeTim
 	}
 
 	@Override
-	public boolean updateParticle(ParticleWithLifeTime particleIn,
-			ParticlesManager<ParticleWithLifeTime> particleManagerIn)
+	public boolean updateParticle(final ParticleWithLifeTime particleIn,
+			final ParticlesManager<ParticleWithLifeTime> particleManagerIn)
 	{
 		final var actual = System.nanoTime();
 		if (MathUtils.randomInt(0, 5000) == 0 || actual - particleIn.lastLifeTime() >= particleIn.lifeTime()
@@ -122,8 +122,8 @@ public class SimpleParticleSystem implements IParticleSystem<ParticleWithLifeTim
 	}
 
 	@Override
-	public IParticleSystem<ParticleWithLifeTime> update(List<ParticleWithLifeTime> particlesIn,
-			ParticlesManager<ParticleWithLifeTime> particleManagerIn)
+	public IParticleSystem<ParticleWithLifeTime> update(final List<ParticleWithLifeTime> particlesIn,
+			final ParticlesManager<ParticleWithLifeTime> particleManagerIn)
 	{
 		if (particlesIn.size() >= 1_000)
 		{
@@ -140,7 +140,7 @@ public class SimpleParticleSystem implements IParticleSystem<ParticleWithLifeTim
 					continue;
 				}
 
-				final var particle = new ParticleWithLifeTime(this.camera,
+				final var particle = new ParticleWithLifeTime(this.playerEntity,
 						MathUtils.randomLong(2_500_000L, 24_000_000_000L), MathUtils.randomInt(0, 1),
 						MathUtils.randomInt(0, 2), MathUtils.randomInt(0, 1));
 

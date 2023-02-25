@@ -15,7 +15,7 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.system.MemoryUtil;
 
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.core.entity.PlayerEntity;
 
 public class SoundManager implements Runnable
 {
@@ -35,7 +35,7 @@ public class SoundManager implements Runnable
 
 	private Map<String, SoundSource>	soundSourceMap;
 
-	private Matrix4f					cameraMatrix;
+	private Matrix4f					playerEntityMatrix;
 
 	public int							i	= 0;
 
@@ -45,7 +45,7 @@ public class SoundManager implements Runnable
 	{
 		this.soundBufferList(new ArrayList<>());
 		this.soundSourceMap(new HashMap<>());
-		this.cameraMatrix(new Matrix4f());
+		this.playerEntityMatrix(new Matrix4f());
 	}
 
 	public void start()
@@ -114,7 +114,7 @@ public class SoundManager implements Runnable
 	//private void runtime()
 	//{
 	/**this.i++;
-	
+
 	if (this.i >= 100)
 	{
 		this.i = 0;
@@ -123,17 +123,17 @@ public class SoundManager implements Runnable
 	//this.soundInputManager.runtime();
 	//}
 
-	public void addSoundSource(String name, SoundSource soundSource)
+	public void addSoundSource(final String name, final SoundSource soundSource)
 	{
 		this.soundSourceMap().put(name, soundSource);
 	}
 
-	public SoundSource getSoundSource(String name)
+	public SoundSource getSoundSource(final String name)
 	{
 		return this.soundSourceMap().get(name);
 	}
 
-	public void playSoundSource(String name)
+	public void playSoundSource(final String name)
 	{
 		final var soundSource = this.soundSourceMap().get(name);
 		if (soundSource != null && !soundSource.isPlaying())
@@ -142,7 +142,7 @@ public class SoundManager implements Runnable
 		}
 	}
 
-	public void stopAndPlaySoundSource(String name)
+	public void stopAndPlaySoundSource(final String name)
 	{
 		final var soundSource = this.soundSourceMap().get(name);
 		if (soundSource != null)
@@ -156,30 +156,30 @@ public class SoundManager implements Runnable
 		}
 	}
 
-	public void removeSoundSource(String name)
+	public void removeSoundSource(final String name)
 	{
 		this.soundSourceMap().remove(name);
 	}
 
-	public void addSoundBuffer(SoundBuffer soundBuffer)
+	public void addSoundBuffer(final SoundBuffer soundBuffer)
 	{
 		this.soundBufferList().add(soundBuffer);
 	}
 
-	public void updateListenerPosition(Camera camera)
+	public void updateListenerPosition(final PlayerEntity playerEntity)
 	{
-		// Update camera matrix with camera data
-		this.cameraMatrix().set(camera.view());
+		// Update playerEntity matrix with playerEntity data
+		this.playerEntityMatrix().set(playerEntity.view());
 
-		this.listener().setPosition(camera.position());
+		this.listener().setPosition(playerEntity.position());
 		final var at = new Vector3f();
-		this.cameraMatrix().positiveZ(at).negate();
+		this.playerEntityMatrix().positiveZ(at).negate();
 		final var up = new Vector3f();
-		this.cameraMatrix().positiveY(up);
+		this.playerEntityMatrix().positiveY(up);
 		this.listener().setOrientation(at, up);
 	}
 
-	public void setAttenuationModel(int model)
+	public void setAttenuationModel(final int model)
 	{
 		AL10.alDistanceModel(model);
 	}
@@ -188,8 +188,7 @@ public class SoundManager implements Runnable
 	{
 		this.running(false);
 
-		this.stopperThread(new Thread(() ->
-		{
+		this.stopperThread(new Thread(() -> {
 			while (!this.isStopped() || !this.isCleaned())
 			{
 				if (this.isStopped())
@@ -234,7 +233,7 @@ public class SoundManager implements Runnable
 		return this.device;
 	}
 
-	public void device(long deviceIn)
+	public void device(final long deviceIn)
 	{
 		this.device = deviceIn;
 	}
@@ -244,7 +243,7 @@ public class SoundManager implements Runnable
 		return this.context;
 	}
 
-	public void context(long contextIn)
+	public void context(final long contextIn)
 	{
 		this.context = contextIn;
 	}
@@ -254,7 +253,7 @@ public class SoundManager implements Runnable
 		return this.listener;
 	}
 
-	public void listener(SoundListener listenerIn)
+	public void listener(final SoundListener listenerIn)
 	{
 		this.listener = listenerIn;
 	}
@@ -264,7 +263,7 @@ public class SoundManager implements Runnable
 		return this.soundBufferList;
 	}
 
-	private final void soundBufferList(List<SoundBuffer> soundBufferListIn)
+	private final void soundBufferList(final List<SoundBuffer> soundBufferListIn)
 	{
 		this.soundBufferList = soundBufferListIn;
 	}
@@ -274,19 +273,19 @@ public class SoundManager implements Runnable
 		return this.soundSourceMap;
 	}
 
-	private final void soundSourceMap(Map<String, SoundSource> soundSourceMapIn)
+	private final void soundSourceMap(final Map<String, SoundSource> soundSourceMapIn)
 	{
 		this.soundSourceMap = soundSourceMapIn;
 	}
 
-	public Matrix4f cameraMatrix()
+	public Matrix4f playerEntityMatrix()
 	{
-		return this.cameraMatrix;
+		return this.playerEntityMatrix;
 	}
 
-	public void cameraMatrix(Matrix4f cameraMatrixIn)
+	public void playerEntityMatrix(final Matrix4f playerEntityMatrixIn)
 	{
-		this.cameraMatrix = cameraMatrixIn;
+		this.playerEntityMatrix = playerEntityMatrixIn;
 	}
 
 	public final boolean isRunning()
@@ -294,7 +293,7 @@ public class SoundManager implements Runnable
 		return this.isRunning;
 	}
 
-	private final void running(boolean isRunningIn)
+	private final void running(final boolean isRunningIn)
 	{
 		this.isRunning = isRunningIn;
 	}
@@ -304,7 +303,7 @@ public class SoundManager implements Runnable
 		return this.isStopped;
 	}
 
-	private final void stopped(boolean isStoppedIn)
+	private final void stopped(final boolean isStoppedIn)
 	{
 		this.isStopped = isStoppedIn;
 	}
@@ -314,7 +313,7 @@ public class SoundManager implements Runnable
 		return this.isCleaned;
 	}
 
-	private final void cleaned(boolean isCleanedIn)
+	private final void cleaned(final boolean isCleanedIn)
 	{
 		this.isCleaned = isCleanedIn;
 	}
@@ -324,7 +323,7 @@ public class SoundManager implements Runnable
 		return this.thread;
 	}
 
-	private final void thread(Thread threadIn)
+	private final void thread(final Thread threadIn)
 	{
 		this.thread = threadIn;
 	}
@@ -334,7 +333,7 @@ public class SoundManager implements Runnable
 		return this.stopperThread;
 	}
 
-	private final void stopperThread(Thread stopperThreadIn)
+	private final void stopperThread(final Thread stopperThreadIn)
 	{
 		this.stopperThread = stopperThreadIn;
 	}

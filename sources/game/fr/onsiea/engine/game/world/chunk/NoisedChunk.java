@@ -22,7 +22,6 @@ import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
 public class NoisedChunk
 {
 	private int				vao;
-	private int				vbo;
 	private int				ibo;
 	private int				indicesCount;
 
@@ -118,8 +117,8 @@ public class NoisedChunk
 		GL30.glBindVertexArray(this.vao);
 		GL20.glEnableVertexAttribArray(0);
 
-		this.vbo = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.vbo);
+		var vbo = GL15.glGenBuffers();
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertices, GL15.GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0L);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
@@ -158,6 +157,5 @@ public class NoisedChunk
 	public void cleanup()
 	{
 		// TODO Auto-generated method stub
-
 	}
 }

@@ -22,7 +22,9 @@ public class FlareRenderer
 
 	// 4 vertex positions for a 2D quad.
 	private static final float[]			POSITIONS	=
-	{ -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f };
+	{
+			-0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f
+	};
 
 	// A VAO containing the quad's positions in attribute 0
 	private IMesh							mesh;
@@ -35,7 +37,7 @@ public class FlareRenderer
 	 * Initializes the shader program, and creates a VAO for the quad, storing
 	 * the data for the 4 quad vertices in attribute 0 of the VAO.
 	 */
-	public FlareRenderer(IRenderAPIContext renderAPIContextIn)
+	public FlareRenderer(final IRenderAPIContext renderAPIContextIn)
 	{
 		this.settings		= renderAPIContextIn.settings();
 
@@ -63,7 +65,7 @@ public class FlareRenderer
 	 *            - The brightness that all the FlareTextures should be rendered
 	 *            at.
 	 */
-	public void render(FlareTexture[] flaresIn, float brightnessIn, IWindow windowIn)
+	public void render(final FlareTexture[] flaresIn, final float brightnessIn, final IWindow windowIn)
 	{
 		this.prepare(brightnessIn);
 		for (final FlareTexture flare : flaresIn)
@@ -91,7 +93,7 @@ public class FlareRenderer
 	 * @param brightnessIn
 	 *            - the brightness at which the flares are going to be rendered.
 	 */
-	private void prepare(float brightnessIn)
+	private void prepare(final float brightnessIn)
 	{
 		this.settings.user().disable("antialias");
 		this.settings.user().enable("blend");
@@ -122,11 +124,11 @@ public class FlareRenderer
 	 * @param flare
 	 *            - The flare to be rendered.
 	 */
-	private void renderFlare(FlareTexture flare, IWindow windowIn)
+	private void renderFlare(final FlareTexture flare, final IWindow windowIn)
 	{
 		flare.texture().attach();
 		final var	xScale		= flare.scale();
-		final var	yScale		= xScale * windowIn.settings().width() / windowIn.settings().height();
+		final var	yScale		= xScale * windowIn.effectiveWidth() / windowIn.effectiveHeight();
 		final var	centerPos	= flare.screenPos();
 		this.flareShader.uniformTransformations().load(new Vector4f(centerPos.x, centerPos.y, xScale, yScale));
 		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);

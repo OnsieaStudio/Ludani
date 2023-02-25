@@ -8,7 +8,9 @@ import org.lwjgl.glfw.GLFW;
 
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.callbacks.glfw.CallbackCursorPosition;
+import fr.onsiea.engine.client.input.callbacks.glfw.CallbackScroll;
 import fr.onsiea.engine.utils.maths.normalization.Normalizer;
+import lombok.Getter;
 
 public class Cursor
 {
@@ -22,18 +24,30 @@ public class Cursor
 	private double						translationY;
 	private boolean						hasMoved;
 	private boolean						mustBeBlocked;
+	private @Getter double				lastScrollX;
+	private @Getter double				lastScrollY;
+	private @Getter double				scrollX;
+	private @Getter double				scrollY;
 
 	private Map<Integer, TimedAction>	buttonsActions;
 	private Vector2d					blockedPosition;
 
-	public Cursor(InputManager inputManagerIn)
+	public Cursor(final InputManager inputManagerIn)
 	{
 		this.inputManager(inputManagerIn);
-		this.blockedPosition(new Vector2d());
+		this.blockedPosition(new Vector2d(0.0f, 0.0f));
 		this.buttonsActions(new HashMap<>());
 	}
 
-	void update(long windowHandleIn, CallbackCursorPosition cursorPositionIn)
+	void updateScroll(final CallbackScroll scrollCallbackIn)
+	{
+		this.lastScrollX	= scrollCallbackIn.lastXOffset();
+		this.lastScrollY	= scrollCallbackIn.lastYOffset();
+		this.scrollX		= scrollCallbackIn.yOffset();
+		this.scrollY		= scrollCallbackIn.xOffset();
+	}
+
+	void update(final long windowHandleIn, final CallbackCursorPosition cursorPositionIn)
 	{
 		if (this.isMustBeBlocked())
 		{
@@ -42,18 +56,21 @@ public class Cursor
 
 			this.x(this.blockedPosition().x());
 			this.y(this.blockedPosition().y());
+
+			this.translationX(cursorPositionIn.x() - this.x());
+			this.translationY(cursorPositionIn.y() - this.y());
 		}
 		else
 		{
 			this.lastX(this.x());
 			this.lastY(this.y());
 
+			this.translationX(cursorPositionIn.x() - this.x());
+			this.translationY(cursorPositionIn.y() - this.y());
+
 			this.x(cursorPositionIn.x());
 			this.y(cursorPositionIn.y());
 		}
-
-		this.translationX(cursorPositionIn.x() - this.x());
-		this.translationY(cursorPositionIn.y() - this.y());
 
 		if (this.translationX() != 0 || this.translationY() != 0)
 		{
@@ -66,7 +83,7 @@ public class Cursor
 		}
 	}
 
-	public void input(int buttonIn, int actionIn)
+	public void input(final int buttonIn, final int actionIn)
 	{
 		var action = this.buttonsActions().get(buttonIn);
 
@@ -80,37 +97,37 @@ public class Cursor
 		{
 			case GLFW.GLFW_PRESS:
 
-				if (ActionTypes.JUST_PRESSED.equals(action.type()) || ActionTypes.PRESSED.equals(action.type())
-						|| ActionTypes.PRESSED_FOR_WHILE.equals(action.type()))
+				if (EnumActionType.JUST_PRESSED.equals(action.type()) || EnumActionType.PRESSED.equals(action.type())
+						|| EnumActionType.PRESSED_FOR_WHILE.equals(action.type()))
 				{
 					return;
 				}
 
-				action.set(ActionTypes.JUST_PRESSED);
+				action.set(EnumActionType.JUST_PRESSED);
 
 				break;
 
 			case GLFW.GLFW_RELEASE:
 
-				if (ActionTypes.JUST_RELEASED.equals(action.type()) || ActionTypes.RELEASED.equals(action.type())
-						|| ActionTypes.RELEASED_FOR_WHILE.equals(action.type()))
+				if (EnumActionType.JUST_RELEASED.equals(action.type()) || EnumActionType.RELEASED.equals(action.type())
+						|| EnumActionType.RELEASED_FOR_WHILE.equals(action.type()))
 				{
 					return;
 				}
 
-				action.set(ActionTypes.JUST_RELEASED);
+				action.set(EnumActionType.JUST_RELEASED);
 
 				break;
 
 			case GLFW.GLFW_REPEAT:
 
-				if (ActionTypes.JUST_REPEATED.equals(action.type()) || ActionTypes.REPEATED.equals(action.type())
-						|| ActionTypes.REPEATED_FOR_WHILE.equals(action.type()))
+				if (EnumActionType.JUST_REPEATED.equals(action.type()) || EnumActionType.REPEATED.equals(action.type())
+						|| EnumActionType.REPEATED_FOR_WHILE.equals(action.type()))
 				{
 					return;
 				}
 
-				action.set(ActionTypes.JUST_REPEATED);
+				action.set(EnumActionType.JUST_REPEATED);
 
 				break;
 		}
@@ -130,10 +147,11 @@ public class Cursor
 		this.translationY(0.0D);
 	}
 
-	public void blockedPosition(IWindow windowIn, double blockedPositionXIn, double blockedPositionYIn)
+	public void blockedPosition(final IWindow windowIn, final double blockedPositionXIn,
+			final double blockedPositionYIn)
 	{
-		this.blockedPosition().x	= Normalizer.denormalizeX(blockedPositionXIn, windowIn.settings().width());
-		this.blockedPosition().y	= Normalizer.denormalizeY(blockedPositionYIn, windowIn.settings().height());
+		this.blockedPosition().x	= Normalizer.denormalizeX(blockedPositionXIn, windowIn.effectiveWidth());
+		this.blockedPosition().y	= Normalizer.denormalizeY(blockedPositionYIn, windowIn.effectiveHeight());
 
 		if (this.isMustBeBlocked())
 		{
@@ -149,7 +167,7 @@ public class Cursor
 		}
 	}
 
-	public void blockedPosition(double blockedPositionXIn, double blockedPositionYIn)
+	public void blockedPosition(final double blockedPositionXIn, final double blockedPositionYIn)
 	{
 		this.blockedPosition().x	= blockedPositionXIn;
 		this.blockedPosition().y	= blockedPositionYIn;
@@ -185,15 +203,7 @@ public class Cursor
 		return this;
 	}
 
-	// glfwSetInputMode(IWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	// glfwSetInputMode(IWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-	// glfwSetInputMode(IWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-	// GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
-
-	// glfwSetInputMode (fenêtre, GLFW_STICKY_MOUSE_BUTTONS , GLFW_TRUE );
-
-	public boolean enableCursorRawMotion(long handleIn)
+	public boolean enableCursorRawMotion(final long handleIn)
 	{
 		if (GLFW.glfwRawMouseMotionSupported())
 		{
@@ -205,7 +215,7 @@ public class Cursor
 		return false;
 	}
 
-	public boolean disableCursorRawMotion(long handleIn)
+	public boolean disableCursorRawMotion(final long handleIn)
 	{
 		if (GLFW.glfwRawMouseMotionSupported())
 		{
@@ -217,7 +227,7 @@ public class Cursor
 		return false;
 	}
 
-	public TimedAction buttionActionOf(int buttonIn)
+	public TimedAction buttionActionOf(final int buttonIn)
 	{
 		return this.buttonsActions().get(buttonIn);
 	}
@@ -235,12 +245,17 @@ public class Cursor
 		// glfwSetCursor(IWindow, NULL);
 	}**/
 
+	public double scrollTranslationX()
+	{
+		return this.lastScrollX - this.scrollX;
+	}
+
 	private final InputManager inputManager()
 	{
 		return this.inputManager;
 	}
 
-	private final void inputManager(InputManager inputManagerIn)
+	private final void inputManager(final InputManager inputManagerIn)
 	{
 		this.inputManager = inputManagerIn;
 	}
@@ -250,7 +265,7 @@ public class Cursor
 		return this.lastX;
 	}
 
-	private void lastX(double lastXIn)
+	private void lastX(final double lastXIn)
 	{
 		this.lastX = lastXIn;
 	}
@@ -260,7 +275,7 @@ public class Cursor
 		return this.lastY;
 	}
 
-	private void lastY(double lastYIn)
+	private void lastY(final double lastYIn)
 	{
 		this.lastY = lastYIn;
 	}
@@ -270,7 +285,7 @@ public class Cursor
 		return this.x;
 	}
 
-	private void x(double xIn)
+	private void x(final double xIn)
 	{
 		this.x = xIn;
 	}
@@ -280,7 +295,7 @@ public class Cursor
 		return this.y;
 	}
 
-	private void y(double yIn)
+	private void y(final double yIn)
 	{
 		this.y = yIn;
 	}
@@ -290,7 +305,7 @@ public class Cursor
 		return this.translationX;
 	}
 
-	private void translationX(double translationXIn)
+	private void translationX(final double translationXIn)
 	{
 		this.translationX = translationXIn;
 	}
@@ -300,7 +315,7 @@ public class Cursor
 		return this.translationY;
 	}
 
-	private void translationY(double translationYIn)
+	private void translationY(final double translationYIn)
 	{
 		this.translationY = translationYIn;
 	}
@@ -310,7 +325,7 @@ public class Cursor
 		return this.hasMoved;
 	}
 
-	private void hasMoved(boolean hasMovedIn)
+	private void hasMoved(final boolean hasMovedIn)
 	{
 		this.hasMoved = hasMovedIn;
 	}
@@ -320,7 +335,7 @@ public class Cursor
 		return this.mustBeBlocked;
 	}
 
-	private void mustBeBlocked(boolean mustBeBlockedIn)
+	private void mustBeBlocked(final boolean mustBeBlockedIn)
 	{
 		this.mustBeBlocked = mustBeBlockedIn;
 	}
@@ -330,7 +345,7 @@ public class Cursor
 		return this.blockedPosition;
 	}
 
-	private void blockedPosition(Vector2d blockedPositionIn)
+	private void blockedPosition(final Vector2d blockedPositionIn)
 	{
 		this.blockedPosition = blockedPositionIn;
 	}
@@ -340,7 +355,7 @@ public class Cursor
 		return this.buttonsActions;
 	}
 
-	private void buttonsActions(Map<Integer, TimedAction> buttonsActionsIn)
+	private void buttonsActions(final Map<Integer, TimedAction> buttonsActionsIn)
 	{
 		this.buttonsActions = buttonsActionsIn;
 	}

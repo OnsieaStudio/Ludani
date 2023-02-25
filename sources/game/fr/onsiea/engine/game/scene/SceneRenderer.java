@@ -54,7 +54,6 @@ import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.mesh.IMaterialMesh;
 import fr.onsiea.engine.client.graphics.opengl.fbo.FBO;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareManager;
-import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
 import fr.onsiea.engine.client.graphics.opengl.postprocessing.PostProcessing;
 import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformDirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.shaders.AdvInstancedShader;
@@ -70,7 +69,7 @@ import fr.onsiea.engine.client.graphics.particles.ParticlesManager;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.core.entity.PlayerEntity;
 import fr.onsiea.engine.game.scene.item.GameItem;
 import fr.onsiea.engine.game.world.World;
 import fr.onsiea.engine.utils.LoopUtils;
@@ -99,7 +98,7 @@ public class SceneRenderer
 
 	private final IShadersManager				shadersManager;
 	// private final IRenderAPIContext renderAPIContext;
-	private final NanoVGManager					nanoVG;
+	//private final NanoVGManager					nanoVG;
 
 	// Clear color
 
@@ -147,7 +146,7 @@ public class SceneRenderer
 			0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.5f, 0.5f, 0.5f, 1.0f);
 
 	public SceneRenderer(final IRenderAPIContext renderAPIContextIn, final IWindow windowIn, final float clearColorRIn,
-			final float clearColorGIn, final float clearColorBIn, final Fog fogIn, final Camera cameraIn,
+			final float clearColorGIn, final float clearColorBIn, final Fog fogIn, final PlayerEntity playerEntityIn,
 			final FlareManager flareManagerIn, final SkyboxRenderer skyboxRendererIn, final Vector3f ambientLightIn,
 			final World worldIn) throws Exception
 	{
@@ -155,7 +154,7 @@ public class SceneRenderer
 
 		// this.renderAPIContext = renderAPIContextIn;
 		this.shadersManager	= renderAPIContextIn.shadersManager();
-		this.nanoVG			= new NanoVGManager(windowIn);
+		//this.nanoVG			= new NanoVGManager(windowIn);
 
 		// ClearColor
 
@@ -212,7 +211,7 @@ public class SceneRenderer
 
 		this.flareManager			= flareManagerIn;
 
-		this.shadersManager.updateProjectionAndView(MathInstances.projectionMatrix(), cameraIn);
+		this.shadersManager.updateProjectionAndView(MathInstances.projectionMatrix(), playerEntityIn);
 
 		this.world = worldIn;
 
@@ -268,7 +267,7 @@ public class SceneRenderer
 
 	public final SceneRenderer render(final Scene sceneIn, final IWindow windowIn, final boolean postProcessingIn)
 	{
-		this.shadersManager.updateView(sceneIn.camera());
+		this.shadersManager.updateView(sceneIn.playerEntity());
 
 		if (postProcessingIn)
 		{
@@ -317,7 +316,7 @@ public class SceneRenderer
 
 			if (sceneIn.hasSun())
 			{
-				this.flareManager.render(sceneIn.camera(), sceneIn.sunPosition(), windowIn);
+				this.flareManager.render(sceneIn.playerEntity(), sceneIn.sunPosition(), windowIn);
 			}
 
 			for (final ParticlesManager<?> particlesManager : sceneIn.particlesManagers().values())
@@ -417,7 +416,7 @@ public class SceneRenderer
 		this.renderDepthMapColor(sceneIn);
 
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, windowIn.settings().width(), windowIn.settings().height());
+		GL11.glViewport(0, 0, windowIn.effectiveWidth(), windowIn.effectiveHeight());
 		// GL11.glEnable(GL11.GL_ALPHA_TEST);
 		// GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		// GL11.glEnable(GL11.GL_STENCIL_TEST);
@@ -429,8 +428,7 @@ public class SceneRenderer
 		this.shadowShader.lightProjection().load(SceneRenderer.orthoProjMatrix);
 		this.shadowShader.bias().load(this.bias);
 
-		sceneIn.sceneItems().execute((gameItemPropertiesIn, gameItemsIn) ->
-		{
+		sceneIn.sceneItems().execute((gameItemPropertiesIn, gameItemsIn) -> {
 			OpenGLUtils.cullFace(gameItemPropertiesIn.faceCulling(), GL11.GL_CCW);
 			for (final GameItem gameItem : gameItemsIn)
 			{
@@ -456,8 +454,7 @@ public class SceneRenderer
 		this.animatedShadowShader.bias().load(this.bias);
 
 		GL11.glCullFace(GL11.GL_FRONT);
-		sceneIn.sceneItems().executeAnimated((gameItemPropertiesIn, gameItemsIn) ->
-		{
+		sceneIn.sceneItems().executeAnimated((gameItemPropertiesIn, gameItemsIn) -> {
 			for (final IMaterialMesh mesh : gameItemPropertiesIn.meshes())
 			{
 				mesh.attach();
@@ -509,12 +506,11 @@ public class SceneRenderer
 		this.shaderNormalMappingThinMatrix.bias().load(this.bias);
 
 		((GLUniformDirectionalLight) this.shaderNormalMappingThinMatrix.directionalLight())
-				.load(sceneIn.sceneLights().directionalLight(), sceneIn.camera().view());
+				.load(sceneIn.sceneLights().directionalLight(), sceneIn.playerEntity().view());
 		this.shaderNormalMappingThinMatrix.pointLights().load(sceneIn.sceneLights().pointLights());
 		this.shaderNormalMappingThinMatrix.spotLights().load(sceneIn.sceneLights().spotLights());
 
-		sceneIn.sceneItems().execute((gameItemPropertiesIn, gameItemsIn) ->
-		{
+		sceneIn.sceneItems().execute((gameItemPropertiesIn, gameItemsIn) -> {
 			OpenGLUtils.cullFace(gameItemPropertiesIn.faceCulling(), GL11.GL_CCW);
 
 			gameItemPropertiesIn.mesh().attach();
@@ -550,7 +546,7 @@ public class SceneRenderer
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.shadowMap.depthMapTexture()); // this.shadowMap.depthMapTexture().attach();
 
 		this.advInstancedShader.attach();
-		this.world.draw(null, null);
+		this.world.worldRenderer().draw(null, null);
 		this.shadersManager.detach();
 		GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 	}
@@ -560,7 +556,7 @@ public class SceneRenderer
 		this.shaderAnimatedBasic.attach();
 		this.shaderAnimatedBasic.ambientLight().load(sceneIn.sceneLights().ambientLight());
 		((GLUniformDirectionalLight) this.shaderAnimatedBasic.directionalLight())
-				.load(sceneIn.sceneLights().directionalLight(), sceneIn.camera().view());
+				.load(sceneIn.sceneLights().directionalLight(), sceneIn.playerEntity().view());
 		this.shaderAnimatedBasic.specularPower().load(sceneIn.sceneLights().specularPower());
 		this.shaderAnimatedBasic.orthoProjection().load(SceneRenderer.orthoProjMatrix);
 		this.shaderAnimatedBasic.selectedJointMatrix().load(-2.0f);// (float) Scene.selectedJointMatrix);
@@ -568,8 +564,7 @@ public class SceneRenderer
 		this.shaderAnimatedBasic.pointLights().load(sceneIn.sceneLights().pointLights());
 		this.shaderAnimatedBasic.spotLights().load(sceneIn.sceneLights().spotLights());
 
-		sceneIn.sceneItems().executeAnimated((gameItemPropertiesIn, gameItemsIn) ->
-		{
+		sceneIn.sceneItems().executeAnimated((gameItemPropertiesIn, gameItemsIn) -> {
 			for (final IMaterialMesh mesh : gameItemPropertiesIn.meshes())
 			{
 				final var material = mesh.material();
@@ -618,9 +613,9 @@ public class SceneRenderer
 
 	public final void cleanup()
 	{
-		if (this.nanoVG != null)
+		/**if (this.nanoVG != null)
 		{
 			this.nanoVG.cleanup();
-		}
+		}**/
 	}
 }

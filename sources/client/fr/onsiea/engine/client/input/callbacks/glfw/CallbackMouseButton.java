@@ -16,7 +16,7 @@ public class CallbackMouseButton extends GLFWMouseButtonCallback implements ICle
 {
 	private Cursor					cursor;
 
-	private boolean					updated;
+	private boolean					isUpdated;
 	private Map<Integer, Button>	buttons;
 
 	public CallbackMouseButton(Cursor cursorIn)
@@ -72,12 +72,12 @@ public class CallbackMouseButton extends GLFWMouseButtonCallback implements ICle
 	@Override
 	public boolean isUpdated()
 	{
-		return this.updated;
+		return this.isUpdated;
 	}
 
 	public void updated(boolean updatedIn)
 	{
-		this.updated = updatedIn;
+		this.isUpdated = updatedIn;
 	}
 
 	private Map<Integer, Button> buttons()

@@ -38,17 +38,43 @@ import fr.onsiea.engine.utils.registry.IRegistry;
 public interface ITexturesManager<T extends ITextureSettings<T>> extends IRegistry<Texture<T>>
 {
 
+	/**
+	 * Reset bind texture index on 0
+	 * @return
+	 */
+	ITexturesManager<T> resetIndex();
+
+	Texture<T> load(String filepathIn);
+
 	Texture<T> load(String filepathIn, ITextureSettings<T> settingsIn);
+
+	Texture<T> load(IResourcesPath resourcepathIn);
 
 	Texture<T> load(IResourcesPath resourcepathIn, ITextureSettings<T> settingsIn);
 
+	Texture<T> load(String nameIn, IResourcesPath resourcepathIn);
+
 	Texture<T> load(String nameIn, IResourcesPath resourcepathIn, ITextureSettings<T> settingsIn);
+
+	Texture<T> load(String nameIn, String filepathIn);
 
 	Texture<T> load(String nameIn, String filepathIn, ITextureSettings<T> settingsIn);
 
+	Texture<T> load(String nameIn, String... filepathsIn);
+
 	Texture<T> load(String nameIn, ITextureSettings<T> settingsIn, String... filepathsIn);
+
+	Texture<T> load(String nameIn, IResourcesPath... resourcespathsIn);
 
 	Texture<T> load(String nameIn, ITextureSettings<T> settingsIn, IResourcesPath... resourcespathsIn);
 
+	Texture<T> load(String nameIn, ByteBuffer pixelsIn, int widthIn, int heightIn);
+
 	Texture<T> load(String nameIn, ByteBuffer pixelsIn, int widthIn, int heightIn, ITextureSettings<T> settingsIn);
+
+	Texture<T> load(String nameIn, ITextureData textureDataIn);
+
+	Texture<T> load(String nameIn, ITextureData textureDataIn, ITextureSettings<T> settingsIn);
+
+	ITextureSettings<T> defaultTextureSettings();
 }

@@ -39,7 +39,7 @@
  */
 package fr.onsiea.engine.common;
 
-import org.joml.Quaternionf;
+import org.lwjgl.glfw.GLFW;
 
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.glfw.GLFWManager;
@@ -68,56 +68,52 @@ import lombok.Setter;
 @Setter(value = AccessLevel.PRIVATE)
 public class OnsieaGearings
 {
-	private IGameLogic					gameLogic;
-	private GameOptions					options;
-	private String[]					args;
+	private IGameLogic			gameLogic;
+	private GameOptions			options;
+	private String[]			args;
 
-	private boolean						running;
+	private boolean				running;
 
-	private GLFWManager					glfwManager;
-	private SoundManager				soundManager;
-	private IWindow						window;
-	private Timer						timer;
-	private Timer						inputTimer;
-	private Timer						framerateCounterTimer;
-	private IRenderAPIContext			renderAPIContext;
-	private Renderer					renderer;
+	private GLFWManager			glfwManager;
+	private SoundManager		soundManager;
+	private IWindow				window;
+	private Timer				timer;
+	private Timer				inputTimer;
+	private Timer				framerateCounterTimer;
+	private IRenderAPIContext	renderAPIContext;
+	private Renderer			renderer;
 
-	private double						refreshRate;
-	private double						updateRate;
-	private double						inputRate;
-	private double						secsPerFrame;
-	private double						secsPerUpdate;
-	private double						secsPerInput;
-	private double						elapsedTime;
-	private double						accumulator			= 0.0D;
-	private int							framerateCounter	= 0;
-	private int							framerateValue		= 0;
-	private double						loopStartTime;
-
-	private final static Quaternionf	rotationQ			= new Quaternionf();
-
-	public final static void rotate(final float x, final float y, final float z)
+	@Getter
+	public final static class DataCounter
 	{
-		// Use modulus to fix values to below 360 then convert values to radians
-		final var	newX			= (float) Math.toRadians(x % 360);
-		final var	newY			= (float) Math.toRadians(y % 360);
-		final var	newZ			= (float) Math.toRadians(z % 360);
-
-		// Create a quaternion with the delta rotation values
-		final var	rotationDelta	= new Quaternionf();
-		rotationDelta.rotationXYZ(newX, newY, newZ);
-
-		// Calculate the inverse of the delta quaternion
-		final var conjugate = rotationDelta.conjugate();
-
-		// Multiply this transform by the rotation delta quaternion and its inverse
-		OnsieaGearings.rotationQ.mul(rotationDelta).mul(conjugate);
+		double	refreshRate;
+		double	updateRate;
+		double	inputRate;
+		double	secsPerFrame;
+		double	secsPerUpdate;
+		double	secsPerInput;
+		double	elapsedTime;
+		double	accumulator			= 0.0D;
+		int		framerateCounter	= 0;
+		int		framerateValue		= 0;
+		double	loopStartTime;
 	}
+
+	private @Getter DataCounter dataCounter;
 
 	public final static OnsieaGearings start(final IGameLogic gameLogicIn, final GameOptions optionsIn,
 			final String[] argsIn) throws Exception
 	{
+		/**{
+			final var root = new File("./");
+		
+			for (final File file : root.listFiles())
+			{
+				System.out.println(file.getAbsolutePath());
+		
+			}
+		}**/
+
 		return new OnsieaGearings(gameLogicIn, optionsIn, argsIn);
 	}
 
@@ -148,17 +144,22 @@ public class OnsieaGearings
 
 				this.gameLogic().preInitialization();
 				final var windowContext = new GLWindowContext();
-				this.glfwManager(new GLFWManager().initialization(
-						WindowSettings.Builder.base("Onsiea Engine !", 1920, 1080, 60, WindowShowType.WINDOWED)
-								.mustMaximized(true).mustFocusOnShow(true).create(),
-						windowContext));
+				this.glfwManager(
+						new GLFWManager().initialization(
+								WindowSettings.Builder
+										.base("Onsiea Engine !", GraphicsConstants.DEFAULT_WIDTH,
+												GraphicsConstants.DEFAULT_HEIGHT, 60, WindowShowType.WINDOWED_WIDE)
+										.mustMaximized(false).mustFocusOnShow(true).mustIconify(true)
+										.mustBeFocused(false).mustFloating(false).mustScaleToMonitor(false).create(),
+								windowContext));
 				this.window(this.glfwManager().window());
-				this.glfwManager().inputManager().cursor().blockedPosition(this.window().settings().width() / 2.0D,
+				GLFW.glfwRequestWindowAttention(((Window) this.window).handle());
+				this.glfwManager().inputManager().cursor().blockedPosition(this.window().effectiveWidth() / 2.0D,
 						this.window().settings().height() / 2.0D);
 				this.glfwManager().inputManager().cursor().mustBeBlocked();
 				this.renderAPIContext	= windowContext.context();
 				this.renderer			= new Renderer(this.renderAPIContext);
-				this.gameLogic().initialization(this.window, this.renderAPIContext);
+				this.gameLogic().initialization(this.window, this.renderAPIContext, this.glfwManager().inputManager());
 			}
 
 			{
@@ -166,12 +167,13 @@ public class OnsieaGearings
 				this.inputTimer(new Timer());
 				this.framerateCounterTimer(new Timer());
 
-				this.refreshRate(60.0D);
-				this.updateRate(60.0D);
-				this.inputRate(60.00D);
-				this.secsPerFrame(1.0d / this.refreshRate());
-				this.secsPerUpdate(1.0d / this.updateRate());
-				this.secsPerInput(1.0d / this.inputRate());
+				this.dataCounter				= new DataCounter();
+				this.dataCounter.refreshRate	= 60.0D;
+				this.dataCounter.updateRate		= 60.0D;
+				this.dataCounter.inputRate		= 60.0D;
+				this.dataCounter.secsPerFrame	= 1.0d / this.dataCounter.refreshRate;
+				this.dataCounter.secsPerUpdate	= 1.0d / this.dataCounter.updateRate;
+				this.dataCounter.secsPerInput	= 1.0d / this.dataCounter.inputRate;
 			}
 
 			this.loop();
@@ -179,7 +181,8 @@ public class OnsieaGearings
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-		} finally
+		}
+		finally
 		{
 			this.cleanup();
 		}
@@ -191,9 +194,9 @@ public class OnsieaGearings
 
 		while (this.running() && !this.window().shouldClose())
 		{
-			this.loopStartTime = System.nanoTime();
-			this.elapsedTime(this.timer().time() / 1_000_000_000D);
-			this.accumulator += this.elapsedTime;
+			this.dataCounter.loopStartTime	= System.nanoTime();
+			this.dataCounter.elapsedTime	= this.timer().time() / 1_000_000_000D;
+			this.dataCounter.accumulator	+= this.dataCounter.elapsedTime;
 
 			this.runtime();
 		}
@@ -205,16 +208,16 @@ public class OnsieaGearings
 		this.glfwManager().inputManager().update();
 		this.gameLogic().highRateInput();
 
-		if (this.inputTimer().isTime((long) (this.secsPerInput() * 1_000_000_000L)))
+		if (this.inputTimer().isTime((long) (this.dataCounter.secsPerInput() * 1_000_000_000L)))
 		{
 			this.gameLogic().input(this.window(), this.glfwManager().inputManager());
 		}
 
-		while (this.accumulator >= this.secsPerUpdate())
+		while (this.dataCounter.accumulator >= this.dataCounter.secsPerUpdate())
 		{
-			this.gameLogic().update();
+			this.gameLogic().update(this.dataCounter);
 
-			this.accumulator -= this.secsPerUpdate();
+			this.dataCounter.accumulator -= this.dataCounter.secsPerUpdate();
 		}
 
 		this.gameLogic().draw(this.window(), this.renderAPIContext, this.renderer);
@@ -224,15 +227,15 @@ public class OnsieaGearings
 
 		if (!((Window) this.window()).settings().mustBeSynchronized())
 		{
-			this.sync(this.loopStartTime, this.secsPerFrame());
+			this.sync(this.dataCounter.loopStartTime, this.dataCounter.secsPerFrame());
 		}
 
 		if (this.framerateCounterTimer().isTime(1_000_000_000L))
 		{
-			this.framerateValue(this.framerateCounter);
-			this.framerateCounter(0);
+			this.dataCounter.framerateValue		= this.dataCounter.framerateCounter;
+			this.dataCounter.framerateCounter	= 0;
 		}
-		this.framerateCounter++;
+		this.dataCounter.framerateCounter++;
 	}
 
 	public final static void sleep(final long timeIn)

@@ -35,25 +35,94 @@ import java.nio.ByteBuffer;
 public interface ITexture
 {
 	/**
+	 * @return id of texture
+	 */
+	int id();
+
+	/**
+	 * Reset bind texture index on 0
+	 * @return
+	 */
+	ITexture resetIndex();
+
+	/**
 	 * Attach (bind) texture to futur draw call
 	 * @return
 	 */
 	ITexture attach();
 
 	/**
-	 * @return Texture identifier (int)
-	 */
-	int id();
-
-	/**
-	 * @param byteBufferIn
-	 */
-	void send(ByteBuffer byteBufferIn);
-
-	/**
-	 * Detach (unbind) texture to futur draw call
+	 * Attach (bind) texture at 0 to futur draw call
 	 * @return
 	 */
+	ITexture attachAt0();
+
+	/**
+	 * Attach (bind) texture at indexIn to futur draw call
+	 * @return
+	 */
+	ITexture attachAt(int indexIn);
+
+	/**
+	 * Attach (bind) texture of type to futur draw call
+	 * @return
+	 */
+	ITexture attach(int typeIn);
+
+	/**
+	 * Attach (bind) texture of type at 0 to futur draw call
+	 * @return
+	 */
+	ITexture attachAt0(int typeIn);
+
+	/**
+	 * Attach (bind) texture of type at indexIn to futur draw call
+	 * @return
+	 */
+	ITexture attachAt(int typeIn, int indexIn);
+
+	/**
+	 * Send bufferIn byte data into texture (need to bind texture)
+	 * @param bufferIn
+	 * @return
+	 */
+	ITexture send(final ByteBuffer bufferIn);
+
+	/**
+	 * detach (bind) texture of type at indexIn
+	 * @return
+	 */
+	ITexture detachAt(int typeIn, int indexIn);
+
+	/**
+	 * detach (bind) texture of type at 0
+	 * @return
+	 */
+	ITexture detachAt0(int typeIn);
+
+	/**
+	 * detach (bind) texture of type
+	 * @return
+	 */
+	ITexture detach(int typeIn);
+
+	/**
+	 * detach (bind) texture at indexIn
+	 * @return
+	 */
+	ITexture detachAt(int indexIn);
+
+	/**
+	 * detach (bind) texture at 0
+	 * @return
+	 */
+	ITexture detachAt0();
+
+	/**
+	 * detach (bind) texture
+	 * @return
+	 */
+
 	ITexture detach();
 
 	int width();

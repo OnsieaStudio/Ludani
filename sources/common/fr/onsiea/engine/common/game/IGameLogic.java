@@ -30,6 +30,7 @@ import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.render.Renderer;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
+import fr.onsiea.engine.common.OnsieaGearings.DataCounter;
 
 /**
  * @author Seynax
@@ -46,7 +47,8 @@ public interface IGameLogic
 	 * @return
 	 * @throws Exception
 	 */
-	boolean initialization(IWindow windowIn, IRenderAPIContext renderAPIContextIn) throws Exception;
+	boolean initialization(IWindow windowIn, IRenderAPIContext renderAPIContextIn, InputManager inputManagerIn)
+			throws Exception;
 
 	void highRateInput();
 
@@ -56,7 +58,7 @@ public interface IGameLogic
 	 */
 	void input(IWindow windowIn, InputManager inputManagerIn);
 
-	void update();
+	void update(DataCounter dataCounterIn);
 
 	/**
 	 * @param windowIn

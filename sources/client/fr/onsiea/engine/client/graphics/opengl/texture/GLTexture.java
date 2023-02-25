@@ -37,6 +37,7 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
 import fr.onsiea.engine.client.graphics.opengl.texture.utils.GLTextureUtils;
+import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.texture.ITextureData;
 import fr.onsiea.engine.client.graphics.texture.ITextureSettings;
 import fr.onsiea.engine.client.graphics.texture.Texture;
@@ -57,7 +58,7 @@ public class GLTexture extends Texture<GLTextureSettings>
 	/**
 	 * @param settingsIn
 	 */
-	protected GLTexture(ITextureSettings<GLTextureSettings> settingsIn, ITextureData... texturesIn)
+	protected GLTexture(final ITextureSettings<GLTextureSettings> settingsIn, final ITextureData... texturesIn)
 	{
 		super(settingsIn, texturesIn);
 	}
@@ -66,7 +67,8 @@ public class GLTexture extends Texture<GLTextureSettings>
 	 * @param textureIdIn
 	 * @param settingsIn
 	 */
-	protected GLTexture(int textureIdIn, int widthIn, int heightIn, ITextureSettings<GLTextureSettings> settingsIn)
+	protected GLTexture(final int textureIdIn, final int widthIn, final int heightIn,
+			final ITextureSettings<GLTextureSettings> settingsIn)
 	{
 		super(textureIdIn, widthIn, heightIn, settingsIn);
 	}
@@ -92,8 +94,7 @@ public class GLTexture extends Texture<GLTextureSettings>
 				this.settings.target(GL13.GL_TEXTURE_CUBE_MAP);
 			}
 
-			this.load(() ->
-			{
+			this.load(() -> {
 				for (var i = 0; i < this.textures.length; i++)
 				{
 					final var textureData = this.textures[i];
@@ -125,14 +126,14 @@ public class GLTexture extends Texture<GLTextureSettings>
 		}
 	}
 
-	private void load(ByteBuffer bufferIn)
+	private void load(final ByteBuffer bufferIn)
 	{
 		this.load(() -> GL11.glTexImage2D(this.settings.target(), this.settings.level(), this.settings.internalFormat(),
 				this.textures[0].width(), this.textures[0].height(), this.settings.border(), this.settings.format(),
 				this.settings.type(), bufferIn));
 	}
 
-	private void load(IFunction toLoadIn)
+	private void load(final IFunction toLoadIn)
 	{
 		GL11.glBindTexture(this.settings.target(), this.id());
 		GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, this.settings.pixelStoreAlignement());
@@ -170,14 +171,41 @@ public class GLTexture extends Texture<GLTextureSettings>
 	}
 
 	@Override
-	public GLTexture attach()
+	public ITexture resetIndex()
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+
+		return this;
+	}
+
+	@Override
+	public ITexture attach()
 	{
 		GL11.glBindTexture(this.settings.target(), this.id);
 
 		return this;
 	}
 
-	public GLTexture attach(int typeIn)
+	@Override
+	public ITexture attachAt0()
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(this.settings.target(), this.id);
+
+		return this;
+	}
+
+	@Override
+	public ITexture attachAt(final int indexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + indexIn);
+		GL11.glBindTexture(this.settings.target(), this.id);
+
+		return this;
+	}
+
+	@Override
+	public ITexture attach(final int typeIn)
 	{
 		GL11.glBindTexture(typeIn, this.id);
 
@@ -185,7 +213,25 @@ public class GLTexture extends Texture<GLTextureSettings>
 	}
 
 	@Override
-	public GLTexture send(ByteBuffer bufferIn)
+	public ITexture attachAt0(final int typeIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(typeIn, this.id);
+
+		return this;
+	}
+
+	@Override
+	public ITexture attachAt(final int typeIn, final int indexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + indexIn);
+		GL11.glBindTexture(typeIn, this.id);
+
+		return this;
+	}
+
+	@Override
+	public ITexture send(final ByteBuffer bufferIn)
 	{
 		this.attach();
 
@@ -198,7 +244,51 @@ public class GLTexture extends Texture<GLTextureSettings>
 	}
 
 	@Override
-	public GLTexture detach()
+	public ITexture detachAt(final int typeIn, final int indexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + indexIn);
+		GL11.glBindTexture(typeIn, 0);
+
+		return this;
+	}
+
+	@Override
+	public ITexture detachAt0(final int typeIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(typeIn, this.id);
+
+		return this;
+	}
+
+	@Override
+	public ITexture detach(final int typeIn)
+	{
+		GL11.glBindTexture(typeIn, 0);
+
+		return this;
+	}
+
+	@Override
+	public ITexture detachAt(final int indexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + indexIn);
+		GL11.glBindTexture(this.settings.target(), 0);
+
+		return this;
+	}
+
+	@Override
+	public ITexture detachAt0()
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(this.settings.target(), 0);
+
+		return this;
+	}
+
+	@Override
+	public ITexture detach()
 	{
 		GL11.glBindTexture(this.settings.target(), 0);
 
@@ -228,7 +318,7 @@ public class GLTexture extends Texture<GLTextureSettings>
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (this == obj)
 		{
@@ -240,5 +330,23 @@ public class GLTexture extends Texture<GLTextureSettings>
 		}
 		final var other = (GLTexture) obj;
 		return this.id == other.id;
+	}
+
+	/**
+	 * WorkInProgress
+	 */
+	@Override
+	public int width()
+	{
+		return -1;
+	}
+
+	/**
+	 * WorkInProgress
+	 */
+	@Override
+	public int height()
+	{
+		return -1;
 	}
 }

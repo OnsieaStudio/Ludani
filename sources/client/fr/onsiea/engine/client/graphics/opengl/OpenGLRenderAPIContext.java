@@ -64,7 +64,11 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 {
 	public final static OpenGLRenderAPIContext create() throws IllegalStateException, Exception
 	{
-		return new OpenGLRenderAPIContext(OpenGLInitializer.initialize());
+		final var context = new OpenGLRenderAPIContext(OpenGLInitializer.initialize());
+
+		GraphicsUtils.set(context);
+
+		return context;
 	}
 
 	private GLCapabilities						capabilities;
@@ -82,7 +86,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 	 * @param capabilitiesIn
 	 * @throws Exception
 	 */
-	private OpenGLRenderAPIContext(GLCapabilities capabilitiesIn) throws Exception
+	private OpenGLRenderAPIContext(final GLCapabilities capabilitiesIn) throws Exception
 	{
 		this.capabilities(capabilitiesIn);
 		this.settings(new OpenGLSettings(this));
@@ -99,14 +103,14 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		this.settings().user().enable("mustAnisotropyTextureFiltering").set("anisotropyTextureFilteringAmount", 4.0f);
 
 		this.shadersManager(new GLShaderManager());
-		this.texturesManager(new GLTexturesManager());
+		this.texturesManager(new GLTexturesManager(this));
 
 		this.meshsManager(new GLMeshManager(new NormalMappedObjLoader()));
 
 		// Set the clear color
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+		// GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 
 		// Support for transparencies
 		GL11.glEnable(GL11.GL_BLEND);
@@ -184,7 +188,7 @@ public class OpenGLRenderAPIContext implements IRenderAPIContext
 		GL.setCapabilities(null);
 	}
 
-	public void deleteTextures(Collection<Texture<?>> valuesIn)
+	public void deleteTextures(final Collection<Texture<?>> valuesIn)
 	{
 		final var texturesBuffer = MemoryUtil.memAllocInt(valuesIn.size());
 

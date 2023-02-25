@@ -139,7 +139,7 @@ public class FBO
 	public void stop(IWindow windowIn)
 	{
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, windowIn.settings().width(), windowIn.settings().height());
+		GL11.glViewport(0, 0, windowIn.effectiveWidth(), windowIn.effectiveHeight());
 	}
 
 	/**
@@ -166,8 +166,8 @@ public class FBO
 		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
 		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, this.frameBuffer());
 		GL11.glDrawBuffer(GL11.GL_BACK);
-		GL30.glBlitFramebuffer(0, 0, this.width(), this.height(), 0, 0, windowIn.settings().width(),
-				windowIn.settings().height(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+		GL30.glBlitFramebuffer(0, 0, this.width(), this.height(), 0, 0, windowIn.effectiveWidth(),
+				windowIn.effectiveHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
 		this.stop(windowIn);
 	}
 

@@ -40,15 +40,18 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class Shader3DTo2D extends GLShaderProgram
 {
-	private final IShaderTypedUniform<Matrix4f> transformations;
+	private final IShaderTypedUniform<Matrix4f>	projections;
+	private final IShaderTypedUniform<Matrix4f>	transformations;
 
 	/**
 	 * @throws Exception
 	 */
 	public Shader3DTo2D() throws Exception
 	{
-		super("3DTo2D", "resources/shaders/vertex.vs", "resources/shaders/fragment.fs", "position");
+		super("shader3Dto2D", "resources/shaders/VertexShader3Dto2D", "resources/shaders/FragmentShader3Dto2D",
+				"in_position", "in_uvs");
 
-		this.transformations = this.matrix4fUniform("transformations");
+		this.projections		= this.matrix4fUniform("projections");
+		this.transformations	= this.matrix4fUniform("transformations");
 	}
 }

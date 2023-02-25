@@ -60,12 +60,13 @@ public class GLWindowContext implements IWindowContext
 	}
 
 	@Override
-	public IRenderAPIContext associate(long handleIn, IWindow windowIn) throws IllegalStateException, Exception
+	public IRenderAPIContext associate(final long handleIn, final IWindow windowIn)
+			throws IllegalStateException, Exception
 	{
 		GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_OPENGL_API);
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_CREATION_API, GLFW.GLFW_NATIVE_CONTEXT_API);
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
-		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 3);
 		// GLFW.glfwWindowHint(GLFW.GLFW_VERSION_MAJOR, 0);
 		// GLFW.glfwWindowHint(GLFW.GLFW_VERSION_MINOR, 0);
 		//GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_ROBUSTNESS, 0);

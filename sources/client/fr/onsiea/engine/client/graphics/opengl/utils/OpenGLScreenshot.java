@@ -84,8 +84,8 @@ public class OpenGLScreenshot
 	public final static void resize(final Window windowIn)
 	{
 		OpenGLScreenshot.pixels(MemoryUtil
-				.memAlloc(windowIn.settings().width() * windowIn.settings().height() * OpenGLScreenshot.bpp()));
-		OpenGLScreenshot.bufferedImage(new BufferedImage(windowIn.settings().width(), windowIn.settings().height(),
+				.memAlloc(windowIn.effectiveWidth() * windowIn.effectiveHeight() * OpenGLScreenshot.bpp()));
+		OpenGLScreenshot.bufferedImage(new BufferedImage(windowIn.effectiveWidth(), windowIn.effectiveHeight(),
 				BufferedImage.TYPE_INT_RGB));
 	}
 
@@ -95,7 +95,7 @@ public class OpenGLScreenshot
 
 		OpenGLScreenshot.pixels().clear();
 
-		GL11.glReadPixels(0, 0, windowIn.settings().width(), windowIn.settings().height(), GL11.GL_RGBA,
+		GL11.glReadPixels(0, 0, windowIn.effectiveWidth(), windowIn.effectiveHeight(), GL11.GL_RGBA,
 				GL11.GL_UNSIGNED_BYTE, OpenGLScreenshot.pixels());
 
 		return OpenGLScreenshot.pixels();
@@ -104,13 +104,13 @@ public class OpenGLScreenshot
 	public final static Texture<?> intoTexture(final Window windowIn)
 	{
 		return OpenGLScreenshot.texturesManager.load(DateUtils.getDate(), OpenGLScreenshot.pixels(windowIn),
-				windowIn.settings().width(), windowIn.settings().height(), null);
+				windowIn.effectiveWidth(), windowIn.effectiveHeight(), null);
 	}
 
 	public final static Texture<?> intoTexture(final ByteBuffer pixelsIn, final Window windowIn)
 	{
-		return OpenGLScreenshot.texturesManager.load(DateUtils.getDate(), pixelsIn, windowIn.settings().width(),
-				windowIn.settings().height(), null);
+		return OpenGLScreenshot.texturesManager.load(DateUtils.getDate(), pixelsIn, windowIn.effectiveWidth(),
+				windowIn.effectiveHeight(), null);
 	}
 
 	public static boolean write(final BufferedImage bufferedImageIn)
@@ -149,7 +149,7 @@ public class OpenGLScreenshot
 		{
 			for (var y = OpenGLScreenshot.bufferedImage().getHeight() - 1; y >= 0; y--)
 			{
-				final var i = (x + windowIn.settings().width() * y) * OpenGLScreenshot.bpp();
+				final var i = (x + windowIn.effectiveWidth() * y) * OpenGLScreenshot.bpp();
 				OpenGLScreenshot.bufferedImage().setRGB(x, OpenGLScreenshot.bufferedImage().getHeight() - 1 - y,
 						(pixels.get(i) & 0xFF & 0x0ff) << 16 | (pixels.get(i + 1) & 0xFF & 0x0ff) << 8
 								| pixels.get(i + 2) & 0xFF & 0x0ff);
@@ -161,14 +161,14 @@ public class OpenGLScreenshot
 
 	public static BufferedImage image(final ByteBuffer pixelsIn, final Window windowIn)
 	{
-		final var bufferedImage = new BufferedImage(windowIn.settings().width(), windowIn.settings().height(),
+		final var bufferedImage = new BufferedImage(windowIn.effectiveWidth(), windowIn.effectiveHeight(),
 				BufferedImage.TYPE_INT_RGB);
 
 		for (var x = bufferedImage.getWidth() - 1; x >= 0; x--)
 		{
 			for (var y = bufferedImage.getHeight() - 1; y >= 0; y--)
 			{
-				final var i = (x + windowIn.settings().width() * y) * OpenGLScreenshot.bpp();
+				final var i = (x + windowIn.effectiveWidth() * y) * OpenGLScreenshot.bpp();
 				bufferedImage.setRGB(x, bufferedImage.getHeight() - 1 - y, (pixelsIn.get(i) & 0xFF & 0x0ff) << 16
 						| (pixelsIn.get(i + 1) & 0xFF & 0x0ff) << 8 | pixelsIn.get(i + 2) & 0xFF & 0x0ff);
 			}

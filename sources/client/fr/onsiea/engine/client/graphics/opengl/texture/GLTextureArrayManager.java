@@ -3,47 +3,62 @@ package fr.onsiea.engine.client.graphics.opengl.texture;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.onsiea.engine.client.graphics.texture.ITextureData;
+
 public class GLTextureArrayManager
 {
 	private GLTextureArray	textureArray;
 	private List<String>	layers;
 	private int				layer;
 
-	public GLTextureArrayManager(int levelsIn, int sizeXIn, int sizeYIn, int depthIn)
+	public GLTextureArrayManager(final int levelsIn, final int sizeXIn, final int sizeYIn, final int depthIn)
 	{
 		this.textureArray(new GLTextureArray(levelsIn, sizeXIn, sizeYIn, depthIn));
 		this.layers(new ArrayList<>());
 		this.layer(0);
 	}
 
-	GLTextureArrayManager(GLTextureArray textureArrayIn)
+	GLTextureArrayManager(final GLTextureArray textureArrayIn)
 	{
 		this.textureArray(textureArrayIn);
 		this.layers(new ArrayList<>());
 		this.layer(0);
 	}
 
-	public GLTextureArrayManager send(String texturefilepathIn)
+	public int send(final String texturefilepathIn)
 	{
 		this.textureArray().send(texturefilepathIn, this.layer());
 		this.layers().add(texturefilepathIn);
 
+		final var layer = this.layer;
 		this.increaseLayer();
 
-		return this;
+		return layer;
 	}
 
-	public GLTextureArrayManager send(String nameIn, String texturefilepathIn)
+	public int send(final String nameIn, final String texturefilepathIn)
 	{
 		this.textureArray().send(texturefilepathIn, this.layer());
 		this.layers().add(nameIn);
 
+		final var layer = this.layer;
 		this.increaseLayer();
 
-		return this;
+		return layer;
 	}
 
-	public int layerOf(String nameIn)
+	public int send(final String nameIn, final ITextureData textureDataIn)
+	{
+		this.textureArray().send(textureDataIn, this.layer());
+		this.layers().add(nameIn);
+
+		final var layer = this.layer;
+		this.increaseLayer();
+
+		return layer;
+	}
+
+	public int layerOf(final String nameIn)
 	{
 		var i = 0;
 
@@ -69,7 +84,7 @@ public class GLTextureArrayManager
 		return this.textureArray;
 	}
 
-	private void textureArray(GLTextureArray textureArrayIn)
+	private void textureArray(final GLTextureArray textureArrayIn)
 	{
 		this.textureArray = textureArrayIn;
 	}
@@ -79,7 +94,7 @@ public class GLTextureArrayManager
 		return this.layers;
 	}
 
-	private void layers(List<String> layersIn)
+	private void layers(final List<String> layersIn)
 	{
 		this.layers = layersIn;
 	}
@@ -89,7 +104,7 @@ public class GLTextureArrayManager
 		return this.layer;
 	}
 
-	private void layer(int layerIn)
+	private void layer(final int layerIn)
 	{
 		this.layer = layerIn;
 	}

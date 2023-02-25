@@ -39,33 +39,33 @@
  */
 package fr.onsiea.engine.game.world;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.joml.Random;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import fr.onsiea.engine.client.graphics.material.Material;
-import fr.onsiea.engine.client.graphics.opengl.shaders.AdvInstancedShader;
-import fr.onsiea.engine.client.graphics.opengl.texture.GLTextureArray;
-import fr.onsiea.engine.client.graphics.opengl.texture.GLTextureArrayManager;
+import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.shader.IShadersManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.core.entity.PlayerEntity;
 import fr.onsiea.engine.game.world.chunk.Chunk;
-import fr.onsiea.engine.game.world.chunk.culling.CoordinateDistanceCulling;
-import fr.onsiea.engine.game.world.chunk.culling.CubeDistanceCulling;
 import fr.onsiea.engine.game.world.chunk.culling.CullingManager;
 import fr.onsiea.engine.game.world.chunk.culling.FrustumCulling;
-import fr.onsiea.engine.game.world.chunk.culling.SquareDistanceCulling;
 import fr.onsiea.engine.game.world.item.Item;
 import fr.onsiea.engine.game.world.item.Item.ItemType;
+import fr.onsiea.engine.game.world.item.Item.ItemTypeVariant;
+import fr.onsiea.engine.game.world.item.ItemsLoader;
 import fr.onsiea.engine.game.world.picking.Picker;
+import fr.onsiea.engine.game.world.renderer.WorldRenderer;
 import fr.onsiea.engine.utils.maths.MathInstances;
-import lombok.AccessLevel;
+import fr.onsiea.engine.utils.maths.MathUtils;
+import fr.onsiea.engine.utils.time.Timer;
 import lombok.Getter;
 
 /**
@@ -74,140 +74,135 @@ import lombok.Getter;
  */
 public class World
 {
-	private final Map<Vector3f, Chunk>				chunks;
-
-	private @Getter(AccessLevel.PUBLIC) final long	seed;
-	private final CullingManager					cullingManager;
-	private final FrustumCulling					frustumCulling;
-	private ItemType								itemType;
-	private final boolean							cullingTest	= true;
-	private static final Vector3f					chunkSize	= new Vector3f(16.0f, 16.0f, 16.0f);
-	private boolean									hasPress;
-	private boolean									hasPress0;
-	private final Picker							picker;
-	private final Selection							selection;
-	private final AdvInstancedShader				advInstancedShader;
-	private GLTextureArray								textureArray;
+	private final WorldInformations		worldInformations;
+	private final @Getter WorldRenderer	worldRenderer;
 
 	public World(final IShadersManager shadersManagerIn, final IRenderAPIContext renderAPIContextIn,
-			final Camera cameraIn)
+			final PlayerEntity playerEntityIn, final IWindow windowIn)
 	{
 		MathInstances.random().setSeed(Random.newSeed() * 49331L);
-		this.seed	= MathInstances.random().nextLong();
-		this.chunks	= new HashMap<>();
 
-		this.gen(renderAPIContextIn, cameraIn);
-		this.cullingManager	= new CullingManager(new CoordinateDistanceCulling(8 * 16),
-				new SquareDistanceCulling(6 * 16), new CubeDistanceCulling(4 * 16));
-		this.frustumCulling	= new FrustumCulling();
-		this.picker			= new Picker();
-		this.selection		= new Selection();
+		this.worldInformations	= new WorldInformations();
 
-		try
-		{
-			this.itemType = new ItemType("cube0",
-					renderAPIContextIn.meshsManager().load("resources\\models\\cube2.obj"),
-					new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), new Material());
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
+		this.worldRenderer		= new WorldRenderer(this.worldInformations, renderAPIContextIn);
 
-		this.advInstancedShader = (AdvInstancedShader) renderAPIContextIn.shadersManager().get("advInstanced");
-		
-		final var texturesArrayManager = new GLTextureArrayManager(5, 16, 16, 5);
-		texturesArrayManager.send("resources\\textures\\instanced0.png");
-		texturesArrayManager.send("resources\\textures\\instanced1.png");
-		texturesArrayManager.send("resources\\textures\\instanced2.png");
-		texturesArrayManager.send("resources\\textures\\instanced3.png");
-		this.textureArray = texturesArrayManager.textureArray();
+		this.gen(renderAPIContextIn, playerEntityIn);
+
+		//picker.updateProjection(MathInstances.projectionMatrix());
+		//picker.updateClipAndEyeCoords(windowIn.effectiveWidth()/2.0f, windowIn.effectiveHeight()/2.0f, windowIn.settings().width(), windowIn.settings().height(), 16.0f, 16.0f);
 	}
 
-	public void gen(final IRenderAPIContext renderAPIContextIn, final Camera cameraIn)
+	public final ItemTypeVariant randomVariant()
 	{
-		for (var x = -16; x < 16; x++)
+		if (this.itemsLoader().items().size() - 1 < 0)
 		{
-			for (var z = -16; z < 16; z++)
+			return null;
+		}
+
+		final var index = MathUtils.randomInt(0, this.itemsLoader().items().size() - 1);
+
+		return this.itemsLoader().items().get(index);
+	}
+
+	public void gen(final IRenderAPIContext renderAPIContextIn, final PlayerEntity playerEntityIn)
+	{
+		final Map<ItemType, List<Item>> typedItems = new HashMap<>();
+		for (var x = 0; x < 8; x++)
+		{
+			for (var z = 0; z < 8; z++)
 			{
 				final var	position	= new Vector3f(x, 0, z);
-				final var	chunk		= new Chunk(this, position);
-				final var	items		= new Item[16 * 16];
 
-				var			i			= 0;
-				for (var x0 = 0; x0 < 16; x0++)
+				final var	chunk		= new Chunk(this, position);
+
+				for (var x0 = 0; x0 < 16; x0 += 1)
 				{
-					for (var z0 = 0; z0 < 16; z0++)
+					for (var z0 = 0; z0 < 16; z0 += 1)
 					{
-						final var item = new Item(this.itemType, new Vector3f(x0 * 2 + x * 16, 0, z0 * 2 + z * 16),
-								new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
-						items[i] = item;
-						i++;
+						final var variant = this.itemsLoader().items().get(0); //.randomVariant();
+						if (variant == null)
+						{
+							continue;
+						}
+
+						var items = typedItems.get(variant.itemType());
+
+						if (items == null)
+						{
+							items = new ArrayList<>();
+							typedItems.put(variant.itemType(), items);
+						}
+
+						items.add(new Item(variant, new Vector3f(x0 + x * 16, 0, z0 + z * 16),
+								new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)));
 					}
 				}
-				chunk.add(this.itemType, items);
-				chunk.genRender(renderAPIContextIn);
+				chunk.add(typedItems);
+				typedItems.clear();
+				this.worldRenderer.initRenderOfChunk(chunk);
 
-				this.chunks.put(position, chunk);
+				this.worldInformations.chunks().put(position, chunk);
 
 			}
 		}
+		typedItems.clear();
 	}
 
-	public void update(final InputManager inputManagerIn, final Camera cameraIn, final IWindow windowIn)
+	public void update(final InputManager inputManagerIn, final PlayerEntity playerEntityIn, final IWindow windowIn,
+			final boolean freePickingMouseIn)
 	{
-		if (cameraIn.timedOrientation().hasChanged() || cameraIn.timedPosition().hasChanged())
+		this.picker().update(playerEntityIn, inputManagerIn, windowIn);
+		this.worldRenderer.update(playerEntityIn);
+
+		if (playerEntityIn.timedOrientation().hasChanged() || playerEntityIn.timedPosition().hasChanged()
+				|| freePickingMouseIn && inputManagerIn.cursor().hasMoved())
 		{
-			this.selection.chunk	= null;
-			this.selection.item		= null;
-			this.picker.selectGameItem(this.chunks.values(), cameraIn, this.selection);
+			this.picker().selectGameItem(this.worldInformations.chunks().values(), playerEntityIn);
 		}
 
-		if (windowIn.key(GLFW.GLFW_KEY_F5) == GLFW.GLFW_PRESS && !this.hasPress0 && this.selection.item != null)
+		// Place object
+		if (GLFW.glfwGetMouseButton(((Window) windowIn).handle(), GLFW.GLFW_MOUSE_BUTTON_1) == GLFW.GLFW_PRESS
+				&& this.picker().item() != null && this.placeTimer().isTime(1_400_500_00L))
 		{
-			Chunk chunk = null;
-			if (this.selection.item.position().x >= this.selection.chunk.position().x * 16
-					&& this.selection.item.position().y >= this.selection.chunk.position().y * 16
-					&& this.selection.item.position().z >= this.selection.chunk.position().z * 16
-					&& this.selection.item.position().x < this.selection.chunk.position().x * 16 + 16
-					&& this.selection.item.position().y < this.selection.chunk.position().y * 16 + 16
-					&& this.selection.item.position().z < this.selection.chunk.position().z * 16 + 16)
+			this.placeTimer().start();
+
+			final var	position	= WorldUtils.newChunkedPosition(this.picker().toMake());
+			var			chunk		= this.chunks().get(position);
+
+			if (chunk == null)
 			{
-				chunk = this.selection.chunk;
+				chunk = new Chunk(this, position);
+				this.chunks().put(position, chunk);
 			}
-			else
+			final var variant = playerEntityIn.hotBar().selectedItem();
+			if (variant != null)
 			{
-				final var	x			= (int) (this.selection.item.position().x() / 16.0f);
-				final var	y			= (int) (this.selection.item.position().y() / 16.0f);
-				final var	z			= (int) (this.selection.item.position().z() / 16.0f);
+				chunk.add(variant.itemType(), new Item(variant, new Vector3f(this.picker().toMake()),
+						new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)));
 
-				final var	position	= new Vector3f(x, y, z);
-				chunk = this.chunks.get(position);
+				chunk.renderIsInitialized(false);
 
-				if (chunk == null)
-				{
-					chunk = new Chunk(this, position);
-					this.chunks.put(position, chunk);
-				}
+				this.picker().selectGameItem(this.chunks().values(), playerEntityIn);
+			}
+		}
+
+		// Destroy object
+		if (GLFW.glfwGetMouseButton(((Window) windowIn).handle(), GLFW.GLFW_MOUSE_BUTTON_2) == GLFW.GLFW_PRESS
+				&& this.picker().item() != null && this.picker().chunk() != null
+				&& this.destroyTimer().isTime(1_400_500_00L))
+		{
+			this.picker().chunk().removeAll(this.picker().item());
+			this.destroyTimer().start();
+
+			if (this.picker().chunk().isEmpty())
+			{
+				this.chunks().remove(this.picker().chunk().position());
 			}
 
-			chunk.add(this.itemType,
-					new Item(this.itemType, new Vector3f(this.selection.item.position()).add(0.0f, 2.0f, 0.0f),
-							new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)));
-			chunk.renderIsInitialized(false);
+			this.picker().chunk().renderIsInitialized(false);
 
-			this.hasPress0 = true;
+			this.picker().selectGameItem(this.chunks().values(), playerEntityIn);
 		}
-		else if (windowIn.key(GLFW.GLFW_KEY_F5) == GLFW.GLFW_RELEASE)
-		{
-			this.hasPress0 = false;
-		}
-		/**
-		 * else
-		 * {
-		 * System.out.println("A");
-		 * }
-		 **/
 
 		/**
 		 * if (windowIn.key(GLFW.GLFW_KEY_F4) == GLFW.GLFW_PRESS && !this.hasPress)
@@ -225,12 +220,12 @@ public class World
 		 * if (this.cullingTest)
 		 * {
 		 * this.frustumCulling.updateFrustum(MathInstances.projectionMatrix(),
-		 * cameraIn.view());
+		 * playerEntityIn.view());
 		 *
-		 * final var last = cameraIn.timedPosition().last();
-		 * final var actual = cameraIn.position();
+		 * final var last = playerEntityIn.timedPosition().last();
+		 * final var actual = playerEntityIn.position();
 		 *
-		 * if (!cameraIn.timedPosition().hasChanged() || (int) (last.x / 16.0f) == (int)
+		 * if (!playerEntityIn.timedPosition().hasChanged() || (int) (last.x / 16.0f) == (int)
 		 * (actual.x / 16.0f)
 		 * && (int) (last.z / 16.0f) == (int) (actual.z / 16.0f))
 		 * {
@@ -243,7 +238,7 @@ public class World
 		 * var isVisible = true;
 		 * for (final var culling : this.cullingManager.cullings)
 		 * {
-		 * final var dist = new Vector3f(cameraIn.position())
+		 * final var dist = new Vector3f(playerEntityIn.position())
 		 * .sub(new Vector3f(chunk.position()).mul(World.chunkSize));
 		 *
 		 * if (culling.isCulling(dist))
@@ -277,9 +272,9 @@ public class World
 		 * {
 		 * for (var z = -16; z < 16; z++)
 		 * {
-		 * final var position = new Vector3f((int) (cameraIn.position().x / 16.0f) + x,
+		 * final var position = new Vector3f((int) (playerEntityIn.position().x / 16.0f) + x,
 		 * 0,
-		 * (int) (cameraIn.position().z / 16.0f) + z);
+		 * (int) (playerEntityIn.position().z / 16.0f) + z);
 		 *
 		 * if (this.chunks.containsKey(position))
 		 * {
@@ -289,7 +284,7 @@ public class World
 		 * var isVisible = true;
 		 * for (final var culling : this.cullingManager.cullings)
 		 * {
-		 * final var dist = new Vector3f(cameraIn.position()).sub(new
+		 * final var dist = new Vector3f(playerEntityIn.position()).sub(new
 		 * Vector3f(position).mul(World.chunkSize));
 		 *
 		 * if (culling.isCulling(dist))
@@ -328,63 +323,69 @@ public class World
 		 **/
 	}
 
-	public World draw(final Camera cameraIn, final IRenderAPIContext renderAPIContextIn)
+	/**
+	 *
+	 */
+	public void reset()
 	{
-		this.advInstancedShader.attach();
-		this.textureArray.bind();
-		for (final Chunk chunk : this.chunks.values())
-		{
-			if (this.selection.chunk != null && this.selection.item != null
-					&& chunk.position().equals(this.selection.chunk.position()))
-			{
-				this.advInstancedShader.selectedInstanceId().load((float) this.selection.item.instanceId());
-				this.advInstancedShader.selectedPosition().load(this.selection.item.position());
-			}
-			else
-			{
-				this.advInstancedShader.selectedInstanceId().load(-1.0f);
-			}
-
-			if (this.cullingTest)
-			{
-				if (cameraIn.timedOrientation().hasChanged()
-						&& !this.frustumCulling.insideFrustum(new Vector3f(chunk.position()).mul(World.chunkSize), 16))
-				{
-					chunk.visible(false);
-
-					continue;
-				}
-				chunk.visible(true);
-			}
-
-			if (!chunk.visible())
-			{
-				continue;
-			}
-
-			if (!chunk.renderIsInitialized())
-			{
-				chunk.genRender(renderAPIContextIn);
-			}
-
-			chunk.draw();
-		}
-		renderAPIContextIn.shadersManager().detach();
-
-		return this;
+		this.picker().reset();
 	}
 
 	public void cleanup()
 	{
-		for (final Chunk chunk : this.chunks.values())
+		for (final Chunk chunk : this.chunks().values())
 		{
 			chunk.cleanup();
 		}
 	}
 
-	public final static class Selection
+	public Map<Vector3f, Chunk> chunks()
 	{
-		public Item		item;
-		public Chunk	chunk;
+		return this.worldInformations.chunks();
+	}
+
+	public CullingManager cullingManager()
+	{
+		return this.worldInformations.cullingManager();
+	}
+
+	public boolean cullingTest()
+	{
+		return this.worldInformations.cullingTest();
+	}
+
+	public Timer destroyTimer()
+	{
+		return this.worldInformations.destroyTimer();
+	}
+
+	public FrustumCulling frustumCulling()
+	{
+		return this.worldInformations.frustumCulling();
+	}
+
+	public Picker picker()
+	{
+		return this.worldInformations.picker();
+	}
+
+	public Timer placeTimer()
+	{
+		return this.worldInformations.placeTimer();
+	}
+
+	public long seed()
+	{
+		return this.worldInformations.seed();
+	}
+
+	public WorldInformations cullingTest(final boolean cullingTestIn)
+	{
+		return this.worldInformations.cullingTest(cullingTestIn);
+	}
+
+	public ItemsLoader itemsLoader()
+	{
+		return this.worldRenderer.itemsLoader();
 	}
 }

@@ -64,8 +64,8 @@ public class GLTextureCubeMap implements ITexture
 	 * @param wrapTIn
 	 * @param mipmappingIn
 	 */
-	public GLTextureCubeMap(int textureIdIn, OpenGLRenderAPIContext contextIn, int minIn, int magIn, int wrapSIn,
-			int wrapTIn, boolean mipmappingIn)
+	public GLTextureCubeMap(final int textureIdIn, final OpenGLRenderAPIContext contextIn, final int minIn,
+			final int magIn, final int wrapSIn, final int wrapTIn, final boolean mipmappingIn)
 	{
 		this.id(textureIdIn);
 
@@ -97,6 +97,14 @@ public class GLTextureCubeMap implements ITexture
 	}
 
 	@Override
+	public ITexture resetIndex()
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+
+		return this;
+	}
+
+	@Override
 	public ITexture attach()
 	{
 		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, this.id);
@@ -104,23 +112,52 @@ public class GLTextureCubeMap implements ITexture
 		return this;
 	}
 
-	public ITexture attach(int typeIn)
+	@Override
+	public ITexture attachAt0()
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, this.id);
+
+		return this;
+	}
+
+	@Override
+	public ITexture attachAt(final int indexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + indexIn);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, this.id);
+
+		return this;
+	}
+
+	@Override
+	public ITexture attach(final int typeIn)
 	{
 		GL11.glBindTexture(typeIn, this.id);
 
 		return this;
 	}
 
-	public ITexture attachAndActive0()
+	@Override
+	public ITexture attachAt0(final int typeIn)
 	{
-		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, this.id());
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(typeIn, this.id);
 
 		return this;
 	}
 
 	@Override
-	public void send(ByteBuffer bufferIn)
+	public ITexture attachAt(final int typeIn, final int indexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + indexIn);
+		GL11.glBindTexture(typeIn, this.id);
+
+		return this;
+	}
+
+	@Override
+	public ITexture send(final ByteBuffer bufferIn)
 	{
 		this.attach();
 
@@ -128,6 +165,52 @@ public class GLTextureCubeMap implements ITexture
 				GL11.GL_UNSIGNED_BYTE, bufferIn);
 
 		this.detach();
+
+		return this;
+	}
+
+	@Override
+	public ITexture detachAt(final int typeIn, final int indexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + indexIn);
+		GL11.glBindTexture(typeIn, 0);
+
+		return this;
+	}
+
+	@Override
+	public ITexture detachAt0(final int typeIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(typeIn, this.id);
+
+		return this;
+	}
+
+	@Override
+	public ITexture detach(final int typeIn)
+	{
+		GL11.glBindTexture(typeIn, 0);
+
+		return this;
+	}
+
+	@Override
+	public ITexture detachAt(final int indexIn)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0 + indexIn);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, 0);
+
+		return this;
+	}
+
+	@Override
+	public ITexture detachAt0()
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, 0);
+
+		return this;
 	}
 
 	@Override
@@ -173,7 +256,7 @@ public class GLTextureCubeMap implements ITexture
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (this == obj)
 		{

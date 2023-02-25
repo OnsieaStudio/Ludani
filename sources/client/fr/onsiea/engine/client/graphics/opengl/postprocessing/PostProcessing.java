@@ -61,19 +61,19 @@ public class PostProcessing
 
 		this.rectangleMesh	= renderAPIContextIn.meshsManager().create(PostProcessing.POSITIONS, 2);
 
-		this.brightFilter(new BrightFilter(windowIn.settings().width() / 2, windowIn.settings().height() / 2, windowIn,
+		this.brightFilter(new BrightFilter(windowIn.effectiveWidth() / 2, windowIn.effectiveHeight() / 2, windowIn,
 				renderAPIContextIn.shadersManager()));
-		this.horizontalBlur2(new HorizontalBlur(windowIn.settings().width() / 2, windowIn.settings().height() / 2,
+		this.horizontalBlur2(new HorizontalBlur(windowIn.effectiveWidth() / 2, windowIn.effectiveHeight() / 2,
 				windowIn, renderAPIContextIn.shadersManager()));
-		this.verticalBlur2(new VerticalBlur(windowIn.settings().width() / 2, windowIn.settings().height() / 2, windowIn,
+		this.verticalBlur2(new VerticalBlur(windowIn.effectiveWidth() / 2, windowIn.effectiveHeight() / 2, windowIn,
 				renderAPIContextIn.shadersManager()));
-		this.horizontalBlur4(new HorizontalBlur(windowIn.settings().width() / 4, windowIn.settings().height() / 4,
+		this.horizontalBlur4(new HorizontalBlur(windowIn.effectiveWidth() / 4, windowIn.effectiveHeight() / 4,
 				windowIn, renderAPIContextIn.shadersManager()));
-		this.verticalBlur4(new VerticalBlur(windowIn.settings().width() / 4, windowIn.settings().height() / 4, windowIn,
+		this.verticalBlur4(new VerticalBlur(windowIn.effectiveWidth() / 4, windowIn.effectiveHeight() / 4, windowIn,
 				renderAPIContextIn.shadersManager()));
-		this.horizontalBlur8(new HorizontalBlur(windowIn.settings().width() / 8, windowIn.settings().height() / 8,
+		this.horizontalBlur8(new HorizontalBlur(windowIn.effectiveWidth() / 8, windowIn.effectiveHeight() / 8,
 				windowIn, renderAPIContextIn.shadersManager()));
-		this.verticalBlur8(new VerticalBlur(windowIn.settings().width() / 8, windowIn.settings().height() / 8, windowIn,
+		this.verticalBlur8(new VerticalBlur(windowIn.effectiveWidth() / 8, windowIn.effectiveHeight() / 8, windowIn,
 				renderAPIContextIn.shadersManager()));
 
 		this.combineFilter(new CombineFilter(renderAPIContextIn.shadersManager()));

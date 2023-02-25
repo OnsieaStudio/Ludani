@@ -2,11 +2,11 @@ package fr.onsiea.engine.client.input;
 
 public class TimedAction
 {
-	private long		start;
-	private long		startForWhile;
-	private ActionTypes	actionType;
+	private long			start;
+	private long			startForWhile;
+	private EnumActionType	actionType;
 
-	public TimedAction(long startIn, ActionTypes actionIn)
+	public TimedAction(final long startIn, final EnumActionType actionIn)
 	{
 		this.start(startIn);
 		this.type(actionIn);
@@ -15,28 +15,28 @@ public class TimedAction
 	TimedAction()
 	{
 		this.start(System.nanoTime());
-		this.type(ActionTypes.UNKNOWN);
+		this.type(EnumActionType.NONE);
 	}
 
-	void set(long startIn, ActionTypes typeIn)
+	void set(final long startIn, final EnumActionType typeIn)
 	{
 		this.start(startIn);
 		this.type(typeIn);
 	}
 
-	void set(ActionTypes typeIn)
+	void set(final EnumActionType typeIn)
 	{
 		this.start(System.nanoTime());
 		this.type(typeIn);
 	}
 
-	void setForWhile(long startForWhileIn, ActionTypes typeIn)
+	void setForWhile(final long startForWhileIn, final EnumActionType typeIn)
 	{
 		this.startForWhile(startForWhileIn);
 		this.type(typeIn);
 	}
 
-	void setForWhile(ActionTypes typeIn)
+	void setForWhile(final EnumActionType typeIn)
 	{
 		this.startForWhile(System.nanoTime());
 		this.type(typeIn);
@@ -47,35 +47,35 @@ public class TimedAction
 		switch (this.type())
 		{
 			case JUST_PRESSED:
-				this.set(ActionTypes.PRESSED);
+				this.set(EnumActionType.PRESSED);
 				break;
 
 			case PRESSED:
-				this.setForWhile(ActionTypes.PRESSED_FOR_WHILE);
+				this.setForWhile(EnumActionType.PRESSED_FOR_WHILE);
 				break;
 
 			case JUST_RELEASED:
-				this.set(ActionTypes.RELEASED);
+				this.set(EnumActionType.RELEASED);
 				break;
 
 			case RELEASED:
-				this.setForWhile(ActionTypes.RELEASED_FOR_WHILE);
+				this.setForWhile(EnumActionType.RELEASED_FOR_WHILE);
 				break;
 
 			case JUST_REPEATED:
-				this.set(ActionTypes.REPEATED);
+				this.set(EnumActionType.REPEATED);
 				break;
 
 			case REPEATED:
-				this.setForWhile(ActionTypes.REPEATED_FOR_WHILE);
+				this.setForWhile(EnumActionType.REPEATED_FOR_WHILE);
 				break;
 
 			default:
-				this.set(ActionTypes.UNKNOWN);
+				//	this.set(EnumActionType.UNKNOWN);
 		}
 	}
 
-	public boolean isTime(long timeIn)
+	public boolean isTime(final long timeIn)
 	{
 		return this.time() >= timeIn;
 	}
@@ -85,7 +85,7 @@ public class TimedAction
 		return System.nanoTime() - this.start();
 	}
 
-	public boolean isTimeForWhile(long timeIn)
+	public boolean isTimeForWhile(final long timeIn)
 	{
 		return this.timeForWhile() >= timeIn;
 	}
@@ -100,7 +100,7 @@ public class TimedAction
 		return this.start;
 	}
 
-	void start(long startIn)
+	void start(final long startIn)
 	{
 		this.start = startIn;
 	}
@@ -110,17 +110,17 @@ public class TimedAction
 		return this.startForWhile;
 	}
 
-	public void startForWhile(long startForWhileIn)
+	public void startForWhile(final long startForWhileIn)
 	{
 		this.startForWhile = startForWhileIn;
 	}
 
-	public ActionTypes type()
+	public EnumActionType type()
 	{
 		return this.actionType;
 	}
 
-	void type(ActionTypes actionTypeIn)
+	void type(final EnumActionType actionTypeIn)
 	{
 		this.actionType = actionTypeIn;
 	}

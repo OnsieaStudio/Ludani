@@ -12,8 +12,8 @@ import org.lwjgl.opengl.KHRDebug;
 public class OpenGLDebug extends GLDebugMessageCallback
 {
 	@Override
-	public void invoke(int sourceIn, int typeIn, int idIn, int severityIn, int lengthIn, long messageIn,
-			long userParamIn)
+	public void invoke(final int sourceIn, final int typeIn, final int idIn, final int severityIn, final int lengthIn,
+			final long messageIn, final long userParamIn)
 	{
 		if (severityIn == KHRDebug.GL_DEBUG_SEVERITY_NOTIFICATION)
 		{
@@ -35,74 +35,38 @@ public class OpenGLDebug extends GLDebugMessageCallback
 	 */
 	public static String errorMessage(final int errorIn)
 	{
-		switch (errorIn)
+		return switch (errorIn)
 		{
-			case GL11.GL_NO_ERROR:
-				return "No error";
-
-			case GL11.GL_INVALID_ENUM:
-				return "Enum argument out of range";
-
-			case GL11.GL_INVALID_VALUE:
-				return "Numeric argument out of range";
-
-			case GL11.GL_INVALID_OPERATION:
-				return "Operation illegal in current state";
-
-			case GL11.GL_STACK_OVERFLOW:
-				return "Command would cause a stack overflow";
-
-			case GL11.GL_STACK_UNDERFLOW:
-				return "Command would cause a stack underflow";
-
-			case GL11.GL_OUT_OF_MEMORY:
-				return "Not enough memory left to execute command";
-
-			case GL30.GL_INVALID_FRAMEBUFFER_OPERATION:
-				return "Framebuffer object is not complete";
-
-			default:
-				return "Unknown";
-		}
+			case GL11.GL_NO_ERROR -> "No error";
+			case GL11.GL_INVALID_ENUM -> "Enum argument out of range";
+			case GL11.GL_INVALID_VALUE -> "Numeric argument out of range";
+			case GL11.GL_INVALID_OPERATION -> "Operation illegal in current state";
+			case GL11.GL_STACK_OVERFLOW -> "Command would cause a stack overflow";
+			case GL11.GL_STACK_UNDERFLOW -> "Command would cause a stack underflow";
+			case GL11.GL_OUT_OF_MEMORY -> "Not enough memory left to execute command";
+			case GL30.GL_INVALID_FRAMEBUFFER_OPERATION -> "Framebuffer object is not complete";
+			default -> "Unknown";
+		};
 	}
 
-	public final static String error(int errorIn)
+	public final static String error(final int errorIn)
 	{
-		switch (errorIn)
+		return switch (errorIn)
 		{
-			case GL11.GL_NO_ERROR:
-				return "No Error";
-
-			case GL11.GL_INVALID_ENUM:
-				return "Invalid Enum";
-
-			case GL11.GL_INVALID_VALUE:
-				return "Invalid Value";
-
-			case GL11.GL_INVALID_OPERATION:
-				return "Invalid Operation";
-
-			case GL30.GL_INVALID_FRAMEBUFFER_OPERATION:
-				return "Invalid Framebuffer Operation";
-
-			case GL11.GL_OUT_OF_MEMORY:
-				return "Out of Memory";
-
-			case GL11.GL_STACK_UNDERFLOW:
-				return "Stack Underflow";
-
-			case GL11.GL_STACK_OVERFLOW:
-				return "Stack Overflow";
-
-			case GL45.GL_CONTEXT_LOST:
-				return "Context Lost";
-
-			default:
-				return "Unknown Error";
-		}
+			case GL11.GL_NO_ERROR -> "No Error";
+			case GL11.GL_INVALID_ENUM -> "Invalid Enum";
+			case GL11.GL_INVALID_VALUE -> "Invalid Value";
+			case GL11.GL_INVALID_OPERATION -> "Invalid Operation";
+			case GL30.GL_INVALID_FRAMEBUFFER_OPERATION -> "Invalid Framebuffer Operation";
+			case GL11.GL_OUT_OF_MEMORY -> "Out of Memory";
+			case GL11.GL_STACK_UNDERFLOW -> "Stack Underflow";
+			case GL11.GL_STACK_OVERFLOW -> "Stack Overflow";
+			case GL45.GL_CONTEXT_LOST -> "Context Lost";
+			default -> "Unknown Error";
+		};
 	}
 
-	public final static String source(long sourceIn)
+	public final static String source(final long sourceIn)
 	{
 		if (sourceIn == KHRDebug.GL_DEBUG_SOURCE_API)
 		{
@@ -136,7 +100,7 @@ public class OpenGLDebug extends GLDebugMessageCallback
 		return "UNKNOWN";
 	}
 
-	public final static String type(long typeIn)
+	public final static String type(final long typeIn)
 	{
 		if (typeIn == KHRDebug.GL_DEBUG_TYPE_ERROR)
 		{
@@ -176,7 +140,7 @@ public class OpenGLDebug extends GLDebugMessageCallback
 		return "UNKNOWN";
 	}
 
-	public final static String severity(long severityIn)
+	public final static String severity(final long severityIn)
 	{
 		if (severityIn == KHRDebug.GL_DEBUG_SEVERITY_HIGH)
 		{

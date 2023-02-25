@@ -26,8 +26,6 @@
 */
 package fr.onsiea.engine.client.graphics.texture;
 
-import java.nio.ByteBuffer;
-
 import fr.onsiea.engine.client.graphics.texture.data.TextureData;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,20 +34,20 @@ import lombok.Getter;
  * @author Seynax
  *
  */
-public abstract class Texture<T extends ITextureSettings<T>>
+public abstract class Texture<T extends ITextureSettings<T>> implements ITexture
 {
 	protected @Getter(AccessLevel.PUBLIC) final T				settings;
 	protected @Getter(AccessLevel.PUBLIC) final ITextureData[]	textures;
 	protected final int											id;
 
-	protected Texture(Texture<T> textureIn)
+	protected Texture(final Texture<T> textureIn)
 	{
 		this.settings	= textureIn.settings;
 		this.id			= textureIn.id;
 		this.textures	= textureIn.textures;
 	}
 
-	protected Texture(ITextureSettings<T> settingsIn, ITextureData... texturesIn)
+	protected Texture(final ITextureSettings<T> settingsIn, final ITextureData... texturesIn)
 	{
 		this.settings	= settingsIn.get();
 		this.textures	= new ITextureData[texturesIn.length];
@@ -65,7 +63,8 @@ public abstract class Texture<T extends ITextureSettings<T>>
 		this.load();
 	}
 
-	protected Texture(int textureIdIn, int heightIn, int widthIn, ITextureSettings<T> settingsIn)
+	protected Texture(final int textureIdIn, final int heightIn, final int widthIn,
+			final ITextureSettings<T> settingsIn)
 	{
 		this.settings		= settingsIn.get();
 		this.textures		= new ITextureData[1];
@@ -89,33 +88,11 @@ public abstract class Texture<T extends ITextureSettings<T>>
 	protected abstract void load();
 
 	/**
-	 * Attach (bind) texture to futur draw call
-	 * @return this texture
-	 */
-	public abstract Texture<T> attach();
-
-	/**
 	 * @return Texture identifier (int)
 	 */
+	@Override
 	public int id()
 	{
 		return this.id;
 	}
-
-	/**
-	 * @param byteBufferIn
-	 * @return this texture
-	 */
-	public abstract Texture<T> send(ByteBuffer byteBufferIn);
-
-	/**
-	 * Detach (unbind) texture to futur draw call
-	 * @return this texture
-	 */
-	public abstract Texture<T> detach();
-
-	/**
-	 * @return this texture
-	 */
-	public abstract Texture<T> delete();
 }

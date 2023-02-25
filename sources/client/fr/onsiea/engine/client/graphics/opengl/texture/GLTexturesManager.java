@@ -30,7 +30,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
+import fr.onsiea.engine.client.graphics.opengl.OpenGLRenderAPIContext;
 import fr.onsiea.engine.client.graphics.texture.ITextureData;
 import fr.onsiea.engine.client.graphics.texture.ITextureSettings;
 import fr.onsiea.engine.client.graphics.texture.Texture;
@@ -45,23 +47,33 @@ import fr.onsiea.engine.utils.ICleanable;
  */
 public class GLTexturesManager extends TexturesManager<GLTextureSettings>
 {
-	private Map<String, GLTextureArrayManager> texturesArrayManager;
+	private final OpenGLRenderAPIContext		renderAPIContext;
+	private Map<String, GLTextureArrayManager>	texturesArrayManager;
 
-	public GLTexturesManager()
+	public GLTexturesManager(final OpenGLRenderAPIContext renderAPIContextIn)
 	{
+		this.renderAPIContext = renderAPIContextIn;
 		this.texturesArrayManager(new HashMap<>());
 	}
 
 	@Override
-	protected Texture<GLTextureSettings> create(ITextureSettings<GLTextureSettings> settingsIn,
-			ITextureData... texturesIn)
+	public TexturesManager<GLTextureSettings> resetIndex()
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+
+		return this;
+	}
+
+	@Override
+	protected Texture<GLTextureSettings> create(final ITextureSettings<GLTextureSettings> settingsIn,
+			final ITextureData... texturesIn)
 	{
 		return new GLTexture(settingsIn, texturesIn);
 	}
 
 	@Override
-	protected Texture<GLTextureSettings> create(int textureIdIn, int heightIn, int widthIn,
-			ITextureSettings<GLTextureSettings> settingsIn)
+	protected Texture<GLTextureSettings> create(final int textureIdIn, final int heightIn, final int widthIn,
+			final ITextureSettings<GLTextureSettings> settingsIn)
 	{
 		return new GLTexture(textureIdIn, widthIn, heightIn, settingsIn);
 	}
@@ -82,7 +94,8 @@ public class GLTexturesManager extends TexturesManager<GLTextureSettings>
 		return this;
 	}
 
-	public GLTextureArrayManager newTextureArray(String nameIn, int levelsIn, int sizeXIn, int sizeYIn, int depthIn)
+	public GLTextureArrayManager newTextureArray(final String nameIn, final int levelsIn, final int sizeXIn,
+			final int sizeYIn, final int depthIn)
 	{
 		final var textureArrayManager = new GLTextureArrayManager(levelsIn, sizeXIn, sizeYIn, depthIn);
 
@@ -91,7 +104,7 @@ public class GLTexturesManager extends TexturesManager<GLTextureSettings>
 		return textureArrayManager;
 	}
 
-	public GLTextureArrayManager textureArrayManager(String nameIn)
+	public GLTextureArrayManager textureArrayManager(final String nameIn)
 	{
 		return this.texturesArrayManager().get(nameIn);
 	}
@@ -109,8 +122,14 @@ public class GLTexturesManager extends TexturesManager<GLTextureSettings>
 		return this.texturesArrayManager;
 	}
 
-	private final void texturesArrayManager(Map<String, GLTextureArrayManager> texturesArrayManagerIn)
+	private final void texturesArrayManager(final Map<String, GLTextureArrayManager> texturesArrayManagerIn)
 	{
 		this.texturesArrayManager = texturesArrayManagerIn;
+	}
+
+	@Override
+	public ITextureSettings<GLTextureSettings> defaultTextureSettings()
+	{
+		return GLTextureSettings.Builder.of(this.renderAPIContext);
 	}
 }

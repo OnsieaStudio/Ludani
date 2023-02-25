@@ -2,7 +2,7 @@ package fr.onsiea.engine.client.graphics.particles;
 
 import org.joml.Vector3f;
 
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.core.entity.PlayerEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -15,10 +15,10 @@ public class ParticleWithLifeTime extends Particle implements IParticle
 
 	public final Vector3f	velocity;
 
-	public ParticleWithLifeTime(Camera cameraIn, double lifeTimeIn, float velocityXIn, float velocityYIn,
-			float velocityZIn)
+	public ParticleWithLifeTime(final PlayerEntity playerEntityIn, final double lifeTimeIn, final float velocityXIn,
+			final float velocityYIn, final float velocityZIn)
 	{
-		super(cameraIn);
+		super(playerEntityIn);
 
 		this.lifeTime		= lifeTimeIn;
 		this.last			= System.nanoTime();

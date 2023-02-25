@@ -41,9 +41,9 @@ public class DrawersElements implements IMeshDrawFunction
 	private final Elements	elements;
 	private final Vao		vao;
 	private final int		attribs;
-	private final int		vertexCount;
+	public final int		vertexCount;
 
-	public DrawersElements(Elements elementsIn, Vao vaoIn, int attribsIn, int vertexCountIn)
+	public DrawersElements(final Elements elementsIn, final Vao vaoIn, final int attribsIn, final int vertexCountIn)
 	{
 		this.elements		= elementsIn;
 		this.vao			= vaoIn;
@@ -52,7 +52,7 @@ public class DrawersElements implements IMeshDrawFunction
 	}
 
 	@Override
-	public IMeshDrawFunction attach(GLMesh meshIn)
+	public IMeshDrawFunction attach(final GLMesh meshIn)
 	{
 		VaoUtils.bindAndEnables(this.vao, this.attribs);
 
@@ -60,7 +60,7 @@ public class DrawersElements implements IMeshDrawFunction
 	}
 
 	@Override
-	public IMeshDrawFunction draw(GLMesh meshIn)
+	public IMeshDrawFunction draw(final GLMesh meshIn)
 	{
 		this.elements.draw(this.vertexCount);
 
@@ -68,7 +68,7 @@ public class DrawersElements implements IMeshDrawFunction
 	}
 
 	@Override
-	public IMeshDrawFunction detach(GLMesh meshIn)
+	public IMeshDrawFunction detach(final GLMesh meshIn)
 	{
 		VaoUtils.disablesAndUnbind(this.attribs);
 

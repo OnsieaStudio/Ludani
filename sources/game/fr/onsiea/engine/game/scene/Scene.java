@@ -35,12 +35,13 @@ import org.lwjgl.glfw.GLFW;
 import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
 import fr.onsiea.engine.client.graphics.opengl.flare.FlareManager;
-import fr.onsiea.engine.client.graphics.opengl.skybox.SkyboxRenderer;
+import fr.onsiea.engine.client.graphics.opengl.hud.HudManager;
+import fr.onsiea.engine.client.graphics.opengl.hud.inventory.components.HotBar;
 import fr.onsiea.engine.client.graphics.particles.ParticlesManager;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.core.entity.PlayerEntity;
 import fr.onsiea.engine.game.scene.item.SceneItems;
 import fr.onsiea.engine.game.scene.light.SceneLights;
 import fr.onsiea.engine.game.world.World;
@@ -58,9 +59,9 @@ public class Scene
 	public final static int							MAX_LIGHTS	= 4;
 
 	private final SceneLights						sceneLights;
-	private final SceneItems						sceneItems;
+	private SceneItems								sceneItems;
 	private final Fog								fog;
-	private final Camera							camera;
+	private final PlayerEntity						playerEntity;
 
 	private float									lightAngle;
 	private float									angleInc;
@@ -84,74 +85,83 @@ public class Scene
 
 	private final Timer								inputTimer;
 
-	public Scene(IRenderAPIContext contextIn, IWindow windowIn, float clearColorRIn, float clearColorGIn,
-			float clearColorBIn, DirectionalLight directionalLightIn, float specularPowerIn, Vector3f ambientLightIn,
-			Fog fogIn, FlareManager flareManagerIn, SkyboxRenderer skyboxRendererIn) throws Exception
+	public Scene(final IRenderAPIContext contextIn, final IWindow windowIn, final float clearColorRIn,
+			final float clearColorGIn, final float clearColorBIn, final DirectionalLight directionalLightIn,
+			final float specularPowerIn, final Vector3f ambientLightIn, final Fog fogIn, final HotBar hotBarIn,
+			final FlareManager flareManagerIn) throws Exception
 	{
-		this.sceneLights			= new SceneLights(directionalLightIn, specularPowerIn, ambientLightIn);
-		this.sceneItems				= new SceneItems();
-		this.fog					= fogIn;
-		this.camera					= new Camera();
-		this.camera.position().z	= 2.0f;
+		this.sceneLights				= new SceneLights(directionalLightIn, specularPowerIn, ambientLightIn);
+		//this.sceneItems				= new SceneItems();
+		this.fog						= fogIn;
+		this.playerEntity				= new PlayerEntity();
+		this.playerEntity.position().z	= 2.0f;
 
-		this.lightAngle				= 45.0f;
-		this.angleInc				= 0.0f;
+		this.lightAngle					= 45.0f;
+		this.angleInc					= 0.0f;
 
 		// World
 
-		this.world					= new World(contextIn.shadersManager(), contextIn, this.camera());
+		this.world						= new World(contextIn.shadersManager(), contextIn, this.playerEntity(),
+				windowIn);
 
-		this.sceneRenderer			= new SceneRenderer(contextIn, windowIn, clearColorRIn, clearColorGIn,
-				clearColorBIn, fogIn, this.camera, flareManagerIn, skyboxRendererIn, ambientLightIn, this.world);
+		this.sceneRenderer				= new SceneRenderer(contextIn, windowIn, clearColorRIn, clearColorGIn,
+				clearColorBIn, fogIn, this.playerEntity, flareManagerIn, null, ambientLightIn, this.world);
 
 		// Sun
 
-		this.sunPosition			= new Vector3f();
-		this.hasSun					= false;
+		this.sunPosition				= new Vector3f();
+		this.hasSun						= false;
 
 		// Particles
 
-		this.particlesManagers		= new LinkedHashMap<>();
+		this.particlesManagers			= new LinkedHashMap<>();
 
 		// Timers
 
-		this.inputTimer				= new Timer();
+		this.inputTimer					= new Timer();
 	}
 
 	// Tests
 
 	public static boolean depthMode = false;
 
-	public final Scene input(IWindow windowIn, InputManager inputManagerIn)
+	public final Scene input(final IWindow windowIn, final InputManager inputManagerIn, final HudManager hudManagerIn)
 	{
-		if (this.inputTimer.isTime(1_000_000_0L))
+		if (!hudManagerIn.needFocus())
 		{
-			this.camera.input(windowIn, inputManagerIn);
-			if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_LEFT) == GLFW.GLFW_PRESS)
+			if (this.inputTimer.isTime(1_000_000_0L))
 			{
-				this.angleInc -= 0.05f;
-			}
-			else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_RIGHT) == GLFW.GLFW_PRESS)
-			{
-				this.angleInc += 0.05f;
-			}
-			else
-			{
-				this.angleInc = 0;
-			}
+				this.playerEntity.input(windowIn, inputManagerIn);
+				if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_LEFT) == GLFW.GLFW_PRESS)
+				{
+					this.angleInc -= 0.05f;
+				}
+				else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_RIGHT) == GLFW.GLFW_PRESS)
+				{
+					this.angleInc += 0.05f;
+				}
+				else
+				{
+					this.angleInc = 0;
+				}
 
-			// Tests
+				// Tests
 
-			if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_0) == GLFW.GLFW_PRESS)
-			{
-				System.out.println("DEPTH MODE !");
-				Scene.depthMode = true;
+				if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_0) == GLFW.GLFW_PRESS)
+				{
+					System.out.println("DEPTH MODE !");
+					Scene.depthMode = true;
+				}
+				else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_1) == GLFW.GLFW_PRESS)
+				{
+					System.out.println("COLOR MODE !");
+					Scene.depthMode = false;
+				}
 			}
-			else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_1) == GLFW.GLFW_PRESS)
-			{
-				System.out.println("COLOR MODE !");
-				Scene.depthMode = false;
-			}
+		}
+		else
+		{
+			this.playerEntity.resetIndicators();
 		}
 
 		return this;
@@ -162,7 +172,7 @@ public class Scene
 		return this;
 	}
 
-	public final Scene render(IWindow windowIn)
+	public final Scene render(final IWindow windowIn)
 	{
 		this.lightAngle += this.angleInc;
 		if (this.lightAngle < -90)

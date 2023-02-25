@@ -28,7 +28,6 @@ package fr.onsiea.engine.client.graphics.glfw.window;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author Seynax
@@ -38,30 +37,25 @@ import lombok.Setter;
 @Getter(AccessLevel.PUBLIC)
 public enum WindowShowType
 {
-	WINDOWED(State.SETTINGS, Source.SETTINGS, Source.SETTINGS, Source.SETTINGS, false),
-	FULLSCREEN(State.FALSE, Source.MONITOR, Source.SETTINGS, Source.SETTINGS, true),
-	WINDOWED_FULLSCREEN(State.FALSE, Source.MONITOR, Source.MONITOR, Source.MONITOR, true),
-	WINDOWED_WIDE(State.FALSE, Source.MONITOR, Source.MONITOR, Source.MONITOR, false);
+	WINDOWED(State.SETTINGS, Source.SETTINGS, ResolutionSource.WORK_AREA, ResolutionSource.WORK_AREA, false),
+	FULLSCREEN(State.FALSE, Source.MONITOR, ResolutionSource.MONITOR, ResolutionSource.MONITOR, true),
+	WINDOWED_FULLSCREEN(State.FALSE, Source.MONITOR, ResolutionSource.MONITOR, ResolutionSource.MONITOR, true),
+	WINDOWED_WIDE(State.FALSE, Source.MONITOR, ResolutionSource.MONITOR, ResolutionSource.MONITOR, false);
 
-	@Setter(AccessLevel.PRIVATE)
-	private State	decoratedState;
-	@Setter(AccessLevel.PRIVATE)
-	private Source	framebufferSettingsSource;
-	@Setter(AccessLevel.PRIVATE)
-	private Source	widthSource;
-	@Setter(AccessLevel.PRIVATE)
-	private Source	heightSource;
-	@Setter(AccessLevel.PRIVATE)
-	private boolean	useMonitor;
+	private State				decoratedState;
+	private Source				framebufferSettingsSource;
+	private ResolutionSource	widthSource;
+	private ResolutionSource	heightSource;
+	private boolean				useMonitor;
 
-	WindowShowType(State decoratedStateIn, Source framebufferSettingsSourcesIn, Source widthSourceIn,
-			Source heightSourceIn, boolean useMonitorIn)
+	WindowShowType(final State decoratedStateIn, final Source framebufferSettingsSourcesIn,
+			final ResolutionSource widthSourceIn, final ResolutionSource heightSourceIn, final boolean useMonitorIn)
 	{
-		this.decoratedState(decoratedStateIn);
-		this.framebufferSettingsSource(framebufferSettingsSourcesIn);
-		this.widthSource(widthSourceIn);
-		this.heightSource(heightSourceIn);
-		this.useMonitor(useMonitorIn);
+		this.decoratedState				= decoratedStateIn;
+		this.framebufferSettingsSource	= framebufferSettingsSourcesIn;
+		this.widthSource				= widthSourceIn;
+		this.heightSource				= heightSourceIn;
+		this.useMonitor					= useMonitorIn;
 	}
 
 	public static enum State
@@ -72,5 +66,10 @@ public enum WindowShowType
 	public static enum Source
 	{
 		DEFAULT, SETTINGS, MONITOR;
+	}
+
+	public static enum ResolutionSource
+	{
+		DEFAULT, SETTINGS, MONITOR, WORK_AREA;
 	}
 }

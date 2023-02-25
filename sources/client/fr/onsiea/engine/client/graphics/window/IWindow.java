@@ -35,6 +35,9 @@ import fr.onsiea.engine.client.graphics.glfw.window.WindowSettings;
 
 public interface IWindow
 {
+	int effectiveWidth();
+	int effectiveHeight();
+
 	WindowSettings settings();
 
 	boolean shouldClose();

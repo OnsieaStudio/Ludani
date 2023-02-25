@@ -56,14 +56,14 @@ public class NormalMappedObjLoader implements IOBJLoader
 	}
 
 	@Override
-	public NormalMappedObjLoader link(IMeshsManager meshManagerIn)
+	public NormalMappedObjLoader link(final IMeshsManager meshManagerIn)
 	{
 		this.meshManager = meshManagerIn;
 
 		return this;
 	}
 
-	public MeshData loadData(String fileName) throws Exception
+	public MeshData loadData(final String fileName) throws Exception
 	{
 		FileReader	isr		= null;
 		final var	objFile	= new File(fileName);
@@ -142,12 +142,12 @@ public class NormalMappedObjLoader implements IOBJLoader
 		NormalMappedObjLoader.convertDataToArrays(vertices, textures, normals, verticesArray, texturesArray,
 				normalsArray, tangentsArray);
 		final var indicesArray = NormalMappedObjLoader.convertIndicesListToArray(indices);
-		
+
 		return new MeshData(verticesArray, texturesArray, normalsArray, tangentsArray, indicesArray);
 	}
-	
+
 	@Override
-	public IMesh load(String objFileName) throws Exception
+	public IMesh load(final String objFileName) throws Exception
 	{
 		FileReader	isr		= null;
 		final var	objFile	= new File(objFileName);
@@ -230,7 +230,8 @@ public class NormalMappedObjLoader implements IOBJLoader
 		return this.meshManager.create(verticesArray, texturesArray, normalsArray, tangentsArray, indicesArray, 3);
 	}
 
-	private static void calculateTangents(VertexNM v0, VertexNM v1, VertexNM v2, List<Vector2f> textures)
+	private static void calculateTangents(final VertexNM v0, final VertexNM v1, final VertexNM v2,
+			final List<Vector2f> textures)
 	{
 		final var	delatPos1	= new Vector3f(v1.getPosition()).sub(v0.getPosition());
 		final var	delatPos2	= new Vector3f(v2.getPosition()).sub(v0.getPosition());
@@ -250,7 +251,8 @@ public class NormalMappedObjLoader implements IOBJLoader
 		v2.addTangent(tangent);
 	}
 
-	private static VertexNM processVertex(String[] vertex, List<VertexNM> vertices, List<Integer> indices)
+	private static VertexNM processVertex(final String[] vertex, final List<VertexNM> vertices,
+			final List<Integer> indices)
 	{
 		final var	index			= Integer.parseInt(vertex[0]) - 1;
 		final var	currentVertex	= vertices.get(index);
@@ -268,7 +270,7 @@ public class NormalMappedObjLoader implements IOBJLoader
 				vertices);
 	}
 
-	private static int[] convertIndicesListToArray(List<Integer> indices)
+	private static int[] convertIndicesListToArray(final List<Integer> indices)
 	{
 		final var indicesArray = new int[indices.size()];
 		for (var i = 0; i < indicesArray.length; i++)
@@ -278,8 +280,9 @@ public class NormalMappedObjLoader implements IOBJLoader
 		return indicesArray;
 	}
 
-	private static float convertDataToArrays(List<VertexNM> vertices, List<Vector2f> textures, List<Vector3f> normals,
-			float[] verticesArray, float[] texturesArray, float[] normalsArray, float[] tangentsArray)
+	private static float convertDataToArrays(final List<VertexNM> vertices, final List<Vector2f> textures,
+			final List<Vector3f> normals, final float[] verticesArray, final float[] texturesArray,
+			final float[] normalsArray, final float[] tangentsArray)
 	{
 		var furthestPoint = 0F;
 		for (var i = 0; i < vertices.size(); i++)
@@ -308,8 +311,8 @@ public class NormalMappedObjLoader implements IOBJLoader
 		return furthestPoint;
 	}
 
-	private static VertexNM dealWithAlreadyProcessedVertex(VertexNM previousVertex, int newTextureIndex,
-			int newNormalIndex, List<Integer> indices, List<VertexNM> vertices)
+	private static VertexNM dealWithAlreadyProcessedVertex(final VertexNM previousVertex, final int newTextureIndex,
+			final int newNormalIndex, final List<Integer> indices, final List<VertexNM> vertices)
 	{
 		if (previousVertex.hasSameTextureAndNormal(newTextureIndex, newNormalIndex))
 		{
@@ -322,16 +325,18 @@ public class NormalMappedObjLoader implements IOBJLoader
 			return NormalMappedObjLoader.dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex,
 					indices, vertices);
 		}
+
 		final var duplicateVertex = new VertexNM(vertices.size(), previousVertex.getPosition());
 		duplicateVertex.setTextureIndex(newTextureIndex);
 		duplicateVertex.setNormalIndex(newNormalIndex);
 		previousVertex.setDuplicateVertex(duplicateVertex);
 		vertices.add(duplicateVertex);
 		indices.add(duplicateVertex.getIndex());
+
 		return duplicateVertex;
 	}
 
-	private static void removeUnusedVertices(List<VertexNM> vertices)
+	private static void removeUnusedVertices(final List<VertexNM> vertices)
 	{
 		for (final VertexNM vertex : vertices)
 		{
@@ -342,6 +347,17 @@ public class NormalMappedObjLoader implements IOBJLoader
 				vertex.setNormalIndex(0);
 			}
 		}
+	}
+
+	/**
+	 * @param meshDataIn
+	 * @return
+	 * @throws Exception
+	 */
+	public IMesh load(final MeshData meshDataIn) throws Exception
+	{
+		return this.meshManager.create(meshDataIn.positions(), meshDataIn.uvs(), meshDataIn.normals(),
+				meshDataIn.tangents(), meshDataIn.indices(), 3);
 	}
 
 }

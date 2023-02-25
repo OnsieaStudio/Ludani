@@ -1,33 +1,31 @@
 package fr.onsiea.engine.utils;
 
-public class Pair<ONE, TWO>
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+public class Pair<S1, S2>
 {
-	private ONE	one;
-	private TWO	two;
+	private S1	s1;
+	private S2	s2;
 
-	public Pair(ONE oneIn, TWO twoIn)
+	/**
+	 * @param itemIn
+	 * @param indexIn
+	 * @return
+	 */
+	public Pair<S1, S2> set(final S1 s1In, final S2 s2In)
 	{
-		this.one(oneIn);
-		this.two(twoIn);
-	}
+		this.s1	= s1In;
+		this.s2	= s2In;
 
-	public ONE one()
-	{
-		return this.one;
-	}
-
-	public void one(ONE oneIn)
-	{
-		this.one = oneIn;
-	}
-
-	public TWO two()
-	{
-		return this.two;
-	}
-
-	public void two(TWO twoIn)
-	{
-		this.two = twoIn;
+		return this;
 	}
 }

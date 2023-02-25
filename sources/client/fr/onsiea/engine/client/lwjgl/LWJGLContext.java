@@ -6,33 +6,33 @@ import org.lwjgl.system.Configuration;
 
 public final class LWJGLContext
 {
-	// Verification des problèmes liés à la LWJGL/GLFW ou OpenGL (performance, nullpointer, fonction facultative) peut être
-	// désactiver pour la version release mais doit être conserver pour la version de developpement
-	// Paramètre :
+	// Verification des problï¿½mes liï¿½s ï¿½ la LWJGL/GLFW ou OpenGL (performance, nullpointer, fonction facultative) peut ï¿½tre
+	// dï¿½sactiver pour la version release mais doit ï¿½tre conserver pour la version de developpement
+	// Paramï¿½tre :
 	// Dorg.lwjgl.util.NoChecks=true
 	// Fonction :
 	// Configuration.DISABLE_CHECKS.set(true)
 
 	// Debug mode
-	// Paramètre
+	// Paramï¿½tre
 	// Dorg.lwjgl.util.Debug=true
 	// Fonction
 	// Configuration.DEBUG.set(true)
 
 	// Shared library loader debug
-	// Paramètre
+	// Paramï¿½tre
 	// -Dorg.lwjgl.util.DebugLoader=true
 	// Fonction
 	// Configuration.DEBUG_LOADER.set(true)
 
 	// Memory allocator debug mode
-	// Paramètre
+	// Paramï¿½tre
 	// -Dorg.lwjgl.util.DebugAllocator=true
 	// Fonction
 	// Configuration.DEBUG_MEMORY_ALLOCATOR.set(true)
 
 	// Memory Stack allocator debug mode
-	// Paramètre
+	// Paramï¿½tre
 	// -Dorg.lwjgl.util.DebugStack=true
 	// Fonction
 	//	Configuration.DEBUG_STACK.set(true);
@@ -41,32 +41,32 @@ public final class LWJGLContext
 	{
 		return Version.getVersion();
 	}
-	
+
 	public static int major()
 	{
 		return Version.VERSION_MAJOR;
 	}
-	
+
 	public static int minor()
 	{
 		return Version.VERSION_MINOR;
 	}
-	
+
 	public static int revision()
 	{
 		return Version.VERSION_REVISION;
 	}
-	
+
 	public static BuildType buildType()
 	{
 		return Version.BUILD_TYPE;
 	}
-	
+
 	public static String buildTypeName()
 	{
 		return Version.BUILD_TYPE.name();
 	}
-	
+
 	public static String buildTypePostFix()
 	{
 		return Version.BUILD_TYPE.postfix;
@@ -81,6 +81,7 @@ public final class LWJGLContext
 		Configuration.DEBUG_FUNCTIONS.set(true);
 		Configuration.DEBUG_LOADER.set(true);
 		Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
+		Configuration.DEBUG_MEMORY_ALLOCATOR_FAST.set(false);
 		Configuration.DEBUG_MEMORY_ALLOCATOR_INTERNAL.set(true);
 		Configuration.DEBUG_STREAM.set(true);
 

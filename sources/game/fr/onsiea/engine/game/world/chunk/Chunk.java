@@ -39,26 +39,26 @@
  */
 package fr.onsiea.engine.game.world.chunk;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
-import fr.onsiea.engine.client.graphics.mesh.obj.MeshData;
-import fr.onsiea.engine.client.graphics.mesh.obj.normalMapped.NormalMappedObjLoader;
 import fr.onsiea.engine.client.graphics.opengl.instanced.Instanced;
-import fr.onsiea.engine.client.graphics.opengl.texture.GLTextureArray;
-import fr.onsiea.engine.client.graphics.opengl.texture.GLTextureArrayManager;
+import fr.onsiea.engine.client.graphics.opengl.shaders.AdvInstancedShader;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.game.world.World;
+import fr.onsiea.engine.game.world.WorldUtils;
 import fr.onsiea.engine.game.world.item.Item;
 import fr.onsiea.engine.game.world.item.Item.ItemType;
+import fr.onsiea.engine.game.world.picking.Picker.Selection;
+import fr.onsiea.engine.utils.Triplet;
 import fr.onsiea.engine.utils.maths.MathInstances;
-import fr.onsiea.engine.utils.maths.MathUtils;
 import fr.onsiea.engine.utils.maths.transformations.Transformations3f;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Seynax
@@ -66,46 +66,59 @@ import lombok.Getter;
  */
 public class Chunk
 {
-	private final Map<Vector3f, Item>					items;
-	private final Map<ItemType, Map<Vector3f, Item>>	drawers;
+	public static final Vector3f													SIZE				= new Vector3f(
+			16.0f, 16.0f, 16.0f);
+
+	private final Map<Vector3f, Item>												items;
+	private final Map<ItemType, Triplet<Integer, Instanced, Map<Vector3f, Item>>>	drawers;
 	@SuppressWarnings("unused")
-	private World										world;
-	private @Getter Vector3f							position;
+	private World																	world;
+	private @Getter Vector3f														position;
 	// private final ShaderNormalMappingThinMatrix shader;
 	// private IShadersManager shadersManager;
 
-	private Instanced									instanced;
-	private boolean										renderIsInitialized	= false;
-	private boolean										isVisible			= false;
+	private boolean																	renderIsInitialized	= false;
+	private boolean																	isVisible			= false;
+	private @Getter @Setter boolean													selected			= false;
 
 	public Chunk(final World worldIn, final Vector3f positionIn)
 	{
 		this.world		= worldIn;
 		this.position	= positionIn;
-		this.items		= new HashMap<>();
-		this.drawers	= new HashMap<>();
+		this.items		= new LinkedHashMap<>();
+		this.drawers	= new LinkedHashMap<>();
 		this.isVisible	= true;
 		// shadersManager = contextIn.shadersManager();
 		// this.shader = (ShaderNormalMappingThinMatrix)
 		// shadersManager.get("normalMappingThinMatrix");
 	}
 
+	private final void add(final Item itemIn)
+	{
+		itemIn.uniqueId(WorldUtils.uniqueItemId());
+		if (this.items().containsKey(itemIn.position()))
+		{
+			return;
+		}
+		this.items().put(itemIn.position(), itemIn);
+
+		var itemsDrawers = this.drawers.get(itemIn.typeVariant().itemType());
+		if (itemsDrawers == null)
+		{
+			itemsDrawers = new Triplet<>(-1, null, new LinkedHashMap<>());
+			itemIn.instanceSubIndex(this.drawers.size());
+			this.drawers.put(itemIn.typeVariant().itemType(), itemsDrawers);
+		}
+
+		itemsDrawers.s3().remove(itemIn.position());
+		itemsDrawers.s3().put(itemIn.position(), itemIn);
+	}
+
 	public Chunk add(final ItemType typeIn, final Item... itemsIn)
 	{
 		for (final Item item : itemsIn)
 		{
-			this.items().remove(item.position());
-			this.items().put(item.position(), item);
-
-			var itemsDrawers = this.drawers.get(item.type());
-			if (itemsDrawers == null)
-			{
-				itemsDrawers = new HashMap<>();
-				this.drawers.put(item.type(), itemsDrawers);
-			}
-
-			itemsDrawers.remove(item.position());
-			itemsDrawers.put(item.position(), item);
+			this.add(item);
 		}
 
 		return this;
@@ -119,76 +132,121 @@ public class Chunk
 	{
 		for (final Item item : itemsIn)
 		{
-			this.items().remove(item.position());
-			this.items().put(item.position(), item);
-
-			var itemsDrawers = this.drawers.get(item.type());
-			if (itemsDrawers == null)
-			{
-				itemsDrawers = new HashMap<>();
-				this.drawers.put(item.type(), itemsDrawers);
-			}
-
-			itemsDrawers.remove(item.position());
-			itemsDrawers.put(item.position(), item);
+			this.add(item);
 		}
 
 		return this;
+	}
+
+	/**
+	 * @param itemsIn
+	 */
+	public Chunk add(final Map<ItemType, List<Item>> itemsIn)
+	{
+		for (final var entry : itemsIn.entrySet())
+		{
+			this.add(entry.getKey(), entry.getValue());
+		}
+
+		return this;
+	}
+
+	/**
+	 * @param positionIn
+	 */
+	public boolean removeAll(final Item... itemsIn)
+	{
+		var success = false;
+
+		for (final Item item : itemsIn)
+		{
+			if (this.removeOne(item.typeVariant().itemType(), item.position()))
+			{
+				success = true;
+			}
+		}
+
+		return success;
+	}
+
+	public boolean removeOne(final Item itemIn)
+	{
+		this.removeOne(itemIn.typeVariant().itemType(), itemIn.position());
+
+		return false;
+	}
+
+	public boolean removeOne(final ItemType itemTypeIn, final Vector3f positionIn)
+	{
+		if (this.items.containsKey(positionIn))
+		{
+			this.items.remove(positionIn);
+
+			final var drawers = this.drawers.get(itemTypeIn);
+
+			drawers.s3().remove(positionIn);
+
+			if (drawers.s3().size() <= 0)
+			{
+				this.drawers.remove(itemTypeIn);
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public void genRender(final IRenderAPIContext contextIn)
 	{
 		this.renderIsInitialized = true;
 
-		MeshData meshData = null;
-		try
+		var	i	= 0;
+		var	i0	= 0;
+		for (final var entry : this.drawers.entrySet())
 		{
-			meshData = ((NormalMappedObjLoader) contextIn.meshsManager().objLoader())
-					.loadData("resources\\models\\cube2.obj");
+			// final var	key		= entry.getKey();
+			final var	pair	= entry.getValue();
+
+			final var	builder	= new Instanced.Builder();
+			pair.s1(i0);
+			i0++;
+
+			builder.data(entry.getKey().meshData().positions(), 3).data(entry.getKey().meshData().uvs(), 2)
+					.data(entry.getKey().meshData().normals(), 3).data(entry.getKey().meshData().tangents(), 3);
+
+			final var	buffer		= BufferUtils
+					.createFloatBuffer(this.items().size() * (MathInstances.matrixSizeFloats() + 3));
+			final var	localBuffer	= BufferUtils.createFloatBuffer(MathInstances.matrixSizeFloats() + 3);
+
+			i = 0;
+			for (final Item item : pair.s3().values())
+			{
+				item.instanceId(i);
+
+				final var	position	= item.position();
+				final var	orientation	= item.orientation();
+				final var	scale		= item.scale();
+
+				final var	matrix		= Transformations3f.transformations(position, orientation, scale);
+
+				matrix.get(0, localBuffer);
+				localBuffer.put(MathInstances.matrixSizeFloats(), item.typeVariant().textureIndex());
+				localBuffer.put(MathInstances.matrixSizeFloats() + 1, item.typeVariant().textureSubIndex() * 10 + 5);
+				localBuffer.put(MathInstances.matrixSizeFloats() + 2, item.uniqueId());
+				buffer.put(localBuffer);
+
+				localBuffer.clear();
+
+				i++;
+			}
+			buffer.flip();
+
+			builder.interleaveData(buffer, MathInstances.matrixSizeFloats() + 3).unbind();
+			builder.indices(entry.getKey().meshData().indices());
+
+			pair.s2(builder.build(entry.getKey().meshData().indices().length, this.items().size()));
 		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		if (meshData == null)
-		{
-			return;
-		}
-
-		final var builder = new Instanced.Builder();
-
-		builder.data(meshData.positions(), 3).data(meshData.uvs(), 2).data(meshData.normals(), 3)
-				.data(meshData.tangents(), 3);
-
-		final var	buffer		= BufferUtils
-				.createFloatBuffer(this.items().size() * (MathInstances.matrixSizeFloats() + 1));
-		final var	localBuffer	= BufferUtils.createFloatBuffer(MathInstances.matrixSizeFloats() + 1);
-
-		var			i			= 0;
-		for (final var item : this.items().values())
-		{
-			item.instanceId(i);
-			final var	position	= item.position();
-			final var	orientation	= item.orientation();
-			final var	scale		= item.scale();
-
-			final var	matrix		= Transformations3f.transformations(position, orientation, scale);
-
-			matrix.get(0, localBuffer);
-			localBuffer.put(MathInstances.matrixSizeFloats(), MathUtils.randomInt(0, 3));
-			buffer.put(localBuffer);
-
-			localBuffer.clear();
-
-			i++;
-		}
-
-		buffer.flip();
-
-		builder.interleaveData(buffer, MathInstances.matrixSizeFloats() + 1).unbind();
-		builder.indices(meshData.indices());
-		this.instanced = builder.build(meshData.indices().length, this.items().size());
 	}
 
 	/**
@@ -201,11 +259,20 @@ public class Chunk
 	 * {
 	 *
 	 * }
+	 * @param selectionIn
 	 **/
 
-	public final Chunk draw()
+	public final Chunk draw(final AdvInstancedShader advInstancedShaderIn, final Selection selectionIn)
 	{
-		this.instanced.bindDrawUnbind();
+		for (final var pair : this.drawers.values())
+		{
+			advInstancedShaderIn.instanceIsSelected().load(false);
+			if (selectionIn.item() != null && selectionIn.chunk().position().equals(this.position))
+			{
+				advInstancedShaderIn.instanceIsSelected().load(pair.s1() == selectionIn.item().instanceSubIndex());
+			}
+			pair.s2().bindDrawUnbind();
+		}
 
 		return this;
 	}
@@ -216,6 +283,14 @@ public class Chunk
 	 *
 	 * }
 	 **/
+
+	/**
+	 * @return
+	 */
+	public boolean isEmpty()
+	{
+		return this.items.size() <= 0;
+	}
 
 	public final void cleanup()
 	{

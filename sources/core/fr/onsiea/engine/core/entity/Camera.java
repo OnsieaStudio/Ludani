@@ -24,7 +24,7 @@ public class Camera extends Entity implements ICamera
 	{
 		this.timedOrientation(new TimedVector3f());
 		this.initialization();
-		this.view(new Matrix4f().identity());
+		this.view(MathInstances.viewMatrix());
 		this.viewWithoutTranslations(new Matrix4f().identity());
 		this.calcViewMatrix();
 	}
@@ -32,7 +32,7 @@ public class Camera extends Entity implements ICamera
 	public Camera(final Vector3f positionIn)
 	{
 		super(positionIn);
-		this.view(new Matrix4f().identity());
+		this.view(MathInstances.viewMatrix());
 		this.viewWithoutTranslations(new Matrix4f().identity());
 		this.calcViewMatrix();
 	}
@@ -40,7 +40,7 @@ public class Camera extends Entity implements ICamera
 	public Camera(final Vector3f positionIn, final Vector3f orientationIn)
 	{
 		super(positionIn, orientationIn);
-		this.view(new Matrix4f().identity());
+		this.view(MathInstances.viewMatrix());
 		this.viewWithoutTranslations(new Matrix4f().identity());
 		this.calcViewMatrix();
 	}
@@ -61,8 +61,11 @@ public class Camera extends Entity implements ICamera
 		}
 
 		this.timedOrientation().reset();
-		this.timedOrientation().add((float) inputManagerIn.cursor().translationY() * rotateSpeed,
-				(float) inputManagerIn.cursor().translationX() * rotateSpeed, 0);
+		if (inputManagerIn.cursor().isMustBeBlocked())
+		{
+			this.timedOrientation().add((float) inputManagerIn.cursor().translationY() * rotateSpeed,
+					(float) inputManagerIn.cursor().translationX() * rotateSpeed, 0);
+		}
 
 		var	rx	= this.orientation().x();
 		var	ry	= this.orientation().y();
@@ -236,5 +239,14 @@ public class Camera extends Entity implements ICamera
 		this.viewWithoutTranslations().m30(0.0f);
 		this.viewWithoutTranslations().m31(0.0f);
 		this.viewWithoutTranslations().m32(0.0f);
+	}
+
+	/**
+	 *
+	 */
+	public void resetIndicators()
+	{
+		this.timedOrientation().reset();
+		this.timedPosition().reset();
 	}
 }

@@ -36,14 +36,91 @@ public class LoopUtils
 {
 	private static int index;
 
-	public final static <T> int loop(ILoopFunction<T> loopFunctionIn, Collection<T> collectionIn)
+	public final static <T> int loop(final ILoopFunction<T> loopFunctionIn, final Collection<T> collectionIn)
 	{
 		LoopUtils.index = 0;
 
-		collectionIn.forEach(object ->
+		collectionIn.forEach(objectOfCollection -> loopFunctionIn.iterate(LoopUtils.index++, objectOfCollection));
+
+		return LoopUtils.index;
+	}
+
+	public final static <T> int loop(final ILoopFunction<T> loopFunctionIn, final T[] elementsIn)
+	{
+		LoopUtils.index = 0;
+
+		for (final var element : elementsIn)
 		{
-			loopFunctionIn.iterate(LoopUtils.index++, object);
-		});
+			loopFunctionIn.iterate(LoopUtils.index++, element);
+		}
+
+		return LoopUtils.index;
+	}
+
+	/**
+	 *  Double for loop iteration with (x, y) coordinates between 0 and max :	<br>
+	 *	0 < x < xMax; i ++														<br>
+	 *			*																<br>
+	 *	0 < y < yMax; y ++														<br>
+	 *	index = xMax * yMax if not returned before								<br>
+	 *
+	 * @param loopFunctionIn
+	 * @param xMaxIn
+	 * @param yMaxIn
+	 * @return
+	 */
+	public final static <T> int coordinateInversed2DLoop(final int xMaxIn, final int yMaxIn, final T dataIn,
+			final ICoordinate2DLoopFunction<T> loopFunctionIn)
+	{
+		LoopUtils.index = 0;
+
+		for (var yPosition = 0; yPosition < yMaxIn; yPosition++)
+		{
+			for (var xPosition = 0; xPosition < xMaxIn; xPosition++)
+			{
+				if (!loopFunctionIn.iterate(LoopUtils.index, xPosition, yPosition, dataIn))
+				{
+					return LoopUtils.index;
+				}
+
+				LoopUtils.index++;
+			}
+		}
+
+		return LoopUtils.index;
+	}
+
+	/**
+	 *  Double for loop iteration with (x, y) coordinates between min and max : <br>
+	 *	xMin < x < xMax; i ++													<br>
+	 *			*																<br>
+	 *	yMin < y < yMax; y ++													<br>
+	 *	index = (xMax - xMin) * (yMax - yMin) if not returned before			<br>
+	 *
+	 * @param loopFunctionIn
+	 * @param xMinIn
+	 * @param xMaxIn
+	 * @param yMinIn
+	 * @param yMaxIn
+	 * @return
+	 */
+	public final static <T> int coordinateInversed2DLoop(final int xMinIn, final int xMaxIn, final int yMinIn,
+			final int yMaxIn, final T dataIn, final ICoordinate2DLoopFunction<T> loopFunctionIn)
+	{
+		LoopUtils.index = 0;
+
+		for (var yPosition = 0; yPosition < yMaxIn; yPosition++)
+		{
+			for (var xPosition = 0; xPosition < xMaxIn; xPosition++)
+			{
+				if (!loopFunctionIn.iterate(LoopUtils.index, xPosition, yPosition, dataIn))
+				{
+					return LoopUtils.index;
+				}
+
+				LoopUtils.index++;
+			}
+		}
 
 		return LoopUtils.index;
 	}
@@ -51,5 +128,10 @@ public class LoopUtils
 	public interface ILoopFunction<T>
 	{
 		void iterate(int indexIn, T objectIn);
+	}
+
+	public interface ICoordinate2DLoopFunction<T>
+	{
+		boolean iterate(int indexIn, int xPositionIn, int yPositionIn, T dataIn);
 	}
 }

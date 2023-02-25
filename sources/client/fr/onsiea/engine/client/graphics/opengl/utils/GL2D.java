@@ -32,7 +32,7 @@ public class GL2D
 		//rawModel		= BASEGL.LOADER.loadToVAO(vertex, 2, "RECTANGLE");
 	}
 
-	public static void initialize(GLShaderManager shaderManagerIn)
+	public static void initialize(final GLShaderManager shaderManagerIn)
 	{
 		GL2D.shaderManager	= shaderManagerIn;
 		GL2D.shader			= (Shader2D) GL2D.shaderManager.get("shader2D");
@@ -56,16 +56,19 @@ public class GL2D
 	/**
 	 * Work in progress
 	 */
-	public static void prepareFake3D(GLRawModel rawModel)
+	public static void prepareFake3D(final GLRawModel rawModel)
 	{
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL2D.shader.attach();
-		GL30.glBindVertexArray(rawModel.vao());
-		GL20.glEnableVertexAttribArray(0);
-		GL20.glEnableVertexAttribArray(1);
+		if (rawModel != null)
+		{
+			GL2D.shader.attach();
+			GL30.glBindVertexArray(rawModel.vao());
+			GL20.glEnableVertexAttribArray(0);
+			GL20.glEnableVertexAttribArray(1);
+		}
 	}
 
 	/**
@@ -76,7 +79,8 @@ public class GL2D
 	 * @param scaleyIn
 	 * @param textureIdIn
 	 */
-	public static void draw(float xIn, float yIn, float scalexIn, float scaleyIn, int textureIdIn)
+	public static void draw(final float xIn, final float yIn, final float scalexIn, final float scaleyIn,
+			final int textureIdIn)
 	{
 		GL2D.SCALE.x	= scalexIn / 100.0f;
 		GL2D.SCALE.y	= scaleyIn / 100.0f;
@@ -88,8 +92,9 @@ public class GL2D
 		//GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, rawModel.getVertexCount());
 	}
 
-	public static void drawFake3D(float xIn, float yIn, float scalexIn, float scaleyIn, int textureIdIn,
-			float ObjectScale, int vertexCount, float z, float rx, float ry, float rz)
+	public static void drawFake3D(final float xIn, final float yIn, final float scalexIn, final float scaleyIn,
+			final int textureIdIn, final float ObjectScale, final int vertexCount, final float z, final float rx,
+			final float ry, final float rz)
 	{
 		GL2D.SCALE.x	= scalexIn / 100.0f;
 		GL2D.SCALE.y	= scaleyIn / 100.0f;

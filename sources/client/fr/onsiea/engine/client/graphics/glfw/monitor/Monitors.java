@@ -7,7 +7,7 @@ import fr.onsiea.engine.client.graphics.glfw.GLFWManager.GLFWState;
 
 public class Monitors
 {
-	public final static Monitors of(GLFWState stateIn) throws Exception
+	public final static Monitors of(final GLFWState stateIn) throws Exception
 	{
 		if (!stateIn.initialized())
 		{
@@ -48,7 +48,7 @@ public class Monitors
 
 	}
 
-	public Monitor get(long monitorHandleIn)
+	public Monitor get(final long monitorHandleIn)
 	{
 		if (monitorHandleIn == MemoryUtil.NULL)
 		{
@@ -71,7 +71,7 @@ public class Monitors
 	 * @param monitorHandleIn
 	 * @return
 	 */
-	public boolean windowMonitor(long monitorHandleIn)
+	public boolean windowMonitor(final long monitorHandleIn)
 	{
 		if (monitorHandleIn == MemoryUtil.NULL)
 		{
@@ -98,7 +98,7 @@ public class Monitors
 		return this.all;
 	}
 
-	private void all(Monitor[] allIn)
+	private void all(final Monitor[] allIn)
 	{
 		this.all = allIn;
 	}
@@ -108,7 +108,7 @@ public class Monitors
 		return this.primary;
 	}
 
-	private void primary(Monitor primaryIn)
+	private void primary(final Monitor primaryIn)
 	{
 		this.primary = primaryIn;
 	}
@@ -118,7 +118,7 @@ public class Monitors
 		return this.windowMonitor;
 	}
 
-	private void windowMonitor(Monitor windowMonitorIn)
+	private void windowMonitor(final Monitor windowMonitorIn)
 	{
 		this.windowMonitor = windowMonitorIn;
 	}

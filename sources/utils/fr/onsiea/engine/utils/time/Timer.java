@@ -40,9 +40,11 @@ public class Timer
 		this.start();
 	}
 
-	public void start()
+	public Timer start()
 	{
 		this.last(System.nanoTime());
+
+		return this;
 	}
 
 	/**
@@ -62,7 +64,7 @@ public class Timer
 	 * @param timeIn
 	 * @return
 	 */
-	public boolean isTime(long timeIn)
+	public boolean isTime(final long timeIn)
 	{
 		final var actual = System.nanoTime();
 
@@ -81,7 +83,7 @@ public class Timer
 		return this.last;
 	}
 
-	private final void last(long lastIn)
+	private final void last(final long lastIn)
 	{
 		this.last = lastIn;
 	}

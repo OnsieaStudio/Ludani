@@ -43,6 +43,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import fr.onsiea.engine.client.graphics.opengl.shader.GLShaderProgram;
+import fr.onsiea.engine.client.graphics.opengl.shader.uniform.GLUniformInt;
 import fr.onsiea.engine.client.graphics.shader.uniform.IShaderTypedUniform;
 import fr.onsiea.engine.client.graphics.shader.utils.IProjection;
 import fr.onsiea.engine.client.graphics.shader.utils.IProjectionView;
@@ -57,11 +58,15 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class AdvInstancedShader extends GLShaderProgram implements IView, IProjection, IProjectionView
 {
-	private final IShaderTypedUniform<Matrix4f>	projection;
-	private final IShaderTypedUniform<Matrix4f>	view;
-	private final IShaderTypedUniform<Matrix4f>	projectionView;
-	private final IShaderTypedUniform<Float>	selectedInstanceId;
-	private final IShaderTypedUniform<Vector3f>	selectedPosition;
+	private final IShaderTypedUniform<Matrix4f>		projection;
+	private final IShaderTypedUniform<Matrix4f>		view;
+	private final IShaderTypedUniform<Matrix4f>		projectionView;
+	private final IShaderTypedUniform<Float>		selectedInstanceId;
+	private final IShaderTypedUniform<Boolean>		instanceIsSelected;
+	private final IShaderTypedUniform<Vector3f>		selectedPosition;
+	private final IShaderTypedUniform<Boolean>		chunkIsSelected;
+	private final IShaderTypedUniform<Float>		selectedUniqueItemId;
+	private final IShaderTypedUniform<Integer>[]	textureSamplers;
 
 	/**
 	 * @throws Exception
@@ -70,12 +75,20 @@ public class AdvInstancedShader extends GLShaderProgram implements IView, IProje
 	{
 		super("advInstanced", "resources/shaders/advInstancedVertex.vs", "resources/shaders/advInstancedFragment.fs");
 		this.attributes("positions", "uvs", "normals", "tangents", "m_transformations");
-		this.createAttribute("m_texture_layer", 8); // m_transformations = 4 indexes
+		this.createAttribute("itemInfo", 8); // m_transformations = 4 indexes
 
-		this.projection			= this.matrix4fUniform("projection");
-		this.view				= this.matrix4fUniform("view");
-		this.projectionView		= this.matrix4fUniform("projectionView");
-		this.selectedInstanceId	= this.floatUniform("selectedInstanceId");
-		this.selectedPosition	= this.vector3fUniform("selectedPosition");
+		this.projection				= this.matrix4fUniform("projection");
+		this.view					= this.matrix4fUniform("view");
+		this.projectionView			= this.matrix4fUniform("projectionView");
+		this.selectedInstanceId		= this.floatUniform("selectedInstanceId");
+		this.instanceIsSelected		= this.booleanUniform("instanceIsSelected");
+		this.selectedPosition		= this.vector3fUniform("selectedPosition");
+		this.chunkIsSelected		= this.booleanUniform("chunkIsSelected");
+		this.selectedUniqueItemId	= this.floatUniform("selectedUniqueItemId");
+		this.textureSamplers		= new GLUniformInt[3];
+		for (var i = 0; i < 3; i++)
+		{
+			this.textureSamplers[i] = this.intUniform("textureSampler" + i);
+		}
 	}
 }

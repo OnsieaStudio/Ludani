@@ -4,131 +4,218 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.lwjgl.glfw.GLFW;
 
 import fr.onsiea.engine.utils.Pair;
 import fr.onsiea.engine.utils.time.Timer;
+import lombok.Getter;
 
 public class Keyboard
 {
-	private final static long				TEXT_CURSOR_BLINKING_SPEED	= 500_000_000L;
+	private @Getter final static long			TEXT_CURSOR_BLINKING_SPEED	= 500_000_000L;
 
-	private boolean							textCursorBlinking;
-	private Timer							timer;
+	private @Getter boolean						textCursorBlinking;
+	private @Getter final Timer					timer;
 
-	private Map<Integer, KeyAndTimedAction>	keysActions;
-	private List<Pair<Integer, Integer>>	codepointsAndMods;
+	private final Map<Integer, KeyAction>		keysActions;
+	private final List<Pair<Integer, Integer>>	codepointsAndMods;
+
+	private @Getter final Keys					justPressed;
+	private @Getter final Keys					pressed;
+	private @Getter final Keys					pressedForWhile;
+	private @Getter final Keys					justReleased;
+	private @Getter final Keys					released;
+	private @Getter final Keys					releasedForWhile;
+	private @Getter final Keys					justRepeated;
+	private @Getter final Keys					repeated;
+	private @Getter final Keys					repeatedForWhile;
 
 	public Keyboard()
 	{
-		this.timer(new Timer());
-		this.keysActions(new HashMap<>());
-		this.codepointsAndMods(new ArrayList<>());
+		this.timer				= new Timer();
+		this.keysActions		= new HashMap<>();
+		this.codepointsAndMods	= new ArrayList<>();
+
+		this.justPressed		= new Keys();
+		this.pressed			= new Keys();
+		this.pressedForWhile	= new Keys();
+		this.justReleased		= new Keys();
+		this.released			= new Keys();
+		this.releasedForWhile	= new Keys();
+		this.justRepeated		= new Keys();
+		this.repeated			= new Keys();
+		this.repeatedForWhile	= new Keys();
 	}
 
 	public void update()
 	{
 		if (this.timer().isTime(Keyboard.TEXT_CURSOR_BLINKING_SPEED))
 		{
-			this.textCursorBlinking(!this.isTextCursorBlinking());
+			this.textCursorBlinking = !this.textCursorBlinking;
 		}
 	}
 
-	public void character(int codepointIn, int modsIn)
+	public void character(final int codepointIn, final int modsIn)
 	{
 		this.codepointsAndMods().add(new Pair<>(codepointIn, modsIn));
 	}
 
-	public void key(int keyIn, int scancodeIn, int actionIn, int modsIn)
+	public void key(final int keyIn, final int scancodeIn, final int actionIn, final int modsIn)
 	{
-		var keyAndTimedAction = this.keysActions().get(keyIn);
+		var keyAction = this.keysActions.get(keyIn);
 
-		if (keyAndTimedAction == null)
+		if (keyAction == null)
 		{
-			keyAndTimedAction = new KeyAndTimedAction(new Key(keyIn, scancodeIn, modsIn), new TimedAction());
-			this.keysActions().put(keyIn, keyAndTimedAction);
+			keyAction = new KeyAction(keyIn, scancodeIn, modsIn);
+			this.keysActions.put(keyIn, keyAction);
 		}
-		else
+		/**else
 		{
-			keyAndTimedAction.key().id(keyIn);
+			keyAndTimedAction.key().key(keyIn);
 			keyAndTimedAction.key().scancode(scancodeIn);
 			keyAndTimedAction.key().mods(modsIn);
-		}
+		}**/
 
 		switch (actionIn)
 		{
 			case GLFW.GLFW_PRESS:
-				if (ActionTypes.JUST_PRESSED.equals(keyAndTimedAction.timedAction().type())
-						|| ActionTypes.PRESSED.equals(keyAndTimedAction.timedAction().type())
-						|| ActionTypes.PRESSED_FOR_WHILE.equals(keyAndTimedAction.timedAction().type()))
+				if (!EnumActionType.JUST_PRESSED.equals(keyAction.timedAction().type())
+						&& !EnumActionType.PRESSED.equals(keyAction.timedAction().type())
+						&& !EnumActionType.PRESSED_FOR_WHILE.equals(keyAction.timedAction().type()))
 				{
-					return;
+					keyAction.timedAction().set(EnumActionType.JUST_PRESSED);
 				}
-
-				keyAndTimedAction.timedAction().set(ActionTypes.JUST_PRESSED);
 
 				break;
 
 			case GLFW.GLFW_RELEASE:
 
-				if (ActionTypes.JUST_RELEASED.equals(keyAndTimedAction.timedAction().type())
-						|| ActionTypes.RELEASED.equals(keyAndTimedAction.timedAction().type())
-						|| ActionTypes.RELEASED_FOR_WHILE.equals(keyAndTimedAction.timedAction().type()))
+				if (!EnumActionType.JUST_RELEASED.equals(keyAction.timedAction().type())
+						&& !EnumActionType.RELEASED.equals(keyAction.timedAction().type())
+						&& !EnumActionType.RELEASED_FOR_WHILE.equals(keyAction.timedAction().type()))
 				{
-					return;
+					keyAction.timedAction().set(EnumActionType.JUST_RELEASED);
 				}
-
-				keyAndTimedAction.timedAction().set(ActionTypes.JUST_RELEASED);
 
 				break;
 
 			case GLFW.GLFW_REPEAT:
 
-				if (ActionTypes.JUST_REPEATED.equals(keyAndTimedAction.timedAction().type())
-						|| ActionTypes.REPEATED.equals(keyAndTimedAction.timedAction().type())
-						|| ActionTypes.REPEATED_FOR_WHILE.equals(keyAndTimedAction.timedAction().type()))
+				if (!EnumActionType.JUST_REPEATED.equals(keyAction.timedAction().type())
+						&& !EnumActionType.REPEATED.equals(keyAction.timedAction().type())
+						&& !EnumActionType.REPEATED_FOR_WHILE.equals(keyAction.timedAction().type()))
 				{
-					return;
+					keyAction.timedAction().set(EnumActionType.JUST_REPEATED);
 				}
 
-				keyAndTimedAction.timedAction().set(ActionTypes.JUST_REPEATED);
+				break;
 
+			default:
+
+				keyAction.timedAction().set(EnumActionType.UNKNOWN);
+
+				break;
+		}
+
+		this.addToLists(keyAction);
+	}
+
+	private final void addToLists(final KeyAction keyActionIn)
+	{
+		switch (keyActionIn.timedAction().type())
+		{
+			case JUST_PRESSED:
+				this.justPressed.add(keyActionIn);
+				break;
+
+			case PRESSED:
+				this.pressed.add(keyActionIn);
+				break;
+
+			case PRESSED_FOR_WHILE:
+				this.pressedForWhile.add(keyActionIn);
+				break;
+
+			case JUST_RELEASED:
+				this.justReleased.add(keyActionIn);
+				break;
+
+			case RELEASED:
+				this.released.add(keyActionIn);
+				break;
+
+			case RELEASED_FOR_WHILE:
+				this.releasedForWhile.add(keyActionIn);
+				break;
+
+			case JUST_REPEATED:
+				this.justRepeated.add(keyActionIn);
+				break;
+
+			case REPEATED:
+				this.repeated.add(keyActionIn);
+				break;
+			case REPEATED_FOR_WHILE:
+				this.repeatedForWhile.add(keyActionIn);
+				break;
+			default:
 				break;
 		}
 	}
 
 	public void end()
 	{
-		final var keysActionsIterator = this.keysActions().entrySet().iterator();
+		final var keysActionsIterator = this.keysActions.entrySet().iterator();
 
 		while (keysActionsIterator.hasNext())
 		{
-			keysActionsIterator.next().getValue().timedAction().update();
+			final var	entry	= keysActionsIterator.next();
+			final var	value	= entry.getValue();
+			if (EnumActionType.RELEASED_FOR_WHILE.equals(value.timedAction().type()))
+			{
+				keysActionsIterator.remove();
+			}
+			else
+			{
+				value.timedAction().update();
+			}
+
+			this.addToLists(value);
 		}
 
 		this.codepointsAndMods().clear();
 	}
 
-	public KeyAndTimedAction keyAndActionOf(int keyIn)
+	public EnumActionType actionOfKey(final int keyIn)
 	{
-		return this.keysActions().get(keyIn);
+		final var keyAndTimedAction = this.keysActions.get(keyIn);
+
+		if (keyAndTimedAction == null)
+		{
+			return EnumActionType.NONE;
+		}
+
+		return keyAndTimedAction.timedAction().type();
 	}
 
-	public List<Key> keysAndModsOf(ActionTypes... actionTypesIn)
+	public KeyAction keyActionOf(final int keyIn)
 	{
-		final List<Key>	keys		= new ArrayList<>();
+		return this.keysActions.get(keyIn);
+	}
 
-		final var		iterator	= this.keysActions().entrySet().iterator();
-		while (iterator.hasNext())
+	public List<KeyAction> keysAndModsOf(final EnumActionType... actionTypesIn)
+	{
+		final List<KeyAction> keys = new ArrayList<>();
+
+		for (final Entry<Integer, KeyAction> entry : this.keysActions.entrySet())
 		{
-			final var entry = iterator.next();
-
-			for (final ActionTypes actionType : actionTypesIn)
+			for (final EnumActionType actionType : actionTypesIn)
 			{
 				if (entry.getValue().timedAction().type().equals(actionType))
 				{
-					keys.add(entry.getValue().key());
+					keys.add(entry.getValue());
 				}
 			}
 		}
@@ -138,30 +225,30 @@ public class Keyboard
 
 	// Key methods
 
-	// glfwSetInputMode (fenêtre, GLFW_STICKY_KEYS , GLFW_TRUE );
-	// glfwSetInputMode (fenêtre, GLFW_LOCK_KEY_MODS , GLFW_TRUE );
+	// glfwSetInputMode (fenï¿½tre, GLFW_STICKY_KEYS , GLFW_TRUE );
+	// glfwSetInputMode (fenï¿½tre, GLFW_LOCK_KEY_MODS , GLFW_TRUE );
 
 	public int getKeyScancode(final int glfwKeyIn)
 	{
 		return GLFW.glfwGetKeyScancode(glfwKeyIn);
 	}
 
-	public int getKey(long handleIn, final int glfwKeyIn)
+	public int getKey(final long handleIn, final int glfwKeyIn)
 	{
 		return GLFW.glfwGetKey(handleIn, glfwKeyIn);
 	}
 
-	public boolean keyIsPress(long handleIn, final int glfwKeyIn)
+	public boolean keyIsPress(final long handleIn, final int glfwKeyIn)
 	{
 		return GLFW.glfwGetKey(handleIn, glfwKeyIn) == GLFW.GLFW_PRESS;
 	}
 
-	public boolean keyIsRepeat(long handleIn, final int glfwKeyIn)
+	public boolean keyIsRepeat(final long handleIn, final int glfwKeyIn)
 	{
 		return GLFW.glfwGetKey(handleIn, glfwKeyIn) == GLFW.GLFW_REPEAT;
 	}
 
-	public boolean keyIsRelease(long handleIn, final int glfwKeyIn)
+	public boolean keyIsRelease(final long handleIn, final int glfwKeyIn)
 	{
 		return GLFW.glfwGetKey(handleIn, glfwKeyIn) == GLFW.GLFW_RELEASE;
 	}
@@ -186,7 +273,7 @@ public class Keyboard
 		return GLFW.glfwGetJoystickGUID(joystickKeyIn);
 	}
 
-	public String getClipboardContent(long handleIn)
+	public String getClipboardContent(final long handleIn)
 	{
 		return GLFW.glfwGetClipboardString(handleIn);
 	}
@@ -194,45 +281,5 @@ public class Keyboard
 	public List<Pair<Integer, Integer>> codepointsAndMods()
 	{
 		return this.codepointsAndMods;
-	}
-
-	private void codepointsAndMods(List<Pair<Integer, Integer>> codepointsAndModsIn)
-	{
-		this.codepointsAndMods = codepointsAndModsIn;
-	}
-
-	private Map<Integer, KeyAndTimedAction> keysActions()
-	{
-		return this.keysActions;
-	}
-
-	private void keysActions(Map<Integer, KeyAndTimedAction> keysActionsIn)
-	{
-		this.keysActions = keysActionsIn;
-	}
-
-	public boolean isTextCursorBlinking()
-	{
-		return this.textCursorBlinking;
-	}
-
-	public void textCursorBlinking(boolean textCursorBlinkingIn)
-	{
-		this.textCursorBlinking = textCursorBlinkingIn;
-	}
-
-	public Timer timer()
-	{
-		return this.timer;
-	}
-
-	public void timer(Timer timerIn)
-	{
-		this.timer = timerIn;
-	}
-
-	public static long textCursorBlinkingSpeed()
-	{
-		return Keyboard.TEXT_CURSOR_BLINKING_SPEED;
 	}
 }

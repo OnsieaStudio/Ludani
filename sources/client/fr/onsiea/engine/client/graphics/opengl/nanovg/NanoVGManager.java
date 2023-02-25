@@ -14,11 +14,11 @@ public class NanoVGManager
 
 	private final NanoVGFonts	nanoVGFonts;
 
-	public NanoVGManager(IWindow windowIn) throws Exception
+	public NanoVGManager(final IWindow windowIn) throws Exception
 	{
 		this.handle(((Window) windowIn).settings().mustAntialiasing()
-				? NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS | NanoVGGL3.NVG_STENCIL_STROKES)
-				: NanoVGGL3.nvgCreate(NanoVGGL3.NVG_STENCIL_STROKES));
+				? NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS | NanoVGGL3.NVG_STENCIL_STROKES | NanoVGGL3.NVG_DEBUG)
+				: NanoVGGL3.nvgCreate(NanoVGGL3.NVG_STENCIL_STROKES | NanoVGGL3.NVG_DEBUG));
 
 		if (this.handle == MemoryUtil.NULL)
 		{
@@ -28,7 +28,7 @@ public class NanoVGManager
 		this.nanoVGFonts = new NanoVGFonts(this);
 		try
 		{
-			this.nanoVGFonts.add("ARIAL", "resources/fonts/arial.ttf");
+			this.nanoVGFonts.load("ARIAL", "resources/fonts/arial.ttf");
 		}
 		catch (final Exception e)
 		{
@@ -36,10 +36,10 @@ public class NanoVGManager
 		}
 	}
 
-	public void startRender(IWindow windowIn)
+	public void startRender(final IWindow windowIn)
 	{
-		NanoVG.nvgBeginFrame(this.handle(), ((Window) windowIn).settings().width(),
-				((Window) windowIn).settings().height(), 1);
+		NanoVG.nvgBeginFrame(this.handle(), ((Window) windowIn).effectiveWidth(), ((Window) windowIn).effectiveHeight(),
+				1);
 	}
 
 	public void finishRender()
@@ -47,12 +47,12 @@ public class NanoVGManager
 		NanoVG.nvgEndFrame(this.handle());
 	}
 
-	public void letterSpacing(float letterSpacingIn)
+	public void letterSpacing(final float letterSpacingIn)
 	{
 		NanoVG.nvgTextLetterSpacing(this.handle(), letterSpacingIn);
 	}
 
-	public static NVGColor set(NVGColor colorIn, int rIn, int gIn, int bIn, int aIn)
+	public static NVGColor set(final NVGColor colorIn, final int rIn, final int gIn, final int bIn, final int aIn)
 	{
 		colorIn.r(rIn / 255.0f);
 		colorIn.g(gIn / 255.0f);
@@ -64,6 +64,7 @@ public class NanoVGManager
 
 	public void cleanup()
 	{
+		this.nanoVGFonts().cleanup();
 		NanoVGGL3.nvgDelete(this.handle);
 	}
 
@@ -72,7 +73,7 @@ public class NanoVGManager
 		return this.handle;
 	}
 
-	private final void handle(long handleIn)
+	private final void handle(final long handleIn)
 	{
 		this.handle = handleIn;
 	}

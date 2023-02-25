@@ -26,13 +26,25 @@ public abstract class TexturesManager<T extends ITextureSettings<T>> implements 
 	protected abstract TexturesManager<T> deleteTextures();
 
 	@Override
-	public Texture<T> load(String filepathIn, ITextureSettings<T> settingsIn)
+	public Texture<T> load(final String filepathIn)
+	{
+		return this.load(filepathIn, this.defaultTextureSettings());
+	}
+
+	@Override
+	public Texture<T> load(final String filepathIn, final ITextureSettings<T> settingsIn)
 	{
 		return this.load(filepathIn, filepathIn, settingsIn);
 	}
 
 	@Override
-	public Texture<T> load(IResourcesPath resourcepathIn, ITextureSettings<T> settingsIn)
+	public Texture<T> load(final IResourcesPath resourcepathIn)
+	{
+		return this.load(resourcepathIn, this.defaultTextureSettings());
+	}
+
+	@Override
+	public Texture<T> load(final IResourcesPath resourcepathIn, final ITextureSettings<T> settingsIn)
 	{
 		final var path = resourcepathIn.path();
 
@@ -40,13 +52,26 @@ public abstract class TexturesManager<T extends ITextureSettings<T>> implements 
 	}
 
 	@Override
-	public Texture<T> load(String nameIn, IResourcesPath resourcepathIn, ITextureSettings<T> settingsIn)
+	public Texture<T> load(final String nameIn, final IResourcesPath resourcepathIn)
+	{
+		return this.load(nameIn, this.defaultTextureSettings(), resourcepathIn);
+	}
+
+	@Override
+	public Texture<T> load(final String nameIn, final IResourcesPath resourcepathIn,
+			final ITextureSettings<T> settingsIn)
 	{
 		return this.load(nameIn, resourcepathIn.path(), settingsIn);
 	}
 
 	@Override
-	public Texture<T> load(String nameIn, String filepathIn, ITextureSettings<T> settingsIn)
+	public Texture<T> load(final String nameIn, final String filepathIn)
+	{
+		return this.load(nameIn, this.defaultTextureSettings(), filepathIn);
+	}
+
+	@Override
+	public Texture<T> load(final String nameIn, final String filepathIn, final ITextureSettings<T> settingsIn)
 	{
 		var texture = this.textures.get(nameIn);
 
@@ -77,7 +102,13 @@ public abstract class TexturesManager<T extends ITextureSettings<T>> implements 
 	}
 
 	@Override
-	public Texture<T> load(String nameIn, ITextureSettings<T> settingsIn, String... filepathsIn)
+	public Texture<T> load(final String nameIn, final String... filepathsIn)
+	{
+		return this.load(nameIn, this.defaultTextureSettings(), filepathsIn);
+	}
+
+	@Override
+	public Texture<T> load(final String nameIn, final ITextureSettings<T> settingsIn, final String... filepathsIn)
 	{
 		var texture = this.textures.get(nameIn);
 
@@ -119,7 +150,14 @@ public abstract class TexturesManager<T extends ITextureSettings<T>> implements 
 	}
 
 	@Override
-	public Texture<T> load(String nameIn, ITextureSettings<T> settingsIn, IResourcesPath... resourcespathsIn)
+	public Texture<T> load(final String nameIn, final IResourcesPath... resourcespathsIn)
+	{
+		return this.load(nameIn, this.defaultTextureSettings(), resourcespathsIn);
+	}
+
+	@Override
+	public Texture<T> load(final String nameIn, final ITextureSettings<T> settingsIn,
+			final IResourcesPath... resourcespathsIn)
 	{
 		var texture = this.textures.get(nameIn);
 
@@ -162,13 +200,21 @@ public abstract class TexturesManager<T extends ITextureSettings<T>> implements 
 	}
 
 	@Override
-	public Texture<T> load(String nameIn, ByteBuffer bufferIn, int widthIn, int heightIn,
-			ITextureSettings<T> settingsIn)
+	public Texture<T> load(final String nameIn, final ByteBuffer pixelsIn, final int widthIn, final int heightIn)
+	{
+		return this.load(nameIn, pixelsIn, widthIn, heightIn, this.defaultTextureSettings());
+	}
+
+	@Override
+	public Texture<T> load(final String nameIn, final ByteBuffer bufferIn, final int widthIn, final int heightIn,
+			final ITextureSettings<T> settingsIn)
 	{
 		var texture = this.textures.get(nameIn);
 
 		if (texture != null)
 		{
+			STBImage.stbi_image_free(bufferIn);
+
 			return texture;
 		}
 
@@ -182,7 +228,40 @@ public abstract class TexturesManager<T extends ITextureSettings<T>> implements 
 	}
 
 	@Override
-	public ITexturesManager<T> add(String nameIn, Texture<T> textureIn)
+	public Texture<T> load(final String nameIn, final ITextureData textureDataIn)
+	{
+		return this.load(nameIn, textureDataIn, this.defaultTextureSettings());
+	}
+
+	@Override
+	public Texture<T> load(final String nameIn, final ITextureData textureDataIn, final ITextureSettings<T> settingsIn)
+	{
+		var texture = this.textures.get(nameIn);
+
+		if (texture != null)
+		{
+			if (!textureDataIn.cleanup())
+			{
+				throw new RuntimeException("[ERROR] Unable to unload texture buffer of : \"" + nameIn + "\"");
+			}
+
+			return texture;
+		}
+
+		texture = this.create(settingsIn, textureDataIn);
+
+		this.textures.put(nameIn, texture);
+
+		if (!textureDataIn.cleanup())
+		{
+			throw new RuntimeException("[ERROR] Unable to unload texture buffer of : \"" + nameIn + "\"");
+		}
+
+		return texture;
+	}
+
+	@Override
+	public ITexturesManager<T> add(final String nameIn, final Texture<T> textureIn)
 	{
 		this.textures.put(nameIn, textureIn);
 
@@ -190,19 +269,19 @@ public abstract class TexturesManager<T extends ITextureSettings<T>> implements 
 	}
 
 	@Override
-	public boolean has(String nameIn)
+	public boolean has(final String nameIn)
 	{
 		return this.textures.containsKey(nameIn);
 	}
 
 	@Override
-	public Texture<T> get(String nameIn)
+	public Texture<T> get(final String nameIn)
 	{
 		return this.textures.get(nameIn);
 	}
 
 	@Override
-	public ITexturesManager<T> remove(String nameIn)
+	public ITexturesManager<T> remove(final String nameIn)
 	{
 		this.textures.remove(nameIn);
 
@@ -237,29 +316,29 @@ public abstract class TexturesManager<T extends ITextureSettings<T>> implements 
 		// filepath(...)																								-> settings	-> build(name, settings, filepath)
 		// resourcepath(...)		-> 	name(...)														-> settings	-> build(name, settings, resourcepath)
 		// resourcepath(...)																						-> settings	-> build(name, settings, resourcepath)
-	
+
 		private final TexturesManager<T>	texturesManager;
 		private final String				name;
 		private final ITextureSettings<T>	settings;
 		private TextureData					textureData;
-	
+
 		public TextureBuilder(TexturesManager<T> texturesManagerIn, String nameIn, ITextureSettings<T> settingsIn)
 		{
 			this.texturesManager	= texturesManagerIn;
 			this.name				= nameIn;
 			this.settings			= settingsIn;
 		}
-	
+
 		public Texture<T> load()
 		{
 			return this.load(this.name);
 		}
-	
+
 		public Texture<T> load(IResourcesPath... filepathIn)
 		{
 			return null;
 		}
-	
+
 		public Texture<T> load(String... filepathIn)
 		{
 			return null;

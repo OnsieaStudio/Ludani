@@ -1,10 +1,31 @@
 package fr.onsiea.engine.utils.maths;
 
+import org.joml.Quaternionf;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 
 public class MathUtils
 {
+	private final static Quaternionf rotationQ = new Quaternionf();
+
+	public final static void rotate(final float x, final float y, final float z)
+	{
+		// Use modulus to fix values to below 360 then convert values to radians
+		final var	newX			= (float) Math.toRadians(x % 360);
+		final var	newY			= (float) Math.toRadians(y % 360);
+		final var	newZ			= (float) Math.toRadians(z % 360);
+
+		// Create a quaternion with the delta rotation values
+		final var	rotationDelta	= new Quaternionf();
+		rotationDelta.rotationXYZ(newX, newY, newZ);
+
+		// Calculate the inverse of the delta quaternion
+		final var conjugate = rotationDelta.conjugate();
+
+		// Multiply this transform by the rotation delta quaternion and its inverse
+		MathUtils.rotationQ.mul(rotationDelta).mul(conjugate);
+	}
+
 	public final static double round(final double valueIn, final double aroundDegreesIn)
 	{
 		return Math.round(valueIn * aroundDegreesIn) / aroundDegreesIn;

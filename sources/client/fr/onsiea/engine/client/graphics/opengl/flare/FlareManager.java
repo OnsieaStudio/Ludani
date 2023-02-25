@@ -10,7 +10,7 @@ import fr.onsiea.engine.client.graphics.opengl.texture.GLTextureSettings;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.texture.ITexturesManager;
 import fr.onsiea.engine.client.graphics.window.IWindow;
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.core.entity.PlayerEntity;
 import fr.onsiea.engine.utils.maths.MathInstances;
 
 public class FlareManager
@@ -23,8 +23,8 @@ public class FlareManager
 	private final FlareRenderer		renderer;
 
 	@SuppressWarnings("unchecked")
-	public FlareManager(float spacing, IRenderAPIContext renderAPIContextIn, IScaleRamp scalingRampIn,
-			ITexturesFilepathsRamp texturesFilepathsRampIn, int texturesCountIn) throws Exception
+	public FlareManager(final float spacing, final IRenderAPIContext renderAPIContextIn, final IScaleRamp scalingRampIn,
+			final ITexturesFilepathsRamp texturesFilepathsRampIn, final int texturesCountIn) throws Exception
 	{
 		this.spacing		= spacing;
 		this.flareTextures	= new FlareTexture[texturesCountIn];
@@ -42,8 +42,8 @@ public class FlareManager
 	}
 
 	@SuppressWarnings("unchecked")
-	public FlareManager(float spacing, IRenderAPIContext renderAPIContextIn, IScaleRamp scalingRampIn,
-			String... texturesFilepathsIn) throws Exception
+	public FlareManager(final float spacing, final IRenderAPIContext renderAPIContextIn, final IScaleRamp scalingRampIn,
+			final String... texturesFilepathsIn) throws Exception
 	{
 		this.spacing		= spacing;
 		this.flareTextures	= new FlareTexture[texturesFilepathsIn.length];
@@ -61,16 +61,17 @@ public class FlareManager
 		this.renderer = new FlareRenderer(renderAPIContextIn);
 	}
 
-	public FlareManager(float spacing, IRenderAPIContext renderAPIContextIn, FlareTexture... textures)
+	public FlareManager(final float spacing, final IRenderAPIContext renderAPIContextIn, final FlareTexture... textures)
 	{
 		this.spacing		= spacing;
 		this.flareTextures	= textures;
 		this.renderer		= new FlareRenderer(renderAPIContextIn);
 	}
 
-	public void render(Camera camera, Vector3f sunWorldPos, IWindow windowIn)
+	public void render(final PlayerEntity playerEntity, final Vector3f sunWorldPos, final IWindow windowIn)
 	{
-		final var sunCoords = this.convertToScreenSpace(sunWorldPos, camera.view(), MathInstances.projectionMatrix());
+		final var sunCoords = this.convertToScreenSpace(sunWorldPos, playerEntity.view(),
+				MathInstances.projectionMatrix());
 		if (sunCoords == null)
 		{
 			return;
@@ -84,7 +85,7 @@ public class FlareManager
 		}
 	}
 
-	private void calcFlarePositions(Vector2f sunToCenter, Vector2f sunCoords)
+	private void calcFlarePositions(final Vector2f sunToCenter, final Vector2f sunCoords)
 	{
 		for (var i = 0; i < this.flareTextures().length; i++)
 		{
@@ -95,7 +96,7 @@ public class FlareManager
 		}
 	}
 
-	private Vector2f convertToScreenSpace(Vector3f worldPos, Matrix4f viewMat, Matrix4f projectionMat)
+	private Vector2f convertToScreenSpace(final Vector3f worldPos, final Matrix4f viewMat, final Matrix4f projectionMat)
 	{
 		var coords = new Vector4f(worldPos.x(), worldPos.y(), worldPos.z(), 1f);
 

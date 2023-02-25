@@ -7,7 +7,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.utils.maths.projections.Projections;
 import fr.onsiea.engine.utils.maths.transformations.Transformations2f;
@@ -46,8 +45,8 @@ public class MathInstances
 	private final static Matrix4f	SIMPLE_TRANSFORMATIONS_MATRIX_3D	= Transformations3f
 			.transformations(MathInstances.zero3f(), MathInstances.zero3f(), MathInstances.one3f());
 
-	private final static float		DEFAULT_FOV							= 70.0f;
-	private final static float		DEFAULT_NEAR_PLANE					= 0.01f;
+	private final static float		DEFAULT_FOV							= 90.0f;
+	private final static float		DEFAULT_NEAR_PLANE					= 0.1f;
 	private final static float		DEFAULT_FAR_PLANE					= 1000.0f;
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -62,7 +61,7 @@ public class MathInstances
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------------
 
-	public final static void initialization(IWindow windowIn)
+	public final static void initialization(final IWindow windowIn)
 	{
 		MathInstances.fov(MathInstances.DEFAULT_FOV);
 		MathInstances.zNear(MathInstances.DEFAULT_NEAR_PLANE);
@@ -73,7 +72,8 @@ public class MathInstances
 				MathInstances.projectionMatrix());
 	}
 
-	public final static void initialization(Window windowIn, float fovIn, float zNearIn, float zFarIn)
+	public final static void initialization(final IWindow windowIn, final float fovIn, final float zNearIn,
+			final float zFarIn)
 	{
 		MathInstances.fov(fovIn);
 		MathInstances.zNear(zNearIn);
@@ -83,7 +83,7 @@ public class MathInstances
 				MathInstances.zNear(), MathInstances.zFar(), MathInstances.projectionMatrix());
 	}
 
-	public final static Random randomSeed(long seedIn)
+	public final static Random randomSeed(final long seedIn)
 	{
 		MathInstances.random().setSeed(seedIn);
 
@@ -99,7 +99,7 @@ public class MathInstances
 		return MathInstances.fov;
 	}
 
-	private final static void fov(float fovIn)
+	private final static void fov(final float fovIn)
 	{
 		MathInstances.fov = fovIn;
 	}
@@ -109,7 +109,7 @@ public class MathInstances
 		return MathInstances.zNear;
 	}
 
-	private final static void zNear(float zNearIn)
+	private final static void zNear(final float zNearIn)
 	{
 		MathInstances.zNear = zNearIn;
 	}
@@ -119,7 +119,7 @@ public class MathInstances
 		return MathInstances.zFar;
 	}
 
-	private final static void zFar(float zFarIn)
+	private final static void zFar(final float zFarIn)
 	{
 		MathInstances.zFar = zFarIn;
 	}

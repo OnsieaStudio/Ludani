@@ -28,7 +28,7 @@ public final class OpenGLInitializer
 		return OpenGLInitializer.THREADED_CAPABILITIES.get(Thread.currentThread());
 	}
 
-	public static GLCapabilities get(Thread threadIn)
+	public static GLCapabilities get(final Thread threadIn)
 	{
 		return OpenGLInitializer.THREADED_CAPABILITIES.get(threadIn);
 	}

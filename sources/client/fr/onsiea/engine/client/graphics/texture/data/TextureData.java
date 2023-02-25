@@ -81,10 +81,13 @@ public class TextureData implements ITextureData
 						"Can't load metadata of file texture \"" + filepath + "\" " + STBImage.stbi_failure_reason());
 			}
 
-			STBImage.stbi_set_flip_vertically_on_load(false);
 			if (flipIn)
 			{
 				STBImage.stbi_set_flip_vertically_on_load(true);
+			}
+			else
+			{
+				STBImage.stbi_set_flip_vertically_on_load(false);
 			}
 
 			final var	textureData	= new TextureData();

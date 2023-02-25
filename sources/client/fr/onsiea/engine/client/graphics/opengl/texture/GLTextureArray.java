@@ -15,7 +15,7 @@ public class GLTextureArray
 {
 	private int id;
 
-	public GLTextureArray(int levelsIn, int sizeXIn, int sizeYIn, int depthIn)
+	public GLTextureArray(final int levelsIn, final int sizeXIn, final int sizeYIn, final int depthIn)
 	{
 		this.id(GL11.glGenTextures());
 		this.bind();
@@ -33,20 +33,22 @@ public class GLTextureArray
 		GL11.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, 0);
 	}
 
-	public void send(final String textureFilepathIn, final int layerIn)
+	public ITextureData send(final String textureFilepathIn, final int layerIn)
 	{
-		final var textureBuffer = TextureData.load(textureFilepathIn, true);
-		if (textureBuffer == null)
+		final var textureData = TextureData.load(textureFilepathIn, true);
+		if (textureData == null)
 		{
 			throw new RuntimeException("[ERREUR] Unable to load \"" + textureFilepathIn + "\"");
 		}
 
-		this.send(textureBuffer, layerIn);
+		this.send(textureData, layerIn);
 
-		if (!textureBuffer.cleanup())
+		if (!textureData.cleanup())
 		{
 			throw new RuntimeException("[ERREUR] Unable to unload buffer of texture \"" + textureFilepathIn + "\"");
 		}
+
+		return textureData;
 	}
 
 	void send(final ITextureData textureBufferIn, final int layerIn)
@@ -65,7 +67,7 @@ public class GLTextureArray
 		GL11.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL12.GL_TEXTURE_MAX_LEVEL, 1000);
 		GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
 
-		GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, 1.0f);
+		GL11.glTexParameterf(GL30.GL_TEXTURE_2D_ARRAY, GL14.GL_TEXTURE_LOD_BIAS, -1.0f);
 		if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic)
 		{
 			final var amount = Math.max(4f,

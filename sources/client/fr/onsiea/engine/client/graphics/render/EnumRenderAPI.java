@@ -5,7 +5,7 @@ import fr.onsiea.engine.client.graphics.vulkan.VulkanAPI;
 
 public enum EnumRenderAPI
 {
-	OpenGL(() ->
+	OPENGL(() ->
 	{
 		try
 		{
@@ -17,7 +17,7 @@ public enum EnumRenderAPI
 		}
 
 		return null;
-	}), Vulkan(VulkanAPI::create);
+	}), VULKAN(VulkanAPI::create);
 
 	private IRenderAPIInitializer initializer;
 

@@ -45,21 +45,17 @@ public class NanoVGFont
 {
 	private File	file;
 	private String	name;
+	private int		id;
 
-	public NanoVGFont(File fileIn)
+	public NanoVGFont(final File fileIn, final String nameIn, final int idIn)
 	{
 		this.file	= fileIn;
 		this.name	= this.file.getName();
+		this.id		= idIn;
 	}
 
-	public NanoVGFont(File fileIn, String nameIn)
-	{
-		this.file	= fileIn;
-		this.name	= nameIn;
-	}
-
-	public NanoVGFont draw(long handleIn, int fontSizeIn, String fontNameIn, int textAligns, NVGColor colorIn, int xIn,
-			int yIn, String contentIn)
+	public NanoVGFont draw(final long handleIn, final int fontSizeIn, final String fontNameIn, final int textAligns,
+			final NVGColor colorIn, final int xIn, final int yIn, final String contentIn)
 	{
 		NanoVG.nvgFontSize(handleIn, fontSizeIn);
 		NanoVG.nvgFontFace(handleIn, fontNameIn);

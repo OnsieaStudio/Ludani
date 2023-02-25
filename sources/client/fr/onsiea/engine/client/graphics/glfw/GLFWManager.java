@@ -64,7 +64,8 @@ public class GLFWManager
 		this.state(new GLFWState());
 	}
 
-	public GLFWManager initialization(WindowSettings windowSettingsIn, IWindowContext windowContextIn) throws Exception
+	public GLFWManager initialization(final WindowSettings windowSettingsIn, final IWindowContext windowContextIn)
+			throws Exception
 	{
 		if (GraphicsConstants.DEBUG)
 		{
@@ -159,7 +160,7 @@ public class GLFWManager
 			this.errorCallbackInstance(new ErrorCallback());
 		}
 
-		public GLFWState version(String versionIn, int majorIn, int minorIn, int revIn)
+		public GLFWState version(final String versionIn, final int majorIn, final int minorIn, final int revIn)
 		{
 			this.version(versionIn);
 			this.versionMajor(majorIn);

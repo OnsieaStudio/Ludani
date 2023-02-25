@@ -7,7 +7,7 @@ import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.drawable.IDrawable;
 import fr.onsiea.engine.client.graphics.glfw.window.Window;
 import fr.onsiea.engine.client.input.InputManager;
-import fr.onsiea.engine.core.entity.Camera;
+import fr.onsiea.engine.core.entity.PlayerEntity;
 
 /**
  * @author Seynax
@@ -30,13 +30,13 @@ public class Renderer
 	/**
 	 * Render API initialization (OpenGL, Vulkan), associated render methods and drawables management
 	 */
-	public Renderer(IRenderAPIContext renderAPIContextIn)
+	public Renderer(final IRenderAPIContext renderAPIContextIn)
 	{
 		this.subscribersDrawable(new HashMap<>());
 		this.renderAPI(renderAPIContextIn);
 	}
 
-	private void unsubscribe(SubscriberDrawable subscriberIn)
+	private void unsubscribe(final SubscriberDrawable subscriberIn)
 	{
 		if (subscriberIn.canUnsubscribe())
 		{
@@ -44,24 +44,24 @@ public class Renderer
 		}
 	}
 
-	public void draw(/**HudManager hudManagerIn,**/
-	Window windowIn, Camera cameraIn, int framerateIn, InputManager inputManagerIn)
+	public void draw(final /**HudManager hudManagerIn,**/
+	Window windowIn, final PlayerEntity playerEntityIn, final int framerateIn, final InputManager inputManagerIn)
 	{
 		for (final SubscriberDrawable subscriber : this.subscribersDrawable().values())
 		{
 			subscriber.drawable().draw();
 		}
-		//this.drawHud(hudManagerIn, windowIn, cameraIn, 0, inputManagerIn);
+		//this.drawHud(hudManagerIn, windowIn, playerEntityIn, 0, inputManagerIn);
 	}
 
-	/**public void drawHud(HudManager hudManagerIn, Window windowIn, Camera cameraIn, int framerateIn,
+	/**public void drawHud(HudManager hudManagerIn, Window windowIn, PlayerEntity playerEntityIn, int framerateIn,
 			InputManager inputManagerIn)
 	{
 		final var openGLAPI = (OpenGLAPI) this.renderAPI();
-		hudManagerIn.draw(openGLAPI.shaderManager(), windowIn, cameraIn, framerateIn, inputManagerIn, this);
+		hudManagerIn.draw(openGLAPI.shaderManager(), windowIn, playerEntityIn, framerateIn, inputManagerIn, this);
 	}**/
 
-	public SubscriberDrawable subscribe(String nameIn, IDrawable drawableIn)
+	public SubscriberDrawable subscribe(final String nameIn, final IDrawable drawableIn)
 	{
 		final var subscriber = new SubscriberDrawable(nameIn, drawableIn, this);
 
@@ -80,7 +80,7 @@ public class Renderer
 		return this.renderAPI;
 	}
 
-	private void renderAPI(IRenderAPIContext renderAPIIn)
+	private void renderAPI(final IRenderAPIContext renderAPIIn)
 	{
 		this.renderAPI = renderAPIIn;
 	}
@@ -90,7 +90,7 @@ public class Renderer
 		return this.subscribersDrawable;
 	}
 
-	public void subscribersDrawable(Map<String, SubscriberDrawable> subscribersDrawableIn)
+	public void subscribersDrawable(final Map<String, SubscriberDrawable> subscribersDrawableIn)
 	{
 		this.subscribersDrawable = subscribersDrawableIn;
 	}
@@ -102,7 +102,7 @@ public class Renderer
 		private Renderer	renderer;
 		private boolean		canUnsubscribe;
 
-		SubscriberDrawable(String nameIn, IDrawable drawableIn, Renderer rendererIn)
+		SubscriberDrawable(final String nameIn, final IDrawable drawableIn, final Renderer rendererIn)
 		{
 			this.name(nameIn);
 			this.drawable(drawableIn);
@@ -115,7 +115,7 @@ public class Renderer
 			this.renderer().unsubscribe(this);
 		}
 
-		private void canUnsubscribe(boolean canUnsubscribeIn)
+		private void canUnsubscribe(final boolean canUnsubscribeIn)
 		{
 			this.canUnsubscribe = canUnsubscribeIn;
 		}
@@ -130,7 +130,7 @@ public class Renderer
 			return this.name;
 		}
 
-		private void name(String nameIn)
+		private void name(final String nameIn)
 		{
 			this.name = nameIn;
 		}
@@ -140,7 +140,7 @@ public class Renderer
 			return this.drawable;
 		}
 
-		private void drawable(IDrawable drawableIn)
+		private void drawable(final IDrawable drawableIn)
 		{
 			this.drawable = drawableIn;
 		}
@@ -150,7 +150,7 @@ public class Renderer
 			return this.renderer;
 		}
 
-		private void renderer(Renderer rendererIn)
+		private void renderer(final Renderer rendererIn)
 		{
 			this.renderer = rendererIn;
 		}

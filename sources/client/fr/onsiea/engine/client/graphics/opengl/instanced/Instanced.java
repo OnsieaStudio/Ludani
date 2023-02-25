@@ -45,6 +45,11 @@ public class Instanced
 		this.enableVertexAttribs();
 	}
 
+	public void draw(int modeIn)
+	{	
+		GL31.glDrawElementsInstanced(modeIn, this.vertexCount, GL11.GL_UNSIGNED_INT, 0L, this.primCount);
+	}
+
 	public final void draw()
 	{
 		GL31.glDrawElementsInstanced(GL11.GL_TRIANGLES, this.vertexCount, GL11.GL_UNSIGNED_INT, 0L, this.primCount);
