@@ -42,7 +42,7 @@ public abstract class Hud
 	{
 		for (final var component : this.components)
 		{
-			final var	normalizedCursorX	= 2.0f * (inputManagerIn.getCursor().x() / windowIn.effectiveWidth()) - 1.0f;
+			final var	normalizedCursorX	= 2.0f * (inputManagerIn.cursor().x() / windowIn.effectiveWidth()) - 1.0f;
 			final var	normalizedCursorY	= 1.0f - 2.0f * (inputManagerIn.cursor().y() / windowIn.effectiveHeight());
 
 			if (inputManagerIn.cursor().hasMoved())

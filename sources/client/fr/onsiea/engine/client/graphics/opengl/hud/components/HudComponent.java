@@ -64,9 +64,9 @@ public abstract class HudComponent
 	 * @param windowIn
 	 */
 	public abstract void draw3D(Shader3DTo2D shader3dTo2DIn, IWindow windowIn);
-	
+
 	public void cleanup()
 	{
-		
+
 	}
 }

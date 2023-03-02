@@ -7,7 +7,8 @@
  */
 module OnsieaEngine
 {
-	requires lombok;
+	requires static lombok;
+
 	exports fr.onsiea.engine.core.entity;
 	exports fr.onsiea.engine.common.game;
 	exports fr.onsiea.engine.common;
