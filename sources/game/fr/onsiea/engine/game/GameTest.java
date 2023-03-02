@@ -97,7 +97,7 @@ import fr.onsiea.engine.utils.time.DateUtils;
 public class GameTest implements IGameLogic
 {
 	public final static int		MAJOR	= 1;
-	public final static int		MINOR	= 1;
+	public final static int		MINOR	= 2;
 	public final static String	VERSION	= GameTest.MAJOR + "." + GameTest.MINOR;
 
 	public final static void main(final String[] argsIn)
