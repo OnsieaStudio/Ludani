@@ -96,24 +96,25 @@ import fr.onsiea.engine.utils.time.DateUtils;
  */
 public class GameTest implements IGameLogic
 {
-	public final static int MAJOR = 1;
-	public final static int MINOR = 1;
-	public final static String version = MAJOR + "." + MINOR;
+	public final static int		MAJOR	= 1;
+	public final static int		MINOR	= 1;
+	public final static String	VERSION	= GameTest.MAJOR + "." + GameTest.MINOR;
 
 	public final static void main(final String[] argsIn)
 	{
+		System.out.println("OnsieaEngine version : " + GameTest.VERSION);
 		/**try
 		{
 			final var sl = new ShellLink().setWorkingDir(Paths.get("E:\\eclipse\\projects\\OnsieaEngine\\")
 					.toAbsolutePath().normalize().toString());
-
+		
 			sl.setIconLocation("E:\\eclipse\\projects\\OnsieaEngine\\resources\\Aeison.ico");
 			final var	targetPath	= Paths.get("E:\\eclipse\\projects\\OnsieaEngine\\resources\\test.txt")
 					.toAbsolutePath();
 			final var	root		= targetPath.getRoot().toString();
 			final var	path		= targetPath.subpath(0, targetPath.getNameCount()).toString();
 			System.out.println(path);
-
+		
 			new ShellLinkHelper(sl).setLocalTarget(root, path, Options.ForceTypeFile).saveTo("testlink.lnk");
 		}
 		catch (IOException | ShellLinkException e1)
@@ -311,7 +312,7 @@ public class GameTest implements IGameLogic
 												.load("resources/textures/complex_inverted_timberframe_2_2.png",
 														GLTextureSettings.Builder
 																.of((OpenGLRenderAPIContext) renderAPIContextIn)),
-
+		
 										((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager())
 												.load("resources/textures/rock_normals.png",
 														GLTextureSettings.Builder
