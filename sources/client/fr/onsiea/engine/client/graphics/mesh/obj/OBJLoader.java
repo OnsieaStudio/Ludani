@@ -37,7 +37,7 @@ import fr.onsiea.engine.client.graphics.mesh.IMeshsManager;
 import fr.onsiea.engine.utils.file.FileUtils;
 
 /**
- * @author Antonio Hernández Bejarano (https://lwjglgamedev.gitbooks.io/3d-game-development-with-lwjgl/content/, https://github.com/lwjglgamedev)
+ * @author Antonio Hernandez Bejarano (https://lwjglgamedev.gitbooks.io/3d-game-development-with-lwjgl/content/, https://github.com/lwjglgamedev)
  * @author Seynax (minor changes)
  *
  */

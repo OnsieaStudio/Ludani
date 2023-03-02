@@ -1,7 +1,6 @@
 #version 440
 
 in vec2 out_uvs;
-in vec4 pass_color;
 
 uniform sampler2D textureSampler;
 
@@ -20,5 +19,5 @@ const float far = 1000.0f;
 
 void main()
 {
-	out_colour = pass_color * texture(textureSampler, out_uvs);
+	out_colour =	texture(textureSampler, out_uvs);
 }

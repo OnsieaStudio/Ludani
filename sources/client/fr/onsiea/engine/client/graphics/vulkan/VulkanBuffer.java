@@ -120,7 +120,7 @@ public class VulkanBuffer
 	{
 		for (var i = 0; i < physicalDeviceIn.getDeviceMemoryProperties().memoryTypeCount(); i++)
 		{
-			// à vérifier
+			// a verifier
 
 			if ((typeFilterIn & 1 << i) == 1 << i
 					&& (physicalDeviceIn.getDeviceMemoryProperties().memoryTypes(i).propertyFlags()
