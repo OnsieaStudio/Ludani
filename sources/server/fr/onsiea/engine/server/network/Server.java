@@ -29,6 +29,7 @@ package fr.onsiea.engine.server.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
 
@@ -54,7 +55,7 @@ public class Server extends Thread
 			try
 			{
 				System.out.println("			[SERVER]	Waiting for client on port : \""
-						+ this.serverSocket.getLocalPort() + "\" ...");
+						+ this.serverSocket.getLocalPort() + "\" ... with ip \"" + InetAddress.getLocalHost() + "\"");
 				final var server = this.serverSocket.accept();
 
 				System.out.println("			[SERVER]	Just connected to " + server.getRemoteSocketAddress());
