@@ -37,25 +37,26 @@ import java.net.SocketTimeoutException;
  * @author Seynax
  *
  */
-public class Server extends Thread
+public class Server implements Runnable
 {
 	private final ServerSocket serverSocket;
 
 	private Server(final int portIn) throws IOException
 	{
 		this.serverSocket = new ServerSocket(portIn);
-		this.serverSocket.setSoTimeout(10000);
 	}
 
 	@Override
 	public void run()
 	{
+		System.out.println("start !");
 		while (true)
 		{
 			try
 			{
-				System.out.println("			[SERVER]	Waiting for client on port : \""
-						+ this.serverSocket.getLocalPort() + "\" ... with ip \"" + InetAddress.getLocalHost() + "\"");
+				System.out.println(
+						"			[SERVER]	Waiting for client on port : \"" + this.serverSocket.getLocalPort()
+								+ "\" ... with ip \"" + InetAddress.getLocalHost().getHostAddress() + "\"");
 				final var server = this.serverSocket.accept();
 
 				System.out.println("			[SERVER]	Just connected to " + server.getRemoteSocketAddress());
@@ -83,9 +84,9 @@ public class Server extends Thread
 	{
 		try
 		{
-			final var		server	= new Server(portIn);
-			final Thread	t		= server;
-			t.start();
+			final var	server	= new Server(portIn);
+			final var	t		= new Thread(server);
+			t.run();
 
 			return server;
 		}
