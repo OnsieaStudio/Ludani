@@ -40,6 +40,6 @@ public class Network
 	{
 		final var port = 25565;
 		Server.start(port);
-		Client.start("192.168.1.122", port);
+		//Client.start("192.168.1.122", port);
 	}
 }
