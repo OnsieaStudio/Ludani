@@ -84,7 +84,7 @@ public class Server extends Thread
 		{
 			final var		server	= new Server(portIn);
 			final Thread	t		= server;
-			t.start();
+			t.run();
 
 			return server;
 		}
