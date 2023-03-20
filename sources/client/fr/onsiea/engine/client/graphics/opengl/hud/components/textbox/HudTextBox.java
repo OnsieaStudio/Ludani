@@ -1,16 +1,16 @@
 package fr.onsiea.engine.client.graphics.opengl.hud.components.textbox;
 
-import org.joml.Vector2f;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.nanovg.NanoVG;
 
 import fr.onsiea.engine.client.graphics.opengl.hud.components.HudComponent;
+import fr.onsiea.engine.client.graphics.opengl.hud.components.IHudComponent;
 import fr.onsiea.engine.client.graphics.opengl.nanovg.NanoVGManager;
 import fr.onsiea.engine.client.graphics.opengl.shaders.Shader2DIn3D;
-import fr.onsiea.engine.client.graphics.opengl.shaders.Shader3DTo2D;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.client.input.StringRecorder;
+import fr.onsiea.engine.utils.positionnable.IPositionnable;
 import fr.onsiea.engine.utils.time.Timer;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,10 +30,9 @@ public class HudTextBox extends HudComponent
 	private NVGColor		nvgColor	= NVGColor.malloc();
 	private IWindow			window;
 
-	public HudTextBox(final IWindow windowIn, final NanoVGManager nanoVGManagerIn, final Vector2f positionIn,
-			final Vector2f scaleIn)
+	public HudTextBox(final IPositionnable positionnableIn, final IWindow windowIn, final NanoVGManager nanoVGManagerIn)
 	{
-		super(positionIn, scaleIn);
+		super(positionnableIn);
 		this.recorder(new StringRecorder());
 		this.fontSize(32);
 		this.shortcutRate(28L);
@@ -46,7 +45,6 @@ public class HudTextBox extends HudComponent
 
 	public void input(final InputManager inputManagerIn, final IWindow windowIn)
 	{
-
 		/**if (this.shortcutTimer().isTime(7_500_00L))//(long) (1.0D / (this.shortcutRate() * 1D))))
 		{
 			for (final KeyAction key : inputManagerIn.keyboard().keysAndModsOf(EnumActionType.JUST_PRESSED,
@@ -175,19 +173,7 @@ public class HudTextBox extends HudComponent
 	}
 
 	@Override
-	public void hovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
-			final InputManager inputManagerIn)
-	{
-	}
-
-	@Override
-	public void stopHovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
-			final InputManager inputManagerIn)
-	{
-	}
-
-	@Override
-	public void draw2D(final Shader2DIn3D shader2dIn3DIn)
+	public IHudComponent draw2D(final Shader2DIn3D shader2dIn3DIn)
 	{
 		this.nanoVGManager.nanoVGFonts().addTextOrChange("creativeHudTextBox", this.fontSize(), "ARIAL",
 				NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 0, "abvdsoubviubsdisdvb");
@@ -195,11 +181,11 @@ public class HudTextBox extends HudComponent
 		/**final var bounds0 = new float[4];
 		NanoVG.nvgTextBounds(nanoManagerVGIn.handle(), this.transformations().x(), this.transformations().y(),
 				this.recorder().content().substring(0, this.recorder().position()), bounds0);
-		
+
 		nanoVGManager.nanoVGFonts().draw(this.policeSize(), NanoVG.FONT_NAME, NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP,
 				bounds0[2] - this.transformations().x(), this.transformations().y(), 255, 255, 255, 255,
 				inputManagerIn.keyboard().isTextCursorBlinking() ? "|" : " ");
-		
+
 		if (this.recorder().isSelected())
 		{
 			final var selectionStr = this.recorder().selectionStr();
@@ -209,10 +195,10 @@ public class HudTextBox extends HudComponent
 				NanoVG.nvgTextBounds(nanoManagerVGIn.handle(), this.transformations().x(), this.transformations().y(),
 						this.recorder().content().substring(0, this.recorder().selection().x()), bounds1);
 				final var bounds2 = new float[4];
-		
+
 				NanoVG.nvgTextBounds(nanoManagerVGIn.handle(), this.transformations().x(), this.transformations().y(),
 						selectionStr, bounds2);
-		
+
 				NanoVG.nvgBeginPath(nanoManagerVGIn.handle());
 				NanoVG.nvgRect(nanoManagerVGIn.handle(), bounds1[2], bounds2[1], bounds2[2], bounds2[3] - bounds2[1]);
 				NanoVG.nvgFillColor(nanoManagerVGIn.handle(), nanoManagerVGIn.rgba(50, 100, 128, 200));
@@ -220,20 +206,19 @@ public class HudTextBox extends HudComponent
 			}
 		}**/
 		this.nanoVGManager.letterSpacing(1.00f);
+
+		return this;
 	}
 
 	@Override
-	public void draw3D(final Shader3DTo2D shader3dTo2DIn, final IWindow windowIn)
-	{
-	}
-
-	@Override
-	public void cleanup()
+	public IHudComponent cleanup()
 	{
 		if (this.nvgColor != null)
 		{
 			this.nvgColor.free();
 		}
+
+		return this;
 	}
 
 	public void reset()

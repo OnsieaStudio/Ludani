@@ -2,7 +2,6 @@ package fr.onsiea.engine.core.entity;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
@@ -50,12 +49,12 @@ public class Camera extends Entity implements ICamera
 		var			speed		= 0.5f;
 		final var	rotateSpeed	= 0.25f;
 
-		if (windowIn.key(GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS)
+		if (inputManagerIn.shortcuts().isEnabled("SPEED_UP"))
 		{
 			speed *= 2.0f;
 		}
 
-		if (windowIn.key(GLFW.GLFW_KEY_TAB) == GLFW.GLFW_PRESS)
+		if (inputManagerIn.shortcuts().isEnabled("SPEED_DOWN"))
 		{
 			speed /= 2.0f;
 		}
@@ -99,38 +98,38 @@ public class Camera extends Entity implements ICamera
 		var	y	= 0.0f;
 		var	z	= 0.0f;
 
-		if (windowIn.key(GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS)
+		if (inputManagerIn.shortcuts().isEnabled("FRONT"))
 		{
 			x	+= Math.sin(this.orientation().y() * MathInstances.pi180()) * speed;
 			z	+= -Math.cos(this.orientation().y() * MathInstances.pi180()) * speed;
 		}
 
-		if (windowIn.key(GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS)
+		if (inputManagerIn.shortcuts().isEnabled("BACK"))
 		{
 			x	+= -Math.sin(this.orientation().y() * MathInstances.pi180()) * speed;
 			z	+= Math.cos(this.orientation().y() * MathInstances.pi180()) * speed;
 		}
 
-		if (windowIn.key(GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS)
-		{
-			x	+= Math.sin((this.orientation().y() - 90) * MathInstances.pi180()) * speed;
-			z	+= -Math.cos((this.orientation().y() - 90) * MathInstances.pi180()) * speed;
-		}
-
-		if (windowIn.key(GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS)
+		if (inputManagerIn.shortcuts().isEnabled("RIGHT"))
 		{
 			x	+= Math.sin((this.orientation().y() + 90) * MathInstances.pi180()) * speed;
 			z	+= -Math.cos((this.orientation().y() + 90) * MathInstances.pi180()) * speed;
 		}
 
-		if (windowIn.key(GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS)
+		if (inputManagerIn.shortcuts().isEnabled("LEFT"))
 		{
-			y -= speed;
+			x	+= Math.sin((this.orientation().y() - 90) * MathInstances.pi180()) * speed;
+			z	+= -Math.cos((this.orientation().y() - 90) * MathInstances.pi180()) * speed;
 		}
 
-		if (windowIn.key(GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS)
+		if (inputManagerIn.shortcuts().isEnabled("UP"))
 		{
 			y += speed;
+		}
+
+		if (inputManagerIn.shortcuts().isEnabled("DOWN"))
+		{
+			y -= speed;
 		}
 
 		/**

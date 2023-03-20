@@ -3,20 +3,18 @@
  */
 package fr.onsiea.engine.client.graphics.opengl.hud.components.scrollbar;
 
-import org.joml.Vector2f;
-import org.lwjgl.glfw.GLFW;
-
 import fr.onsiea.engine.client.graphics.GraphicsConstants;
 import fr.onsiea.engine.client.graphics.opengl.hud.components.HudComponent;
 import fr.onsiea.engine.client.graphics.opengl.hud.components.HudRectangle;
+import fr.onsiea.engine.client.graphics.opengl.hud.components.IHudComponent;
 import fr.onsiea.engine.client.graphics.opengl.hud.components.button.HudButton;
 import fr.onsiea.engine.client.graphics.opengl.hud.inventory.HudInventory;
 import fr.onsiea.engine.client.graphics.opengl.shaders.Shader2DIn3D;
 import fr.onsiea.engine.client.graphics.opengl.shaders.Shader3DTo2D;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
 import fr.onsiea.engine.client.graphics.window.IWindow;
-import fr.onsiea.engine.client.input.EnumActionType;
 import fr.onsiea.engine.client.input.InputManager;
+import fr.onsiea.engine.utils.positionnable.IPositionnable;
 import lombok.Getter;
 
 /**
@@ -29,24 +27,22 @@ public class HudScrollbar extends HudComponent
 	private final HudScrollbarCursor	cursor;
 	private boolean						cursorIsSelected;
 	private @Getter float				percent;
-	private final HudInventory			inventory;
 	private @Getter boolean				cursorIsDisabled;
+	private final HudInventory			inventory;
 
 	/**
 	 * @param positionIn
 	 * @param scaleIn
 	 * @param textureIn
 	 */
-	public HudScrollbar(final Vector2f positionIn, final Vector2f scaleIn, final ITexture lineTextureIn,
-			final Vector2f cursorScaleIn, final ITexture cursorTextureIn, final HudInventory inventoryIn)
+	public HudScrollbar(final IPositionnable positionnableLineIn, final IPositionnable positionnableCursorIn,
+			final ITexture lineTextureIn, final ITexture cursorTextureIn, final float scrollbarCursorXSizeIn,
+			final float scrollbarCursorYSizeIn, final HudInventory inventoryIn)
 	{
-		super(positionIn, scaleIn);
-
-		this.line	= new HudRectangle(positionIn, scaleIn, lineTextureIn);
-		this.cursor	= new HudScrollbarCursor(new Vector2f(positionIn), cursorScaleIn, cursorTextureIn, this);
-
-		this.cursor.position().set(this.cursor.position().x(), this.line.position().y() + this.line.scale().y());
-		this.inventory = inventoryIn;
+		super(positionnableCursorIn);
+		this.line		= new HudRectangle(positionnableLineIn, lineTextureIn);
+		this.cursor		= new HudScrollbarCursor(positionnableCursorIn, cursorTextureIn, this);
+		this.inventory	= inventoryIn;
 	}
 
 	@Override
@@ -62,10 +58,13 @@ public class HudScrollbar extends HudComponent
 			return true;
 		}
 
-		if (normalizedCursorXIn < this.cursor.position().x - this.cursor.scale().x
-				|| normalizedCursorXIn > this.cursor.position().x + this.cursor.scale().x
-				|| normalizedCursorYIn < this.cursor.position().y - this.cursor.scale().y
-				|| normalizedCursorYIn > this.cursor.position().y + this.cursor.scale().y)
+		if (normalizedCursorXIn < this.cursor.position().xNorm().centered() - this.cursor.size().xNorm().percent()
+				|| normalizedCursorXIn > this.cursor.position().xNorm().centered()
+						+ this.cursor.size().xNorm().percent()
+				|| normalizedCursorYIn < this.cursor.position().yNorm().invertedCentered()
+						- this.cursor.size().yNorm().percent()
+				|| normalizedCursorYIn > this.cursor.position().yNorm().invertedCentered()
+						+ this.cursor.size().yNorm().percent())
 		{
 			return false;
 		}
@@ -87,34 +86,42 @@ public class HudScrollbar extends HudComponent
 	}
 
 	@Override
-	public void hovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
+	public IHudComponent hovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
 			final InputManager inputManagerIn)
 	{
 		this.cursor.hovering(normalizedMouseXIn, normalizedMouseYIn, inputManagerIn);
+
+		return this;
 	}
 
 	@Override
-	public void stopHovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
+	public IHudComponent stopHovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
 			final InputManager inputManagerIn)
 	{
 		this.cursor.stopHovering(normalizedMouseXIn, normalizedMouseYIn, inputManagerIn);
+
+		return this;
 	}
 
 	@Override
-	public void draw2D(final Shader2DIn3D shader2dIn3DIn)
+	public IHudComponent draw2D(final Shader2DIn3D shader2dIn3DIn)
 	{
 		this.line.draw2D(shader2dIn3DIn);
 		this.cursor.draw2D(shader2dIn3DIn);
+
+		return this;
 	}
 
 	@Override
-	public void draw3D(final Shader3DTo2D shader3dTo2DIn, final IWindow windowIn)
+	public IHudComponent draw3D(final Shader3DTo2D shader3dTo2DIn, final IWindow windowIn)
 	{
 		this.line.draw3D(shader3dTo2DIn, windowIn);
 		this.cursor.draw3D(shader3dTo2DIn, windowIn);
+
+		return this;
 	}
 
-	public void update(final IWindow windowIn, final InputManager inputManagerIn)
+	public IHudComponent update(final IWindow windowIn, final InputManager inputManagerIn)
 	{
 		final var pages = (this.inventory.items().size() - 1
 				- (GraphicsConstants.CreativeInventory.SLOTS_COLUMNS * GraphicsConstants.CreativeInventory.SLOTS_LINES
@@ -122,27 +129,12 @@ public class HudScrollbar extends HudComponent
 				/ GraphicsConstants.CreativeInventory.CURRENT_SCROLLING_LENGTH;
 		if (pages <= 0)
 		{
-			return;
+			return this;
 		}
 
-		final var action = inputManagerIn.cursor().buttionActionOf(GLFW.GLFW_MOUSE_BUTTON_1);
-
-		if (action != null)
+		if (this.cursor.isFocus() && inputManagerIn.shortcuts().isJustTriggered("USE_CLICK_IN_HUDS"))
 		{
-			if (this.cursor.isFocus() && (EnumActionType.JUST_PRESSED.equals(action.type())
-					|| EnumActionType.PRESSED.equals(action.type())
-					|| EnumActionType.PRESSED_FOR_WHILE.equals(action.type())
-					|| EnumActionType.JUST_REPEATED.equals(action.type())
-					|| EnumActionType.REPEATED.equals(action.type())
-					|| EnumActionType.REPEATED_FOR_WHILE.equals(action.type())))
-			{
-				this.cursorIsSelected = true;
-			}
-			if (EnumActionType.JUST_RELEASED.equals(action.type()) || EnumActionType.RELEASED.equals(action.type())
-					|| EnumActionType.RELEASED_FOR_WHILE.equals(action.type()))
-			{
-				this.cursorIsSelected = false;
-			}
+			this.cursorIsSelected = true;
 		}
 		else
 		{
@@ -151,38 +143,36 @@ public class HudScrollbar extends HudComponent
 
 		if (this.cursorIsSelected && !this.cursorIsDisabled)
 		{
-			var y = (float) (1.0f - 2.0f * (inputManagerIn.cursor().y() / windowIn.effectiveHeight()));
+			var y = (float) inputManagerIn.cursor().y();
 
-			if (y < this.line.position().y() - this.line.scale().y())
+			if (y < this.line.position().y() - this.line.size().y() / 2)
 			{
-				y = this.line.position().y() - this.line.scale().y();
+				y = this.line.position().y() - this.line.size().y() / 2;
 			}
-			else if (y > this.line.position().y() + this.line.scale().y())
+			else if (y > this.line.position().y() + this.line.size().y() / 2)
 			{
-				y = this.line.position().y() + this.line.scale().y();
+				y = this.line.position().y() + this.line.size().y() / 2;
 			}
 
-			this.percent = 1.0f - (y - (this.line.position().y() - this.line.scale().y())) / (this.line.position().y()
-					+ this.line.scale().y() - (this.line.position().y() - this.line.scale().y()));
+			this.percent = (y - (this.line.position().y() - this.line.size().y() / 2)) / (this.line.position().y()
+					+ this.line.size().y() / 2 - (this.line.position().y() - this.line.size().y() / 2));
 
-			if (GraphicsConstants.CreativeInventory.SMOOTH_SCROLLBAR)
+			if (!GraphicsConstants.CreativeInventory.SMOOTH_SCROLLBAR)
 			{
-				this.cursor.position().set(this.cursor.position().x(), y);
+				y = this.line.position().y() - this.line.size().y() / 2
+						+ (int) (this.percent * pages) / pages * (this.line.position().y() + this.line.size().y() / 2
+								- (this.line.position().y() - this.line.size().y() / 2));
 			}
-			else
-			{
-				this.cursor.position().set(this.cursor.position().x(),
-						this.line.position().y() + this.line.scale().y()
-								+ (int) (this.percent * pages) / pages * (this.line.position().y()
-										- this.line.scale().y() - (this.line.position().y() + this.line.scale().y())));
-			}
+			this.cursor.position().set(this.cursor.position().x(), y);
 		}
+
+		return this;
 	}
 
 	/**
 	 * @param cursorIsDisabledIn the cursorIsDisabled to set
 	 */
-	public void cursorIsDisabled(final boolean cursorIsDisabledIn)
+	public IHudComponent cursorDisable(final boolean cursorIsDisabledIn)
 	{
 		this.cursorIsDisabled = cursorIsDisabledIn;
 
@@ -194,6 +184,8 @@ public class HudScrollbar extends HudComponent
 		{
 			this.cursor.enable();
 		}
+
+		return this;
 	}
 
 	public final static class HudScrollbarCursor extends HudButton
@@ -205,42 +197,56 @@ public class HudScrollbar extends HudComponent
 		 * @param scaleIn
 		 * @param textureIn
 		 */
-		public HudScrollbarCursor(final Vector2f positionIn, final Vector2f scaleIn, final ITexture textureIn,
+		public HudScrollbarCursor(final IPositionnable positionnableIn, final ITexture textureIn,
 				final HudScrollbar scrollbarIn)
 		{
-			super(positionIn, scaleIn, textureIn);
+			super(positionnableIn, textureIn);
 
 			this.scrollbar = scrollbarIn;
 		}
 
-		public void disable()
+		@Override
+		public boolean verifyHovering(final double normalizedCursorXIn, final double normalizedCursorYIn)
 		{
-			this.currentColor = GraphicsConstants.CreativeInventory.SCROLLBAR_CURSOR_DISABLED_COLOR;
+			return super.verifyHovering(normalizedCursorXIn, normalizedCursorYIn);
 		}
 
-		public void enable()
+		public IHudComponent disable()
+		{
+			this.currentColor = GraphicsConstants.CreativeInventory.SCROLLBAR_CURSOR_DISABLED_COLOR;
+
+			return this;
+		}
+
+		public IHudComponent enable()
 		{
 			this.currentColor = this.colorsByEvents.get("RELEASED");
+
+			return this;
 		}
 
 		@Override
-		public void hovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
+		public IHudComponent hovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
 				final InputManager inputManagerIn)
 		{
 			if (!this.scrollbar.cursorIsDisabled())
 			{
 				super.hovering(normalizedMouseXIn, normalizedMouseYIn, inputManagerIn);
 			}
+
+			return this;
 		}
 
 		@Override
-		public void stopHovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
+		public IHudComponent stopHovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
 				final InputManager inputManagerIn)
 		{
 			if (!this.scrollbar.cursorIsDisabled())
 			{
 				super.stopHovering(normalizedMouseXIn, normalizedMouseYIn, inputManagerIn);
 			}
+
+			return this;
 		}
 	}
 }

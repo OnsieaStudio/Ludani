@@ -6,16 +6,15 @@ package fr.onsiea.engine.client.graphics.opengl.hud.components.button;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joml.Vector2f;
 import org.joml.Vector4f;
-import org.lwjgl.glfw.GLFW;
 
 import fr.onsiea.engine.client.graphics.opengl.hud.components.HudRectangle;
+import fr.onsiea.engine.client.graphics.opengl.hud.components.IHudComponent;
 import fr.onsiea.engine.client.graphics.opengl.shaders.Shader2DIn3D;
-import fr.onsiea.engine.client.graphics.opengl.shaders.Shader3DTo2D;
 import fr.onsiea.engine.client.graphics.texture.ITexture;
-import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
+import fr.onsiea.engine.client.input.shortcut.Shortcut;
+import fr.onsiea.engine.utils.positionnable.IPositionnable;
 import lombok.Getter;
 
 /**
@@ -29,9 +28,9 @@ public class HudButton extends HudRectangle
 	private @Getter boolean					hasClicked;
 	private @Getter final Vector4f			releaseColor;
 
-	public HudButton(final Vector2f positionIn, final Vector2f scaleIn, final ITexture textureIn)
+	public HudButton(final IPositionnable positionnableIn, final ITexture textureIn)
 	{
-		super(positionIn, scaleIn, textureIn);
+		super(positionnableIn, textureIn);
 
 		this.colorsByEvents = new HashMap<>();
 		this.colorsByEvents.put("hovering", new Vector4f(1.25f, 1.25f, 1.25f, 1.0f));
@@ -50,94 +49,72 @@ public class HudButton extends HudRectangle
 	}
 
 	@Override
-	public void draw2D(final Shader2DIn3D shader2DIn3DIn)
+	public IHudComponent draw2D(final Shader2DIn3D shader2DIn3DIn)
 	{
 		shader2DIn3DIn.color().load(this.currentColor);
-		super.draw2D(shader2DIn3DIn);
+		return super.draw2D(shader2DIn3DIn);
 	}
 
 	@Override
-	public void draw3D(final Shader3DTo2D shader3dTo2DIn, final IWindow windowIn)
-	{
-		super.draw3D(shader3dTo2DIn, windowIn);
-	}
-
-	public void cursorMove(final double normalizedMouseXIn, final double normalizedMouseYIn,
+	public IHudComponent hovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
 			final InputManager inputManagerIn)
 	{
-	}
-
-	@Override
-	public void hovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
-			final InputManager inputManagerIn)
-	{
-		super.hovering(normalizedMouseXIn, normalizedMouseYIn, inputManagerIn);
-
-		final var action = inputManagerIn.cursor().buttionActionOf(GLFW.GLFW_MOUSE_BUTTON_1);
-		if (action != null)
+		// TODO Repair this (((Shortcut)inputManagerIn.shortcut("USE_CLICK_IN_HUDS")).buttonNode().button().actionType())
+		switch (((Shortcut) inputManagerIn.shortcuts().get("USE_CLICK_IN_HUDS")).entryPoints().get(0).button()
+				.actionSubType())
 		{
-			switch (action.type())
-			{
-				case JUST_PRESSED:
-					this.currentColor = this.colorsByEvents.get("JUST_PRESSED");
-					this.hasClicked = true;
+			case JUST_PRESSED:
+				this.currentColor = this.colorsByEvents.get("JUST_PRESSED");
 
-					break;
-				case PRESSED:
-					this.currentColor = this.colorsByEvents.get("PRESSED_FOR_WHILE");
-					this.hasClicked = false;
+				break;
+			case PRESSED:
+				this.currentColor = this.colorsByEvents.get("PRESSED_FOR_WHILE");
 
-					break;
-				case PRESSED_FOR_WHILE:
-					this.currentColor = this.colorsByEvents.get("PRESSED_FOR_WHILE");
-					this.hasClicked = false;
+				break;
+			case PRESSED_FOR_WHILE:
+				this.currentColor = this.colorsByEvents.get("PRESSED_FOR_WHILE");
 
-					break;
+				break;
 
-				case JUST_REPEATED:
-					this.currentColor = this.colorsByEvents.get("JUST_REPEATED");
-					this.hasClicked = false;
+			case JUST_REPEATED:
+				this.currentColor = this.colorsByEvents.get("JUST_REPEATED");
 
-					break;
-				case REPEATED:
-					this.currentColor = this.colorsByEvents.get("REPEATED");
-					this.hasClicked = false;
+				break;
+			case REPEATED:
+				this.currentColor = this.colorsByEvents.get("REPEATED");
 
-					break;
-				case REPEATED_FOR_WHILE:
-					this.currentColor = this.colorsByEvents.get("REPEATED_FOR_WHILE");
-					this.hasClicked = false;
+				break;
+			case REPEATED_FOR_WHILE:
+				this.currentColor = this.colorsByEvents.get("REPEATED_FOR_WHILE");
 
-					break;
-				case JUST_RELEASED:
-					this.currentColor = this.colorsByEvents.get("JUST_RELEASED");
-					this.hasClicked = false;
-					break;
-				case RELEASED:
-					this.currentColor = this.colorsByEvents.get("RELEASED");
-					this.hasClicked = false;
-					break;
-				case RELEASED_FOR_WHILE:
-					this.currentColor = this.colorsByEvents.get("hovering");
-					break;
+				break;
+			case JUST_RELEASED:
+				this.currentColor = this.colorsByEvents.get("JUST_RELEASED");
+				break;
+			case RELEASED:
+				this.currentColor = this.colorsByEvents.get("RELEASED");
+				break;
+			case RELEASED_FOR_WHILE:
+				this.currentColor = this.colorsByEvents.get("hovering");
+				break;
 
-				default:
-					break;
-			}
+			default:
+				this.currentColor = this.colorsByEvents.get("hovering");
+				break;
 		}
-		else
-		{
-			this.currentColor = this.colorsByEvents.get("hovering");
-		}
+		this.hasClicked = inputManagerIn.shortcuts().isJustTriggered("USE_CLICK_IN_HUDS");
+
+		return this;
 	}
 
 	@Override
-	public void stopHovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
+	public IHudComponent stopHovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
 			final InputManager inputManagerIn)
 	{
-		super.stopHovering(normalizedMouseXIn, normalizedMouseYIn, inputManagerIn);
 		this.hasClicked		= false;
 
 		this.currentColor	= this.colorsByEvents.get("RELEASED_FOR_WHILE");
+
+		return this;
 	}
 }

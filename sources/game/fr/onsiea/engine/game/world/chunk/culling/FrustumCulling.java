@@ -5,6 +5,7 @@ import java.util.List;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import fr.onsiea.engine.game.world.chunk.Chunk;
 
@@ -70,7 +71,7 @@ public class FrustumCulling implements ICulling
 	public void filter(final List<Chunk> chunksIn, final float meshBoundingRadiusIn)
 	{
 		float		boundingRadius;
-		Vector3f	pos;
+		Vector3i	pos;
 		for (final Chunk chunk : chunksIn)
 		{
 			/**
@@ -83,7 +84,7 @@ public class FrustumCulling implements ICulling
 
 			boundingRadius	= 16;
 			pos				= chunk.position();
-			chunk.visible(this.insideFrustum(pos.x, pos.y, pos.z, boundingRadius));
+			chunk.isVisible(this.insideFrustum(pos.x, pos.y, pos.z, boundingRadius));
 		}
 	}
 

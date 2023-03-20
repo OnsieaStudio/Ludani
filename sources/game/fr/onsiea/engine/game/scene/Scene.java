@@ -30,7 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 
 import fr.onsiea.engine.client.graphics.fog.Fog;
 import fr.onsiea.engine.client.graphics.light.DirectionalLight;
@@ -42,6 +41,7 @@ import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.core.entity.PlayerEntity;
+import fr.onsiea.engine.game.GameTest;
 import fr.onsiea.engine.game.scene.item.SceneItems;
 import fr.onsiea.engine.game.scene.light.SceneLights;
 import fr.onsiea.engine.game.world.World;
@@ -64,7 +64,7 @@ public class Scene
 	private final PlayerEntity						playerEntity;
 
 	private float									lightAngle;
-	private float									angleInc;
+	private final float								angleInc;
 
 	// World
 
@@ -129,10 +129,11 @@ public class Scene
 	{
 		if (!hudManagerIn.needFocus())
 		{
+			inputManagerIn.shortcuts().setContext("GENERAL");
 			if (this.inputTimer.isTime(1_000_000_0L))
 			{
 				this.playerEntity.input(windowIn, inputManagerIn);
-				if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_LEFT) == GLFW.GLFW_PRESS)
+				/**if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_LEFT) == GLFW.GLFW_PRESS)
 				{
 					this.angleInc -= 0.05f;
 				}
@@ -143,24 +144,25 @@ public class Scene
 				else
 				{
 					this.angleInc = 0;
-				}
+				}**/
 
 				// Tests
 
-				if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_0) == GLFW.GLFW_PRESS)
+				if (inputManagerIn.shortcuts().isEnabled("DEPTH_MODE"))
 				{
-					System.out.println("DEPTH MODE !");
+					GameTest.loggers.logLn("DEPTH MODE !");
 					Scene.depthMode = true;
 				}
-				else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_KP_1) == GLFW.GLFW_PRESS)
+				if (inputManagerIn.shortcuts().isEnabled("COLOR_MODE"))
 				{
-					System.out.println("COLOR MODE !");
+					GameTest.loggers.logLn("COLOR MODE !");
 					Scene.depthMode = false;
 				}
 			}
 		}
 		else
 		{
+			inputManagerIn.shortcuts().setContext("HUDS");
 			this.playerEntity.resetIndicators();
 		}
 

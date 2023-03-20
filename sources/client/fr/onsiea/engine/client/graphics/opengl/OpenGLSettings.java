@@ -50,7 +50,7 @@ public class OpenGLSettings implements IRenderAPIContextSettings
 	private ClientSettings			engine;
 	private OpenGLRenderAPIContext	context;
 
-	public OpenGLSettings(OpenGLRenderAPIContext contextIn) throws Exception
+	public OpenGLSettings(final OpenGLRenderAPIContext contextIn) throws Exception
 	{
 		this.context(contextIn);
 
@@ -61,8 +61,7 @@ public class OpenGLSettings implements IRenderAPIContextSettings
 				.add("antialiasing", parameterIn -> GL11.glEnable(GL13.GL_MULTISAMPLE),
 						parameterIn -> GL11.glDisable(GL13.GL_MULTISAMPLE))
 				.add("blend", parameterIn -> GL11.glEnable(GL11.GL_BLEND), parameterIn -> GL11.glDisable(GL11.GL_BLEND))
-				.add("cullBackface", parameterIn ->
-				{
+				.add("cullBackface", parameterIn -> {
 					GL11.glEnable(GL11.GL_CULL_FACE);
 					GL11.glCullFace(GL11.GL_BACK);
 				}, parameterIn -> GL11.glDisable(GL11.GL_CULL_FACE)).add("anisotropy");
@@ -70,12 +69,10 @@ public class OpenGLSettings implements IRenderAPIContextSettings
 		this.engine()
 				.add("wireframe", parameterIn -> GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE),
 						parameterIn -> GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL))
-				.add("alphaBlending", parameterIn ->
-				{
+				.add("alphaBlending", parameterIn -> {
 					GL11.glEnable(GL11.GL_BLEND);
 					GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-				}, parameterIn -> GL11.glDisable(GL11.GL_BLEND)).add("additiveBlending", parameterIn ->
-				{
+				}, parameterIn -> GL11.glDisable(GL11.GL_BLEND)).add("additiveBlending", parameterIn -> {
 					GL11.glEnable(GL11.GL_BLEND);
 					GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 				}, parameterIn -> GL11.glDisable(GL11.GL_BLEND))
@@ -83,8 +80,7 @@ public class OpenGLSettings implements IRenderAPIContextSettings
 						parameterIn -> GL11.glDisable(GL11.GL_DEPTH_TEST))
 				.add("mustAnisotropyTextureFiltering")
 				.put("anisotropyTextureFilteringAmount", new ClientParameter.Builder<Float>(this.engine(),
-						"anisotropyTextureFilteringAmount", (parameterIn, valueIn) ->
-						{
+						"anisotropyTextureFilteringAmount", (parameterIn, valueIn) -> {
 							if (this.context().textureFilterAnisotropicIsCompatible())
 							{
 								if (valueIn < GL11
@@ -93,9 +89,9 @@ public class OpenGLSettings implements IRenderAPIContextSettings
 									parameterIn.set(valueIn);
 								}
 								else if (GraphicsConstants.DEBUG)
-								{
-									System.err.println("GL_EXT texture filter anisotropic is not supported !");
-								}
+				{
+					System.err.println("GL_EXT texture filter anisotropic is not supported !");
+				}
 
 							}
 						}).build());

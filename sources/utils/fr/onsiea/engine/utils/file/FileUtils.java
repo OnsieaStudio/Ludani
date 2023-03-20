@@ -280,14 +280,17 @@ public class FileUtils
 
 	public final static boolean write(final String filepathIn, final String contentIn)
 	{
-		return FileUtils.write(filepathIn, contentIn, false);
+		return FileUtils.write(new File(filepathIn), contentIn, false);
 	}
 
 	public final static boolean write(final String filepathIn, final String contentIn, final boolean canAppendIn)
 	{
-		final var	file	= new File(filepathIn);
+		return FileUtils.write(new File(filepathIn), contentIn, false);
+	}
 
-		final var	parent	= file.getParentFile();
+	public final static boolean write(final File fileIn, final String contentIn, final boolean canAppendIn)
+	{
+		final var parent = fileIn.getParentFile();
 
 		if (parent.exists() && parent.isFile())
 		{
@@ -298,11 +301,11 @@ public class FileUtils
 			parent.mkdirs();
 		}
 
-		if (!file.exists())
+		if (!fileIn.exists())
 		{
 			try
 			{
-				file.createNewFile();
+				fileIn.createNewFile();
 			}
 			catch (final IOException e1)
 			{
@@ -314,7 +317,7 @@ public class FileUtils
 
 		try
 		{
-			bufferedWriter = new BufferedWriter(new FileWriter(file, canAppendIn));
+			bufferedWriter = new BufferedWriter(new FileWriter(fileIn, canAppendIn));
 
 			bufferedWriter.write(contentIn);
 		}
@@ -342,7 +345,7 @@ public class FileUtils
 		return true;
 	}
 
-	public static List<String> loadLines(final String filepathIn, IIFunction<String> functionIn)
+	public static List<String> loadLines(final String filepathIn, final IIFunction<String> functionIn)
 	{
 		final var file = new File(filepathIn);
 
@@ -392,24 +395,30 @@ public class FileUtils
 		return lines;
 	}
 
-	public static List<String> loadLines(final String filepathIn)
+	public static List<String> loadLines(final String filepathIn) throws Exception
 	{
-		final var file = new File(filepathIn);
+		return FileUtils.loadLines(new File(filepathIn));
+	}
 
-		if (!file.exists() || file.isDirectory())
+	public static List<String> loadLines(final File fileIn) throws Exception
+	{
+		if (!fileIn.exists())
 		{
-			System.err.println("[ERREUR] Le fichier \"" + filepathIn + "\" n'existe pas !");
-
-			return null;
+			throw new Exception(
+					"[ERROR] FileUtils - loadLines(...) : The file \"" + fileIn.getAbsolutePath() + "\" not exists !");
 		}
-
+		if (fileIn.isDirectory())
+		{
+			throw new Exception("[ERROR] FileUtils - loadLines(...) : The file \"" + fileIn.getAbsolutePath()
+					+ "\" exists and is a directory !");
+		}
 		final List<String>	lines			= new ArrayList<>();
 
 		BufferedReader		bufferedReader	= null;
 
 		try
 		{
-			bufferedReader = new BufferedReader(new FileReader(file));
+			bufferedReader = new BufferedReader(new FileReader(fileIn));
 
 			String line;
 
@@ -599,7 +608,7 @@ public class FileUtils
 	 * @return
 	 * @throws Exception
 	 */
-	public static String[] allAbsoluteFilepathOf(String filepathIn) throws Exception
+	public static String[] allAbsoluteFilepathOf(final String filepathIn) throws Exception
 	{
 		final var root = new File(filepathIn);
 
@@ -630,7 +639,7 @@ public class FileUtils
 	 * @return
 	 * @throws Exception
 	 */
-	public static String[] allLocalFilepathOf(String filepathIn) throws Exception
+	public static String[] allLocalFilepathOf(final String filepathIn) throws Exception
 	{
 		final var root = new File(filepathIn);
 
@@ -660,7 +669,7 @@ public class FileUtils
 	 * @param normalMapFileNameIn
 	 * @return
 	 */
-	public static boolean exists(String filepathIn)
+	public static boolean exists(final String filepathIn)
 	{
 		return new File(filepathIn).exists();
 	}

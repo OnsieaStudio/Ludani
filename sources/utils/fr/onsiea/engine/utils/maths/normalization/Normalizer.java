@@ -106,13 +106,13 @@ public class Normalizer
 
 	/** Between [-1; 1] interval **/
 
-	/** Normalize value between [0; 1] on axe X, return xIn / maxIn; **/
+	/** Normalize value between [-1; 1] on axe X, return xIn / maxIn; **/
 	public double normalizeX(final double xIn)
 	{
 		return xIn / this.getWidth() * 2.0D - 1.0D;
 	}
 
-	/** Normalize value between [0; 1] on axe X, return xIn / maxIn; **/
+	/** Denormalize value from [-1; 1] on axe X, return xIn / maxIn; **/
 	public double denormalizeX(final double xIn)
 	{
 		return (xIn + 1) * this.getWidth() / 2.0D;
@@ -121,8 +121,6 @@ public class Normalizer
 	/** Normalize value between [0; 1] on axe X, return xIn / maxIn; **/
 	public float normalizeX(final float xIn)
 	{
-		System.out.println(this.getWidth() + " : " + xIn + " -> " + xIn / this.getWidth() + " -> "
-				+ xIn / this.getWidth() * 2.0 + " -> " + (xIn / this.getWidth() * 2.0 - 1.0f));
 		return xIn / this.getWidth() * 2.0F - 1.0F;
 	}
 
@@ -305,27 +303,27 @@ public class Normalizer
 		return 1.0F - (1 - yIn) * maxIn / 2.0D / maxIn;
 	}
 
-	public final static double normalizeX(double positionComponentIn, int widthIn)
+	public final static double normalizeX(final double positionComponentIn, final int widthIn)
 	{
 		return positionComponentIn / widthIn * 2.0f - 1.0f;
 	}
 
-	public final static double normalizeY(double positionComponentIn, int heightIn)
+	public final static double normalizeY(final double positionComponentIn, final int heightIn)
 	{
 		return 1.0f - positionComponentIn / heightIn * 2.0f;
 	}
 
-	public final static double denormalizeX(double positionComponentIn, int widthIn)
+	public final static double denormalizeX(final double positionComponentIn, final int widthIn)
 	{
 		return (positionComponentIn + 1.0f) / 2.0f * widthIn;
 	}
 
-	public final static double denormalizeY(double positionComponentIn, int heightIn)
+	public final static double denormalizeY(final double positionComponentIn, final int heightIn)
 	{
 		return (1.0f - positionComponentIn) / 2.0f * heightIn;
 	}
 
-	public final static boolean seemsToBeNormalized(double positionComponentIn)
+	public final static boolean seemsToBeNormalized(final double positionComponentIn)
 	{
 		if (positionComponentIn >= -1 && positionComponentIn <= 1)
 		{
@@ -335,78 +333,78 @@ public class Normalizer
 		return false;
 	}
 
-	public static double percent(double from, double to)
+	public static double percent(final double from, final double to)
 	{
 		return from / to * 100.0d;
 	}
 
-	public static float percent(float from, float to)
+	public static float percent(final float from, final float to)
 	{
 		return from / to * 100.0f;
 	}
 
-	public static Vector2d percent(Vector2d from, Vector2d to)
+	public static Vector2d percent(final Vector2d from, final Vector2d to)
 	{
 		return new Vector2d(Normalizer.percent(from.x, to.x), Normalizer.percent(from.y, to.y));
 	}
 
-	public static Vector2f percent(Vector2f from, Vector2f to)
+	public static Vector2f percent(final Vector2f from, final Vector2f to)
 	{
 		return new Vector2f(Normalizer.percent(from.x, to.x), Normalizer.percent(from.y, to.y));
 	}
 
-	public static double percentToValue(double percent, double value)
+	public static double percentToValue(final double percent, final double value)
 	{
 		return value * percent / 100.0d;
 	}
 
-	public static float percentToValue(float percent, float value)
+	public static float percentToValue(final float percent, final float value)
 	{
 		return value * percent / 100.0f;
 	}
 
-	public static Vector2d percentToNormalized(Vector2d positionIn)
+	public static Vector2d percentToNormalized(final Vector2d positionIn)
 	{
 		return new Vector2d(Normalizer.percentToNormalizedX(positionIn.x),
 				Normalizer.percentToNormalizedY(positionIn.y));
 	}
 
-	public static Vector2d percentToNormalized(Vector2d positionIn, Vector2d destinationIn)
+	public static Vector2d percentToNormalized(final Vector2d positionIn, final Vector2d destinationIn)
 	{
 		destinationIn.x	= Normalizer.percentToNormalizedX(positionIn.x);
 		destinationIn.y	= Normalizer.percentToNormalizedX(positionIn.y);
 		return destinationIn;
 	}
 
-	public static Vector2d percentToNormalized(double x, double y, Vector2d destinationIn)
+	public static Vector2d percentToNormalized(final double x, final double y, final Vector2d destinationIn)
 	{
 		destinationIn.x	= Normalizer.percentToNormalizedX(x);
 		destinationIn.y	= Normalizer.percentToNormalizedX(y);
 		return destinationIn;
 	}
 
-	public static double percentToNormalizedX(double percent)
+	public static double percentToNormalizedX(final double percent)
 	{
 		return percent * 2.0d / 100.0d - 1.0d;
 	}
 
-	public static double percentToNormalizedY(double percent)
+	public static double percentToNormalizedY(final double percent)
 	{
 		return 1.0d - percent * 2.0d / 100.0d;
 	}
 
-	public static Vector2d normalizedToPercent(Vector2d positionIn)
+	public static Vector2d normalizedToPercent(final Vector2d positionIn)
 	{
 		return new Vector2d(Normalizer.normalizedXToPercent(positionIn.x),
 				Normalizer.normalizedYToPercent(positionIn.y));
 	}
 
-	public static double normalizedXToPercent(double normalizedValue)
+	public static double normalizedXToPercent(final double normalizedValue)
 	{
 		return (normalizedValue + 1.0d) * 100.0d / 2.0d;
 	}
 
-	public static double normalizedYToPercent(double normalizedValue)
+	public static double normalizedYToPercent(final double normalizedValue)
 	{
 		return (1.0d - normalizedValue) * 100.0d / 2.0d;
 	}
@@ -416,12 +414,12 @@ public class Normalizer
 		return new Vector2d(normalX(positionIn.x, windowOptionsIn.getCurrentWidth()), normalY(positionIn.y, windowOptionsIn.getCurrentHeight()));
 	}**/
 
-	public static double normalX(double x, double width)
+	public static double normalX(final double x, final double width)
 	{
 		return (x + 1.0d) * (width / 2.0d);
 	}
 
-	public static double normalY(double y, double height)
+	public static double normalY(final double y, final double height)
 	{
 		return (1.0d - y) * (height / 2.0d);//- 1;
 	}
@@ -431,12 +429,12 @@ public class Normalizer
 		return new Vector2d(normalizedX(positionIn.x, windowOptionsIn.getCurrentWidth()), normalizedY(positionIn.y, windowOptionsIn.getCurrentHeight()));
 	}**/
 
-	public static double normalizedX(double x, double width)
+	public static double normalizedX(final double x, final double width)
 	{
 		return x / (width / 2.0d) - 1.0d;
 	}
 
-	public static double normalizedY(double y, double height)
+	public static double normalizedY(final double y, final double height)
 	{
 		return 1.0d - y / (height / 2.0d);
 	}

@@ -2,7 +2,7 @@ package fr.onsiea.engine.client.input.callbacks.glfw;
 
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 
-import fr.onsiea.engine.client.input.Cursor;
+import fr.onsiea.engine.client.input.cursor.Cursor;
 
 public class CallbackCursorPosition extends GLFWCursorPosCallback
 {

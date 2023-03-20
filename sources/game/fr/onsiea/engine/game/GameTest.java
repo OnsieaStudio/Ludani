@@ -42,7 +42,6 @@ package fr.onsiea.engine.game;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nanovg.NanoVG;
 import org.lwjgl.opengl.GL11;
 
@@ -88,6 +87,7 @@ import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
 import fr.onsiea.engine.game.scene.Scene;
 import fr.onsiea.engine.game.world.World;
+import fr.onsiea.engine.server.network.Network;
 import fr.onsiea.engine.utils.time.DateUtils;
 
 /**
@@ -96,12 +96,15 @@ import fr.onsiea.engine.utils.time.DateUtils;
  */
 public class GameTest implements IGameLogic
 {
-	public final static int		MAJOR	= 1;
-	public final static int		MINOR	= 2;
+	public final static int		MAJOR	= 2;
+	public final static int		MINOR	= 0;
 	public final static String	VERSION	= GameTest.MAJOR + "." + GameTest.MINOR;
 
 	public final static void main(final String[] argsIn)
 	{
+		Network.start();
+		System.exit(0);
+
 		System.out.println("OnsieaEngine version : " + GameTest.VERSION);
 		/**try
 		{
@@ -230,7 +233,6 @@ public class GameTest implements IGameLogic
 						.shadowPosMult(60).orthoCords(-120.0f, 120.0f, 120.0f, -120.0f, -80.0f, 120.0f),
 				10.0f, new Vector3f(0.125f, 0.125f, 0.125f),
 				new Fog(true, new Vector3f(0.125f, 0.125f, 0.125f), 0.00050f, 0.75f),
-
 				null/**new FlareManager(0.125f, renderAPIContextIn, i -> 0.75f / (3.0f * i), i -> "tex" + (i + 1) + ".png", 9)**/
 				, null /** skyboxRenderer**/
 		);
@@ -246,17 +248,40 @@ public class GameTest implements IGameLogic
 		this.nanoVGManager.nanoVGFonts().addText("UPS", this.textPlayerOrientation = new Text(32, "ARIAL",
 				NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 64, "", -1));
 
-		this.hudManager				= new HudManager(renderAPIContextIn);
+		inputManagerIn.shortcuts().setContext("HUDS");
+		inputManagerIn.shortcuts().add("CLOSE_ALL_HUDS", "LEFT_SHIFT", "F3");
+		inputManagerIn.shortcuts().add("CLOSE_CURRENT_HUD", "F3");
+		inputManagerIn.shortcuts().add("USE_CLICK_IN_HUDS", "MOUSE_LEFT");
+		inputManagerIn.shortcuts().add("QUICK_ITEM_MOVING", "LEFT_SHIFT", "MOUSE_LEFT");
+		inputManagerIn.shortcuts().setContext("GENERAL");
+		inputManagerIn.shortcuts().add("INVENTORY", "E").addContext("HUDS").addEntryPoint("RIGHT_SHIFT");
+		inputManagerIn.shortcuts().add("SPEED_UP", "LEFT_CONTROL").addEntryPoint("RIGHT_CONTROL");
+		inputManagerIn.shortcuts().add("SPEED_DOWN", "LEFT_ALT").addEntryPoint("RIGHT_ALT");
+		inputManagerIn.shortcuts().add("FRONT", "Z").addEntryPoint("UP");
+		inputManagerIn.shortcuts().add("LEFT", "Q").addEntryPoint("LEFT");
+		inputManagerIn.shortcuts().add("BACK", "S").addEntryPoint("DOWN");
+		inputManagerIn.shortcuts().add("RIGHT", "D").addEntryPoint("RIGHT");
+		inputManagerIn.shortcuts().add("UP", "SPACE").addEntryPoint("KP_0");
+		inputManagerIn.shortcuts().add("DOWN", "LEFT_SHIFT").addEntryPoint("KP_1");
+		inputManagerIn.shortcuts().add("PLACE", "MOUSE_LEFT");
+		inputManagerIn.shortcuts().add("BREAK", "MOUSE_RIGHT");
+		inputManagerIn.shortcuts().add("BLOCK_CURSOR", "TAB");
+		inputManagerIn.shortcuts().add("COLOR_MODE", "F1");
+		inputManagerIn.shortcuts().add("DEPTH_MODE", "F2");
+		inputManagerIn.shortcuts().fileRuntime("gamedata/Shortcuts.settings");
+
+		this.hudManager				= new HudManager(renderAPIContextIn, inputManagerIn);
 
 		this.hudCreativeInventory	= new HudInventory("creativeInventory", true, renderAPIContextIn, windowIn,
 				this.world, this.nanoVGManager, this.hudManager);
+
 		this.hudManager.add(this.hudCreativeInventory);
 		final var outHobar = new OutHotBar("outHotbar", false, this.hudCreativeInventory.hotBar());
 		this.hudManager.add(outHobar);
 
-		this.hudManager.canReverseOpeningWith(GLFW.GLFW_KEY_P, this.hudCreativeInventory);
+		this.hudManager.canReverseOpeningWith("INVENTORY", this.hudCreativeInventory);
 		this.hudManager.open(this.hudCreativeInventory, windowIn, inputManagerIn);
-		this.hudManager.canReverseOpeningWith(GLFW.GLFW_KEY_P, outHobar);
+		this.hudManager.canReverseOpeningWith("INVENTORY", outHobar);
 
 		this.scene.playerEntity().hotBar(outHobar);
 
@@ -403,12 +428,12 @@ public class GameTest implements IGameLogic
 	@Override
 	public void input(final IWindow windowIn, final InputManager inputManagerIn)
 	{
-		if (windowIn.key(GLFW.GLFW_KEY_F1) == GLFW.GLFW_PRESS && !this.mustBeBlockedIsPressed)
+		if (inputManagerIn.shortcuts().isEnabled("BLOCK_CURSOR"))
 		{
 			this.mustBeBlocked			= !this.mustBeBlocked;
 			this.mustBeBlockedIsPressed	= true;
 		}
-		else if (windowIn.key(GLFW.GLFW_KEY_F1) == GLFW.GLFW_RELEASE && this.mustBeBlockedIsPressed)
+		else if (this.mustBeBlockedIsPressed)
 		{
 			this.mustBeBlockedIsPressed = false;
 		}

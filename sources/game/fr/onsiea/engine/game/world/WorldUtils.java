@@ -3,9 +3,9 @@
  */
 package fr.onsiea.engine.game.world;
 
-import org.joml.Vector3f;
+import org.joml.Vector3i;
 
-import fr.onsiea.engine.game.world.chunk.Chunk;
+import fr.onsiea.engine.game.world.chunk.ChunkUtils;
 
 /**
  * @author seyro
@@ -13,7 +13,7 @@ import fr.onsiea.engine.game.world.chunk.Chunk;
  */
 public class WorldUtils
 {
-	private final static Vector3f	CHUNKEDPOSITION_TEMP_TO_VEC	= new Vector3f();
+	private final static Vector3i	CHUNKEDPOSITION_TEMP_TO_VEC	= new Vector3i();
 	private static float			uniqueItemId;
 
 	public final static float uniqueItemId()
@@ -21,19 +21,19 @@ public class WorldUtils
 		return WorldUtils.uniqueItemId++;
 	}
 
-	public final static Vector3f chunkedPosition(final Vector3f fromIn)
+	public final static Vector3i chunkedPosition(final Vector3i fromIn)
 	{
 		return WorldUtils.chunkedPosition(fromIn, WorldUtils.CHUNKEDPOSITION_TEMP_TO_VEC);
 	}
 
-	public final static Vector3f newChunkedPosition(final Vector3f fromIn)
+	public final static Vector3i newChunkedPosition(final Vector3i fromIn)
 	{
-		return WorldUtils.chunkedPosition(fromIn, new Vector3f());
+		return WorldUtils.chunkedPosition(fromIn, new Vector3i());
 	}
 
-	public final static Vector3f chunkedPosition(final Vector3f fromIn, final Vector3f toIn)
+	public final static Vector3i chunkedPosition(final Vector3i fromIn, final Vector3i toIn)
 	{
-		return WorldUtils.CHUNKEDPOSITION_TEMP_TO_VEC.set((int) Math.floor(fromIn.x() / Chunk.SIZE.x()),
-				(int) Math.floor(fromIn.y() / Chunk.SIZE.y()), (int) Math.floor(fromIn.z() / Chunk.SIZE.z()));
+		return WorldUtils.CHUNKEDPOSITION_TEMP_TO_VEC.set((int) Math.floor(fromIn.x() / ChunkUtils.SIZE.x()),
+				(int) Math.floor(fromIn.y() / ChunkUtils.SIZE.y()), (int) Math.floor(fromIn.z() / ChunkUtils.SIZE.z()));
 	}
 }

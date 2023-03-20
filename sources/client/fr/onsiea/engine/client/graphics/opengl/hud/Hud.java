@@ -21,7 +21,6 @@ import lombok.Getter;
  */
 public abstract class Hud
 {
-
 	private @Getter final String		name;
 
 	protected final List<HudComponent>	components;
@@ -42,27 +41,32 @@ public abstract class Hud
 	{
 		for (final var component : this.components)
 		{
-			final var	normalizedCursorX	= 2.0f * (inputManagerIn.cursor().x() / windowIn.effectiveWidth()) - 1.0f;
-			final var	normalizedCursorY	= 1.0f - 2.0f * (inputManagerIn.cursor().y() / windowIn.effectiveHeight());
-
-			if (inputManagerIn.cursor().hasMoved())
+			if (component != null)
 			{
-				if (component.verifyHovering(normalizedCursorX, normalizedCursorY))
-				{
-					component.hovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
+				final var	normalizedCursorX	= 2.0f * (inputManagerIn.cursor().x() / windowIn.effectiveWidth())
+						- 1.0f;
+				final var	normalizedCursorY	= 1.0f
+						- 2.0f * (inputManagerIn.cursor().y() / windowIn.effectiveHeight());
 
-					component.isFocus(true);
+				if (inputManagerIn.cursor().hasMoved())
+				{
+					if (component.verifyHovering(normalizedCursorX, normalizedCursorY))
+					{
+						component.hovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
+
+						component.isFocus(true);
+					}
+					else if (component.isFocus())
+					{
+						component.stopHovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
+
+						component.isFocus(false);
+					}
 				}
 				else if (component.isFocus())
 				{
-					component.stopHovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
-
-					component.isFocus(false);
+					component.hovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
 				}
-			}
-			else if (component.isFocus())
-			{
-				component.hovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
 			}
 		}
 	}
@@ -74,10 +78,10 @@ public abstract class Hud
 	{
 		for (final HudComponent component : this.components)
 		{
-			shader2dIn3DIn.color().load(MathInstances.one4f());
-
 			if (component != null)
 			{
+				shader2dIn3DIn.color().load(MathInstances.one4f());
+
 				component.draw2D(shader2dIn3DIn);
 			}
 		}
@@ -90,7 +94,10 @@ public abstract class Hud
 	{
 		for (final HudComponent component : this.components)
 		{
-			component.draw3D(shader3DTo2DIn, windowIn);
+			if (component != null)
+			{
+				component.draw3D(shader3DTo2DIn, windowIn);
+			}
 		}
 	}
 
@@ -112,19 +119,24 @@ public abstract class Hud
 
 		for (final var component : this.components)
 		{
-			final var	normalizedCursorX	= 2.0f * (inputManagerIn.cursor().x() / windowIn.effectiveWidth()) - 1.0f;
-			final var	normalizedCursorY	= 1.0f - 2.0f * (inputManagerIn.cursor().y() / windowIn.effectiveHeight());
-			if (component.verifyHovering(normalizedCursorX, normalizedCursorY))
+			if (component != null)
 			{
-				component.hovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
+				final var	normalizedCursorX	= 2.0f * (inputManagerIn.cursor().x() / windowIn.effectiveWidth())
+						- 1.0f;
+				final var	normalizedCursorY	= 1.0f
+						- 2.0f * (inputManagerIn.cursor().y() / windowIn.effectiveHeight());
+				if (component.verifyHovering(normalizedCursorX, normalizedCursorY))
+				{
+					component.hovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
 
-				component.isFocus(true);
-			}
-			else if (component.isFocus())
-			{
-				component.stopHovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
+					component.isFocus(true);
+				}
+				else if (component.isFocus())
+				{
+					component.stopHovering(normalizedCursorX, normalizedCursorY, inputManagerIn);
 
-				component.isFocus(false);
+					component.isFocus(false);
+				}
 			}
 		}
 	}
@@ -158,7 +170,10 @@ public abstract class Hud
 	{
 		for (final var component : this.components)
 		{
-			component.cleanup();
+			if (component != null)
+			{
+				component.cleanup();
+			}
 		}
 	}
 }

@@ -4,7 +4,6 @@
 package fr.onsiea.engine.game.world.renderer;
 
 import java.io.File;
-import java.util.Map;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL13;
@@ -12,13 +11,10 @@ import org.lwjgl.opengl.GL13;
 import fr.onsiea.engine.client.graphics.opengl.shaders.AdvInstancedShader;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.core.entity.PlayerEntity;
-import fr.onsiea.engine.game.world.WorldInformations;
+import fr.onsiea.engine.game.world.WorldData;
 import fr.onsiea.engine.game.world.chunk.Chunk;
-import fr.onsiea.engine.game.world.chunk.culling.CullingManager;
-import fr.onsiea.engine.game.world.chunk.culling.FrustumCulling;
+import fr.onsiea.engine.game.world.chunk.ChunkUtils;
 import fr.onsiea.engine.game.world.item.ItemsLoader;
-import fr.onsiea.engine.game.world.picking.Picker;
-import fr.onsiea.engine.utils.time.Timer;
 import lombok.Getter;
 
 /**
@@ -27,7 +23,7 @@ import lombok.Getter;
  */
 public class WorldRenderer
 {
-	private final WorldInformations		worldInformations;
+	private final WorldData				worldData;
 	private final IRenderAPIContext		renderAPIContext;
 
 	//private final ChunkVisualizer		chunkVisualizer;
@@ -36,9 +32,9 @@ public class WorldRenderer
 
 	private @Getter final ItemsLoader	itemsLoader;
 
-	public WorldRenderer(final WorldInformations worldInformationsIn, final IRenderAPIContext renderAPIContextIn)
+	public WorldRenderer(final WorldData worldInformationsIn, final IRenderAPIContext renderAPIContextIn)
 	{
-		this.worldInformations	= worldInformationsIn;
+		this.worldData			= worldInformationsIn;
 		this.renderAPIContext	= renderAPIContextIn;
 		//this.pickerVisualizer	= new PickerVisualizer(renderAPIContextIn);
 		//this.chunkVisualizer	= new ChunkVisualizer(renderAPIContextIn);
@@ -67,36 +63,41 @@ public class WorldRenderer
 			this.advInstancedShader.textureSamplers()[i].load(i);
 			i++;
 		}
-		for (final Chunk chunk : this.chunks().values())
-		{
-			if (this.picker().item() != null)
+
+		this.worldData.chunksManager().chunks().forEach(chunkIn -> {
+			if (this.worldData.chunksManager().picker().item() != null)
 			{
-				this.advInstancedShader.selectedUniqueItemId().load(this.picker().item().uniqueId());
+				this.advInstancedShader.selectedUniqueItemId()
+						.load(this.worldData.chunksManager().picker().item().uniqueId());
+			}
+			else
+			{
+				this.advInstancedShader.selectedUniqueItemId().load(-1.0f);
 			}
 
-			if (this.cullingTest())
+			if (this.worldData.chunksManager().cullingTest())
 			{
-				if (playerEntityIn.timedOrientation().hasChanged()
-						&& !this.frustumCulling().insideFrustum(new Vector3f(chunk.position()).mul(Chunk.SIZE), 16))
+				if (playerEntityIn.timedOrientation().hasChanged() && !this.worldData.chunksManager().frustumCulling()
+						.insideFrustum(new Vector3f(chunkIn.position()).mul(ChunkUtils.SIZE), 16))
 				{
-					chunk.visible(false);
+					chunkIn.isVisible(false);
 
-					continue;
+					return;
 				}
-				chunk.visible(true);
+				chunkIn.isVisible(true);
 			}
 
-			if (!chunk.visible())
+			if (!chunkIn.isVisible())
 			{
-				continue;
+				return;
 			}
 
-			if (!chunk.renderIsInitialized())
+			if (!chunkIn.renderIsInitialized())
 			{
-				chunk.genRender(renderAPIContextIn);
+				chunkIn.genRender(renderAPIContextIn);
 			}
 
-			if (chunk.selected())
+			if (chunkIn.selected())
 			{
 				this.advInstancedShader.chunkIsSelected().load(true);
 			}
@@ -105,21 +106,26 @@ public class WorldRenderer
 				this.advInstancedShader.chunkIsSelected().load(false);
 			}
 
-			if (this.picker().chunk() != null && chunk.position().equals(this.picker().chunk().position())
-					&& this.picker().item() != null)
+			if (this.worldData.chunksManager().picker().chunk() != null
+					&& this.worldData.chunksManager().picker().chunk().selected()
+					&& chunkIn.position().equals(this.worldData.chunksManager().picker().chunk().position())
+					&& this.worldData.chunksManager().picker().item() != null)
 			{
-				this.advInstancedShader.selectedInstanceId().load((float) this.picker().item().instanceId());
-				this.advInstancedShader.selectedPosition().load(this.picker().item().position());
+				this.advInstancedShader.selectedInstanceId()
+						.load((float) this.worldData.chunksManager().picker().item().instanceId());
+				this.advInstancedShader.selectedPosition()
+						.load(this.worldData.chunksManager().picker().item().position());
 			}
 			else
 			{
 				this.advInstancedShader.selectedInstanceId().load(-1.0f);
+				this.advInstancedShader.selectedPosition().load(new Vector3f(-1.0f));
 			}
 
-			chunk.draw(this.advInstancedShader, this.picker().selection());
+			chunkIn.draw(this.advInstancedShader, this.worldData.chunksManager().picker().selection());
 
 			//this.chunkVisualizer.draw(chunk.position());
-		}
+		});
 
 		//this.pickerVisualizer.draw();
 		renderAPIContextIn.shadersManager().detach();
@@ -131,45 +137,5 @@ public class WorldRenderer
 			i++;
 		}
 		renderAPIContextIn.texturesManager().resetIndex();
-	}
-
-	public Map<Vector3f, Chunk> chunks()
-	{
-		return this.worldInformations.chunks();
-	}
-
-	public CullingManager cullingManager()
-	{
-		return this.worldInformations.cullingManager();
-	}
-
-	public boolean cullingTest()
-	{
-		return this.worldInformations.cullingTest();
-	}
-
-	public Timer destroyTimer()
-	{
-		return this.worldInformations.destroyTimer();
-	}
-
-	public FrustumCulling frustumCulling()
-	{
-		return this.worldInformations.frustumCulling();
-	}
-
-	public Picker picker()
-	{
-		return this.worldInformations.picker();
-	}
-
-	public Timer placeTimer()
-	{
-		return this.worldInformations.placeTimer();
-	}
-
-	public long seed()
-	{
-		return this.worldInformations.seed();
 	}
 }

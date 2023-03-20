@@ -1,42 +1,44 @@
 package fr.onsiea.engine.client.input;
 
+import fr.onsiea.engine.client.input.action.EnumSubActionType;
+
 public class TimedAction
 {
 	private long			start;
 	private long			startForWhile;
-	private EnumActionType	actionType;
+	private EnumSubActionType	subType;
 
-	public TimedAction(final long startIn, final EnumActionType actionIn)
+	public TimedAction(final long startIn, final EnumSubActionType actionIn)
 	{
 		this.start(startIn);
 		this.type(actionIn);
 	}
 
-	TimedAction()
+	public TimedAction()
 	{
 		this.start(System.nanoTime());
-		this.type(EnumActionType.NONE);
+		this.type(EnumSubActionType.NONE);
 	}
 
-	void set(final long startIn, final EnumActionType typeIn)
+	void set(final long startIn, final EnumSubActionType typeIn)
 	{
 		this.start(startIn);
 		this.type(typeIn);
 	}
 
-	void set(final EnumActionType typeIn)
+	public void set(final EnumSubActionType typeIn)
 	{
 		this.start(System.nanoTime());
 		this.type(typeIn);
 	}
 
-	void setForWhile(final long startForWhileIn, final EnumActionType typeIn)
+	void setForWhile(final long startForWhileIn, final EnumSubActionType typeIn)
 	{
 		this.startForWhile(startForWhileIn);
 		this.type(typeIn);
 	}
 
-	void setForWhile(final EnumActionType typeIn)
+	void setForWhile(final EnumSubActionType typeIn)
 	{
 		this.startForWhile(System.nanoTime());
 		this.type(typeIn);
@@ -44,30 +46,30 @@ public class TimedAction
 
 	public void update()
 	{
-		switch (this.type())
+		switch (this.subType())
 		{
 			case JUST_PRESSED:
-				this.set(EnumActionType.PRESSED);
+				this.set(EnumSubActionType.PRESSED);
 				break;
 
 			case PRESSED:
-				this.setForWhile(EnumActionType.PRESSED_FOR_WHILE);
+				this.setForWhile(EnumSubActionType.PRESSED_FOR_WHILE);
 				break;
 
 			case JUST_RELEASED:
-				this.set(EnumActionType.RELEASED);
+				this.set(EnumSubActionType.RELEASED);
 				break;
 
 			case RELEASED:
-				this.setForWhile(EnumActionType.RELEASED_FOR_WHILE);
+				this.setForWhile(EnumSubActionType.RELEASED_FOR_WHILE);
 				break;
 
 			case JUST_REPEATED:
-				this.set(EnumActionType.REPEATED);
+				this.set(EnumSubActionType.REPEATED);
 				break;
 
 			case REPEATED:
-				this.setForWhile(EnumActionType.REPEATED_FOR_WHILE);
+				this.setForWhile(EnumSubActionType.REPEATED_FOR_WHILE);
 				break;
 
 			default:
@@ -115,13 +117,13 @@ public class TimedAction
 		this.startForWhile = startForWhileIn;
 	}
 
-	public EnumActionType type()
+	public EnumSubActionType subType()
 	{
-		return this.actionType;
+		return this.subType;
 	}
 
-	void type(final EnumActionType actionTypeIn)
+	void type(final EnumSubActionType actionTypeIn)
 	{
-		this.actionType = actionTypeIn;
+		this.subType = actionTypeIn;
 	}
 }

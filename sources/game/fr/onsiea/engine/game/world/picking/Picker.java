@@ -1,19 +1,23 @@
 package fr.onsiea.engine.game.world.picking;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.joml.Intersectionf;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
 import fr.onsiea.engine.core.entity.PlayerEntity;
 import fr.onsiea.engine.game.world.chunk.Chunk;
+import fr.onsiea.engine.game.world.chunk.ChunkUtils;
+import fr.onsiea.engine.game.world.chunks.Chunks;
 import fr.onsiea.engine.game.world.item.Item;
 import fr.onsiea.engine.utils.maths.MathInstances;
 import lombok.AllArgsConstructor;
@@ -32,23 +36,23 @@ public class Picker
 		private Item		item;
 		private Chunk		chunk;
 		private EnumFacing	face;
-		private Vector3f	toMake;
+		private Vector3i	toMake;
 
 		public Selection()
 		{
 			// item = null;
 			// chunk = null;
 			this.face	= EnumFacing.NONE;
-			this.toMake	= new Vector3f();
+			this.toMake	= new Vector3i();
 		}
 	}
 
-	private final Vector3f	max;
-	private final Vector3f	min;
-	private final Vector2f	nearFar;
-	private Vector3f		dir;
-	@Getter
-	private final Selection	selection;
+	private final Vector3f			max;
+	private final Vector3f			min;
+	private final Vector2f			nearFar;
+	private Vector3f				dir;
+	private @Getter final Selection	selection;
+	private @Getter boolean			isReset;
 
 	public Picker()
 	{
@@ -84,8 +88,8 @@ public class Picker
 		// Mouse position normalization
 		/**final var	mouseX				= (float) inputManagerIn.cursor().x();
 		final var	mouseY				= (float) inputManagerIn.cursor().y();
-		final var	normalizedMouseX	= 2.0f * mouseX / GraphicsConstants.DEFAULT_WIDTH - 1.0f;
-		final var	normalizedMouseY	= 2.0f * mouseY / GraphicsConstants.DEFAULT_HEIGHT - 1.0f;**/
+		final var	normalizedMouseX	= 2.0f * mouseX / windowIn.effectiveWidth() - 1.0f;
+		final var	normalizedMouseY	= 2.0f * mouseY / windowIn.effectiveHeight() - 1.0f;**/
 		final var	normalizedMouseX	= (float) (2.0f * inputManagerIn.cursor().x() / windowIn.effectiveWidth()
 				- 1.0f);
 		final var	normalizedMouseY	= (float) (1.0f
@@ -114,45 +118,60 @@ public class Picker
 		worldCoords	= invertedView.transform(eyeCoords, new Vector4f());
 		worldCoords.normalize();
 		this.dir = new Vector3f(worldCoords.x(), worldCoords.y(), worldCoords.z());
-
 	}
 
 	private final Vector3f worldCoords3f = new Vector3f();
 
-	private final Chunk selectChunk(final Collection<Chunk> chunksIn, final Map<Vector3f, Chunk> whitoutChunksIn)
+	private final Chunk selectChunk(final Map<Integer, Chunk> chunksIn)
 	{
-		var		closestDistance	= Float.POSITIVE_INFINITY;
-		Chunk	selectedChunk	= null;
-		for (final Chunk chunk : chunksIn)
+		var					closestDistance	= Float.POSITIVE_INFINITY;
+		Chunk				selectedChunk	= null;
+		var					selectedIndex	= -1;
+		final List<Integer>	toRemoves		= new LinkedList<>();
+		for (final var entry : chunksIn.entrySet())
 		{
-			/**if (chunk.position().x < 0 || chunk.position().y < 0 || chunk.position().z < 0)
-			{
+			final var	index		= entry.getKey();
+			final var	chunk		= entry.getValue();
 
-				this.min.set(chunk.position()).mul(16f);
-				this.max.set(chunk.position()).mul(16f);
-				this.min.add(0.5f, 0.5f, 0.5f);
-				this.max.sub(15.5f, 15.5f, 15.5f);
-			}
-			else
-			{**/
-			this.min.set(chunk.position()).mul(16f);
-			this.max.set(chunk.position()).mul(16f);
-			this.min.sub(0.5f, 0.5f, 0.5f);
-			this.max.add(15.5f, 15.5f, 15.5f);
-			//}
+			final var	position	= new Vector3f(chunk.x(), chunk.y(), chunk.z()).mul(ChunkUtils.SIZE.x(),
+					ChunkUtils.SIZE.y(), ChunkUtils.SIZE.z());
+			final var	size		= new Vector3f(ChunkUtils.SIZE.x(), ChunkUtils.SIZE.y(), ChunkUtils.SIZE.z())
+					.div(2.0f);
+			final var	center		= new Vector3f(position).add(size);
+
+			this.min.set(center);
+			this.max.set(center);
+			this.min.sub(size).sub(0.9f, 0.9f, 0.9f);
+			this.max.add(size).add(0.9f, 0.9f, 0.9f);
 
 			chunk.selected(false);
+
 			if (Intersectionf.intersectRayAab(this.worldCoords3f, this.dir, this.min, this.max, this.nearFar)
-					&& this.nearFar.x <= closestDistance && !whitoutChunksIn.containsKey(chunk.position()))
+					&& this.nearFar.x < closestDistance)
 			{
 				if (selectedChunk != null)
 				{
 					selectedChunk.selected(false);
 				}
+
 				chunk.selected(true);
 				closestDistance	= this.nearFar.x;
 				selectedChunk	= chunk;
+				selectedIndex	= index;
 			}
+			else
+			{
+				toRemoves.remove(index);
+			}
+		}
+		for (final int toRemove : toRemoves)
+		{
+			chunksIn.remove(toRemove);
+		}
+		toRemoves.clear();
+		if (selectedChunk != null)
+		{
+			chunksIn.remove(selectedIndex);
 		}
 
 		return selectedChunk;
@@ -160,25 +179,32 @@ public class Picker
 
 	public final void reset()
 	{
-		this.selection.item		= null;
-		this.selection.chunk	= null;
-		this.selection.face		= EnumFacing.NONE;
-		this.selection.toMake.set(-1.0f, -1.0f, -1.0f);
+		this.selection.item = null;
+		if (this.selection.chunk != null)
+		{
+			this.selection.chunk.selected(false);
+			this.selection.chunk = null;
+		}
+		this.selection.face = EnumFacing.NONE;
+		this.selection.toMake.set(-1, -1, -1);
+		this.isReset = true;
 	}
 
-	public void selectGameItem(final Collection<Chunk> chunksIn, final PlayerEntity cameraIn)
+	public void selectGameItem(final Chunks chunksIn, final PlayerEntity cameraIn)
 	{
 		this.reset();
+		this.isReset = false;
 
-		final Map<Vector3f, Chunk>	Withoutchunks	= new HashMap<>();
-		Chunk						selectedChunk	= null;
+		final var chunks = new LinkedHashMap<Integer, Chunk>();
 
-		while (this.selection.item == null && (selectedChunk = this.selectChunk(chunksIn, Withoutchunks)) != null)
+		chunksIn.forEach(chunkIn -> chunks.put(chunks.size(), chunkIn));
+
+		Chunk selectedChunk = null;
+		while (this.selection.item == null && (selectedChunk = this.selectChunk(chunks)) != null)
 		{
-			Withoutchunks.put(selectedChunk.position(), selectedChunk);
 			var closestDistance = Float.POSITIVE_INFINITY;
 
-			for (final Item item : selectedChunk.items().values())
+			for (final Item item : selectedChunk.items().all())
 			{
 				this.min.set(item.typeVariant().itemType().min());
 				this.max.set(item.typeVariant().itemType().max());
@@ -186,7 +212,7 @@ public class Picker
 				this.max.add(item.position());
 
 				if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar)
-						&& this.nearFar.x < closestDistance)
+						&& this.nearFar.x <= closestDistance)
 				{
 					closestDistance			= this.nearFar.x;
 					this.selection.item		= item;
@@ -326,7 +352,7 @@ public class Picker
 		return this.selection.item();
 	}
 
-	public Vector3f toMake()
+	public Vector3i toMake()
 	{
 		return this.selection.toMake();
 	}

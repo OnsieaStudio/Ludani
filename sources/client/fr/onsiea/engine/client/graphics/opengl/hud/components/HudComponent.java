@@ -3,12 +3,8 @@
  */
 package fr.onsiea.engine.client.graphics.opengl.hud.components;
 
-import org.joml.Vector2f;
-
-import fr.onsiea.engine.client.graphics.opengl.shaders.Shader2DIn3D;
-import fr.onsiea.engine.client.graphics.opengl.shaders.Shader3DTo2D;
-import fr.onsiea.engine.client.graphics.window.IWindow;
-import fr.onsiea.engine.client.input.InputManager;
+import fr.onsiea.engine.utils.maths.normalization.normalizable.vector.Normalizable2f;
+import fr.onsiea.engine.utils.positionnable.IPositionnable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,17 +13,15 @@ import lombok.Setter;
  *
  */
 @Getter
-public abstract class HudComponent
+public abstract class HudComponent implements IHudComponent
 {
-	protected final Vector2f	position;
-	protected final Vector2f	scale;
-
 	protected @Setter boolean	isFocus;
+	@Getter
+	public IPositionnable		positionnable;
 
-	public HudComponent(final Vector2f positionIn, final Vector2f scaleIn)
+	public HudComponent(final IPositionnable positionnableIn)
 	{
-		this.position	= positionIn;
-		this.scale		= scaleIn;
+		this.positionnable = positionnableIn;
 	}
 
 	/**
@@ -36,11 +30,13 @@ public abstract class HudComponent
 	 * @param normalizedCursorYIn
 	 * @return
 	 */
+	@Override
 	public boolean verifyHovering(final double normalizedCursorXIn, final double normalizedCursorYIn)
 	{
-		if (normalizedCursorXIn < this.position.x - this.scale.x || normalizedCursorXIn > this.position.x + this.scale.x
-				|| normalizedCursorYIn < this.position.y - this.scale.y
-				|| normalizedCursorYIn > this.position.y + this.scale.y)
+		if (normalizedCursorXIn < this.position().xNorm().centered() - this.size().xNorm().percent()
+				|| normalizedCursorXIn > this.position().xNorm().centered() + this.size().xNorm().percent()
+				|| normalizedCursorYIn < this.position().yNorm().invertedCentered() - this.size().yNorm().percent()
+				|| normalizedCursorYIn > this.position().yNorm().invertedCentered() + this.size().yNorm().percent())
 		{
 			return false;
 		}
@@ -48,25 +44,13 @@ public abstract class HudComponent
 		return true;
 	}
 
-	public abstract void hovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
-			final InputManager inputManagerIn);
-
-	public abstract void stopHovering(final double normalizedMouseXIn, final double normalizedMouseYIn,
-			final InputManager inputManagerIn);
-
-	/**
-	 * @param shader2dIn3DIn
-	 */
-	public abstract void draw2D(Shader2DIn3D shader2dIn3DIn);
-
-	/**
-	 * @param shader3dTo2DIn
-	 * @param windowIn
-	 */
-	public abstract void draw3D(Shader3DTo2D shader3dTo2DIn, IWindow windowIn);
-
-	public void cleanup()
+	public final Normalizable2f position()
 	{
+		return this.positionnable.position();
+	}
 
+	public final Normalizable2f size()
+	{
+		return this.positionnable.size();
 	}
 }

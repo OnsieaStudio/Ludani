@@ -9,13 +9,16 @@ import org.lwjgl.system.Callback;
 import fr.onsiea.engine.client.input.callback.ICallbackInitializationFunction;
 import fr.onsiea.engine.client.input.callback.IClearableCallback;
 import fr.onsiea.engine.client.input.callback.IResetableCallback;
+import fr.onsiea.engine.client.input.callbacks.glfw.CallbackCharMods;
 import fr.onsiea.engine.client.input.callbacks.glfw.CallbackCursorPosition;
+import fr.onsiea.engine.client.input.callbacks.glfw.CallbackFramebufferSize;
+import fr.onsiea.engine.client.input.callbacks.glfw.CallbackKey;
 import fr.onsiea.engine.client.input.callbacks.glfw.CallbackMouseButton;
 import fr.onsiea.engine.client.input.callbacks.glfw.CallbackScroll;
-import fr.onsiea.engine.client.input.callbacks.glfw.CharModsCallback;
-import fr.onsiea.engine.client.input.callbacks.glfw.FramebufferSizeCallback;
-import fr.onsiea.engine.client.input.callbacks.glfw.KeyCallback;
-import fr.onsiea.engine.client.input.callbacks.glfw.WindowSizeCallback;
+import fr.onsiea.engine.client.input.callbacks.glfw.CallbackWindowSize;
+import fr.onsiea.engine.client.input.cursor.Cursor;
+import fr.onsiea.engine.client.input.keyboard.Keyboard;
+import fr.onsiea.engine.client.input.shortcut.ShortcutsManager;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -35,11 +38,18 @@ public class InputManager
 	private @Getter Cursor									cursor;
 	private @Getter Keyboard								keyboard;
 
+	private @Getter ButtonsManager							buttonsManager;
+
 	private InputManager(final long windowHandleIn)
 	{
 		this.initializableCallbacks	= new LinkedHashMap<>();
 
 		this.windowHandle			= windowHandleIn;
+	}
+
+	public ShortcutsManager shortcuts()
+	{
+		return this.buttonsManager.shortcuts();
 	}
 
 	// Methods
@@ -79,8 +89,9 @@ public class InputManager
 
 	private void initialization() throws Exception
 	{
-		this.cursor		= new Cursor(this);
-		this.keyboard	= new Keyboard();
+		this.cursor			= new Cursor(this);
+		this.keyboard		= new Keyboard();
+		this.buttonsManager	= new ButtonsManager(Layout.AZERTY, this.keyboard, this.cursor);
 
 		// this.mouseButtonCallback	=
 		this.add(new CallbackMouseButton(this.cursor()), GLFW::glfwSetMouseButtonCallback);
@@ -88,13 +99,13 @@ public class InputManager
 				GLFW::glfwSetCursorPosCallback);
 		GLFW.glfwSetKeyCallback(this.windowHandle, null).free();
 		// this.keyCallback				=
-		this.add(new KeyCallback(this.keyboard()), GLFW::glfwSetKeyCallback);
+		this.add(new CallbackKey(this.keyboard()), GLFW::glfwSetKeyCallback);
 		// this.charModsCallback			=
-		this.add(new CharModsCallback(this.keyboard()), GLFW::glfwSetCharModsCallback);
+		this.add(new CallbackCharMods(this.keyboard()), GLFW::glfwSetCharModsCallback);
 		// this.framebufferSizeCallback	=
-		this.add(new FramebufferSizeCallback(), GLFW::glfwSetFramebufferSizeCallback);
+		this.add(new CallbackFramebufferSize(), GLFW::glfwSetFramebufferSizeCallback);
 		// this.windowSizeCallback			=
-		this.add(new WindowSizeCallback(), GLFW::glfwSetWindowSizeCallback);
+		this.add(new CallbackWindowSize(), GLFW::glfwSetWindowSizeCallback);
 		this.scrollCallback = this.add(new CallbackScroll(), GLFW::glfwSetScrollCallback);
 	}
 
@@ -103,6 +114,7 @@ public class InputManager
 		this.cursor().updateScroll(this.scrollCallback.callback);
 		this.cursor().update(this.windowHandle, this.cursorPositionCallback.callback);
 		this.keyboard().update();
+		this.shortcuts().update();
 	}
 
 	public InputManager pollEvents()

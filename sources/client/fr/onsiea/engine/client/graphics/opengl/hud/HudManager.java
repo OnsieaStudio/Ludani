@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import fr.onsiea.engine.client.graphics.opengl.GraphicsUtils;
@@ -20,7 +19,7 @@ import fr.onsiea.engine.client.graphics.opengl.shaders.Shader3DTo2D;
 import fr.onsiea.engine.client.graphics.render.IRenderAPIContext;
 import fr.onsiea.engine.client.graphics.window.IWindow;
 import fr.onsiea.engine.client.input.InputManager;
-import fr.onsiea.engine.utils.Pair;
+import fr.onsiea.engine.client.input.shortcut.IShortcut;
 import lombok.Getter;
 
 /**
@@ -29,21 +28,18 @@ import lombok.Getter;
  */
 public class HudManager
 {
-	private final static Pair<Integer, Integer>	KEY_TO_CLOSE_ALL_HUDS	= new Pair<>(GLFW.GLFW_KEY_LEFT_CONTROL,
-			GLFW.GLFW_KEY_ESCAPE);
-	private final static int					KEY_TO_CLOSE_UPPER_HUDS	= GLFW.GLFW_KEY_ESCAPE;
 
 	private final Map<String, Hud>				huds;
 
-	private final Map<Integer, List<Hud>>		keyToReverseHuds;
-	private final Map<Integer, List<Hud>>		keyToOpenHuds;
-	private final Map<Integer, List<Hud>>		keyToCloseHuds;
+	private final Map<String, List<Hud>>		keyToReverseHuds;
+	private final Map<String, List<Hud>>		keyToOpenHuds;
+	private final Map<String, List<Hud>>		keyToCloseHuds;
 
 	private final Map<String, Hud>				openedHuds;
 	private final Map<String, Hud>				needFocusHuds;
 	//private final List<Hud>						orderedOpenedHuds;
 
-	private final List<HudComponent>			simpleHudComponents;
+	private @Getter final List<HudComponent>	simpleHudComponents;
 
 	private final Shader2DIn3D					shader2DIn3D;
 	private final Shader3DTo2D					shader3Dto2D;
@@ -52,25 +48,32 @@ public class HudManager
 
 	private @Getter boolean						needFocus;
 
-	public HudManager(final IRenderAPIContext renderAPIContextIn)
+	private final IShortcut						SHORTCUT_TO_CLOSE_ALL_HUDS;
+	private final IShortcut						SHORTCUT_TO_CLOSE_UPPER_HUDS;
+
+	public HudManager(final IRenderAPIContext renderAPIContextIn, final InputManager inputManagerIn)
 	{
-		this.huds					= new HashMap<>();
-		this.keyToReverseHuds		= new HashMap<>();
-		this.keyToOpenHuds			= new HashMap<>();
-		this.keyToCloseHuds			= new HashMap<>();
-		this.openedHuds				= new LinkedHashMap<>();
-		this.simpleHudComponents	= new ArrayList<>();
-		this.needFocusHuds			= new LinkedHashMap<>();
-		this.shader2DIn3D			= (Shader2DIn3D) renderAPIContextIn.shadersManager().get("2Din3D");
-		this.shader3Dto2D			= (Shader3DTo2D) renderAPIContextIn.shadersManager().get("Shader3DTo2D");
-		this.renderAPIContext		= renderAPIContextIn;
+		this.huds							= new HashMap<>();
+		this.keyToReverseHuds				= new HashMap<>();
+		this.keyToOpenHuds					= new HashMap<>();
+		this.keyToCloseHuds					= new HashMap<>();
+		this.openedHuds						= new LinkedHashMap<>();
+		this.simpleHudComponents			= new ArrayList<>();
+		this.needFocusHuds					= new LinkedHashMap<>();
+		this.shader2DIn3D					= (Shader2DIn3D) renderAPIContextIn.shadersManager().get("2Din3D");
+		this.shader3Dto2D					= (Shader3DTo2D) renderAPIContextIn.shadersManager().get("Shader3DTo2D");
+		this.renderAPIContext				= renderAPIContextIn;
+
+		this.SHORTCUT_TO_CLOSE_ALL_HUDS		= inputManagerIn.shortcuts().get("CLOSE_ALL_HUDS");
+		this.SHORTCUT_TO_CLOSE_UPPER_HUDS	= inputManagerIn.shortcuts().get("CLOSE_CURRENT_HUD");
 	}
 
 	/**
 	 * @param renderAPIContextIn
 	 * @param hudCreativeInventoryIn
 	 */
-	public HudManager(final IRenderAPIContext renderAPIContextIn, final Hud... hudsIn)
+	public HudManager(final IRenderAPIContext renderAPIContextIn, final InputManager inputManagerIn,
+			final Hud... hudsIn)
 	{
 		this.huds					= new HashMap<>();
 		this.keyToReverseHuds		= new HashMap<>();
@@ -86,47 +89,62 @@ public class HudManager
 		{
 			this.add(hud);
 		}
+		this.SHORTCUT_TO_CLOSE_ALL_HUDS		= inputManagerIn.shortcuts().get("CLOSE_ALL_HUDS");
+		this.SHORTCUT_TO_CLOSE_UPPER_HUDS	= inputManagerIn.shortcuts().get("CLOSE_CURRENT_HUD");
 	}
 
 	public void update(final IWindow windowIn, final InputManager inputManagerIn)
 	{
-		if (inputManagerIn.keyboard().pressed().hasAll(HudManager.KEY_TO_CLOSE_ALL_HUDS.s1(),
-				HudManager.KEY_TO_CLOSE_ALL_HUDS.s2()))
+		if (this.SHORTCUT_TO_CLOSE_ALL_HUDS.isEnabled())
 		{
 			for (final Hud hud : this.openedHuds.values())
 			{
 				hud.close(inputManagerIn, windowIn);
 			}
 			this.openedHuds.clear();
+
+			this.needFocus = false;
+
+			return;
 		}
-		else if (inputManagerIn.keyboard().pressed().has(HudManager.KEY_TO_CLOSE_UPPER_HUDS))
+		if (this.SHORTCUT_TO_CLOSE_UPPER_HUDS.isEnabled())
 		{
 		}
 
 		List<Hud> huds = null;
 
-		for (final int key : inputManagerIn.keyboard().justPressed().keys().keySet())
+		for (final IShortcut shortcut : inputManagerIn.shortcuts().all())
 		{
-			huds = this.keyToReverseHuds.get(key);
+			if (!shortcut.isJustTriggered())
+			{
+				continue;
+			}
+
+			huds = this.keyToReverseHuds.get(shortcut.name());
 
 			if (huds != null)
 			{
 				this.reverseOpeningAll(huds, windowIn, inputManagerIn);
 			}
 
-			huds = this.keyToOpenHuds.get(key);
+			huds = this.keyToOpenHuds.get(shortcut.name());
 
 			if (huds != null)
 			{
 				this.openAll(huds, windowIn, inputManagerIn);
 			}
 
-			huds = this.keyToCloseHuds.get(key);
+			huds = this.keyToCloseHuds.get(shortcut.name());
 
 			if (huds != null)
 			{
 				this.closeAll(huds, windowIn, inputManagerIn);
 			}
+		}
+
+		if (this.openedHuds.size() <= 0)
+		{
+			this.needFocus = false;
 		}
 
 		for (final Hud hud : this.openedHuds.values())
@@ -442,51 +460,51 @@ public class HudManager
 		this.close(hud, windowIn, inputManagerIn);
 	}
 
-	public void canReverseOpeningWith(final int keyIn, final Hud hudIn)
+	public void canReverseOpeningWith(final String shortcutNameIn, final Hud hudIn)
 	{
-		var huds = this.keyToReverseHuds.get(keyIn);
+		var huds = this.keyToReverseHuds.get(shortcutNameIn);
 
 		if (huds == null)
 		{
 			huds = new ArrayList<>();
 
-			this.keyToReverseHuds.put(keyIn, huds);
+			this.keyToReverseHuds.put(shortcutNameIn, huds);
 		}
 
 		huds.add(hudIn);
 	}
 
-	public void canOpenWith(final int keyIn, final Hud hudIn)
+	public void canOpenWith(final String shortcutNameIn, final Hud hudIn)
 	{
-		var huds = this.keyToOpenHuds.get(keyIn);
+		var huds = this.keyToOpenHuds.get(shortcutNameIn);
 
 		if (huds == null)
 		{
 			huds = new ArrayList<>();
 
-			this.keyToReverseHuds.put(keyIn, huds);
+			this.keyToReverseHuds.put(shortcutNameIn, huds);
 		}
 
 		huds.add(hudIn);
 	}
 
-	public void canCloseWith(final int keyIn, final Hud hudIn)
+	public void canCloseWith(final String shortcutNameIn, final Hud hudIn)
 	{
-		var huds = this.keyToCloseHuds.get(keyIn);
+		var huds = this.keyToCloseHuds.get(shortcutNameIn);
 
 		if (huds == null)
 		{
 			huds = new ArrayList<>();
 
-			this.keyToReverseHuds.put(keyIn, huds);
+			this.keyToReverseHuds.put(shortcutNameIn, huds);
 		}
 
 		huds.add(hudIn);
 	}
 
-	public void removeReverseOpeningWith(final int keyIn, final Hud hudIn)
+	public void removeReverseOpeningWith(final String shortcutNameIn, final Hud hudIn)
 	{
-		final var huds = this.keyToReverseHuds.get(keyIn);
+		final var huds = this.keyToReverseHuds.get(shortcutNameIn);
 
 		if (huds != null)
 		{
@@ -494,9 +512,9 @@ public class HudManager
 		}
 	}
 
-	public void removeOpeningWith(final int keyIn, final Hud hudIn)
+	public void removeOpeningWith(final String shortcutNameIn, final Hud hudIn)
 	{
-		final var huds = this.keyToOpenHuds.get(keyIn);
+		final var huds = this.keyToOpenHuds.get(shortcutNameIn);
 
 		if (huds != null)
 		{
@@ -504,9 +522,9 @@ public class HudManager
 		}
 	}
 
-	public void removeClosedWith(final int keyIn, final Hud hudIn)
+	public void removeClosedWith(final String shortcutNameIn, final Hud hudIn)
 	{
-		final var huds = this.keyToCloseHuds.get(keyIn);
+		final var huds = this.keyToCloseHuds.get(shortcutNameIn);
 
 		if (huds != null)
 		{

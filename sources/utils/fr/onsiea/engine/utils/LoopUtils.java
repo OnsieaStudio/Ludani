@@ -69,6 +69,74 @@ public class LoopUtils
 	 * @param yMaxIn
 	 * @return
 	 */
+	public final static <T> int coordinate2DLoop(final int xMaxIn, final int yMaxIn, final T dataIn,
+			final ICoordinate2DLoopFunction<T> loopFunctionIn)
+	{
+		LoopUtils.index = 0;
+
+		for (var xPosition = 0; xPosition < xMaxIn; xPosition++)
+		{
+			for (var yPosition = 0; yPosition < yMaxIn; yPosition++)
+			{
+				if (!loopFunctionIn.iterate(LoopUtils.index, xPosition, yPosition, dataIn))
+				{
+					return LoopUtils.index;
+				}
+
+				LoopUtils.index++;
+			}
+		}
+
+		return LoopUtils.index;
+	}
+
+	/**
+	 *  Double for loop iteration with (x, y) coordinates between min and max : <br>
+	 *	xMin < x < xMax; i ++													<br>
+	 *			*																<br>
+	 *	yMin < y < yMax; y ++													<br>
+	 *	index = (xMax - xMin) * (yMax - yMin) if not returned before			<br>
+	 *
+	 * @param loopFunctionIn
+	 * @param xMinIn
+	 * @param xMaxIn
+	 * @param yMinIn
+	 * @param yMaxIn
+	 * @return
+	 */
+	public final static <T> int coordinate2DLoop(final int xMinIn, final int xMaxIn, final int yMinIn, final int yMaxIn,
+			final T dataIn, final ICoordinate2DLoopFunction<T> loopFunctionIn)
+	{
+		LoopUtils.index = 0;
+
+		for (var xPosition = xMinIn; xPosition < xMaxIn; xPosition++)
+		{
+			for (var yPosition = yMinIn; yPosition < yMaxIn; yPosition++)
+			{
+				if (!loopFunctionIn.iterate(LoopUtils.index, xPosition, yPosition, dataIn))
+				{
+					return LoopUtils.index;
+				}
+
+				LoopUtils.index++;
+			}
+		}
+
+		return LoopUtils.index;
+	}
+
+	/**
+	 *  Double for loop iteration with (x, y) coordinates between 0 and max :	<br>
+	 *	0 < x < xMax; i ++														<br>
+	 *			*																<br>
+	 *	0 < y < yMax; y ++														<br>
+	 *	index = xMax * yMax if not returned before								<br>
+	 *
+	 * @param loopFunctionIn
+	 * @param xMaxIn
+	 * @param yMaxIn
+	 * @return
+	 */
 	public final static <T> int coordinateInversed2DLoop(final int xMaxIn, final int yMaxIn, final T dataIn,
 			final ICoordinate2DLoopFunction<T> loopFunctionIn)
 	{
@@ -109,9 +177,147 @@ public class LoopUtils
 	{
 		LoopUtils.index = 0;
 
+		for (var yPosition = yMinIn; yPosition < yMaxIn; yPosition++)
+		{
+			for (var xPosition = xMinIn; xPosition < xMaxIn; xPosition++)
+			{
+				if (!loopFunctionIn.iterate(LoopUtils.index, xPosition, yPosition, dataIn))
+				{
+					return LoopUtils.index;
+				}
+
+				LoopUtils.index++;
+			}
+		}
+
+		return LoopUtils.index;
+	}
+
+	//
+
+	/**
+	 *  Double for loop iteration with (x, y) coordinates between 0 and max :	<br>
+	 *	0 < x < xMax; i ++														<br>
+	 *			*																<br>
+	 *	0 < y < yMax; y ++														<br>
+	 *	index = xMax * yMax if not returned before								<br>
+	 *
+	 * @param loopFunctionIn
+	 * @param xMaxIn
+	 * @param yMaxIn
+	 * @return
+	 */
+	public final static <T> int coordinateDecrementX2DLoop(final int xMaxIn, final int yMaxIn, final T dataIn,
+			final ICoordinate2DLoopFunction<T> loopFunctionIn)
+	{
+		LoopUtils.index = 0;
+
+		for (var xPosition = xMaxIn - 1; xPosition >= 0; xPosition--)
+		{
+			for (var yPosition = 0; yPosition < yMaxIn; yPosition++)
+			{
+				if (!loopFunctionIn.iterate(LoopUtils.index, xPosition, yPosition, dataIn))
+				{
+					return LoopUtils.index;
+				}
+
+				LoopUtils.index++;
+			}
+		}
+
+		return LoopUtils.index;
+	}
+
+	/**
+	 *  Double for loop iteration with (x, y) coordinates between min and max : <br>
+	 *	xMin < x < xMax; i ++													<br>
+	 *			*																<br>
+	 *	yMin < y < yMax; y ++													<br>
+	 *	index = (xMax - xMin) * (yMax - yMin) if not returned before			<br>
+	 *
+	 * @param loopFunctionIn
+	 * @param xMinIn
+	 * @param xMaxIn
+	 * @param yMinIn
+	 * @param yMaxIn
+	 * @return
+	 */
+	public final static <T> int coordinateDecrementX2DLoop(final int xMinIn, final int xMaxIn, final int yMinIn,
+			final int yMaxIn, final T dataIn, final ICoordinate2DLoopFunction<T> loopFunctionIn)
+	{
+		LoopUtils.index = 0;
+
+		for (var xPosition = xMaxIn - 1; xPosition >= xMinIn; xPosition--)
+		{
+			for (var yPosition = yMinIn; yPosition < yMaxIn; yPosition++)
+			{
+				if (!loopFunctionIn.iterate(LoopUtils.index, xPosition, yPosition, dataIn))
+				{
+					return LoopUtils.index;
+				}
+
+				LoopUtils.index++;
+			}
+		}
+
+		return LoopUtils.index;
+	}
+
+	/**
+	 *  Double for loop iteration with (x, y) coordinates between 0 and max :	<br>
+	 *	0 < x < xMax; i ++														<br>
+	 *			*																<br>
+	 *	0 < y < yMax; y ++														<br>
+	 *	index = xMax * yMax if not returned before								<br>
+	 *
+	 * @param loopFunctionIn
+	 * @param xMaxIn
+	 * @param yMaxIn
+	 * @return
+	 */
+	public final static <T> int coordinateDecrementXInversed2DLoop(final int xMaxIn, final int yMaxIn, final T dataIn,
+			final ICoordinate2DLoopFunction<T> loopFunctionIn)
+	{
+		LoopUtils.index = 0;
+
 		for (var yPosition = 0; yPosition < yMaxIn; yPosition++)
 		{
-			for (var xPosition = 0; xPosition < xMaxIn; xPosition++)
+			for (var xPosition = xMaxIn - 1; xPosition >= 0; xPosition--)
+			{
+				if (!loopFunctionIn.iterate(LoopUtils.index, xPosition, yPosition, dataIn))
+				{
+					return LoopUtils.index;
+				}
+
+				LoopUtils.index++;
+			}
+		}
+
+		return LoopUtils.index;
+	}
+
+	/**
+	 *  Double for loop iteration with (x, y) coordinates between min and max : <br>
+	 *	xMin < x < xMax; i --													<br>
+	 *			*																<br>
+	 *	yMin < y < yMax; y ++													<br>
+	 *	index = (xMax - xMin) * (yMax - yMin) if not returned before			<br>
+	 *
+	 * @param loopFunctionIn
+	 * @param xMinIn
+	 * @param xMaxIn
+	 * @param yMinIn
+	 * @param yMaxIn
+	 * @return
+	 */
+	public final static <T> int coordinateDecrementXInversed2DLoop(final int xMinIn, final int xMaxIn, final int yMinIn,
+			final int yMaxIn, final T dataIn, final ICoordinate2DLoopFunction<T> loopFunctionIn)
+	{
+		LoopUtils.index = 0;
+
+		for (var yPosition = yMinIn; yPosition < yMaxIn; yPosition++)
+		{
+			for (var xPosition = xMaxIn - 1; xPosition >= xMinIn; xPosition--)
 			{
 				if (!loopFunctionIn.iterate(LoopUtils.index, xPosition, yPosition, dataIn))
 				{

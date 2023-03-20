@@ -29,6 +29,7 @@ import fr.onsiea.engine.client.graphics.texture.data.TextureData;
 import fr.onsiea.engine.game.world.item.Item.ItemType;
 import fr.onsiea.engine.game.world.item.Item.ItemTypeVariant;
 import fr.onsiea.engine.utils.Pair;
+import fr.onsiea.engine.utils.maths.MathUtils;
 import lombok.Getter;
 
 /**
@@ -145,6 +146,18 @@ public class ItemsLoader
 			}
 
 		}
+	}
+
+	public final ItemTypeVariant randomVariant()
+	{
+		if (this.items().size() - 1 < 0)
+		{
+			return null;
+		}
+
+		final var index = MathUtils.randomInt(0, this.items().size() - 1);
+
+		return this.items().get(index);
 	}
 
 	/**
