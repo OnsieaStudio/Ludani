@@ -45,6 +45,7 @@ import org.joml.Vector3f;
 import org.lwjgl.nanovg.NanoVG;
 import org.lwjgl.opengl.GL11;
 
+import fr.onsea.logger.ConsoleLogger;
 import fr.onsea.logger.FileLogger;
 import fr.onsea.logger.Loggers;
 import fr.onsiea.engine.client.graphics.fog.Fog;
@@ -102,10 +103,10 @@ public class GameTest implements IGameLogic
 
 	public final static void main(final String[] argsIn)
 	{
+		GameTest.loggers.logLn("OnsieaEngine version : " + GameTest.VERSION);
+
 		Network.start();
 		System.exit(0);
-
-		System.out.println("OnsieaEngine version : " + GameTest.VERSION);
 		/**try
 		{
 			final var sl = new ShellLink().setWorkingDir(Paths.get("E:\\eclipse\\projects\\OnsieaEngine\\")
@@ -158,7 +159,7 @@ public class GameTest implements IGameLogic
 	private Text							textPlayerOrientation;
 
 	@SuppressWarnings("exports")
-	public final static Loggers				loggers				= GameTest.loggers().log("test");
+	public final static Loggers				loggers				= GameTest.loggers();
 
 	private final static Loggers loggers()
 	{
@@ -166,9 +167,9 @@ public class GameTest implements IGameLogic
 		try
 		{
 			return new Loggers()
-					//.put("consoleLogger",
-					//		new ConsoleLogger()
-					//				.withPattern("[<time:HH'h'mm'_'ss'-'S>]-[<thread>] <severity_alias> : <content>"))
+					.put("consoleLogger",
+							new ConsoleLogger()
+									.withPattern("[<time:HH'h'mm'_'ss'-'S>]-[<thread>] <severity_alias> : <content>"))
 					.put("fileLogger",
 							new FileLogger.Builder("gameData\\logs\\out_" + date, "gameData\\logs\\errors\\err_" + date)
 									.build()

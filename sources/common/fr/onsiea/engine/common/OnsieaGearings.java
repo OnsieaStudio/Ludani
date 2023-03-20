@@ -104,16 +104,6 @@ public class OnsieaGearings
 	public final static OnsieaGearings start(final IGameLogic gameLogicIn, final GameOptions optionsIn,
 			final String[] argsIn) throws Exception
 	{
-		/**{
-			final var root = new File("./");
-		
-			for (final File file : root.listFiles())
-			{
-				System.out.println(file.getAbsolutePath());
-		
-			}
-		}**/
-
 		return new OnsieaGearings(gameLogicIn, optionsIn, argsIn);
 	}
 

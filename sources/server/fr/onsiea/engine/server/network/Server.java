@@ -33,6 +33,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
 
+import fr.onsiea.engine.game.GameTest;
+
 /**
  * @author Seynax
  *
@@ -54,22 +56,22 @@ public class Server extends Thread
 		{
 			try
 			{
-				System.out.println(
+				GameTest.loggers.logLn(
 						"			[SERVER]	Waiting for client on port : \"" + this.serverSocket.getLocalPort()
 								+ "\" ... with ip \"" + InetAddress.getLocalHost().getHostAddress() + "\"");
 				final var server = this.serverSocket.accept();
 
-				System.out.println("			[SERVER]	Just connected to " + server.getRemoteSocketAddress());
+				GameTest.loggers.logLn("			[SERVER]	Just connected to " + server.getRemoteSocketAddress());
 				final var in = new DataInputStream(server.getInputStream());
 
-				System.out.println("			[SERVER]	Client says : " + in.readUTF());
+				GameTest.loggers.logLn("			[SERVER]	Client says : " + in.readUTF());
 				final var out = new DataOutputStream(server.getOutputStream());
 				out.writeUTF("Thank you for connecting to " + server.getLocalSocketAddress() + "\nGoodbye!");
 				server.close();
 			}
 			catch (final SocketTimeoutException s)
 			{
-				System.out.println("			[SERVER]	Socket timed out!");
+				GameTest.loggers.logLn("			[SERVER]	Socket timed out!");
 				break;
 			}
 			catch (final IOException e)
