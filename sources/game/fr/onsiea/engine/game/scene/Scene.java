@@ -56,69 +56,69 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class Scene
 {
-	public final static int							MAX_LIGHTS	= 4;
+	public final static int MAX_LIGHTS = 4;
 
-	private final SceneLights						sceneLights;
-	private SceneItems								sceneItems;
-	private final Fog								fog;
-	private final PlayerEntity						playerEntity;
+	private final SceneLights	sceneLights;
+	private SceneItems			sceneItems;
+	private final Fog			fog;
+	private final PlayerEntity	playerEntity;
 
-	private float									lightAngle;
-	private final float								angleInc;
+	private float		lightAngle;
+	private final float	angleInc;
 
 	// World
 
-	private final World								world;
+	private final World world;
 
-	private final SceneRenderer						sceneRenderer;
+	private final SceneRenderer sceneRenderer;
 
 	// Sun
 
-	private final Vector3f							sunPosition;
-	private final boolean							hasSun;
+	private final Vector3f	sunPosition;
+	private final boolean	hasSun;
 
 	// Particles
 
-	private final Map<String, ParticlesManager<?>>	particlesManagers;
+	private final Map<String, ParticlesManager<?>> particlesManagers;
 
 	// Timers
 
-	private final Timer								inputTimer;
+	private final Timer inputTimer;
 
-	public Scene(final IRenderAPIContext contextIn, final IWindow windowIn, final float clearColorRIn,
-			final float clearColorGIn, final float clearColorBIn, final DirectionalLight directionalLightIn,
-			final float specularPowerIn, final Vector3f ambientLightIn, final Fog fogIn, final HotBar hotBarIn,
-			final FlareManager flareManagerIn) throws Exception
+	public Scene(final IRenderAPIContext contextIn, final IWindow windowIn, final float clearColorRIn, final float clearColorGIn, final float clearColorBIn, final DirectionalLight directionalLightIn, final float specularPowerIn,
+			final Vector3f ambientLightIn, final Fog fogIn, final HotBar hotBarIn, final FlareManager flareManagerIn) throws Exception
 	{
-		this.sceneLights				= new SceneLights(directionalLightIn, specularPowerIn, ambientLightIn);
-		//this.sceneItems				= new SceneItems();
-		this.fog						= fogIn;
-		this.playerEntity				= new PlayerEntity();
-		this.playerEntity.position().z	= 2.0f;
+		this.sceneLights = new SceneLights(directionalLightIn, specularPowerIn, ambientLightIn);
+		// this.sceneItems = new SceneItems();
+		this.fog							= fogIn;
+		this.playerEntity					= new PlayerEntity();
+		this.playerEntity.position().x		= 20.0f;
+		this.playerEntity.position().y		= 20.0f;
+		this.playerEntity.position().z		= 20.0f;
+		this.playerEntity.orientation().x	= 45.0f;
+		this.playerEntity.orientation().y	= 135.0f;
 
-		this.lightAngle					= 45.0f;
-		this.angleInc					= 0.0f;
+		this.lightAngle	= 45.0f;
+		this.angleInc	= 0.0f;
 
 		// World
 
-		this.world						= new World(contextIn.shadersManager(), contextIn, this.playerEntity(),
-				windowIn);
+		this.world = new World(contextIn.shadersManager(), contextIn, this.playerEntity(), windowIn);
 
-		this.sceneRenderer				= new SceneRenderer(contextIn, windowIn, clearColorRIn, clearColorGIn,
-				clearColorBIn, fogIn, this.playerEntity, flareManagerIn, null, ambientLightIn, this.world);
+		this.sceneRenderer = new SceneRenderer(contextIn, windowIn, clearColorRIn, clearColorGIn, clearColorBIn, fogIn, this.playerEntity, flareManagerIn, null, ambientLightIn, this.world);
 
 		// Sun
 
-		this.sunPosition				= new Vector3f();
-		this.hasSun						= false;
+		this.sunPosition	= new Vector3f();
+		this.hasSun			= false;
 
 		// Particles
 
-		this.particlesManagers			= new LinkedHashMap<>();
+		this.particlesManagers = new LinkedHashMap<>();
 
 		// Timers
 
-		this.inputTimer					= new Timer();
+		this.inputTimer = new Timer();
 	}
 
 	// Tests
@@ -133,18 +133,10 @@ public class Scene
 			if (this.inputTimer.isTime(1_000_000_0L))
 			{
 				this.playerEntity.input(windowIn, inputManagerIn);
-				/**if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_LEFT) == GLFW.GLFW_PRESS)
-				{
-					this.angleInc -= 0.05f;
-				}
-				else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_RIGHT) == GLFW.GLFW_PRESS)
-				{
-					this.angleInc += 0.05f;
-				}
-				else
-				{
-					this.angleInc = 0;
-				}**/
+				/**
+				 * if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_LEFT) == GLFW.GLFW_PRESS) { this.angleInc -= 0.05f; } else if (inputManagerIn.glfwGetKey(GLFW.GLFW_KEY_RIGHT) == GLFW.GLFW_PRESS) { this.angleInc += 0.05f; } else {
+				 * this.angleInc = 0; }
+				 **/
 
 				// Tests
 
@@ -186,10 +178,10 @@ public class Scene
 			this.lightAngle = 90;
 		}
 
-		final var	zValue			= (float) Math.cos(Math.toRadians(this.lightAngle));
-		final var	yValue			= (float) Math.sin(Math.toRadians(this.lightAngle));
+		final var	zValue	= (float) Math.cos(Math.toRadians(this.lightAngle));
+		final var	yValue	= (float) Math.sin(Math.toRadians(this.lightAngle));
 
-		final var	lightDirection	= this.sceneLights.directionalLight().direction();
+		final var lightDirection = this.sceneLights.directionalLight().direction();
 		lightDirection.x	= 0;
 		lightDirection.y	= yValue;
 		lightDirection.z	= zValue;

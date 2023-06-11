@@ -208,6 +208,8 @@ public class GameTest implements IGameLogic
 		this.nanoVGManager.nanoVGFonts().addText("FPS", this.textFPS = new Text(32, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 0, "0 FPS / 0", -1));
 		this.nanoVGManager.nanoVGFonts().addText("TPS", this.textPlayerPosition = new Text(32, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 32, "", -1));
 		this.nanoVGManager.nanoVGFonts().addText("UPS", this.textPlayerOrientation = new Text(32, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 64, "", -1));
+		this.nanoVGManager.nanoVGFonts().addText("shortcut_inventory", new Text(32, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 96, "E to open inventory", -1));
+		this.nanoVGManager.nanoVGFonts().addText("shortcut_quit", new Text(32, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 128, "ESCAPE to quit", -1));
 
 		inputManagerIn.shortcuts().setContext("HUDS");
 		inputManagerIn.shortcuts().add("CLOSE_ALL_HUDS", "LEFT_SHIFT", "F3");
@@ -240,7 +242,6 @@ public class GameTest implements IGameLogic
 		this.hudManager.add(outHobar);
 
 		this.hudManager.canReverseOpeningWith("INVENTORY", this.hudCreativeInventory);
-		this.hudManager.open(this.hudCreativeInventory, windowIn, inputManagerIn);
 		this.hudManager.canReverseOpeningWith("INVENTORY", outHobar);
 
 		this.scene.playerEntity().hotBar(outHobar);

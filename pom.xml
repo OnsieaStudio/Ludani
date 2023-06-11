@@ -197,6 +197,7 @@
             			<configuration>
               				<sources>
                 				<source>sources/core</source>
+                				<source>sources/common</source>
                 				<source>sources/client</source>
                 				<source>sources/server</source>
                 				<source>sources/game</source>
