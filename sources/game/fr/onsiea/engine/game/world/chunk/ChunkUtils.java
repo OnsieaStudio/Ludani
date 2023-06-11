@@ -34,5 +34,5 @@ import org.joml.Vector3f;
  */
 public class ChunkUtils
 {
-	public static final Vector3f SIZE = new Vector3f(1.0f, 1.0f, 1.0f);
+	public static final Vector3f SIZE = new Vector3f(32.0f, 32.0f, 32.0f);
 }

@@ -54,7 +54,7 @@ import lombok.Setter;
  */
 public class Chunk
 {
-	private @Getter final Vector3i		position;
+	private @Getter final Vector3i position;
 
 	private @Getter @Setter boolean		isVisible	= false;
 	private @Getter @Setter boolean		selected	= false;
@@ -66,7 +66,7 @@ public class Chunk
 		this.position	= positionIn;
 		this.isVisible	= true;
 		this.renderer	= new ChunkRenderer(this);
-		this.items		= new ChunkItems(this.renderer);
+		this.items		= new ChunkItems(this, this.renderer);
 	}
 
 	public void genRender(final IRenderAPIContext contextIn)
@@ -77,6 +77,7 @@ public class Chunk
 	public final Chunk draw(final AdvInstancedShader advInstancedShaderIn, final Selection selectionIn)
 	{
 		this.renderer.draw(advInstancedShaderIn, selectionIn);
+
 		return this;
 	}
 

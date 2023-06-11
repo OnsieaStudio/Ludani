@@ -35,25 +35,25 @@ import lombok.Setter;
  *
  */
 @RequiredArgsConstructor
-public class ChunksNodes<T>
+public class Node<T>
 {
 	private @Getter final int		coordinate;
 
-	private @Getter ChunksNodes<T>	next;
-	private @Getter ChunksNodes<T>	previous;
+	private @Getter Node<T>	next;
+	private @Getter Node<T>	previous;
 
 	private @Setter @Getter T		value;
 
-	public ChunksNodes(final int coordinateIn, final T valueIn)
+	public Node(final int coordinateIn, final T valueIn)
 	{
 		this.coordinate	= coordinateIn;
 		this.value		= valueIn;
 	}
 
-	private final ChunksNodes<T> addNext(final int coordinateIn)
+	private final Node<T> addNext(final int coordinateIn)
 	{
 		final var lastNext = this.next;
-		this.next			= new ChunksNodes<>(coordinateIn);
+		this.next			= new Node<>(coordinateIn);
 		this.next.previous	= this;
 		if (lastNext != null)
 		{
@@ -63,10 +63,10 @@ public class ChunksNodes<T>
 		return this.next;
 	}
 
-	private final ChunksNodes<T> addPrevious(final int coordinateIn)
+	private final Node<T> addPrevious(final int coordinateIn)
 	{
 		final var lastPrevious = this.previous;
-		this.previous		= new ChunksNodes<>(coordinateIn);
+		this.previous		= new Node<>(coordinateIn);
 		this.previous.next	= this;
 		if (lastPrevious != null)
 		{
@@ -76,7 +76,7 @@ public class ChunksNodes<T>
 		return this.previous;
 	}
 
-	public final ChunksNodes<T> getOrCreate(final int coordinateIn)
+	public final Node<T> getOrCreate(final int coordinateIn)
 	{
 		if (coordinateIn > this.coordinate)
 		{
@@ -102,7 +102,7 @@ public class ChunksNodes<T>
 		return null;
 	}
 
-	public final ChunksNodes<T> get(final int coordinateIn)
+	public final Node<T> get(final int coordinateIn)
 	{
 		if (coordinateIn < this.coordinate)
 		{
@@ -120,7 +120,7 @@ public class ChunksNodes<T>
 		return null;
 	}
 
-	public ChunksNodes<T> remove()
+	public Node<T> remove()
 	{
 		this.value(null);
 		if (this.hasNext())
@@ -137,7 +137,7 @@ public class ChunksNodes<T>
 		return this;
 	}
 
-	public ChunksNodes<T> remove(final int coordinateIn)
+	public Node<T> remove(final int coordinateIn)
 	{
 		final var chunksNodes = this.get(coordinateIn);
 

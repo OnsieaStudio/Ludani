@@ -9,7 +9,6 @@ import org.joml.Intersectionf;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
 import org.joml.Vector4f;
 
 import fr.onsiea.engine.client.graphics.window.IWindow;
@@ -36,14 +35,14 @@ public class Picker
 		private Item		item;
 		private Chunk		chunk;
 		private EnumFacing	face;
-		private Vector3i	toMake;
+		private Vector3f	toMake;
 
 		public Selection()
 		{
 			// item = null;
 			// chunk = null;
 			this.face	= EnumFacing.NONE;
-			this.toMake	= new Vector3i();
+			this.toMake	= new Vector3f();
 		}
 	}
 
@@ -65,35 +64,33 @@ public class Picker
 
 	public void update(final PlayerEntity cameraIn, final InputManager inputManagerIn, final IWindow windowIn)
 	{
-		//this.dir = cameraIn.view().positiveZ(this.dir).negate();
+		// this.dir = cameraIn.view().positiveZ(this.dir).negate();
 		// final var dir0 = new Vector3f((float)
 		// Math.sin(Math.toRadians(cameraIn.orientation().y())),
 		// (float) -Math.sin(Math.toRadians(cameraIn.orientation().x())),
 		// (float) -Math.cos(Math.toRadians(cameraIn.orientation().y()))).normalize();
 
-		/**var	dir0	= new Vector3f();
-		
-		final var	rotX	= cameraIn.orientation().y();
-		final var	rotY	= cameraIn.orientation().x();
-		
-		dir0.y = (float) -Math.sin(Math.toRadians(rotY));
-		
-		final var h = (float) Math.cos(Math.toRadians(rotY));
-		
-		dir0.x	= (float) (h * Math.sin(Math.toRadians(rotX)));
-		dir0.z	= (float) (-h * Math.cos(Math.toRadians(rotX)));**/
+		/**
+		 * var dir0 = new Vector3f();
+		 *
+		 * final var rotX = cameraIn.orientation().y(); final var rotY = cameraIn.orientation().x();
+		 *
+		 * dir0.y = (float) -Math.sin(Math.toRadians(rotY));
+		 *
+		 * final var h = (float) Math.cos(Math.toRadians(rotY));
+		 *
+		 * dir0.x = (float) (h * Math.sin(Math.toRadians(rotX))); dir0.z = (float) (-h * Math.cos(Math.toRadians(rotX)));
+		 **/
 
-		//System.out.println(inputManagerIn.cursor().x() + ", " + inputManagerIn.cursor().y());
+		// System.out.println(inputManagerIn.cursor().x() + ", " + inputManagerIn.cursor().y());
 
 		// Mouse position normalization
-		/**final var	mouseX				= (float) inputManagerIn.cursor().x();
-		final var	mouseY				= (float) inputManagerIn.cursor().y();
-		final var	normalizedMouseX	= 2.0f * mouseX / windowIn.effectiveWidth() - 1.0f;
-		final var	normalizedMouseY	= 2.0f * mouseY / windowIn.effectiveHeight() - 1.0f;**/
-		final var	normalizedMouseX	= (float) (2.0f * inputManagerIn.cursor().x() / windowIn.effectiveWidth()
-				- 1.0f);
-		final var	normalizedMouseY	= (float) (1.0f
-				- 2.0f * inputManagerIn.cursor().y() / windowIn.effectiveHeight());
+		/**
+		 * final var mouseX = (float) inputManagerIn.cursor().x(); final var mouseY = (float) inputManagerIn.cursor().y(); final var normalizedMouseX = 2.0f * mouseX / windowIn.effectiveWidth() - 1.0f; final var normalizedMouseY
+		 * = 2.0f * mouseY / windowIn.effectiveHeight() - 1.0f;
+		 **/
+		final var	normalizedMouseX	= (float) (2.0f * inputManagerIn.cursor().x() / windowIn.effectiveWidth() - 1.0f);
+		final var	normalizedMouseY	= (float) (1.0f - 2.0f * inputManagerIn.cursor().y() / windowIn.effectiveHeight());
 
 		// Inverted matrices
 
@@ -102,10 +99,10 @@ public class Picker
 
 		// Clip
 
-		final var	clipCoords			= new Vector4f(normalizedMouseX, normalizedMouseY, -1.0f, 1.0f);
-		final var	eyeCoords			= invertedProjection.transform(clipCoords, new Vector4f());
+		final var	clipCoords	= new Vector4f(normalizedMouseX, normalizedMouseY, -1.0f, 1.0f);
+		final var	eyeCoords	= invertedProjection.transform(clipCoords, new Vector4f());
 
-		var			worldCoords			= new Matrix4f(cameraIn.view()).invert().transform(eyeCoords, new Vector4f());
+		var worldCoords = new Matrix4f(cameraIn.view()).invert().transform(eyeCoords, new Vector4f());
 
 		if (Math.abs(0.0f - worldCoords.w()) > 0.00001f)
 		{
@@ -130,13 +127,11 @@ public class Picker
 		final List<Integer>	toRemoves		= new LinkedList<>();
 		for (final var entry : chunksIn.entrySet())
 		{
-			final var	index		= entry.getKey();
-			final var	chunk		= entry.getValue();
+			final var	index	= entry.getKey();
+			final var	chunk	= entry.getValue();
 
-			final var	position	= new Vector3f(chunk.x(), chunk.y(), chunk.z()).mul(ChunkUtils.SIZE.x(),
-					ChunkUtils.SIZE.y(), ChunkUtils.SIZE.z());
-			final var	size		= new Vector3f(ChunkUtils.SIZE.x(), ChunkUtils.SIZE.y(), ChunkUtils.SIZE.z())
-					.div(2.0f);
+			final var	position	= new Vector3f(chunk.x(), chunk.y(), chunk.z()).mul(ChunkUtils.SIZE.x(), ChunkUtils.SIZE.y(), ChunkUtils.SIZE.z());
+			final var	size		= new Vector3f(ChunkUtils.SIZE.x(), ChunkUtils.SIZE.y(), ChunkUtils.SIZE.z()).div(2.0f);
 			final var	center		= new Vector3f(position).add(size);
 
 			this.min.set(center);
@@ -146,8 +141,7 @@ public class Picker
 
 			chunk.selected(false);
 
-			if (Intersectionf.intersectRayAab(this.worldCoords3f, this.dir, this.min, this.max, this.nearFar)
-					&& this.nearFar.x < closestDistance)
+			if (Intersectionf.intersectRayAab(this.worldCoords3f, this.dir, this.min, this.max, this.nearFar) && this.nearFar.x < closestDistance)
 			{
 				if (selectedChunk != null)
 				{
@@ -211,8 +205,7 @@ public class Picker
 				this.min.add(item.position());
 				this.max.add(item.position());
 
-				if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar)
-						&& this.nearFar.x <= closestDistance)
+				if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar) && this.nearFar.x <= closestDistance)
 				{
 					closestDistance			= this.nearFar.x;
 					this.selection.item		= item;
@@ -229,16 +222,15 @@ public class Picker
 
 	private final void selectFace(final PlayerEntity cameraIn)
 	{
-		final var	corner			= new Vector3f(this.selection.item.position()).sub(0.5f, 0.5f, 0.5f);
+		final var corner = new Vector3f(this.selection.item.position()).sub(0.5f, 0.5f, 0.5f);
 
-		var			closestDistance	= Float.POSITIVE_INFINITY;
+		var closestDistance = Float.POSITIVE_INFINITY;
 
 		this.selection.face = EnumFacing.NONE;
 		final var precision = 0.0001f;
 		this.min.set(corner).add(1.0f - precision, 0.0f, 0.0f);
 		this.max.set(corner).add(1.0f, 1.0f, 1.0f);
-		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar)
-				&& this.nearFar.x < closestDistance)
+		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar) && this.nearFar.x < closestDistance)
 		{
 			this.selection.face	= EnumFacing.RIGHT;
 			closestDistance		= this.nearFar.x;
@@ -246,8 +238,7 @@ public class Picker
 
 		this.min.set(corner);
 		this.max.set(corner).add(precision, 1.0f, 1.0f);
-		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar)
-				&& this.nearFar.x < closestDistance)
+		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar) && this.nearFar.x < closestDistance)
 		{
 			this.selection.face	= EnumFacing.LEFT;
 			closestDistance		= this.nearFar.x;
@@ -255,8 +246,7 @@ public class Picker
 
 		this.min.set(corner).add(0.0f, 1.0f - precision, 0.0f);
 		this.max.set(corner).add(1.0f, 1.0f, 1.0f);
-		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar)
-				&& this.nearFar.x < closestDistance)
+		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar) && this.nearFar.x < closestDistance)
 		{
 			this.selection.face	= EnumFacing.UP;
 			closestDistance		= this.nearFar.x;
@@ -264,8 +254,7 @@ public class Picker
 
 		this.min.set(corner);
 		this.max.set(corner).add(1.0f, precision, 1.0f);
-		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar)
-				&& this.nearFar.x < closestDistance)
+		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar) && this.nearFar.x < closestDistance)
 		{
 			this.selection.face	= EnumFacing.DOWN;
 			closestDistance		= this.nearFar.x;
@@ -273,8 +262,7 @@ public class Picker
 
 		this.min.set(corner).add(0.0f, 0.0f, 1.0f - precision);
 		this.max.set(corner).add(1.0f, 1.0f, 1.0f);
-		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar)
-				&& this.nearFar.x < closestDistance)
+		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar) && this.nearFar.x < closestDistance)
 		{
 			this.selection.face	= EnumFacing.BACK;
 			closestDistance		= this.nearFar.x;
@@ -282,8 +270,7 @@ public class Picker
 
 		this.min.set(corner);
 		this.max.set(corner).add(1.0f, 1.0f, precision);
-		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar)
-				&& this.nearFar.x < closestDistance)
+		if (Intersectionf.intersectRayAab(cameraIn.position(), this.dir, this.min, this.max, this.nearFar) && this.nearFar.x < closestDistance)
 		{
 			this.selection.face	= EnumFacing.FRONT;
 			closestDistance		= this.nearFar.x;
@@ -291,48 +278,28 @@ public class Picker
 
 		if (!EnumFacing.NONE.equals(this.selection.face))
 		{
-			this.selection.toMake.set((int) this.selection.item.position().x(),
-					(int) this.selection.item.position().y(), (int) this.selection.item.position().z())
-					.add(this.selection.face.pointsTo());
+			this.selection.toMake.set(this.selection.item.position().x(), this.selection.item.position().y(), this.selection.item.position().z()).add(this.selection.face.pointsTo().x, this.selection.face.pointsTo().y,
+					this.selection.face.pointsTo().z);
 		}
 	}
 
 	/**
-	 * public void selectGameItem(GameItem[] gameItems, PlayerEntity camera) {
-	 * dir = camera.getViewMatrix().positiveZ(dir).negate();
-	 * selectGameItem(gameItems, camera.getPosition(), dir);
-	 * }
+	 * public void selectGameItem(GameItem[] gameItems, PlayerEntity camera) { dir = camera.getViewMatrix().positiveZ(dir).negate(); selectGameItem(gameItems, camera.getPosition(), dir); }
 	 *
-	 * protected void selectGameItem(GameItem[] gameItems, Vector3f center, Vector3f
-	 * dir) {
-	 * GameItem selectedGameItem = null;
-	 * float closestDistance = Float.POSITIVE_INFINITY;
+	 * protected void selectGameItem(GameItem[] gameItems, Vector3f center, Vector3f dir) { GameItem selectedGameItem = null; float closestDistance = Float.POSITIVE_INFINITY;
 	 *
-	 * for (GameItem gameItem : gameItems) {
-	 * gameItem.setSelected(false);
-	 * min.set(gameItem.getPosition());
-	 * max.set(gameItem.getPosition());
-	 * min.add(-gameItem.getScale(), -gameItem.getScale(), -gameItem.getScale());
-	 * max.add(gameItem.getScale(), gameItem.getScale(), gameItem.getScale());
-	 * if (Intersectionf.intersectRayAab(center, dir, min, max, nearFar) &&
-	 * nearFar.x < closestDistance) {
-	 * closestDistance = nearFar.x;
-	 * selectedGameItem = gameItem;
-	 * }
-	 * }
+	 * for (GameItem gameItem : gameItems) { gameItem.setSelected(false); min.set(gameItem.getPosition()); max.set(gameItem.getPosition()); min.add(-gameItem.getScale(), -gameItem.getScale(), -gameItem.getScale());
+	 * max.add(gameItem.getScale(), gameItem.getScale(), gameItem.getScale()); if (Intersectionf.intersectRayAab(center, dir, min, max, nearFar) && nearFar.x < closestDistance) { closestDistance = nearFar.x; selectedGameItem
+	 * = gameItem; } }
 	 *
-	 * if (selectedGameItem != null) {
-	 * selectedGameItem.setSelected(true);
-	 * }
-	 * }
+	 * if (selectedGameItem != null) { selectedGameItem.setSelected(true); } }
 	 **/
 
 	// Update view matrix
 	/**
 	 * camera.updateViewMatrix();
 	 *
-	 * // Update sound listener position;
-	 * soundMgr.updateListenerPosition(camera);
+	 * // Update sound listener position; soundMgr.updateListenerPosition(camera);
 	 *
 	 * this.selectDetector.selectGameItem(gameItems, camera);
 	 **/
@@ -352,7 +319,7 @@ public class Picker
 		return this.selection.item();
 	}
 
-	public Vector3i toMake()
+	public Vector3f toMake()
 	{
 		return this.selection.toMake();
 	}

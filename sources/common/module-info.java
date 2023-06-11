@@ -52,7 +52,6 @@ module OnsieaEngine
 	exports fr.onsiea.engine.utils.maths.vector;
 	exports fr.onsiea.engine.utils.maths.vector.timed;
 
-	requires mslinks;
 	requires transitive org.joml;
 	requires org.lwjgl;
 	requires org.lwjgl.glfw;

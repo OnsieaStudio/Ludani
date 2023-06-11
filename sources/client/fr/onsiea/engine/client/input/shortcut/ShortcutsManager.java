@@ -54,10 +54,9 @@ public class ShortcutsManager
 	private final Cursor						cursor;
 	private final ButtonsManager				buttonsManager;
 
-	private IShortcut							last;
+	private IShortcut last;
 
-	public ShortcutsManager(final ButtonsManager buttonsManagerIn, final Keyboard keyboardIn, final Cursor cursorIn,
-			final IShortcut... shortcutsIn)
+	public ShortcutsManager(final ButtonsManager buttonsManagerIn, final Keyboard keyboardIn, final Cursor cursorIn, final IShortcut... shortcutsIn)
 	{
 		this.shortcuts			= new HashMap<>();
 		this.contextedShortcuts	= new HashMap<>();
@@ -208,7 +207,6 @@ public class ShortcutsManager
 			{
 				throw new Exception("[ERROR] Failed to save shortcuts !");
 			}
-			GameTest.loggers.log("[INFO] ");
 		}
 		else
 		{
@@ -225,31 +223,25 @@ public class ShortcutsManager
 
 	private final ShortcutsManager load(final File shortcutFileIn) throws Exception
 	{
-		/**final var lines = FileUtils.loadLines(shortcutFileIn);
-		for (final var line : lines)
-		{
-		}**/
+		/**
+		 * final var lines = FileUtils.loadLines(shortcutFileIn); for (final var line : lines) { }
+		 **/
 
 		return this;
 	}
 
 	private final boolean save(final File shortcutFileIn) throws IOException, Exception
 	{
-		/**if (!shortcutFileIn.getParentFile().exists())
-		{
-			shortcutFileIn.getParentFile().mkdirs();
-		}
-		if (!shortcutFileIn.exists() && !shortcutFileIn.createNewFile())
-		{
-			throw new Exception(
-					"[ERROR] Failed to create \"" + shortcutFileIn.getAbsolutePath() + "\" shortcut file !");
-		}
-		
-		final var content = null;
-		
-		return FileUtils.write(shortcutFileIn, content.toString(), false);**/
+		/**
+		 * if (!shortcutFileIn.getParentFile().exists()) { shortcutFileIn.getParentFile().mkdirs(); } if (!shortcutFileIn.exists() && !shortcutFileIn.createNewFile()) { throw new Exception( "[ERROR] Failed to create \"" +
+		 * shortcutFileIn.getAbsolutePath() + "\" shortcut file !"); }
+		 *
+		 * final var content = null;
+		 *
+		 * return FileUtils.write(shortcutFileIn, content.toString(), false);
+		 **/
 
-		return false;
+		return true;
 	}
 
 	// Delegated methods

@@ -23,19 +23,142 @@
             <url>https://github.com/Seynax</url>
         </developer>
     </developers>
-	
+
     <scm>
         <connection>scm:git:https://github.com/Onsiea/OnsieaEngine.git</connection>
         <developerConnection>scm:git:https://github.com/Onsiea/OnsieaEngine.git</developerConnection>
         <url>https://github.com/Onsiea/OnsieaEngine.git</url>
     </scm>
 
+	<properties>
+	    <maven.compiler.target>17</maven.compiler.target>
+	    <maven.compiler.source>17</maven.compiler.source>
+		<lwjgl.version>3.3.3-SNAPSHOT</lwjgl.version>
+		<joml.version>1.10.5</joml.version>
+		<lwjgl.natives>natives-windows</lwjgl.natives>
+	</properties>
+
+		<repositories>
+			<repository>
+				<id>sonatype-snapshots</id>
+				<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				<releases><enabled>false</enabled></releases>
+				<snapshots><enabled>true</enabled></snapshots>
+			</repository>
+		</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.lwjgl</groupId>
+				<artifactId>lwjgl-bom</artifactId>
+				<version>${lwjgl.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl -->
 		<dependency>
 			<groupId>org.lwjgl</groupId>
 			<artifactId>lwjgl</artifactId>
-			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-assimp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-glfw</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-nanovg</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-openal</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-opengl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-shaderc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-spvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-stb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-vma</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-vulkan</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-assimp</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-glfw</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-nanovg</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-openal</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-opengl</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-shaderc</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-spvc</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-stb</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl-vma</artifactId>
+			<classifier>${lwjgl.natives}</classifier>
+		</dependency>
+			<dependency>
+			<groupId>org.joml</groupId>
+			<artifactId>joml</artifactId>
+			<version>${joml.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -43,12 +166,12 @@
 			<version>1.18.22</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>fr.onsea</groupId>
+			<artifactId>logger</artifactId>
+			<version>3.0</version>
+		</dependency>
 	</dependencies>
-
-	<properties>
-	    <maven.compiler.target>17</maven.compiler.target>
-	    <maven.compiler.source>17</maven.compiler.source>
-	</properties>
 
 	<distributionManagement>
     		<repository>
@@ -83,6 +206,28 @@
           			</execution>
         		</executions>
       		</plugin>
+      		    <plugin>
+			      <groupId>org.apache.maven.plugins</groupId>
+			      <artifactId>maven-install-plugin</artifactId>
+			      <version>3.0.0-M1</version>
+			      <executions>
+			        <execution>
+				      <configuration>
+				            <file>${basedir}\librairies/OnseaLogger/OnseaLogger-3.0.jar</file>
+				            <groupId>fr.onsea</groupId>
+				            <artifactId>logger</artifactId>
+				            <version>3.0</version>
+				            <packaging>jar</packaging>
+	      					<generatePom>true</generatePom>
+				        </configuration>
+				         <id>install-jar-lib</id>
+				         <goals>
+				            <goal>install-file</goal>
+				         </goals>
+				         <phase>validate</phase>
+			        </execution>
+			      </executions>
+			    </plugin>
     	</plugins>
   	</build>
 </project>

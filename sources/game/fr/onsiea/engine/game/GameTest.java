@@ -88,7 +88,6 @@ import fr.onsiea.engine.common.game.GameOptions;
 import fr.onsiea.engine.common.game.IGameLogic;
 import fr.onsiea.engine.game.scene.Scene;
 import fr.onsiea.engine.game.world.World;
-import fr.onsiea.engine.server.network.Network;
 import fr.onsiea.engine.utils.time.DateUtils;
 
 /**
@@ -97,6 +96,24 @@ import fr.onsiea.engine.utils.time.DateUtils;
  */
 public class GameTest implements IGameLogic
 {
+	public final static Loggers loggers = GameTest.loggers();
+
+	private final static Loggers loggers()
+	{
+		final var date = DateUtils.str("yyyy.MM.dd-hh-m");
+		try
+		{
+			return new Loggers().put("consoleLogger", new ConsoleLogger().withPattern("[<time:HH'h'mm'_'ss'-'S>]-[<thread>] <severity_alias> : <content>")).put("fileLogger",
+					new FileLogger.Builder("gameData\\logs\\out_" + date, "gameData\\logs\\errors\\err_" + date).build().withPattern("[<time:HH'h'mm'_'ss'-'S>]-[<thread>] <severity_alias> : <content>"));
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public final static int		MAJOR	= 2;
 	public final static int		MINOR	= 0;
 	public final static String	VERSION	= GameTest.MAJOR + "." + GameTest.MINOR;
@@ -104,27 +121,6 @@ public class GameTest implements IGameLogic
 	public final static void main(final String[] argsIn)
 	{
 		GameTest.loggers.logLn("OnsieaEngine version : " + GameTest.VERSION);
-
-		Network.start();
-		System.exit(0);
-		/**try
-		{
-			final var sl = new ShellLink().setWorkingDir(Paths.get("E:\\eclipse\\projects\\OnsieaEngine\\")
-					.toAbsolutePath().normalize().toString());
-		
-			sl.setIconLocation("E:\\eclipse\\projects\\OnsieaEngine\\resources\\Aeison.ico");
-			final var	targetPath	= Paths.get("E:\\eclipse\\projects\\OnsieaEngine\\resources\\test.txt")
-					.toAbsolutePath();
-			final var	root		= targetPath.getRoot().toString();
-			final var	path		= targetPath.subpath(0, targetPath.getNameCount()).toString();
-			System.out.println(path);
-		
-			new ShellLinkHelper(sl).setLocalTarget(root, path, Options.ForceTypeFile).saveTo("testlink.lnk");
-		}
-		catch (IOException | ShellLinkException e1)
-		{
-			e1.printStackTrace();
-		}**/
 
 		try
 		{
@@ -136,52 +132,27 @@ public class GameTest implements IGameLogic
 		}
 	}
 
-	public final static Matrix4f			temp				= new Matrix4f().identity();
-	public static int						selectedJointMatrix	= 15;
-	public final static Vector3f			position			= new Vector3f();
+	public final static Matrix4f	temp				= new Matrix4f().identity();
+	public static int				selectedJointMatrix	= 15;
+	public final static Vector3f	position			= new Vector3f();
 
-	private Scene							scene;
+	private Scene scene;
 	// private GameItem gameItem;
-	private MD5Loader<GLTextureSettings>	md5Loader;
-	//private PointLight						pointLight;
-	//private Timer							updateTimer;
-	private boolean							mustBeBlockedIsPressed;
-	private World							world;
-	private HudManager						hudManager;
-	private HudInventory					hudCreativeInventory;
-	private boolean							mustBeBlocked;
-	private NanoVGManager					nanoVGManager;
+	private MD5Loader<GLTextureSettings> md5Loader;
+	// private PointLight pointLight;
+	// private Timer updateTimer;
+	private boolean			mustBeBlockedIsPressed;
+	private World			world;
+	private HudManager		hudManager;
+	private HudInventory	hudCreativeInventory;
+	private boolean			mustBeBlocked;
+	private NanoVGManager	nanoVGManager;
 
 	// Texts
 
-	private Text							textFPS;
-	private Text							textPlayerPosition;
-	private Text							textPlayerOrientation;
-
-	@SuppressWarnings("exports")
-	public final static Loggers				loggers				= GameTest.loggers();
-
-	private final static Loggers loggers()
-	{
-		final var date = DateUtils.str("yyyy.MM.dd-hh-m");
-		try
-		{
-			return new Loggers()
-					.put("consoleLogger",
-							new ConsoleLogger()
-									.withPattern("[<time:HH'h'mm'_'ss'-'S>]-[<thread>] <severity_alias> : <content>"))
-					.put("fileLogger",
-							new FileLogger.Builder("gameData\\logs\\out_" + date, "gameData\\logs\\errors\\err_" + date)
-									.build()
-									.withPattern("[<time:HH'h'mm'_'ss'-'S>]-[<thread>] <severity_alias> : <content>"));
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		return null;
-	}
+	private Text	textFPS;
+	private Text	textPlayerPosition;
+	private Text	textPlayerOrientation;
 
 	@Override
 	public boolean preInitialization()
@@ -191,13 +162,11 @@ public class GameTest implements IGameLogic
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean initialization(final IWindow windowIn, final IRenderAPIContext renderAPIContextIn,
-			final InputManager inputManagerIn) throws Exception
+	public boolean initialization(final IWindow windowIn, final IRenderAPIContext renderAPIContextIn, final InputManager inputManagerIn) throws Exception
 	{
 		this.mustBeBlocked	= true;
 		this.md5Loader		= new MD5Loader<>();
-		this.md5Loader.link(renderAPIContextIn.meshsManager(),
-				(ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager());
+		this.md5Loader.link(renderAPIContextIn.meshsManager(), (ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager());
 
 		{
 			renderAPIContextIn.shadersManager().add("normalMappingThinMatrix", new ShaderNormalMappingThinMatrix());
@@ -217,37 +186,28 @@ public class GameTest implements IGameLogic
 			renderAPIContextIn.shadersManager().add("verticalBlur", new VerticalBlurShader());
 			renderAPIContextIn.shadersManager().add("instanced", new InstancedShader());
 			renderAPIContextIn.shadersManager().add("advInstanced", new AdvInstancedShader());
-			renderAPIContextIn.shadersManager().add("advInstancedWithTransformations",
-					new AdvInstancedShaderWithTransformations());
+			renderAPIContextIn.shadersManager().add("advInstancedWithTransformations", new AdvInstancedShaderWithTransformations());
 			renderAPIContextIn.shadersManager().add("noise", new NoiseShader());
 		}
 
-		/**final var skyboxRenderer = new SkyboxRenderer(renderAPIContextIn.shadersManager(),
-				renderAPIContextIn.meshsManager().create(ShapeCube.withSize(100.0f), ShapeCube.INDICES, 3),
-				((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager()).load("skybox",
-						GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn, GL11.GL_LINEAR,
-								GL11.GL_LINEAR, GL13.GL_CLAMP_TO_BORDER, GL13.GL_CLAMP_TO_BORDER, true),
-						ResourcesPath.of(new ResourcesPath(GraphicsConstants.TEXTURES, "skybox"))));**/
+		/**
+		 * final var skyboxRenderer = new SkyboxRenderer(renderAPIContextIn.shadersManager(), renderAPIContextIn.meshsManager().create(ShapeCube.withSize(100.0f), ShapeCube.INDICES, 3), ((ITexturesManager<GLTextureSettings>)
+		 * renderAPIContextIn.texturesManager()).load("skybox", GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn, GL11.GL_LINEAR, GL11.GL_LINEAR, GL13.GL_CLAMP_TO_BORDER, GL13.GL_CLAMP_TO_BORDER, true),
+		 * ResourcesPath.of(new ResourcesPath(GraphicsConstants.TEXTURES, "skybox"))));
+		 **/
 
-		this.scene			= new Scene(renderAPIContextIn, windowIn, 0.125f, 0.125f, 0.125f,
-				new DirectionalLight(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(0.00f, -1.00f, 0.00f), 1.0f)
-						.shadowPosMult(60).orthoCords(-120.0f, 120.0f, 120.0f, -120.0f, -80.0f, 120.0f),
-				10.0f, new Vector3f(0.125f, 0.125f, 0.125f),
-				new Fog(true, new Vector3f(0.125f, 0.125f, 0.125f), 0.00050f, 0.75f),
-				null/**new FlareManager(0.125f, renderAPIContextIn, i -> 0.75f / (3.0f * i), i -> "tex" + (i + 1) + ".png", 9)**/
-				, null /** skyboxRenderer**/
+		this.scene = new Scene(renderAPIContextIn, windowIn, 0.125f, 0.125f, 0.125f,
+				new DirectionalLight(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(0.00f, -1.00f, 0.00f), 1.0f).shadowPosMult(60).orthoCords(-120.0f, 120.0f, 120.0f, -120.0f, -80.0f, 120.0f), 10.0f, new Vector3f(0.125f, 0.125f, 0.125f),
+				new Fog(true, new Vector3f(0.125f, 0.125f, 0.125f), 0.00050f, 0.75f), null/** new FlareManager(0.125f, renderAPIContextIn, i -> 0.75f / (3.0f * i), i -> "tex" + (i + 1) + ".png", 9) **/
+				, null /** skyboxRenderer **/
 		);
 
-		this.world			= new World(renderAPIContextIn.shadersManager(), renderAPIContextIn,
-				this.scene.playerEntity(), windowIn);
+		this.world			= new World(renderAPIContextIn.shadersManager(), renderAPIContextIn, this.scene.playerEntity(), windowIn);
 		this.nanoVGManager	= new NanoVGManager(windowIn);
 
-		this.nanoVGManager.nanoVGFonts().addText("FPS", this.textFPS = new Text(32, "ARIAL",
-				NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 0, "0 FPS / 0", -1));
-		this.nanoVGManager.nanoVGFonts().addText("TPS", this.textPlayerPosition = new Text(32, "ARIAL",
-				NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 32, "", -1));
-		this.nanoVGManager.nanoVGFonts().addText("UPS", this.textPlayerOrientation = new Text(32, "ARIAL",
-				NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 64, "", -1));
+		this.nanoVGManager.nanoVGFonts().addText("FPS", this.textFPS = new Text(32, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 0, "0 FPS / 0", -1));
+		this.nanoVGManager.nanoVGFonts().addText("TPS", this.textPlayerPosition = new Text(32, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 32, "", -1));
+		this.nanoVGManager.nanoVGFonts().addText("UPS", this.textPlayerOrientation = new Text(32, "ARIAL", NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP, 1.0f, 255, 255, 255, 255, 0, 64, "", -1));
 
 		inputManagerIn.shortcuts().setContext("HUDS");
 		inputManagerIn.shortcuts().add("CLOSE_ALL_HUDS", "LEFT_SHIFT", "F3");
@@ -271,10 +231,9 @@ public class GameTest implements IGameLogic
 		inputManagerIn.shortcuts().add("DEPTH_MODE", "F2");
 		inputManagerIn.shortcuts().fileRuntime("gamedata/Shortcuts.settings");
 
-		this.hudManager				= new HudManager(renderAPIContextIn, inputManagerIn);
+		this.hudManager = new HudManager(renderAPIContextIn, inputManagerIn);
 
-		this.hudCreativeInventory	= new HudInventory("creativeInventory", true, renderAPIContextIn, windowIn,
-				this.world, this.nanoVGManager, this.hudManager);
+		this.hudCreativeInventory = new HudInventory("creativeInventory", true, renderAPIContextIn, windowIn, this.world, this.nanoVGManager, this.hudManager);
 
 		this.hudManager.add(this.hudCreativeInventory);
 		final var outHobar = new OutHotBar("outHotbar", false, this.hudCreativeInventory.hotBar());
@@ -290,133 +249,67 @@ public class GameTest implements IGameLogic
 		// 16, -75),
 		// new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(4.0f, 4.0f, 4.0f));
 
-		//final var	reflectance	= 0.5f;
+		// final var reflectance = 0.5f;
 		/**
-		 * this.scene.sceneItems().add( new GameItemProperties("rockPlane", new
-		 * Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f,
-		 * 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
-		 * renderAPIContextIn.texturesManager().load("resources/textures/rock.png"),
-		 * reflectance,
-		 * renderAPIContextIn.texturesManager().load("resources/textures/rock_normals.png")),
-		 * renderAPIContextIn.meshsManager().load("plane",
-		 * "resources\\models\\plane.obj")), new Vector3f(0, 0, 0), new
-		 * Vector3f(-180.0f, 0, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
+		 * this.scene.sceneItems().add( new GameItemProperties("rockPlane", new Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
+		 * renderAPIContextIn.texturesManager().load("resources/textures/rock.png"), reflectance, renderAPIContextIn.texturesManager().load("resources/textures/rock_normals.png")), renderAPIContextIn.meshsManager().load("plane",
+		 * "resources\\models\\plane.obj")), new Vector3f(0, 0, 0), new Vector3f(-180.0f, 0, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		 *
-		 * this.scene.sceneItems() .add(new GameItemProperties("rockCube", new
-		 * Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f,
-		 * 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
-		 * renderAPIContextIn.texturesManager().load("resources/textures/rock.png"),
-		 * reflectance,
-		 * renderAPIContextIn.texturesManager().load("resources/textures/rock_normals.png")),
-		 * renderAPIContextIn.meshsManager().load("plane",
+		 * this.scene.sceneItems() .add(new GameItemProperties("rockCube", new Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
+		 * renderAPIContextIn.texturesManager().load("resources/textures/rock.png"), reflectance, renderAPIContextIn.texturesManager().load("resources/textures/rock_normals.png")), renderAPIContextIn.meshsManager().load("plane",
 		 * "resources\\models\\cube.obj")), this.gameItem);
 		 *
-		 * var ry; for (var x = -8; x < 8; x++) { for (var z = -8; z < 8; z++) {
-		 * this.scene .sceneItems().add( new GameItemProperties("rockPlane", new
-		 * Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f,
-		 * 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
-		 * renderAPIContextIn.texturesManager().load("resources/textures/rock.png"),
-		 * reflectance, renderAPIContextIn.texturesManager()
-		 * .load("resources/textures/rock_normals.png")),
-		 * renderAPIContextIn.meshsManager().load("plane",
-		 * "resources\\models\\plane.obj")), new Vector3f(x * 2.0f, 0, z * 2.0f), new
-		 * Vector3f(-180.0f, ry, 0.0f), new Vector3f(1.00f, 1.00f, 1.00f)); //ry -=
-		 * 90.0f; } // ry -= 90.0f; }
+		 * var ry; for (var x = -8; x < 8; x++) { for (var z = -8; z < 8; z++) { this.scene .sceneItems().add( new GameItemProperties("rockPlane", new Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f,
+		 * 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), renderAPIContextIn.texturesManager().load("resources/textures/rock.png"), reflectance, renderAPIContextIn.texturesManager() .load("resources/textures/rock_normals.png")),
+		 * renderAPIContextIn.meshsManager().load("plane", "resources\\models\\plane.obj")), new Vector3f(x * 2.0f, 0, z * 2.0f), new Vector3f(-180.0f, ry, 0.0f), new Vector3f(1.00f, 1.00f, 1.00f)); //ry -= 90.0f; } // ry -=
+		 * 90.0f; }
 		 **/
 
-		//final var ry = -0.0f;
-		/**for (var x = -4; x < 4; x++)
-		{
-			for (var z = -4; z < 4; z++)
-			{
-				this.scene
-						.sceneItems().add(
-								new GameItemProperties("rockCube", new Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
-										new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
-										reflectance,
-										((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager())
-												.load("resources/textures/complex_inverted_timberframe_2_2.png",
-														GLTextureSettings.Builder
-																.of((OpenGLRenderAPIContext) renderAPIContextIn)),
-		
-										((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager())
-												.load("resources/textures/rock_normals.png",
-														GLTextureSettings.Builder
-																.of((OpenGLRenderAPIContext) renderAPIContextIn))),
-										renderAPIContextIn.meshsManager().load("cube", "resources\\models\\cube.obj"),
-										GL11.GL_BACK),
-								// .0001f to avoid the worries of z fighting
-								new Vector3f(x * 2.0001f, 0, z * 2.0001f), new Vector3f(0.0f, ry, 0.0f),
-								new Vector3f(1.00f, 1.00f, 1.00f));
-				// ry -= 90.0f;
-			}
-			// ry -= 90.0f;
-		}**/
+		// final var ry = -0.0f;
 		/**
-		 * final var type = new ItemType("dirt",
-		 * renderAPIContextIn.meshsManager().load("cube",
-		 * "resources\\models\\cube.obj"),
-		 * new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f),
-		 * new Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f,
-		 * 1.0f, 1.0f),
-		 * new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), reflectance,
-		 * ((ITexturesManager<GLTextureSettings>)
-		 * renderAPIContextIn.texturesManager()).load(
-		 * "resources/textures/complex_inverted_timberframe_2.png",
-		 * GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn))));
+		 * for (var x = -4; x < 4; x++) { for (var z = -4; z < 4; z++) { this.scene .sceneItems().add( new GameItemProperties("rockCube", new Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
+		 * new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), reflectance, ((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager()) .load("resources/textures/complex_inverted_timberframe_2_2.png",
+		 * GLTextureSettings.Builder .of((OpenGLRenderAPIContext) renderAPIContextIn)),
+		 *
+		 * ((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager()) .load("resources/textures/rock_normals.png", GLTextureSettings.Builder .of((OpenGLRenderAPIContext) renderAPIContextIn))),
+		 * renderAPIContextIn.meshsManager().load("cube", "resources\\models\\cube.obj"), GL11.GL_BACK), // .0001f to avoid the worries of z fighting new Vector3f(x * 2.0001f, 0, z * 2.0001f), new Vector3f(0.0f, ry, 0.0f), new
+		 * Vector3f(1.00f, 1.00f, 1.00f)); // ry -= 90.0f; } // ry -= 90.0f; }
 		 **/
 		/**
-		 * this.scene.world().addItem(type, new Item(type, new Vector3f(0.0f, 10.0f,
-		 * 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)));
+		 * final var type = new ItemType("dirt", renderAPIContextIn.meshsManager().load("cube", "resources\\models\\cube.obj"), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f), new Material(new Vector4f(1.0f,
+		 * 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), reflectance, ((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager()).load(
+		 * "resources/textures/complex_inverted_timberframe_2.png", GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn))));
+		 **/
+		/**
+		 * this.scene.world().addItem(type, new Item(type, new Vector3f(0.0f, 10.0f, 0.0f), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)));
 		 *
-		 * this.scene.sceneItems().add( new GameItemProperties("barrel", new
-		 * Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f,
-		 * 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
-		 * renderAPIContextIn.texturesManager().load("resources/textures/rock.png"),
-		 * reflectance,
-		 * renderAPIContextIn.texturesManager().load("resources/textures/rock_normals.png")),
-		 * renderAPIContextIn.meshsManager().load("barrel",
-		 * "resources\\models\\barrel.obj")), new Vector3f(0.0f, 3.0f, 0f), new
-		 * Vector3f(180.0f, 0.0f, 0.0f), new Vector3f(0.25f, 0.25f, 0.25f));
+		 * this.scene.sceneItems().add( new GameItemProperties("barrel", new Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
+		 * renderAPIContextIn.texturesManager().load("resources/textures/rock.png"), reflectance, renderAPIContextIn.texturesManager().load("resources/textures/rock_normals.png")),
+		 * renderAPIContextIn.meshsManager().load("barrel", "resources\\models\\barrel.obj")), new Vector3f(0.0f, 3.0f, 0f), new Vector3f(180.0f, 0.0f, 0.0f), new Vector3f(0.25f, 0.25f, 0.25f));
 		 *
-		 * this.scene.sceneItems().add( new GameItemProperties("barrel", new
-		 * Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f,
-		 * 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
-		 * renderAPIContextIn.texturesManager().load("resources/textures/rock.png"),
-		 * reflectance,
-		 * renderAPIContextIn.texturesManager().load("resources/textures/rock_normals.png")),
-		 * renderAPIContextIn.meshsManager().load("barrel",
-		 * "resources\\models\\barrel.obj")), new Vector3f(0.0f, -3.0f, 0f), new
-		 * Vector3f(180.0f, 0.0f, 0.0f), new Vector3f(0.25f, 0.25f, 0.25f));
+		 * this.scene.sceneItems().add( new GameItemProperties("barrel", new Material(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
+		 * renderAPIContextIn.texturesManager().load("resources/textures/rock.png"), reflectance, renderAPIContextIn.texturesManager().load("resources/textures/rock_normals.png")),
+		 * renderAPIContextIn.meshsManager().load("barrel", "resources\\models\\barrel.obj")), new Vector3f(0.0f, -3.0f, 0f), new Vector3f(180.0f, 0.0f, 0.0f), new Vector3f(0.25f, 0.25f, 0.25f));
 		 **/
 
-		/**final var					md5Meshodel		= MD5Model.parse("resources/models/boblamp.md5mesh");
-		final var					md5AnimModel	= MD5AnimModel.parse("resources/models/boblamp.md5anim");
-		GameAnimatedItemProperties	bob				= null;
-		try
-		{
-			bob = this.md5Loader.process("bob", md5Meshodel, md5AnimModel, new Vector4f(1, 1, 1, 1),
-					GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn));
-			final var bobGameItem = new GameItem(new Vector3f(4.0f, 1.0f, 0.0f), new Vector3f(90.0f, 0.0f, 90.0f),
-					new Vector3f(0.05f));
-			this.scene.sceneItems().add(bob, bobGameItem);
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-		}**/
+		/**
+		 * final var md5Meshodel = MD5Model.parse("resources/models/boblamp.md5mesh"); final var md5AnimModel = MD5AnimModel.parse("resources/models/boblamp.md5anim"); GameAnimatedItemProperties bob = null; try { bob =
+		 * this.md5Loader.process("bob", md5Meshodel, md5AnimModel, new Vector4f(1, 1, 1, 1), GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn)); final var bobGameItem = new GameItem(new Vector3f(4.0f,
+		 * 1.0f, 0.0f), new Vector3f(90.0f, 0.0f, 90.0f), new Vector3f(0.05f)); this.scene.sceneItems().add(bob, bobGameItem); } catch (final Exception e) { e.printStackTrace(); }
+		 **/
 
-		//this.pointLight		= new PointLight(new Vector3f(1.0f, 1.0f, 0.0f), new Vector3f(), 1.0f,
-		//		new Attenuation(0.05f, 0.1f, 0.5f));
-		//this.scene.sceneLights().add(this.pointLight);
-		//this.updateTimer	= new Timer();
+		// this.pointLight = new PointLight(new Vector3f(1.0f, 1.0f, 0.0f), new Vector3f(), 1.0f,
+		// new Attenuation(0.05f, 0.1f, 0.5f));
+		// this.scene.sceneLights().add(this.pointLight);
+		// this.updateTimer = new Timer();
 
 		// this.projView = new Matrix4f(MathInstances.projectionMatrix()).identity();
 		// this.projView.mul(this.scene.playerEntity().view());
 
-		/**this.cursorTexture	= ((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager())
-				.load("cursor.png", GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn,
-						GL11.GL_NEAREST, GL11.GL_NEAREST, GL13.GL_CLAMP_TO_BORDER, GL13.GL_CLAMP_TO_BORDER, true).);**/
+		/**
+		 * this.cursorTexture = ((ITexturesManager<GLTextureSettings>) renderAPIContextIn.texturesManager()) .load("cursor.png", GLTextureSettings.Builder.of((OpenGLRenderAPIContext) renderAPIContextIn, GL11.GL_NEAREST,
+		 * GL11.GL_NEAREST, GL13.GL_CLAMP_TO_BORDER, GL13.GL_CLAMP_TO_BORDER, true).);
+		 **/
 
 		return true;
 	}
@@ -463,67 +356,47 @@ public class GameTest implements IGameLogic
 	public void update(final DataCounter dataCounterIn)
 	{
 		this.textFPS.change(dataCounterIn.framerateValue() + " FPS / " + dataCounterIn.refreshRate());
-		this.textPlayerPosition.change(this.scene.playerEntity().position().x + ", "
-				+ this.scene.playerEntity().position().y + ", " + this.scene.playerEntity().position().z);
-		this.textPlayerOrientation.change(this.scene.playerEntity().orientation().x + ", "
-				+ this.scene.playerEntity().orientation().y + ", " + this.scene.playerEntity().orientation().z);
+		this.textPlayerPosition.change(this.scene.playerEntity().position().x + ", " + this.scene.playerEntity().position().y + ", " + this.scene.playerEntity().position().z);
+		this.textPlayerOrientation.change(this.scene.playerEntity().orientation().x + ", " + this.scene.playerEntity().orientation().y + ", " + this.scene.playerEntity().orientation().z);
 
 		this.scene.update();
-		//if (this.updateTimer.isTime(5_000_000_0L))
-		//{
-		/**this.scene.sceneItems().executeAnimated((item, gameItems) -> {
-			item.nextFrame();
-		
-			final var	frame	= item.getCurrentFrame();
-		
-			final var	mat		= frame.getLocalJointMatrices()[GameTest.selectedJointMatrix];
-		
-			GameTest.temp.identity().translate(0.0f, 0.0f, 0.0f).rotateXYZ(0.0f, 0.0f, 0.0f).scale(1.0f).mul(mat);
-			final var	m30	= GameTest.temp.m30();
-			final var	m31	= GameTest.temp.m32();
-			final var	m32	= GameTest.temp.m31();
-			GameTest.temp.m30(m32);
-			GameTest.temp.m31(m31);
-			GameTest.temp.m32(m30);
-			GameTest.temp.scale(4.0f);
-		
-			var	angles		= new Quaternionf();
-			var	rotation	= new Vector3f();
-			rotation	= mat.getNormalizedRotation(angles).getEulerAnglesXYZ(rotation);
-			angles		= MD5Utils.calculateQuaternion(rotation);
-		
-			GameTest.temp.identity().translate(m32, m31, m30)
-					.rotateXYZ((float) Math.toRadians(90.0f), (float) -Math.toRadians(90.0f),
-							(float) Math.toRadians(90.0f))
-					.rotateXYZ(angles.x - (float) Math.toRadians(180.0f),
-							-angles.z - (float) Math.toRadians(180.0f), angles.y - (float) Math.toRadians(180.0f))
-					.scale(1.0f, 1.0f, 20.0f).translate(-0.5f, 0.5f, 0.5f).translate(0.0f, 0.0f, -1.5f);
-		
-			GameTest.position.set(m32, m31, m30);
-			this.pointLight.position().set(GameTest.position).mul(0.05f);
-		});**/
-		//}
+		// if (this.updateTimer.isTime(5_000_000_0L))
+		// {
+		/**
+		 * this.scene.sceneItems().executeAnimated((item, gameItems) -> { item.nextFrame();
+		 *
+		 * final var frame = item.getCurrentFrame();
+		 *
+		 * final var mat = frame.getLocalJointMatrices()[GameTest.selectedJointMatrix];
+		 *
+		 * GameTest.temp.identity().translate(0.0f, 0.0f, 0.0f).rotateXYZ(0.0f, 0.0f, 0.0f).scale(1.0f).mul(mat); final var m30 = GameTest.temp.m30(); final var m31 = GameTest.temp.m32(); final var m32 = GameTest.temp.m31();
+		 * GameTest.temp.m30(m32); GameTest.temp.m31(m31); GameTest.temp.m32(m30); GameTest.temp.scale(4.0f);
+		 *
+		 * var angles = new Quaternionf(); var rotation = new Vector3f(); rotation = mat.getNormalizedRotation(angles).getEulerAnglesXYZ(rotation); angles = MD5Utils.calculateQuaternion(rotation);
+		 *
+		 * GameTest.temp.identity().translate(m32, m31, m30) .rotateXYZ((float) Math.toRadians(90.0f), (float) -Math.toRadians(90.0f), (float) Math.toRadians(90.0f)) .rotateXYZ(angles.x - (float) Math.toRadians(180.0f),
+		 * -angles.z - (float) Math.toRadians(180.0f), angles.y - (float) Math.toRadians(180.0f)) .scale(1.0f, 1.0f, 20.0f).translate(-0.5f, 0.5f, 0.5f).translate(0.0f, 0.0f, -1.5f);
+		 *
+		 * GameTest.position.set(m32, m31, m30); this.pointLight.position().set(GameTest.position).mul(0.05f); });
+		 **/
+		// }
 
 		/**
-		 * var rotX = this.gameItem.orientation().x; rotX += 0.5f; if (rotX >= 360) {
-		 * rotX -= 360; } this.gameItem.orientation().x = rotX; var rotY =
-		 * this.gameItem.orientation().y; rotY += 0.5f; if (rotY >= 360) { rotY -= 360;
-		 * } this.gameItem.orientation().y = rotY; var rotZ =
-		 * this.gameItem.orientation().z; rotZ += 0.5f; if (rotZ >= 360) { rotZ -= 360;
-		 * } this.gameItem.orientation().z = rotZ;
+		 * var rotX = this.gameItem.orientation().x; rotX += 0.5f; if (rotX >= 360) { rotX -= 360; } this.gameItem.orientation().x = rotX; var rotY = this.gameItem.orientation().y; rotY += 0.5f; if (rotY >= 360) { rotY -= 360; }
+		 * this.gameItem.orientation().y = rotY; var rotZ = this.gameItem.orientation().z; rotZ += 0.5f; if (rotZ >= 360) { rotZ -= 360; } this.gameItem.orientation().z = rotZ;
 		 **/
 	}
 
 	@Override
 	public void draw(final IWindow windowIn, final IRenderAPIContext renderAPIContextIn, final Renderer rendererIn)
 	{
-		//this.scene.render(windowIn);
+		// this.scene.render(windowIn);
 
 		renderAPIContextIn.shadersManager().updateView(this.scene.playerEntity());
 		OpenGLUtils.restoreState();
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 
-		//GL11.glEnable(GL11.GL_CULL_FACE);
+		// GL11.glEnable(GL11.GL_CULL_FACE);
 
 		this.world.worldRenderer().draw(this.scene.playerEntity(), renderAPIContextIn);
 

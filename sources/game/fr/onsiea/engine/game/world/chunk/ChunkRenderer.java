@@ -68,18 +68,15 @@ class ChunkRenderer
 		var	i0	= 0;
 		for (final var entry : this.drawers.entrySet())
 		{
-			// final var	key		= entry.getKey();
-			final var	pair	= entry.getValue();
+			final var pair = entry.getValue();
 
-			final var	builder	= new Instanced.Builder();
+			final var builder = new Instanced.Builder();
 			pair.s1(i0);
 			i0++;
 
-			builder.data(entry.getKey().meshData().positions(), 3).data(entry.getKey().meshData().uvs(), 2)
-					.data(entry.getKey().meshData().normals(), 3).data(entry.getKey().meshData().tangents(), 3);
+			builder.data(entry.getKey().meshData().positions(), 3).data(entry.getKey().meshData().uvs(), 2).data(entry.getKey().meshData().normals(), 3).data(entry.getKey().meshData().tangents(), 3);
 
-			final var	buffer		= BufferUtils
-					.createFloatBuffer(this.chunk.items().size() * (MathInstances.matrixSizeFloats() + 3));
+			final var	buffer		= BufferUtils.createFloatBuffer(this.chunk.items().size() * (MathInstances.matrixSizeFloats() + 3));
 			final var	localBuffer	= BufferUtils.createFloatBuffer(MathInstances.matrixSizeFloats() + 3);
 
 			i = 0;
@@ -87,11 +84,7 @@ class ChunkRenderer
 			{
 				item.instanceId(i);
 
-				final var	position	= item.position();
-				final var	orientation	= item.orientation();
-				final var	scale		= item.scale();
-
-				final var	matrix		= Transformations3f.transformations(position, orientation, scale);
+				final var matrix = Transformations3f.transformations(item.position(), item.orientation(), item.scale());
 
 				matrix.get(0, localBuffer);
 				localBuffer.put(MathInstances.matrixSizeFloats(), item.typeVariant().textureIndex());

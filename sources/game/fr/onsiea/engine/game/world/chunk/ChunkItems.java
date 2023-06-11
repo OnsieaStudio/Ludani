@@ -46,9 +46,11 @@ public class ChunkItems
 {
 	private final ChunkRenderer					chunkRenderer;
 	private @Getter final Map<Vector3f, Item>	items;
+	private final Chunk							chunk;
 
-	public ChunkItems(final ChunkRenderer chunkRendererIn)
+	public ChunkItems(final Chunk chunkIn, final ChunkRenderer chunkRendererIn)
 	{
+		this.chunk			= chunkIn;
 		this.chunkRenderer	= chunkRendererIn;
 		this.items			= new LinkedHashMap<>();
 	}
@@ -56,6 +58,7 @@ public class ChunkItems
 	private final void add(final Item itemIn)
 	{
 		itemIn.uniqueId(WorldUtils.uniqueItemId());
+
 		if (this.items().containsKey(itemIn.position()))
 		{
 			return;

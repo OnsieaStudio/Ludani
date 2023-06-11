@@ -76,19 +76,18 @@ public class ChunksManager
 
 	public ChunksManager(final World worldIn)
 	{
-		this.world			= worldIn;
-		this.chunks			= new Chunks(this.world);
+		this.world	= worldIn;
+		this.chunks	= new Chunks(this.world);
 
 		// Culling
 
-		this.cullingManager	= new CullingManager(new CoordinateDistanceCulling(8 * 16),
-				new SquareDistanceCulling(6 * 16), new CubeDistanceCulling(4 * 16));
+		this.cullingManager	= new CullingManager(new CoordinateDistanceCulling(8 * 16), new SquareDistanceCulling(6 * 16), new CubeDistanceCulling(4 * 16));
 		this.frustumCulling	= new FrustumCulling();
 		this.cullingTest	= true;
 
 		// Picking
 
-		this.picker			= new Picker();
+		this.picker = new Picker();
 
 		// Timing
 
@@ -100,18 +99,19 @@ public class ChunksManager
 
 	public final void gen(final float chunkNumberXIn, final float chunkNumberYIn, final WorldRenderer worldRendererIn)
 	{
-		final Map<ItemType, List<Item>> typedItems = new HashMap<>();
+		final Map<ItemType, List<Item>>	typedItems	= new HashMap<>();
+		var								i			= 0;
 		for (var x = 0; x < chunkNumberXIn; x++)
 		{
 			for (var z = 0; z < chunkNumberYIn; z++)
 			{
-				final var chunk = this.chunks.getOrCreateChunk(x, 0, z);
+				final var chunk = this.chunks.getOrCreate(x, 0, z);
 
-				for (var x0 = 0; x0 < ChunkUtils.SIZE.x(); x0 += 1)
+				for (var x0 = 0; x0 < ChunkUtils.SIZE.x(); x0++)
 				{
-					for (var z0 = 0; z0 < ChunkUtils.SIZE.y(); z0 += 1)
+					for (var z0 = 0; z0 < ChunkUtils.SIZE.y(); z0++)
 					{
-						final var variant = worldRendererIn.itemsLoader().items().get(0); //.randomVariant();
+						final var variant = worldRendererIn.itemsLoader().randomVariant();
 						if (variant == null)
 						{
 							continue;
@@ -125,32 +125,28 @@ public class ChunksManager
 							typedItems.put(variant.itemType(), items);
 						}
 
-						items.add(new Item(variant,
-								new Vector3f(x0 + x * ChunkUtils.SIZE.x(), 0, z0 + z * ChunkUtils.SIZE.y()),
-								new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)));
+						items.add(new Item(variant, new Vector3f(x0 + x * ChunkUtils.SIZE.x(), i * (1.0f / ChunkUtils.SIZE.x()), z0 + z * ChunkUtils.SIZE.y()), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)));
 					}
 				}
 				chunk.items().add(typedItems);
 
 				typedItems.clear();
 				worldRendererIn.initRenderOfChunk(chunk);
+				i++;
 			}
 		}
 		typedItems.clear();
 	}
 
-	private final void selectGameItem(final InputManager inputManagerIn, final PlayerEntity playerEntityIn,
-			final IWindow windowIn)
+	private final void selectGameItem(final InputManager inputManagerIn, final PlayerEntity playerEntityIn, final IWindow windowIn)
 	{
 		this.picker().update(playerEntityIn, inputManagerIn, windowIn);
 		this.picker().selectGameItem(this.chunks, playerEntityIn);
 	}
 
-	public final void update(final InputManager inputManagerIn, final PlayerEntity playerEntityIn,
-			final IWindow windowIn, final boolean freePickingMouseIn)
+	public final void update(final InputManager inputManagerIn, final PlayerEntity playerEntityIn, final IWindow windowIn, final boolean freePickingMouseIn)
 	{
-		if (this.pickMustBeUpdated && this.pickTimer().isTime(1_400_500_0L)
-				|| this.pickMustBeUpdatedQuickly && this.quickPickTimer().isTime(1_400L))
+		if (this.pickMustBeUpdated && this.pickTimer().isTime(1_400_500_0L) || this.pickMustBeUpdatedQuickly && this.quickPickTimer().isTime(1_400L))
 		{
 			this.pickTimer.start();
 			this.quickPickTimer().start();
@@ -163,15 +159,12 @@ public class ChunksManager
 
 		if (!this.cameraHasChanged)
 		{
-			this.cameraHasChanged = playerEntityIn.timedOrientation().hasChanged()
-					|| playerEntityIn.timedPosition().hasChanged()
-					|| freePickingMouseIn && inputManagerIn.cursor().hasMoved();
+			this.cameraHasChanged = playerEntityIn.timedOrientation().hasChanged() || playerEntityIn.timedPosition().hasChanged() || freePickingMouseIn && inputManagerIn.cursor().hasMoved();
 		}
 
 		if (this.cameraHasChanged)
 		{
-			if (!playerEntityIn.timedOrientation().hasChanged() && !playerEntityIn.timedPosition().hasChanged()
-					&& (!freePickingMouseIn || !inputManagerIn.cursor().hasMoved()) && !this.pickMustBeUpdatedQuickly)
+			if (!playerEntityIn.timedOrientation().hasChanged() && !playerEntityIn.timedPosition().hasChanged() && (!freePickingMouseIn || !inputManagerIn.cursor().hasMoved()) && !this.pickMustBeUpdatedQuickly)
 			{
 				this.pickMustBeUpdatedQuickly = true;
 
@@ -185,30 +178,23 @@ public class ChunksManager
 		// Place object
 
 		ItemTypeVariant variant = null;
-		if (this.picker().item() != null && inputManagerIn.shortcuts().isEnabled("PLACE")
-				&& this.placeTimer().isTime(1_100_500_00L) && playerEntityIn.hotBar() != null
-				&& (variant = playerEntityIn.hotBar().selectedItem()) != null)
+		if (this.picker().item() != null && inputManagerIn.shortcuts().isEnabled("PLACE") && this.placeTimer().isTime(1_100_500_00L) && playerEntityIn.hotBar() != null && (variant = playerEntityIn.hotBar().selectedItem()) != null)
 		{
-			//System.out.println(this.chunks.getNode(this.picker().chunk().position().x(),
-			//		this.picker().chunk().position().y(), this.picker().chunk().position().z()).up());
-
 			final var	position	= WorldUtils.newChunkedPosition(this.picker().toMake());
-			final var	chunk		= this.chunks.getOrCreateChunk(position.x, position.y, position.z);
+			final var	chunk		= this.chunks.getOrCreate(position.x, position.y, position.z);
 
 			this.placeTimer().start();
 
-			chunk.items().add(variant.itemType(), new Item(variant, new Vector3f(this.picker().toMake()),
-					new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)));
+			chunk.items().add(variant.itemType(), new Item(variant, new Vector3f(this.picker().toMake()), new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)));
 
 			chunk.renderIsInitialized(false);
 
-			//this.pickMustBeUpdatedQuickly = true;
+			// this.pickMustBeUpdatedQuickly = true;
 			this.selectGameItem(inputManagerIn, playerEntityIn, windowIn);
 		}
 
 		// Destroy object
-		if (inputManagerIn.shortcuts().isEnabled("BREAK") && this.picker().chunk() != null
-				&& this.destroyTimer().isTime(1_400_500_00L))
+		if (inputManagerIn.shortcuts().isEnabled("BREAK") && this.picker().chunk() != null && this.destroyTimer().isTime(1_400_500_00L))
 
 		{
 			this.picker().chunk().items().removeAll(this.picker().item());
@@ -216,14 +202,14 @@ public class ChunksManager
 
 			if (this.picker().chunk().isEmpty())
 			{
-				this.chunks.remove(this.picker().chunk());
+				this.chunks.remove(this.picker().chunk().x(), this.picker().chunk().y(), this.picker().chunk().z());
 			}
 			else
 			{
 				this.picker().chunk().renderIsInitialized(false);
 			}
 
-			//this.pickMustBeUpdatedQuickly = true;
+			// this.pickMustBeUpdatedQuickly = true;
 			this.selectGameItem(inputManagerIn, playerEntityIn, windowIn);
 		}
 	}

@@ -26,224 +26,135 @@
 */
 package fr.onsiea.engine.game.world.chunks;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.joml.Vector3i;
 
 import fr.onsiea.engine.game.world.World;
 import fr.onsiea.engine.game.world.chunk.Chunk;
-import fr.onsiea.engine.game.world.chunk.node.ChunkNode;
-import fr.onsiea.engine.game.world.chunk.node.ChunksNodes;
 import fr.onsiea.engine.utils.function.IIFunction;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Seynax
  *
  */
+@RequiredArgsConstructor
 public class Chunks
 {
-	private final World											world;
-	private ChunksNodes<ChunksNodes<ChunksNodes<ChunkNode>>>	nodes;
-	private ChunkNode											first;
-	private ChunkNode											last;
-
-	private @Getter int											size;
+	private Map<Float, Map<Float, Map<Float, Chunk>>>	chunks;
+	private World										world;
+	private int											size;
 
 	public Chunks(final World worldIn)
 	{
-		this.world = worldIn;
+		this.world	= worldIn;
+		this.chunks	= new LinkedHashMap<>();
 	}
 
-	private final Chunk initializeChunks(final int xIn, final int yIn, final int zIn)
+	public final boolean contains(final float xIn, final float yIn, final float zIn)
 	{
-		this.nodes = new ChunksNodes<>(xIn);
-		final var yNodes = new ChunksNodes<ChunksNodes<ChunkNode>>(yIn);
-		this.nodes.value(yNodes);
-		final var zNodes = new ChunksNodes<ChunkNode>(zIn);
-		yNodes.value(zNodes);
-		final var chunk = new Chunk(this.world, new Vector3i(xIn, yIn, zIn));
-		this.first	= new ChunkNode(chunk);
-		this.last	= this.first;
-		this.size++;
-		zNodes.value(this.first);
+		final var mapX = this.chunks.get(xIn);
+		if (mapX == null)
+		{
+			return false;
+		}
+
+		final var mapY = mapX.get(yIn);
+		if (mapY == null)
+		{
+			return false;
+		}
+
+		return mapY.containsKey(zIn);
+	}
+
+	public final Chunk getOrCreate(final float xIn, final float yIn, final float zIn)
+	{
+		var mapX = this.chunks.get(xIn);
+		if (mapX == null)
+		{
+			mapX = new LinkedHashMap<>();
+			this.chunks.put(xIn, mapX);
+		}
+		var mapY = mapX.get(yIn);
+		if (mapY == null)
+		{
+			mapY = new LinkedHashMap<>();
+			mapX.put(yIn, mapY);
+		}
+		var chunk = mapY.get(zIn);
+		if (chunk == null)
+		{
+			chunk = new Chunk(this.world, new Vector3i((int) xIn, (int) yIn, (int) zIn));
+			mapY.put(zIn, chunk);
+			this.size++;
+		}
 
 		return chunk;
 	}
 
-	public Chunk getOrCreateChunk(final int xIn, final int yIn, final int zIn)
+	public final Chunk get(final float xIn, final float yIn, final float zIn)
 	{
-		if (this.nodes == null)
+		final var mapX = this.chunks.get(xIn);
+		if (mapX == null)
 		{
-			return this.initializeChunks(xIn, yIn, zIn);
+			return null;
 		}
 
-		final var	xNodes	= this.nodes.getOrCreate(xIn);
-		var			yNodes	= xNodes.value();
-		if (yNodes == null)
+		final var mapY = mapX.get(yIn);
+		if (mapY == null)
 		{
-			yNodes = new ChunksNodes<>(yIn);
-			xNodes.value(yNodes);
-		}
-		else
-		{
-			yNodes = xNodes.value().getOrCreate(yIn);
-		}
-		var zNodes = yNodes.value();
-		if (zNodes == null)
-		{
-			zNodes = new ChunksNodes<>(zIn);
-			yNodes.value(zNodes);
-		}
-		else
-		{
-			zNodes = yNodes.value().getOrCreate(zIn);
+			return null;
 		}
 
-		if (zNodes.value() == null)
-		{
-			this.last = this.last.add(new Chunk(this.world, new Vector3i(xIn, yIn, zIn)));
-			zNodes.value(this.last);
-			this.size++;
-		}
-
-		if (zNodes.value().chunk() == null)
-		{
-			zNodes.value().chunk(new Chunk(this.world, new Vector3i(xIn, yIn, zIn)));
-
-		}
-		System.out.println(xIn + " " + yIn + " " + zIn);
-
-		return zNodes.value().chunk();
+		return mapY.get(zIn);
 	}
 
-	public Chunk getChunk(final int xIn, final int yIn, final int zIn)
+	public Chunks remove(final float xIn, final float yIn, final float zIn)
 	{
-		if (this.nodes == null)
+		final var mapX = this.chunks.get(xIn);
+		if (mapX == null)
 		{
 			return null;
 		}
 
-		final var xNodes = this.nodes.get(xIn);
-		if (xNodes == null || xNodes.value() == null)
+		final var mapY = mapX.get(yIn);
+		if (mapY == null)
 		{
 			return null;
 		}
 
-		final var yNodes = xNodes.value().get(yIn);
-		if (yNodes == null || yNodes.value() == null)
+		if (mapY.containsKey(zIn))
 		{
-			return null;
+			this.size--;
+			mapY.remove(zIn);
 		}
-
-		final var zNodes = yNodes.value().get(zIn);
-		if (zNodes == null || zNodes.value() == null)
-		{
-			return null;
-		}
-
-		return zNodes.value().chunk();
-	}
-
-	public Chunks remove(final Chunk chunkIn)
-	{
-		/**if (this.nodes == null)
-		{
-			return this;
-		}
-		
-		final var xNodes = this.nodes.get(chunkIn.x());
-		if (xNodes == null || xNodes.value() == null)
-		{
-			return this;
-		}
-		
-		final var yNodes = xNodes.value().get(chunkIn.y());
-		if (yNodes == null || yNodes.value() == null)
-		{
-			return this;
-		}
-		
-		final var zNodes = yNodes.value().get(chunkIn.z());
-		if (zNodes == null || zNodes.value() == null)
-		{
-			return this;
-		}
-		
-		final var	lastPrevious	= zNodes.value().previous();
-		final var	lastNext		= zNodes.value().next();
-		
-		if (zNodes.value().equals(this.first))
-		{
-			this.first = lastNext;
-		}
-		if (zNodes.value().equals(this.last))
-		{
-			this.last = lastPrevious;
-		}
-		zNodes.value().remove();
-		if (zNodes.value().isEmpty())
-		{
-			if (zNodes == yNodes.value())
-			{
-				if (zNodes.hasPrevious())
-				{
-					yNodes.value(zNodes.previous());
-				}
-				else if (zNodes.hasNext())
-				{
-					yNodes.value(zNodes.next());
-				}
-			}
-		
-			zNodes.remove();
-		}
-		if (yNodes.isEmpty())
-		{
-			if (yNodes == xNodes.value())
-			{
-				if (yNodes.hasPrevious())
-				{
-					xNodes.value(yNodes.previous());
-				}
-				else if (zNodes.hasNext())
-				{
-					xNodes.value(yNodes.next());
-				}
-			}
-		
-			yNodes.remove();
-		}
-		if (xNodes.isEmpty())
-		{
-			if (this.nodes == xNodes)
-			{
-				if (this.nodes.hasPrevious())
-				{
-					this.nodes = xNodes.previous();
-				}
-				else if (this.nodes.hasNext())
-				{
-					this.nodes = xNodes.next();
-				}
-			}
-		
-			xNodes.remove();
-		}
-		
-		this.size--;**/
-
 		return this;
 	}
 
-	public final Chunks forEach(final IIFunction<Chunk> functionIn)
+	public int size()
 	{
-		var iterator = this.first;
-		while (iterator != null)
+		return this.size;
+	}
+
+	public boolean isEmpty()
+	{
+		return this.size == 0;
+	}
+
+	public void forEach(final IIFunction<Chunk> functionIn)
+	{
+		for (final var mapX : this.chunks.values())
 		{
-			functionIn.execute(iterator.chunk());
-
-			iterator = iterator.next();
+			for (final var mapY : mapX.values())
+			{
+				for (final var chunk : mapY.values())
+				{
+					functionIn.execute(chunk);
+				}
+			}
 		}
-
-		return this;
 	}
 }

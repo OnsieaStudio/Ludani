@@ -60,143 +60,68 @@ public class World
 	private final WorldData				worldData;
 	private final @Getter WorldRenderer	worldRenderer;
 
-	public World(final IShadersManager shadersManagerIn, final IRenderAPIContext renderAPIContextIn,
-			final PlayerEntity playerEntityIn, final IWindow windowIn)
+	public World(final IShadersManager shadersManagerIn, final IRenderAPIContext renderAPIContextIn, final PlayerEntity playerEntityIn, final IWindow windowIn)
 	{
 		MathInstances.random().setSeed(Random.newSeed() * 49331L);
 
-		this.worldData	= new WorldData(this);
+		this.worldData = new WorldData(this);
 
-		this.worldRenderer		= new WorldRenderer(this.worldData, renderAPIContextIn);
+		this.worldRenderer = new WorldRenderer(this.worldData, renderAPIContextIn);
 
-		this.worldData.chunksManager().gen(8, 8, this.worldRenderer);
+		this.worldData.chunksManager().gen(32, 32, this.worldRenderer);
 
-		//picker.updateProjection(MathInstances.projectionMatrix());
-		//picker.updateClipAndEyeCoords(windowIn.effectiveWidth()/2.0f, windowIn.effectiveHeight()/2.0f, windowIn.settings().width(), windowIn.settings().height(), 16.0f, 16.0f);
+		// picker.updateProjection(MathInstances.projectionMatrix());
+		// picker.updateClipAndEyeCoords(windowIn.effectiveWidth()/2.0f, windowIn.effectiveHeight()/2.0f, windowIn.settings().width(), windowIn.settings().height(), 16.0f, 16.0f);
 	}
 
-	public final void update(final InputManager inputManagerIn, final PlayerEntity playerEntityIn,
-			final IWindow windowIn, final boolean freePickingMouseIn)
+	public final void update(final InputManager inputManagerIn, final PlayerEntity playerEntityIn, final IWindow windowIn, final boolean freePickingMouseIn)
 	{
 		this.worldRenderer.update(playerEntityIn);
 		this.worldData.chunksManager().update(inputManagerIn, playerEntityIn, windowIn, freePickingMouseIn);
 
 		/**
-		 * if (windowIn.key(GLFW.GLFW_KEY_F4) == GLFW.GLFW_PRESS && !this.hasPress)
-		 * {
-		 * this.cullingTest = !this.cullingTest;
-		 * this.hasPress = true;
-		 * }
-		 * else if (windowIn.key(GLFW.GLFW_KEY_F4) == GLFW.GLFW_RELEASE)
-		 * {
-		 * this.hasPress = false;
-		 * }
+		 * if (windowIn.key(GLFW.GLFW_KEY_F4) == GLFW.GLFW_PRESS && !this.hasPress) { this.cullingTest = !this.cullingTest; this.hasPress = true; } else if (windowIn.key(GLFW.GLFW_KEY_F4) == GLFW.GLFW_RELEASE) { this.hasPress =
+		 * false; }
 		 **/
 
 		/**
-		 * if (this.cullingTest)
-		 * {
-		 * this.frustumCulling.updateFrustum(MathInstances.projectionMatrix(),
-		 * playerEntityIn.view());
+		 * if (this.cullingTest) { this.frustumCulling.updateFrustum(MathInstances.projectionMatrix(), playerEntityIn.view());
 		 *
-		 * final var last = playerEntityIn.timedPosition().last();
-		 * final var actual = playerEntityIn.position();
+		 * final var last = playerEntityIn.timedPosition().last(); final var actual = playerEntityIn.position();
 		 *
-		 * if (!playerEntityIn.timedPosition().hasChanged() || (int) (last.x / 16.0f) == (int)
-		 * (actual.x / 16.0f)
-		 * && (int) (last.z / 16.0f) == (int) (actual.z / 16.0f))
-		 * {
-		 * return;
-		 * }
+		 * if (!playerEntityIn.timedPosition().hasChanged() || (int) (last.x / 16.0f) == (int) (actual.x / 16.0f) && (int) (last.z / 16.0f) == (int) (actual.z / 16.0f)) { return; }
 		 *
-		 * final List<Vector3f> positionsToRemove = new ArrayList<>();
-		 * for (final Chunk chunk : this.chunks.values())
-		 * {
-		 * var isVisible = true;
-		 * for (final var culling : this.cullingManager.cullings)
-		 * {
-		 * final var dist = new Vector3f(playerEntityIn.position())
-		 * .sub(new Vector3f(chunk.position()).mul(World.chunkSize));
+		 * final List<Vector3f> positionsToRemove = new ArrayList<>(); for (final Chunk chunk : this.chunks.values()) { var isVisible = true; for (final var culling : this.cullingManager.cullings) { final var dist = new
+		 * Vector3f(playerEntityIn.position()) .sub(new Vector3f(chunk.position()).mul(World.chunkSize));
 		 *
-		 * if (culling.isCulling(dist))
-		 * {
-		 * isVisible = false;
+		 * if (culling.isCulling(dist)) { isVisible = false;
 		 *
-		 * break;
-		 * }
-		 * }
+		 * break; } }
 		 *
-		 * if (!isVisible)
-		 * {
-		 * positionsToRemove.add(chunk.position());
-		 * }
-		 * }
+		 * if (!isVisible) { positionsToRemove.add(chunk.position()); } }
 		 *
-		 * for (final var positionToRemove : positionsToRemove)
-		 * {
-		 * final var chunk = this.chunks.get(positionToRemove);
+		 * for (final var positionToRemove : positionsToRemove) { final var chunk = this.chunks.get(positionToRemove);
 		 *
-		 * if (chunk != null)
-		 * {
-		 * this.chunks.remove(positionToRemove);
-		 * chunk.cleanup();
-		 * }
-		 * }
-		 * positionsToRemove.clear();
-		 * }
+		 * if (chunk != null) { this.chunks.remove(positionToRemove); chunk.cleanup(); } } positionsToRemove.clear(); }
 		 *
-		 * for (var x = -16; x < 16; x++)
-		 * {
-		 * for (var z = -16; z < 16; z++)
-		 * {
-		 * final var position = new Vector3f((int) (playerEntityIn.position().x / 16.0f) + x,
-		 * 0,
-		 * (int) (playerEntityIn.position().z / 16.0f) + z);
+		 * for (var x = -16; x < 16; x++) { for (var z = -16; z < 16; z++) { final var position = new Vector3f((int) (playerEntityIn.position().x / 16.0f) + x, 0, (int) (playerEntityIn.position().z / 16.0f) + z);
 		 *
-		 * if (this.chunks.containsKey(position))
-		 * {
-		 * continue;
-		 * }
+		 * if (this.chunks.containsKey(position)) { continue; }
 		 *
-		 * var isVisible = true;
-		 * for (final var culling : this.cullingManager.cullings)
-		 * {
-		 * final var dist = new Vector3f(playerEntityIn.position()).sub(new
-		 * Vector3f(position).mul(World.chunkSize));
+		 * var isVisible = true; for (final var culling : this.cullingManager.cullings) { final var dist = new Vector3f(playerEntityIn.position()).sub(new Vector3f(position).mul(World.chunkSize));
 		 *
-		 * if (culling.isCulling(dist))
-		 * {
-		 * isVisible = false;
+		 * if (culling.isCulling(dist)) { isVisible = false;
 		 *
-		 * break;
-		 * }
-		 * }
+		 * break; } }
 		 *
-		 * if (!isVisible)
-		 * {
-		 * continue;
-		 * }
+		 * if (!isVisible) { continue; }
 		 *
-		 * final var chunk = worldInformations.createChunk(x, y, z);
-		 * final var items = new Item[16 * 16];
+		 * final var chunk = worldInformations.createChunk(x, y, z); final var items = new Item[16 * 16];
 		 *
-		 * var i = 0;
-		 * for (var x0 = 0; x0 < 16; x0++)
-		 * {
-		 * for (var z0 = 0; z0 < 16; z0++)
-		 * {
-		 * final var item = new Item(this.itemType,
-		 * new Vector3f(x0 * 2 + position.x * 16, 0, z0 * 2 + position.z * 16),
-		 * new Vector3f(0.0f, 0.0f, 0.0f), new Vector3f(1.0f, 1.0f, 1.0f));
-		 * items[i] = item;
-		 * i++;
-		 * }
-		 * }
-		 * chunk.add(this.itemType, items);
+		 * var i = 0; for (var x0 = 0; x0 < 16; x0++) { for (var z0 = 0; z0 < 16; z0++) { final var item = new Item(this.itemType, new Vector3f(x0 * 2 + position.x * 16, 0, z0 * 2 + position.z * 16), new Vector3f(0.0f, 0.0f,
+		 * 0.0f), new Vector3f(1.0f, 1.0f, 1.0f)); items[i] = item; i++; } } chunk.add(this.itemType, items);
 		 *
-		 * this.chunks.put(position, chunk);
-		 * }
-		 * }
+		 * this.chunks.put(position, chunk); } }
 		 **/
 	}
 
