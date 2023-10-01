@@ -4,7 +4,7 @@
 
 ## Report a security vulnerability
 
-- For any security vulnerability (regardless of its importance), we strongly encourage you to anonymously and secretly contact Onsiea (seynax@onsiea.com, [Seynax on Github] (https://github.com/seynax), contact@onsiea.com, [Onsiea Studio on Github] (https://github.com/OnsieaStudio)). The goal is to avoid as many incidents as possible that could be created by this vulnerability. To do this, you must avoid publishing this vulnerability through "issues," or on social networks, etc.
+- For any security vulnerability (regardless of its importance), we strongly encourage you to anonymously and secretly contact Onsiea (seynax@onsiea.com, [Seynax on Github] (https://github.com/seynax), contact@onsiea.com, [Onsiea Studio on Github] (https://github.com/OnsieaStudioStudio)). The goal is to avoid as many incidents as possible that could be created by this vulnerability. To do this, you must avoid publishing this vulnerability through "issues," or on social networks, etc.
 
 - To report a vulnerability, we simply offer the following model:
 
