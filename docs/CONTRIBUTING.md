@@ -32,7 +32,7 @@
 
   - **Yes all the same** - despite everything, some choices may have been made for a specific reason, so we will never choose the beauty of the code to the detriment of bugs, various problems etc.
 
-  - **Traceability of choices** - thus, following a request of this type, if it was not accepted with valid justification, it will be published in the "choice / <path_to_class> /class.txt" folder (for example (choice / fr / onsiea / engine / Main), so in the future it will not be necessary to propose this improvement (at least, with the same arguments) and it will not be necessary to find the justification - which takes much less time.
+  - **Traceability of choices** - thus, following a request of this type, if it was not accepted with valid justification, it will be published in the "choice / <path_to_class> /class.txt" folder (for example (choice / fr / onsiea / ludani / Main), so in the future it will not be necessary to propose this improvement (at least, with the same arguments) and it will not be necessary to find the justification - which takes much less time.
 
   - **And therefore in final ?** - therefore you can check in the folder "choice / <path_to_the_class> /class.txt" if your proposal has not already been made, you can also obtain the reason
 

@@ -1,5 +1,5 @@
 # Ludani
-Onsiea Engine is a libre and OpenSource 2D-3D game engine in Java with LWJGl (OpenGL, Vulkan, GLFW, STB, OpenAL ...)
+Ludani is a libre and OpenSource 2D-3D game engine in Java with LWJGl (OpenGL, Vulkan, GLFW, STB, OpenAL ...)
 
 # License
 
