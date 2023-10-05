@@ -90,8 +90,13 @@
         <internal.repo.folder>mvn-artifact</internal.repo.folder>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
         <maven.deploy.plugin.version>3.1.1</maven.deploy.plugin.version>
+        <maven-jar-plugin-version>3.3.0</maven-jar-plugin-version>
         <maven.source.plugin.version>3.3.0</maven.source.plugin.version>
         <com.github.site.maven.plugin.version>0.12</com.github.site.maven.plugin.version>
+        <lombok-version>1.18.30</lombok-version>
+        <onsiea-utils-version>1.0-SNAPSHOT</onsiea-utils-version>
+        <onsiea-logger-version>1.0-SNAPSHOT</onsiea-logger-version>
+        <onsiea-modules-version>1.0-SNAPSHOT</onsiea-modules-version>
         <repository.name>Ludani</repository.name>
         <repository.owner>OnsieaStudio</repository.owner>
         <repository.branch.name>maven</repository.branch.name>
@@ -141,22 +146,23 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
+            <version>${lombok-version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>fr.onsiea.tools</groupId>
             <artifactId>utils</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${onsiea-utils-version}</version>
         </dependency>
         <dependency>
             <groupId>fr.onsiea.tools</groupId>
             <artifactId>logger</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${onsiea-logger-version}</version>
         </dependency>
         <dependency>
             <groupId>fr.onsiea.ludart.modules</groupId>
             <artifactId>all</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${onsiea-modules-version}</version>
         </dependency>
     </dependencies>
 
@@ -177,6 +183,19 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <encoding>project.build.sourceEncoding</encoding>
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok-version}</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
+                    <annotationProcessors>
+                        <annotationProcessor>
+                            lombok.launch.AnnotationProcessorHider$AnnotationProcessor
+                        </annotationProcessor>
+                    </annotationProcessors>
                 </configuration>
             </plugin>
             <plugin>
@@ -186,6 +205,23 @@
                     <altDeploymentRepository>internal.repo::file://${project.build.directory}/${internal.repo.folder}
                     </altDeploymentRepository>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <skipIfEmpty>true</skipIfEmpty>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -205,15 +241,15 @@
                 <artifactId>site-maven-plugin</artifactId>
                 <version>${com.github.site.maven.plugin.version}</version>
                 <configuration>
-                    <message>Maven artifacts for ${project.version}</message>
+                    <message>Maven artifacts for ${project.groupId}:${project.artifactId}:${project.version}</message>
                     <noJekyll>true</noJekyll>
+                    <merge>true</merge>
                     <!-- disable webpage processing -->
                     <outputDirectory>${project.build.directory}</outputDirectory>
                     <branch>refs/heads/${repository.branch.name}</branch>
                     <includes>
                         <include>**/*</include>
                     </includes>
-                    <merge>true</merge>
                     <repositoryName>${repository.name}</repositoryName>
                     <repositoryOwner>${repository.owner}</repositoryOwner>
                     <server>github</server>
