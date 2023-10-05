@@ -1,0 +1,4 @@
+--patch-module
+fr.onsiea.ludani=_
+--add-reads
+fr.onsiea.ludani=ALL-UNNAMED
