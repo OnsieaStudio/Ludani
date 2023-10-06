@@ -151,19 +151,15 @@
         </dependency>
         <dependency>
             <groupId>fr.onsiea.tools</groupId>
-            <artifactId>utils</artifactId>
-            <version>${onsiea-utils-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>fr.onsiea.tools</groupId>
             <artifactId>logger</artifactId>
             <version>${onsiea-logger-version}</version>
         </dependency>
         <dependency>
-            <groupId>fr.onsiea.ludart.modules</groupId>
-            <artifactId>all</artifactId>
-            <version>${onsiea-modules-version}</version>
-        </dependency>
+        <groupId>fr.onsiea.ludart.modules</groupId>
+        <artifactId>all</artifactId>
+        <version>${onsiea-modules-version}</version>
+        <type>pom</type>
+    </dependency>
     </dependencies>
 
     <distributionManagement>
@@ -183,7 +179,7 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-                    <encoding>project.build.sourceEncoding</encoding>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                     <annotationProcessorPaths>
                         <annotationProcessorPath>
                             <groupId>org.projectlombok</groupId>
